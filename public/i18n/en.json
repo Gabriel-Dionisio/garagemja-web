@@ -1,0 +1,302 @@
+{
+  "app": {
+    "name": "GaragemJá.com"
+  },
+  "language": {
+    "label": "Language",
+    "pt-BR": "PT",
+    "en": "EN"
+  },
+  "errors": {
+    "generic": "An unexpected error occurred. Please try again.",
+    "field": {
+      "required": "Required field.",
+      "email": "Enter a valid email.",
+      "maxlength": "Use at most {{n}} characters.",
+      "minlength": "Use at least {{n}} characters.",
+      "cpf": "Invalid CPF.",
+      "phone": "Invalid phone number. Enter area code and number.",
+      "personName": "Enter first and last name using letters only (spaces and apostrophes allowed).",
+      "passwordPolicy": "Use {{min}} to {{max}} characters with an uppercase letter, a lowercase letter, a number and a symbol.",
+      "mismatch": "Passwords do not match.",
+      "invalid": "Invalid value."
+    }
+  },
+  "common": {
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "fullName": "Full name",
+      "name": "Name",
+      "phone": "Phone",
+      "cpf": "CPF",
+      "role": "Role",
+      "status": "Status",
+      "accountType": "Account type",
+      "confirmPassword": "Confirm password",
+      "initialPassword": "Initial password",
+      "roles": "Roles"
+    },
+    "hints": {
+      "password": "8 to 20 characters, with an uppercase letter, a lowercase letter, a number and a symbol."
+    },
+    "roles": {
+      "ADMIN": "Administrator",
+      "CONDOMINIUM_ADMIN": "Property manager",
+      "RESIDENT": "Resident"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "ACTIVE": "Active",
+      "BLOCKED": "Blocked",
+      "INACTIVE": "Inactive"
+    },
+    "actions": {
+      "back": "Back",
+      "cancel": "Cancel",
+      "save": "Save",
+      "filter": "Filter",
+      "clear": "Clear"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "{{from}}–{{to}}",
+      "showingOf": "{{from}}–{{to}} of {{total}}"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "passwordRules": {
+      "length": "{{min}} to {{max}} characters",
+      "lower": "A lowercase letter",
+      "upper": "An uppercase letter",
+      "digit": "A number",
+      "symbol": "A symbol",
+      "met": "met",
+      "unmet": "not met",
+      "pending": "pending"
+    },
+    "passwordStrength": {
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "passwordMatch": {
+      "met": "Passwords match",
+      "unmet": "Passwords don't match",
+      "pending": "Checking…"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "users": "Users",
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "menu": "Menu",
+    "main": "Main",
+    "logout": "Sign out"
+  },
+  "routes": {
+    "login": "Sign in",
+    "register": "Create account",
+    "confirmEmail": "Confirm email",
+    "verifyEmail": "Verify email",
+    "home": "Home",
+    "adminUsers": "Users",
+    "adminUserNew": "New user",
+    "adminUserDetail": "User details",
+    "status": "System status",
+    "forgotPassword": "Forgot password",
+    "resetPassword": "Reset password"
+  },
+  "auth": {
+    "login": {
+      "heading": "Sign in to your account",
+      "subtitle": "Enter your details to continue.",
+      "rememberMe": "Remember me for 7 days",
+      "submit": "Sign in",
+      "createAccount": "Create account",
+      "noAccount": "Don't have an account?",
+      "forgotPassword": "Forgot your password?"
+    },
+    "register": {
+      "heading": "Create your account",
+      "subtitle": "Create your account to start renting parking spots.",
+      "namePlaceholder": "Enter your full name",
+      "roleAdminPending": "Property manager (requires approval)",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "confirmEmail": {
+      "heading": "Confirm email",
+      "confirming": "Confirming your email…",
+      "success": "Email confirmed! You can now sign in.",
+      "invalid": "This link is invalid or has expired. Sign in to request a new one."
+    },
+    "verifyEmail": {
+      "heading": "Verify your email",
+      "body": "We sent a confirmation link. Open the email, confirm your account and then sign in.",
+      "bodyWithEmail": "We sent a confirmation link to {{email}}. Open the email, confirm your account and then sign in.",
+      "resent": "We sent a new link. Also check your spam folder.",
+      "resend": "Resend email",
+      "goToLogin": "Go to sign in"
+    },
+    "forgotPassword": {
+      "heading": "Forgot your password?",
+      "subtitle": "Enter your email and we will send you a link to choose a new one.",
+      "submit": "Send link",
+      "sent": "Request received. If the email belongs to an account, we sent a link to reset the password. Also check your spam folder.",
+      "backToLogin": "Back to sign in"
+    },
+    "resetPassword": {
+      "heading": "Choose a new password",
+      "subtitle": "Pick a strong password. You will be signed out of all devices.",
+      "newPassword": "New password",
+      "submit": "Reset password",
+      "success": "Password changed! Sign in again with your new password.",
+      "invalid": "This link is invalid or has expired. Request a new one.",
+      "requestNew": "Request a new link"
+    },
+    "brand": {
+      "tagline": "Rent and manage parking spots in condominiums in a simple, safe and organized way."
+    }
+  },
+  "home": {
+    "greeting": "Hello, {{name}}",
+    "welcome": "Welcome to GaragemJá.",
+    "emptyTitle": "Your spots and rentals will appear here",
+    "emptyDescription": "Searching and renting spots arrive in the next releases."
+  },
+  "admin": {
+    "users": {
+      "title": "Users",
+      "subtitle": "Manage the platform accounts.",
+      "new": "New user",
+      "loading": "Loading users...",
+      "emptyTitle": "No users found",
+      "emptyDescription": "Adjust the filters and try again.",
+      "caption": "User list",
+      "actions": "Actions",
+      "details": "Details",
+      "approve": "Approve",
+      "all": "All",
+      "tabs": "Filter by status",
+      "filters": "Filters",
+      "deactivate": "Deactivate",
+      "resetPassword": "Send password reset",
+      "reactivate": "Reactivate"
+    },
+    "detail": {
+      "title": "User details",
+      "loading": "Loading user...",
+      "saved": "Changes saved.",
+      "approveManager": "Approve manager",
+      "sendPasswordReset": "Send password reset link",
+      "passwordResetSent": "Password reset link sent to the user.",
+      "moreActions": "More actions",
+      "editTitle": "Account details",
+      "selfNote": "This is your account. Status and roles can only be changed by another admin.",
+      "accessTitle": "Access",
+      "rolesRequired": "Select at least one role.",
+      "deactivate": "Deactivate",
+      "block": "Block access",
+      "unblock": "Unblock access",
+      "reactivate": "Reactivate account"
+    },
+    "form": {
+      "title": "New user",
+      "submit": "Create user",
+      "personal": "Personal details",
+      "access": "Access"
+    },
+    "approveDialog": {
+      "title": "Approve user",
+      "message": "Approve {{name}} as property manager?",
+      "messageSelf": "Approve this user as property manager?",
+      "confirm": "Approve"
+    },
+    "dashboard": {
+      "loading": "Loading dashboard...",
+      "kpis": "Users summary",
+      "kpi": {
+        "total": "Users",
+        "active": "Active",
+        "pending": "Pending",
+        "blocked": "Blocked"
+      },
+      "pendingTitle": "Pending approvals",
+      "pendingEmpty": "No pending approvals",
+      "recentTitle": "Recent sign-ups",
+      "recentEmpty": "No sign-ups yet",
+      "seeAll": "See all"
+    },
+    "passwordResetDialog": {
+      "title": "Send password reset link",
+      "message": "The user will receive an email with a link to choose a new password. You will not see or set the password.",
+      "confirm": "Send link"
+    },
+    "deactivateDialog": {
+      "title": "Deactivate user",
+      "message": "{{name}} will lose access. Continue?",
+      "confirm": "Deactivate"
+    },
+    "reactivateDialog": {
+      "title": "Reactivate user",
+      "message": "{{name}} will regain access. Continue?",
+      "confirm": "Reactivate"
+    },
+    "blockDialog": {
+      "title": "Block user",
+      "message": "{{name}} will lose access until unblocked. Continue?",
+      "confirm": "Block"
+    },
+    "unblockDialog": {
+      "title": "Unblock user",
+      "message": "{{name}} will regain access. Continue?",
+      "confirm": "Unblock"
+    }
+  },
+  "unavailable": {
+    "title": "We're reconnecting",
+    "body": "We can't reach the server. Your data is still here and we'll keep trying.",
+    "checking": "Checking the server…",
+    "retryIn": "Trying again in {{n}}s",
+    "retryNow": "Try now"
+  },
+  "status": {
+    "operational": "All services operational",
+    "degraded": "A service is unstable",
+    "title": {
+      "loading": "Checking…",
+      "up": "All systems operational",
+      "down": "Service disruption",
+      "unreachable": "Unavailable"
+    },
+    "web": "App",
+    "api": "Server",
+    "checkedAt": "Updated at {{time}}",
+    "unstable": "Unstable",
+    "components": {
+      "database": "Database"
+    },
+    "up": "Operational",
+    "latency": "Response time",
+    "history": "Recent checks",
+    "back": "Back",
+    "hoursAgo": "24 h ago",
+    "now": "Now",
+    "uptime24h": "{{percent}}% uptime",
+    "historySummary": "Last 24 hours: {{down}} periods down and {{degraded}} unstable",
+    "bucket": {
+      "label": "{{when}} · {{state}}",
+      "up": "Operational",
+      "degraded": "Unstable",
+      "down": "Down",
+      "noData": "No data"
+    }
+  }
+}

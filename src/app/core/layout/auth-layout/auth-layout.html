@@ -1,0 +1,8 @@
+<aside class="brand" [class.brand--compact]="compact()">
+  <app-brand-logo [stacked]="true" [inlineOnMobile]="compact()" />
+  <p class="tagline">{{ 'auth.brand.tagline' | transloco }}</p>
+</aside>
+<app-language-switcher class="language" />
+<main class="content" id="main">
+  <router-outlet />
+</main>

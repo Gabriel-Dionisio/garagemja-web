@@ -1,0 +1,211 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+  grid-template-areas:
+    'topbar'
+    'main';
+
+  @media (min-width: $bp-md) and (min-height: 40rem) {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  @include from($bp-xl) {
+    grid-template-columns: var(--rail-width) minmax(0, 1fr);
+    grid-template-areas:
+      'sidebar topbar'
+      'sidebar main';
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -4rem;
+  z-index: 100;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+
+  &:focus {
+    top: var(--space-3);
+  }
+}
+
+.topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  color: var(--color-secondary);
+}
+
+.language {
+  margin-left: auto;
+  margin-right: var(--space-2);
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  position: relative;
+  z-index: 15;
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-4) var(--space-3);
+    background: var(--color-sidebar);
+    color: var(--color-sidebar-text);
+  }
+
+  nav {
+    flex: 1;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a,
+  .logout {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    min-height: var(--control-height);
+    padding: 0 var(--space-3);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: rgb(255 255 255 / 10%);
+    }
+  }
+
+  a.active {
+    background: var(--color-primary);
+    color: #fff;
+  }
+
+  .brand {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+  }
+
+  app-icon {
+    flex: none;
+  }
+
+  .label {
+    white-space: nowrap;
+  }
+
+  :focus-visible {
+    outline-color: #fff;
+  }
+
+  &[data-mode='rail'] {
+    .panel {
+      position: sticky;
+      top: 0;
+      width: var(--rail-width);
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden auto;
+      transition:
+        width 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .label {
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+
+    &:hover .panel,
+    &:focus-within .panel {
+      width: var(--sidebar-width);
+      box-shadow: var(--shadow-overlay);
+    }
+
+    &:hover .label,
+    &:focus-within .label {
+      opacity: 1;
+      transition-delay: 0.08s;
+    }
+  }
+
+  &[data-mode='drawer'] {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 20;
+    width: min(18rem, 85vw);
+    overflow-y: auto;
+
+    .panel {
+      min-height: 100%;
+    }
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgb(15 23 42 / 50%);
+}
+
+main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-4);
+  outline: none;
+  --page-height: calc(100dvh - var(--topbar-height) - 2 * var(--space-4));
+
+  @media (min-width: $bp-md) and (min-height: 40rem) {
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  @include from($bp-md) {
+    padding: var(--space-5);
+    --page-height: calc(100dvh - var(--topbar-height) - 2 * var(--space-5));
+  }
+}

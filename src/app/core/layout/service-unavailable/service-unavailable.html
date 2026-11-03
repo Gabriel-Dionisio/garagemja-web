@@ -1,0 +1,21 @@
+<section class="content" role="alert" aria-labelledby="unavailable-title">
+  <span class="badge" aria-hidden="true"><app-icon name="car" /></span>
+  <h1 id="unavailable-title">{{ 'unavailable.title' | transloco }}</h1>
+  <p class="body">{{ 'unavailable.body' | transloco }}</p>
+  <p class="status" aria-live="polite">
+    {{
+      availability.checking()
+        ? ('unavailable.checking' | transloco)
+        : ('unavailable.retryIn' | transloco: { n: availability.secondsLeft() })
+    }}
+  </p>
+  <button
+    appButton
+    variant="secondary"
+    type="button"
+    [loading]="availability.checking()"
+    (click)="availability.retryNow()"
+  >
+    {{ 'unavailable.retryNow' | transloco }}
+  </button>
+</section>

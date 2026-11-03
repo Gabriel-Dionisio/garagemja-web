@@ -1,0 +1,30 @@
+<button
+  class="user-trigger"
+  type="button"
+  aria-controls="user-menu"
+  [attr.aria-expanded]="open()"
+  (click)="open.set(!open())"
+>
+  <span class="user-text">
+    <span class="user-name" [attr.title]="user().name">{{ firstName() }}</span>
+    @for (role of badgeRoles(); track role) {
+      <app-badge tone="info">{{ roleLabels[role] | transloco }}</app-badge>
+    }
+  </span>
+  <app-avatar [name]="user().name" />
+</button>
+@if (open()) {
+  <div id="user-menu" class="user-menu" (keydown.escape)="open.set(false)">
+    <div class="identity">
+      <strong>{{ user().name }}</strong>
+      @for (role of badgeRoles(); track role) {
+        <app-badge tone="info">{{ roleLabels[role] | transloco }}</app-badge>
+      }
+    </div>
+    <small>{{ user().email }}</small>
+    <button class="menu-logout" type="button" [disabled]="loggingOut()" (click)="logout.emit()">
+      <app-icon name="logout" />
+      {{ 'nav.logout' | transloco }}
+    </button>
+  </div>
+}

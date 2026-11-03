@@ -1,0 +1,97 @@
+@use 'styles/mixins' as *;
+
+:host {
+  position: relative;
+  display: block;
+}
+
+.user-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--control-height);
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.user-menu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 14rem;
+  max-width: calc(100vw - 2 * var(--space-4));
+  padding: var(--space-4);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
+
+  .identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+
+    @include from($bp-md) {
+      display: none;
+    }
+  }
+
+  small {
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--color-text-muted);
+    text-overflow: ellipsis;
+  }
+}
+
+.menu-logout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--control-height);
+  margin-top: var(--space-3);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-top: 1px solid var(--color-divider);
+  background: transparent;
+  color: var(--color-danger);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.user-text {
+  @include until($bp-md) {
+    @include visually-hidden;
+  }
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.user-name {
+  max-width: 8rem;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include from($bp-md) {
+    max-width: none;
+  }
+}

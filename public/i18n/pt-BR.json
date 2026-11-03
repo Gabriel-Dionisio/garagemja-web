@@ -1,0 +1,302 @@
+{
+  "app": {
+    "name": "GaragemJá.com"
+  },
+  "language": {
+    "label": "Idioma",
+    "pt-BR": "PT",
+    "en": "EN"
+  },
+  "errors": {
+    "generic": "Ocorreu um erro inesperado. Tente novamente.",
+    "field": {
+      "required": "Campo obrigatório.",
+      "email": "Informe um e-mail válido.",
+      "maxlength": "Use no máximo {{n}} caracteres.",
+      "minlength": "Use no mínimo {{n}} caracteres.",
+      "cpf": "CPF inválido.",
+      "phone": "Telefone inválido. Informe DDD e número.",
+      "personName": "Informe nome e sobrenome usando apenas letras (espaços e apóstrofos são permitidos).",
+      "passwordPolicy": "Use de {{min}} a {{max}} caracteres com maiúscula, minúscula, número e símbolo.",
+      "mismatch": "As senhas não coincidem.",
+      "invalid": "Valor inválido."
+    }
+  },
+  "common": {
+    "fields": {
+      "email": "E-mail",
+      "password": "Senha",
+      "fullName": "Nome completo",
+      "name": "Nome",
+      "phone": "Telefone",
+      "cpf": "CPF",
+      "role": "Perfil",
+      "status": "Status",
+      "accountType": "Tipo de conta",
+      "confirmPassword": "Confirmar senha",
+      "initialPassword": "Senha inicial",
+      "roles": "Perfis"
+    },
+    "hints": {
+      "password": "De 8 a 20 caracteres, com maiúscula, minúscula, número e símbolo."
+    },
+    "roles": {
+      "ADMIN": "Administrador",
+      "CONDOMINIUM_ADMIN": "Síndico",
+      "RESIDENT": "Morador"
+    },
+    "status": {
+      "PENDING": "Pendente",
+      "ACTIVE": "Ativo",
+      "BLOCKED": "Bloqueado",
+      "INACTIVE": "Inativo"
+    },
+    "actions": {
+      "back": "Voltar",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "filter": "Filtrar",
+      "clear": "Limpar"
+    },
+    "pagination": {
+      "label": "Paginação",
+      "previous": "Anterior",
+      "next": "Próxima",
+      "showing": "{{from}}–{{to}}",
+      "showingOf": "{{from}}–{{to}} de {{total}}"
+    },
+    "password": {
+      "show": "Mostrar senha",
+      "hide": "Ocultar senha"
+    },
+    "passwordRules": {
+      "length": "De {{min}} a {{max}} caracteres",
+      "lower": "Uma letra minúscula",
+      "upper": "Uma letra maiúscula",
+      "digit": "Um número",
+      "symbol": "Um símbolo",
+      "met": "atendido",
+      "unmet": "não atendido",
+      "pending": "pendente"
+    },
+    "passwordStrength": {
+      "weak": "Fraca",
+      "medium": "Média",
+      "strong": "Forte"
+    },
+    "passwordMatch": {
+      "met": "As senhas coincidem",
+      "unmet": "As senhas não coincidem",
+      "pending": "Confirmando…"
+    }
+  },
+  "nav": {
+    "home": "Início",
+    "users": "Usuários",
+    "skipToContent": "Pular para o conteúdo",
+    "openMenu": "Abrir menu",
+    "menu": "Menu",
+    "main": "Principal",
+    "logout": "Sair"
+  },
+  "routes": {
+    "login": "Entrar",
+    "register": "Criar conta",
+    "confirmEmail": "Confirmar e-mail",
+    "verifyEmail": "Verificar e-mail",
+    "home": "Início",
+    "adminUsers": "Usuários",
+    "adminUserNew": "Novo usuário",
+    "adminUserDetail": "Detalhes do usuário",
+    "status": "Status do sistema",
+    "forgotPassword": "Esqueci a senha",
+    "resetPassword": "Redefinir senha"
+  },
+  "auth": {
+    "login": {
+      "heading": "Acesse sua conta",
+      "subtitle": "Entre com seus dados para continuar.",
+      "rememberMe": "Lembrar de mim por 7 dias",
+      "submit": "Entrar",
+      "createAccount": "Criar conta",
+      "noAccount": "Não tem uma conta?",
+      "forgotPassword": "Esqueceu a senha?"
+    },
+    "register": {
+      "heading": "Criar sua conta",
+      "subtitle": "Crie sua conta para começar a alugar vagas.",
+      "namePlaceholder": "Digite seu nome completo",
+      "roleAdminPending": "Síndico (requer aprovação)",
+      "submit": "Criar conta",
+      "haveAccount": "Já possui uma conta?",
+      "signIn": "Entrar"
+    },
+    "confirmEmail": {
+      "heading": "Confirmar e-mail",
+      "confirming": "Confirmando seu e-mail…",
+      "success": "E-mail confirmado! Agora você já pode entrar.",
+      "invalid": "Este link é inválido ou expirou. Entre para pedir um novo."
+    },
+    "verifyEmail": {
+      "heading": "Verifique seu e-mail",
+      "body": "Enviamos um link de confirmação. Abra o e-mail, confirme sua conta e depois entre.",
+      "bodyWithEmail": "Enviamos um link de confirmação para {{email}}. Abra o e-mail, confirme sua conta e depois entre.",
+      "resent": "Enviamos um novo link. Confira também a caixa de spam.",
+      "resend": "Reenviar e-mail",
+      "goToLogin": "Ir para o login"
+    },
+    "forgotPassword": {
+      "heading": "Esqueceu a senha?",
+      "subtitle": "Informe seu e-mail e enviaremos um link para escolher uma nova.",
+      "submit": "Enviar link",
+      "sent": "Solicitação recebida. Se o e-mail pertencer a uma conta, enviamos um link para redefinir a senha. Veja também o spam.",
+      "backToLogin": "Voltar para entrar"
+    },
+    "resetPassword": {
+      "heading": "Escolha uma nova senha",
+      "subtitle": "Use uma senha forte. Você será desconectado de todos os dispositivos.",
+      "newPassword": "Nova senha",
+      "submit": "Redefinir senha",
+      "success": "Senha alterada! Entre novamente com a nova senha.",
+      "invalid": "Este link é inválido ou expirou. Peça um novo.",
+      "requestNew": "Pedir novo link"
+    },
+    "brand": {
+      "tagline": "Alugue e gerencie vagas de garagem em condomínios de forma simples, segura e organizada."
+    }
+  },
+  "home": {
+    "greeting": "Olá, {{name}}",
+    "welcome": "Bem-vindo ao GaragemJá.",
+    "emptyTitle": "Suas vagas e aluguéis aparecerão aqui",
+    "emptyDescription": "A busca e o aluguel de vagas chegam nas próximas entregas."
+  },
+  "admin": {
+    "users": {
+      "title": "Usuários",
+      "subtitle": "Gerencie as contas da plataforma.",
+      "new": "Novo usuário",
+      "loading": "Carregando usuários...",
+      "emptyTitle": "Nenhum usuário encontrado",
+      "emptyDescription": "Ajuste os filtros e tente novamente.",
+      "caption": "Lista de usuários",
+      "actions": "Ações",
+      "details": "Detalhes",
+      "approve": "Aprovar",
+      "all": "Todos",
+      "tabs": "Filtrar por status",
+      "filters": "Filtros",
+      "deactivate": "Inativar",
+      "resetPassword": "Enviar redefinição de senha",
+      "reactivate": "Reativar"
+    },
+    "detail": {
+      "title": "Detalhes do usuário",
+      "loading": "Carregando usuário...",
+      "saved": "Alterações salvas.",
+      "approveManager": "Aprovar síndico",
+      "sendPasswordReset": "Enviar link de redefinição de senha",
+      "passwordResetSent": "Link de redefinição enviado ao usuário.",
+      "moreActions": "Outras ações",
+      "editTitle": "Dados da conta",
+      "selfNote": "Esta é a sua conta. Status e perfis só podem ser alterados por outro administrador.",
+      "accessTitle": "Acesso",
+      "rolesRequired": "Selecione ao menos um perfil.",
+      "deactivate": "Inativar",
+      "block": "Bloquear acesso",
+      "unblock": "Desbloquear acesso",
+      "reactivate": "Reativar conta"
+    },
+    "form": {
+      "title": "Novo usuário",
+      "submit": "Criar usuário",
+      "personal": "Dados pessoais",
+      "access": "Acesso"
+    },
+    "approveDialog": {
+      "title": "Aprovar usuário",
+      "message": "Aprovar {{name}} como síndico?",
+      "messageSelf": "Aprovar este usuário como síndico?",
+      "confirm": "Aprovar"
+    },
+    "dashboard": {
+      "loading": "Carregando painel...",
+      "kpis": "Resumo de usuários",
+      "kpi": {
+        "total": "Usuários",
+        "active": "Ativos",
+        "pending": "Pendentes",
+        "blocked": "Bloqueados"
+      },
+      "pendingTitle": "Aprovações pendentes",
+      "pendingEmpty": "Nenhuma aprovação pendente",
+      "recentTitle": "Cadastros recentes",
+      "recentEmpty": "Nenhum cadastro ainda",
+      "seeAll": "Ver todos"
+    },
+    "passwordResetDialog": {
+      "title": "Enviar link de redefinição",
+      "message": "O usuário receberá um e-mail com um link para escolher uma nova senha. Você não verá nem definirá a senha.",
+      "confirm": "Enviar link"
+    },
+    "deactivateDialog": {
+      "title": "Inativar usuário",
+      "message": "{{name}} perderá o acesso. Deseja continuar?",
+      "confirm": "Inativar"
+    },
+    "reactivateDialog": {
+      "title": "Reativar usuário",
+      "message": "{{name}} voltará a ter acesso. Deseja continuar?",
+      "confirm": "Reativar"
+    },
+    "blockDialog": {
+      "title": "Bloquear usuário",
+      "message": "{{name}} ficará sem acesso até ser desbloqueado. Deseja continuar?",
+      "confirm": "Bloquear"
+    },
+    "unblockDialog": {
+      "title": "Desbloquear usuário",
+      "message": "{{name}} voltará a ter acesso. Deseja continuar?",
+      "confirm": "Desbloquear"
+    }
+  },
+  "unavailable": {
+    "title": "Estamos reconectando",
+    "body": "Não conseguimos falar com o servidor. Seus dados continuam aqui e tentamos de novo sozinhos.",
+    "checking": "Verificando o servidor…",
+    "retryIn": "Nova tentativa em {{n}}s",
+    "retryNow": "Tentar agora"
+  },
+  "status": {
+    "operational": "Todos os serviços operando",
+    "degraded": "Algum serviço está instável",
+    "title": {
+      "loading": "Verificando…",
+      "up": "Tudo funcionando",
+      "down": "Instabilidade",
+      "unreachable": "Fora do ar"
+    },
+    "web": "Aplicativo",
+    "api": "Servidor",
+    "checkedAt": "Atualizado às {{time}}",
+    "unstable": "Instável",
+    "components": {
+      "database": "Banco de dados"
+    },
+    "up": "Operacional",
+    "latency": "Tempo de resposta",
+    "history": "Últimas verificações",
+    "back": "Voltar",
+    "hoursAgo": "24 h atrás",
+    "now": "Agora",
+    "uptime24h": "{{percent}}% no ar",
+    "historySummary": "Últimas 24 horas: {{down}} períodos fora do ar e {{degraded}} instáveis",
+    "bucket": {
+      "label": "{{when}} · {{state}}",
+      "up": "Operacional",
+      "degraded": "Instável",
+      "down": "Fora do ar",
+      "noData": "Sem dados"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+@use 'styles/mixins' as *;
+
+:host {
+  --auth-form-width: 30rem;
+  --brand-balance: 8rem;
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  grid-template-rows: auto 1fr;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1fr) calc(var(--auth-form-width) + 2 * var(--space-6));
+    grid-template-rows: 1fr;
+  }
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7) var(--space-5) var(--space-6);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: var(--color-bg-brand);
+  color: var(--color-secondary);
+  text-align: center;
+
+  &--compact {
+    @include until($bp-lg) {
+      flex-direction: row;
+      justify-content: flex-start;
+      padding: var(--space-3) 6rem var(--space-3) var(--space-4);
+      border-radius: 0;
+      border-bottom: 1px solid var(--color-divider);
+      background: var(--color-surface);
+      text-align: left;
+    }
+  }
+
+  @include from($bp-lg) {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: var(--space-7);
+    border-radius: 0;
+    text-align: left;
+    background: url('/images/login-bg.jpeg') center / cover no-repeat var(--color-bg);
+  }
+}
+
+.brand--compact .tagline {
+  @include until($bp-lg) {
+    display: none;
+  }
+}
+
+.tagline {
+  max-width: 26rem;
+  margin-top: var(--space-3);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+
+  @include from($bp-lg) {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-lg);
+  }
+}
+
+:host(.compact) {
+  --brand-balance: 3rem;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5) var(--space-4);
+  background: var(--color-bg);
+
+  @include until($bp-lg) {
+    padding-bottom: var(--brand-balance);
+  }
+
+  @include from($bp-lg) {
+    padding-inline: var(--space-6);
+  }
+}
+
+.language {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-3);
+  z-index: 1;
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+.content ::ng-deep > :not(router-outlet) {
+  display: block;
+  width: 100%;
+  max-width: var(--auth-form-width);
+}

@@ -1,0 +1,16 @@
+<app-page-header
+  [title]="'home.greeting' | transloco: { name: name() }"
+  [subtitle]="'home.welcome' | transloco"
+/>
+
+@if (isAdmin()) {
+  <app-admin-dashboard />
+} @else {
+  <app-card>
+    <app-empty-state
+      icon="car"
+      [title]="'home.emptyTitle' | transloco"
+      [description]="'home.emptyDescription' | transloco"
+    />
+  </app-card>
+}

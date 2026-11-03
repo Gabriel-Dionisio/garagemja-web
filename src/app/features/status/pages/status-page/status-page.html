@@ -1,0 +1,63 @@
+<button class="back" type="button" (click)="back()">
+  <app-icon name="chevron-left" />
+  {{ 'status.back' | transloco }}
+</button>
+<main class="content" id="main">
+  @let current = status();
+  <section class="card" [attr.data-state]="current?.state ?? 'loading'">
+    <div class="hero" aria-live="polite">
+      <span class="badge" aria-hidden="true">
+        <app-icon [name]="current?.state === 'up' ? 'check' : current ? 'alert' : 'dot'" />
+      </span>
+      <h1>{{ 'status.title.' + (current?.state ?? 'loading') | transloco }}</h1>
+    </div>
+
+    @if (history()) {
+      <div class="history">
+        <div class="bars" role="img" [attr.aria-label]="historySummary()">
+          @for (bar of bars(); track bar.key) {
+            <span [attr.data-state]="bar.state" [attr.title]="bar.label"></span>
+          }
+        </div>
+        <div class="legend">
+          <span>{{ 'status.hoursAgo' | transloco }}</span>
+          @if (uptimePercent(); as percent) {
+            <span>{{ 'status.uptime24h' | transloco: { percent } }}</span>
+          }
+          <span>{{ 'status.now' | transloco }}</span>
+        </div>
+      </div>
+    }
+
+    @if (current) {
+      <dl class="details">
+        <div>
+          <dt>{{ 'status.web' | transloco }}</dt>
+          <dd>v{{ web }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'status.api' | transloco }}</dt>
+          <dd>{{ current.version ? 'v' + current.version : '—' }}</dd>
+        </div>
+        @if (current.latencyMs !== null) {
+          <div>
+            <dt>{{ 'status.latency' | transloco }}</dt>
+            <dd>{{ current.latencyMs }} ms</dd>
+          </div>
+        }
+        @for (component of components(); track component.name) {
+          <div>
+            <dt>{{ component.label }}</dt>
+            <dd [class.down]="!component.up">
+              {{ (component.up ? 'status.up' : 'status.unstable') | transloco }}
+            </dd>
+          </div>
+        }
+      </dl>
+    }
+  </section>
+
+  @if (checkedAt(); as time) {
+    <p class="checked">{{ 'status.checkedAt' | transloco: { time } }}</p>
+  }
+</main>

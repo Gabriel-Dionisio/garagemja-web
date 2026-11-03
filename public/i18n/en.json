@@ -166,10 +166,20 @@
     }
   },
   "home": {
-    "greeting": "Hello, {{name}}",
-    "welcome": "Welcome to GaragemJá.",
-    "emptyTitle": "Your spots and rentals will appear here",
-    "emptyDescription": "Searching and renting spots arrive in the next releases."
+    "title": "Home",
+    "featuredTitle": "Featured condominiums",
+    "availableVagas": "available spots",
+    "priceFrom": "From R$",
+    "perHour": "per hour",
+    "viewCondominium": "View condominium",
+    "search": {
+      "condominium": "Condominium",
+      "condominiumPlaceholder": "Ex.: Residential Alpha",
+      "period": "Period",
+      "start": "Start date",
+      "end": "End date",
+      "submit": "Search"
+    }
   },
   "admin": {
     "users": {

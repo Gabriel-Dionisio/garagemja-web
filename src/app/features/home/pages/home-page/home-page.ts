@@ -1,21 +1,37 @@
+import { DecimalPipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { AuthService } from '../../../../core/auth/auth-service';
-import { AdminDashboard } from '../../../admin/components/admin-dashboard/admin-dashboard';
-import { Card } from '../../../../shared/ui/card/card';
-import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
-import { PageHeader } from '../../../../shared/ui/page-header/page-header';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FeaturedCondominium } from '../../home.model';
 
 @Component({
   selector: 'app-home-page',
-  imports: [TranslocoPipe, AdminDashboard, Card, EmptyState, PageHeader],
+  imports: [DecimalPipe, TranslocoPipe],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage {
-  private readonly auth = inject(AuthService);
-
-  protected readonly name = computed(() => this.auth.user()?.name.split(' ')[0] ?? '');
-  protected readonly isAdmin = computed(() => this.auth.hasRole('ADMIN'));
+  protected readonly featuredCondominiums: readonly FeaturedCondominium[] = [
+    {
+      id: 1,
+      name: 'Residencial Alpha',
+      availableVagas: 12,
+      pricePerHour: 8,
+      imageUrl: '/images/home-hero.png',
+    },
+    {
+      id: 2,
+      name: 'Condomínio Parque Sul',
+      availableVagas: 8,
+      pricePerHour: 12,
+      imageUrl: '/images/home-hero.png',
+    },
+    {
+      id: 3,
+      name: 'Residencial das Flores',
+      availableVagas: 5,
+      pricePerHour: 10,
+      imageUrl: '/images/home-hero.png',
+    },
+  ];
 }

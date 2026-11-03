@@ -1,14 +1,220 @@
-app-card {
-  max-width: 40rem;
+:host {
+  display: block;
+  height: 100%;
 }
 
-h2 {
-  margin-bottom: var(--space-2);
-  color: var(--color-secondary);
-  font-size: var(--font-size-lg);
+.home-page {
+  position: relative;
+  height: 100%;
+  min-height: 0;
 }
 
-p {
-  margin-bottom: var(--space-4);
+.hero {
+  height: clamp(16rem, 43vh, 26rem);
+  overflow: hidden;
+  background: var(--color-secondary);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 58%;
+    filter: brightness(0.82) saturate(0.82);
+  }
+}
+
+.search-panel {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(15rem, 1fr) minmax(18rem, 1fr) auto;
+  align-items: end;
+  gap: var(--space-3);
+  width: calc(100% - clamp(2rem, 7vw, 7rem));
+  margin: calc(-1 * var(--space-7)) auto 0;
+  padding: var(--space-4);
+  border-top: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
+}
+
+.search-field,
+fieldset {
+  min-width: 0;
+  margin: 0;
   color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.search-field > span,
+legend {
+  display: block;
+  margin-bottom: var(--space-1);
+  padding: 0;
+}
+
+fieldset {
+  border: 0;
+}
+
+.period-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+input {
+  width: 100%;
+  height: var(--control-height);
+  min-width: 0;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.search-field input {
+  max-width: 18rem;
+}
+
+.search-panel button {
+  height: var(--control-height);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.featured {
+  margin-top: var(--space-5);
+
+  h2 {
+    margin-bottom: var(--space-3);
+    font-size: var(--font-size-lg);
+  }
+}
+
+.condominium-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.condominium-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+
+  > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 5;
+    object-fit: cover;
+    object-position: center 58%;
+    filter: saturate(0.75);
+  }
+}
+
+.card-content {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  h3 {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--font-size-md);
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+}
+
+.availability,
+.price {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.availability {
+  margin-top: var(--space-2);
+}
+
+.price {
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-divider);
+  color: var(--color-accent);
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 960px) {
+  :host {
+    height: auto;
+  }
+
+  .home-page {
+    height: auto;
+  }
+
+  .search-panel {
+    grid-template-columns: 1fr 1fr;
+    margin-top: calc(-1 * var(--space-6));
+  }
+
+  .search-panel button {
+    grid-column: 1 / -1;
+  }
+
+  .condominium-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .hero {
+    height: 14rem;
+  }
+
+  .search-panel {
+    grid-template-columns: 1fr;
+    width: calc(100% - var(--space-4));
+    margin-top: calc(-1 * var(--space-5));
+  }
+
+  .search-panel button {
+    grid-column: auto;
+  }
+
+  .condominium-grid {
+    grid-template-columns: 1fr;
+  }
 }

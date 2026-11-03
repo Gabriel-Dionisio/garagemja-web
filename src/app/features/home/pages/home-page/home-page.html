@@ -1,16 +1,62 @@
-<app-page-header
-  [title]="'home.greeting' | transloco: { name: name() }"
-  [subtitle]="'home.welcome' | transloco"
-/>
+<section class="home-page" aria-labelledby="home-heading">
+  <h1 id="home-heading" class="sr-only">{{ 'home.title' | transloco }}</h1>
 
-@if (isAdmin()) {
-  <app-admin-dashboard />
-} @else {
-  <app-card>
-    <app-empty-state
-      icon="car"
-      [title]="'home.emptyTitle' | transloco"
-      [description]="'home.emptyDescription' | transloco"
-    />
-  </app-card>
-}
+  <div class="hero">
+    <img src="/images/home-hero.png" alt="" />
+  </div>
+
+  <form class="search-panel" (submit)="$event.preventDefault()">
+    <label class="search-field">
+      <span>{{ 'home.search.condominium' | transloco }}</span>
+      <div class="input-wrap">
+        <input
+          type="search"
+          [placeholder]="'home.search.condominiumPlaceholder' | transloco"
+        />
+      </div>
+    </label>
+
+    <fieldset>
+      <legend>{{ 'home.search.period' | transloco }}</legend>
+      <div class="period-fields">
+        <label>
+          <span class="sr-only">{{ 'home.search.start' | transloco }}</span>
+          <input type="date" />
+        </label>
+        <label>
+          <span class="sr-only">{{ 'home.search.end' | transloco }}</span>
+          <input type="date" />
+        </label>
+      </div>
+    </fieldset>
+
+    <button type="submit">{{ 'home.search.submit' | transloco }}</button>
+  </form>
+
+  <section class="featured" aria-labelledby="featured-heading">
+    <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
+    <div class="condominium-grid">
+      @for (condominium of featuredCondominiums; track condominium.id) {
+        <article class="condominium-card">
+          <img [src]="condominium.imageUrl" alt="" />
+          <div class="card-content">
+            <div class="card-heading">
+              <h3>{{ condominium.name }}</h3>
+              <button type="button" aria-label="{{ 'home.viewCondominium' | transloco }}">
+                <span aria-hidden="true">›</span>
+              </button>
+            </div>
+            <p class="availability">
+              {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
+            </p>
+            <p class="price">
+              {{ 'home.priceFrom' | transloco }}
+              <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
+              {{ 'home.perHour' | transloco }}
+            </p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+</section>

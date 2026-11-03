@@ -166,10 +166,20 @@
     }
   },
   "home": {
-    "greeting": "Olá, {{name}}",
-    "welcome": "Bem-vindo ao GaragemJá.",
-    "emptyTitle": "Suas vagas e aluguéis aparecerão aqui",
-    "emptyDescription": "A busca e o aluguel de vagas chegam nas próximas entregas."
+    "title": "Página inicial",
+    "featuredTitle": "Condomínios em destaque",
+    "availableVagas": "vagas disponíveis",
+    "priceFrom": "A partir de R$",
+    "perHour": "por hora",
+    "viewCondominium": "Ver condomínio",
+    "search": {
+      "condominium": "Condomínio",
+      "condominiumPlaceholder": "Ex.: Residencial Alpha",
+      "period": "Período",
+      "start": "Data de início",
+      "end": "Data de término",
+      "submit": "Buscar"
+    }
   },
   "admin": {
     "users": {

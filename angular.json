@@ -29,9 +29,8 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ]
+            "styles": ["@angular/cdk/overlay-prebuilt.css", "src/styles.scss"],
+            "stylePreprocessorOptions": { "includePaths": ["src"] }
           },
           "configurations": {
             "production": {
@@ -67,10 +66,21 @@
               "buildTarget": "garagemja-web:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "proxy.conf.json",
+            "ssl": true,
+            "headers": {
+              "X-Frame-Options": "DENY",
+              "Content-Security-Policy": "frame-ancestors 'none'"
+            }
+          }
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "setupFiles": ["src/test-setup.ts"]
+          }
         }
       }
     }

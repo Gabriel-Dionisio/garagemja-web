@@ -1,0 +1,23 @@
+<form [formGroup]="form" (ngSubmit)="apply()" novalidate>
+  <app-text-field
+    [label]="'common.fields.email' | transloco"
+    type="email"
+    inputMode="email"
+    [maxLength]="180"
+    [format]="formatEmail"
+    [control]="form.controls.email"
+  />
+  <app-text-field
+    [label]="'common.fields.cpf' | transloco"
+    inputMode="numeric"
+    placeholder="000.000.000-00"
+    [format]="formatCpf"
+    [control]="form.controls.cpf"
+  />
+  <div class="actions">
+    <button appButton variant="secondary" type="button" (click)="clear()">
+      {{ 'common.actions.clear' | transloco }}
+    </button>
+    <button appButton type="submit">{{ 'common.actions.filter' | transloco }}</button>
+  </div>
+</form>

@@ -1,0 +1,15 @@
+<fieldset>
+  <legend>{{ 'common.fields.roles' | transloco }}</legend>
+  <div class="chips">
+    @for (role of roles; track role) {
+      <app-chip-toggle
+        [label]="labels[role] | transloco"
+        [pressed]="group().controls[role].value"
+        (toggled)="toggle(role)"
+      />
+    }
+  </div>
+  @if (missing()) {
+    <p class="error" role="alert">{{ 'admin.detail.rolesRequired' | transloco }}</p>
+  }
+</fieldset>

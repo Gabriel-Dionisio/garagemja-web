@@ -1,0 +1,137 @@
+<app-page-header [title]="'admin.detail.title' | transloco" backLink="/admin/users" />
+
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
+@if (saved()) {
+  <app-alert kind="success">{{ 'admin.detail.saved' | transloco }}</app-alert>
+}
+@if (resetSent()) {
+  <app-alert kind="success">{{ 'admin.detail.passwordResetSent' | transloco }}</app-alert>
+}
+
+@if (loading()) {
+  <app-loading-block [label]="'admin.detail.loading' | transloco" />
+} @else if (user(); as current) {
+  <app-split-layout>
+    <app-card summary>
+      <header>
+        <app-user-summary [name]="current.name" [email]="current.email" />
+      </header>
+      <dl>
+        <div>
+          <dt>{{ 'common.fields.status' | transloco }}</dt>
+          <dd><app-user-status-badge [status]="current.status" /></dd>
+        </div>
+        <div>
+          <dt>{{ 'common.fields.cpf' | transloco }}</dt>
+          <dd>{{ current.cpf }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'common.fields.roles' | transloco }}</dt>
+          <dd>
+            @for (role of current.roles; track role; let last = $last) {
+              {{ roleLabels[role] | transloco }}{{ last ? '' : ', ' }}
+            }
+          </dd>
+        </div>
+      </dl>
+    </app-card>
+
+    <app-card content>
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <app-form-section>
+          <app-text-field
+            [label]="'common.fields.name' | transloco"
+            autocomplete="off"
+            [maxLength]="150"
+            [format]="formatName"
+            [control]="form.controls.name"
+          />
+          <app-text-field
+            [label]="'common.fields.phone' | transloco"
+            type="tel"
+            inputMode="tel"
+            [format]="formatPhone"
+            [control]="form.controls.phone"
+          />
+        </app-form-section>
+        @if (isSelf()) {
+          <app-alert kind="info">{{ 'admin.detail.selfNote' | transloco }}</app-alert>
+        } @else {
+          <app-form-section [heading]="'admin.detail.accessTitle' | transloco">
+            <app-role-picker
+              class="wide"
+              [group]="form.controls.roles"
+              [missing]="rolesMissing()"
+              (changed)="rolesMissing.set(false)"
+            />
+          </app-form-section>
+        }
+        <app-form-actions>
+          <button appButton type="submit" [loading]="saving()">
+            {{ 'common.actions.save' | transloco }}
+          </button>
+        </app-form-actions>
+      </form>
+    </app-card>
+
+    @if (!isSelf()) {
+      <app-card extras>
+        <h2>{{ 'admin.detail.moreActions' | transloco }}</h2>
+        <app-action-list>
+          @if (current.status === 'PENDING') {
+            <button appActionItem icon="check" [disabled]="busy()" (click)="approve()">
+              {{ 'admin.detail.approveManager' | transloco }}
+            </button>
+          }
+          @if (canResetPassword()) {
+            <button appActionItem icon="key" [disabled]="busy()" (click)="sendPasswordReset()">
+              {{ 'admin.detail.sendPasswordReset' | transloco }}
+            </button>
+          }
+          @if (current.status === 'ACTIVE') {
+            <button
+              appActionItem
+              icon="shield"
+              [disabled]="busy()"
+              (click)="setStatus('BLOCKED', 'blockDialog')"
+            >
+              {{ 'admin.detail.block' | transloco }}
+            </button>
+          }
+          @if (current.status === 'BLOCKED') {
+            <button
+              appActionItem
+              icon="shield"
+              [disabled]="busy()"
+              (click)="setStatus('ACTIVE', 'unblockDialog')"
+            >
+              {{ 'admin.detail.unblock' | transloco }}
+            </button>
+          }
+          @if (current.status === 'INACTIVE') {
+            <button
+              appActionItem
+              icon="user-check"
+              [disabled]="busy()"
+              (click)="setStatus('ACTIVE', 'reactivateDialog')"
+            >
+              {{ 'admin.detail.reactivate' | transloco }}
+            </button>
+          } @else {
+            <button
+              appActionItem
+              icon="ban"
+              variant="danger"
+              [disabled]="busy()"
+              (click)="deactivate()"
+            >
+              {{ 'admin.detail.deactivate' | transloco }}
+            </button>
+          }
+        </app-action-list>
+      </app-card>
+    }
+  </app-split-layout>
+}

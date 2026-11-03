@@ -1,0 +1,19 @@
+.badge {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--color-info-bg);
+  color: var(--color-primary);
+
+  app-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+}
+
+.text {
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}

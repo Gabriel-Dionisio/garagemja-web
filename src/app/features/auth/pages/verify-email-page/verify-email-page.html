@@ -1,0 +1,31 @@
+<app-auth-panel [heading]="'auth.verifyEmail.heading' | transloco">
+  <div class="badge"><app-icon name="mail" /></div>
+  <p class="text">
+    @if (email) {
+      {{ 'auth.verifyEmail.bodyWithEmail' | transloco: { email } }}
+    } @else {
+      {{ 'auth.verifyEmail.body' | transloco }}
+    }
+  </p>
+
+  @if (resent()) {
+    <app-alert kind="success">{{ 'auth.verifyEmail.resent' | transloco }}</app-alert>
+  }
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  @if (canResend) {
+    <button
+      appButton
+      variant="secondary"
+      type="button"
+      [block]="true"
+      [loading]="submitting()"
+      (click)="resend()"
+    >
+      {{ 'auth.verifyEmail.resend' | transloco }}
+    </button>
+  }
+  <a appButton routerLink="/login" [block]="true">{{ 'auth.verifyEmail.goToLogin' | transloco }}</a>
+</app-auth-panel>

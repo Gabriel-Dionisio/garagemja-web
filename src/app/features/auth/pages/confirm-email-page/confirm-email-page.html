@@ -1,0 +1,25 @@
+<app-auth-panel [heading]="'auth.confirmEmail.heading' | transloco">
+  @switch (state()) {
+    @case ('confirming') {
+      <div class="status" role="status">
+        <app-spinner />
+        <span>{{ 'auth.confirmEmail.confirming' | transloco }}</span>
+      </div>
+    }
+    @case ('confirmed') {
+      <div class="badge"><app-icon name="check" /></div>
+      <app-alert kind="success">{{ 'auth.confirmEmail.success' | transloco }}</app-alert>
+    }
+    @case ('failed') {
+      <div class="badge failed"><app-icon name="alert" /></div>
+      <app-alert kind="error">{{
+        error.text() ?? ('auth.confirmEmail.invalid' | transloco)
+      }}</app-alert>
+    }
+  }
+  @if (state() !== 'confirming') {
+    <a appButton routerLink="/login" [block]="true">{{
+      'auth.verifyEmail.goToLogin' | transloco
+    }}</a>
+  }
+</app-auth-panel>

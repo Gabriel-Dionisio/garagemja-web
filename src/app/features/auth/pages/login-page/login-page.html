@@ -1,0 +1,42 @@
+<app-auth-panel
+  [heading]="'auth.login.heading' | transloco"
+  [subtitle]="'auth.login.subtitle' | transloco"
+>
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  <form appAutofocusFirst class="stack-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <app-text-field
+      [label]="'common.fields.email' | transloco"
+      type="email"
+      placeholder="email@example.com"
+      autocomplete="email"
+      inputMode="email"
+      [maxLength]="180"
+      [format]="formatEmail"
+      [control]="form.controls.email"
+    />
+    <app-password-field
+      [label]="'common.fields.password' | transloco"
+      [control]="form.controls.password"
+    />
+    <app-checkbox
+      [label]="'auth.login.rememberMe' | transloco"
+      [control]="form.controls.rememberMe"
+    />
+    <a class="forgot" routerLink="/forgot-password">{{
+      'auth.login.forgotPassword' | transloco
+    }}</a>
+    <button appButton type="submit" [block]="true" [loading]="submitting()">
+      {{ 'auth.login.submit' | transloco }}
+    </button>
+  </form>
+
+  <p class="footer">
+    {{ 'auth.login.noAccount' | transloco }}
+    <a routerLink="/register" [queryParams]="registerParams()">{{
+      'auth.login.createAccount' | transloco
+    }}</a>
+  </p>
+</app-auth-panel>

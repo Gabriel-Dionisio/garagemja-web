@@ -1,0 +1,13 @@
+<div role="group" [attr.aria-label]="'language.label' | transloco">
+  <app-icon name="globe" />
+  @for (language of languages; track language) {
+    <button
+      type="button"
+      [attr.aria-pressed]="locale.language() === language"
+      [attr.lang]="language"
+      (click)="choose(language)"
+    >
+      {{ 'language.' + language | transloco }}
+    </button>
+  }
+</div>

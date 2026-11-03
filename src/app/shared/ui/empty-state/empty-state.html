@@ -1,0 +1,6 @@
+<app-icon [name]="icon()" />
+<h2>{{ title() }}</h2>
+@if (description()) {
+  <p>{{ description() }}</p>
+}
+<ng-content />

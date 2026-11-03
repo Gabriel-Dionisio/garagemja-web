@@ -1,0 +1,13 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+
+  @include from($bp-md) {
+    flex-flow: row wrap;
+    justify-content: flex-end;
+  }
+}

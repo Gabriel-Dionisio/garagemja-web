@@ -1,0 +1,41 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: inherit;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+app-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+:host([data-stacked]) {
+  @include from($bp-lg) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+    font-size: var(--font-size-2xl);
+
+    app-icon {
+      width: 6rem;
+      height: 6rem;
+    }
+  }
+}
+
+:host([data-stacked]:not([data-inline-mobile])) {
+  @include until($bp-lg) {
+    flex-direction: column;
+    font-size: var(--font-size-xl);
+
+    app-icon {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+}

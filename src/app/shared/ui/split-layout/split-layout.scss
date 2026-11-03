@@ -1,0 +1,31 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 72rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'summary' 'content' 'extras';
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      'summary content'
+      'extras content'
+      '. content';
+    align-items: start;
+  }
+}
+
+.summary {
+  grid-area: summary;
+}
+
+.content {
+  grid-area: content;
+}
+
+.extras {
+  grid-area: extras;
+}

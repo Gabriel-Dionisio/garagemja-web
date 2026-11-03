@@ -1,0 +1,14 @@
+<label class="label" [attr.for]="id">{{ label() }}</label>
+<select
+  class="input"
+  [id]="id"
+  [formControl]="control()"
+  [attr.aria-invalid]="error() ? 'true' : null"
+  [attr.aria-describedby]="describedBy()"
+  (blur)="control().markAsTouched()"
+>
+  @for (option of options(); track option.value) {
+    <option [value]="option.value">{{ option.label | transloco }}</option>
+  }
+</select>
+<p class="error" [id]="id + '-error'" aria-live="polite">{{ error() }}</p>

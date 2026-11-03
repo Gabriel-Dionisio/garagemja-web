@@ -1,0 +1,4 @@
+<button type="button" [attr.aria-pressed]="pressed()" (click)="toggled.emit()">
+  <app-icon name="check" />
+  {{ label() }}
+</button>

@@ -1,0 +1,30 @@
+<nav [attr.aria-label]="'common.pagination.label' | transloco">
+  <span class="summary" aria-live="polite">
+    @if (range(); as current) {
+      {{
+        (current.total === undefined ? 'common.pagination.showing' : 'common.pagination.showingOf')
+          | transloco: current
+      }}
+    }
+  </span>
+  <div class="controls">
+    <button
+      appIconButton
+      type="button"
+      [label]="'common.pagination.previous' | transloco"
+      [disabled]="!hasPrevious()"
+      (click)="pageChange.emit(page() - 1)"
+    >
+      <app-icon name="chevron-left" />
+    </button>
+    <button
+      appIconButton
+      type="button"
+      [label]="'common.pagination.next' | transloco"
+      [disabled]="!hasNext()"
+      (click)="pageChange.emit(page() + 1)"
+    >
+      <app-icon name="chevron-right" />
+    </button>
+  </div>
+</nav>

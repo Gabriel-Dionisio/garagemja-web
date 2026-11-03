@@ -1,0 +1,15 @@
+<h2 id="confirm-title">{{ data.title | transloco }}</h2>
+<p>{{ data.message | transloco: data.params }}</p>
+<div class="actions">
+  <button appButton variant="secondary" type="button" (click)="close(false)">
+    {{ 'common.actions.cancel' | transloco }}
+  </button>
+  <button
+    appButton
+    [variant]="data.danger ? 'danger' : 'primary'"
+    type="button"
+    (click)="close(true)"
+  >
+    {{ data.confirmLabel | transloco }}
+  </button>
+</div>

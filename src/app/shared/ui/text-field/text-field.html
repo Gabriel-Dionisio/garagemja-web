@@ -1,0 +1,19 @@
+<label class="label" [attr.for]="id">{{ label() }}</label>
+<input
+  class="input"
+  [id]="id"
+  [type]="type()"
+  [formControl]="control()"
+  [attr.placeholder]="placeholder() || null"
+  [attr.autocomplete]="autocomplete()"
+  [attr.inputmode]="inputMode()"
+  [attr.maxlength]="maxLength()"
+  [attr.aria-invalid]="error() ? 'true' : null"
+  [attr.aria-describedby]="describedBy()"
+  (input)="applyFormat($event)"
+  (blur)="control().markAsTouched()"
+/>
+@if (hint() && !error()) {
+  <p class="hint" [id]="id + '-hint'">{{ hint() }}</p>
+}
+<p class="error" [id]="id + '-error'" aria-live="polite">{{ error() }}</p>

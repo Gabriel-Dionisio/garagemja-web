@@ -1,0 +1,14 @@
+<div class="heading">
+  @if (backLink(); as link) {
+    <a appIconButton class="back" [routerLink]="link" [label]="'common.actions.back' | transloco">
+      <app-icon name="chevron-left" />
+    </a>
+  }
+  <div>
+    <h1>{{ title() }}</h1>
+    @if (subtitle()) {
+      <p>{{ subtitle() }}</p>
+    }
+  </div>
+</div>
+<div class="actions"><ng-content /></div>

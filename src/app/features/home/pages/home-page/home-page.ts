@@ -1,7 +1,9 @@
 import { DecimalPipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FeaturedCondominium } from '../../home.model';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of } from 'rxjs';
+import { HomeApi } from '../../data/home-api';
 
 @Component({
   selector: 'app-home-page',
@@ -11,27 +13,10 @@ import { FeaturedCondominium } from '../../home.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage {
-  protected readonly featuredCondominiums: readonly FeaturedCondominium[] = [
-    {
-      id: 1,
-      name: 'Residencial Alpha',
-      availableVagas: 12,
-      pricePerHour: 8,
-      imageUrl: '/images/home-hero.png',
-    },
-    {
-      id: 2,
-      name: 'Condomínio Parque Sul',
-      availableVagas: 8,
-      pricePerHour: 12,
-      imageUrl: '/images/home-hero.png',
-    },
-    {
-      id: 3,
-      name: 'Residencial das Flores',
-      availableVagas: 5,
-      pricePerHour: 10,
-      imageUrl: '/images/home-hero.png',
-    },
-  ];
+  private readonly api = inject(HomeApi);
+  protected readonly featuredCondominiums = toSignal(
+    this.api.loadFeatured().pipe(catchError(() => of([]))),
+    { initialValue: [] },
+  );
+  protected readonly fallbackImage = '/images/home-hero.png';
 }

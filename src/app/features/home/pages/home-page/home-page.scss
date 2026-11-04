@@ -10,7 +10,7 @@
 }
 
 .hero {
-  height: clamp(16rem, 43vh, 26rem);
+  height: clamp(15rem, 35vh, 22rem);
   overflow: hidden;
   background: var(--color-secondary);
 
@@ -30,8 +30,8 @@
   grid-template-columns: minmax(15rem, 1fr) minmax(18rem, 1fr) auto;
   align-items: end;
   gap: var(--space-3);
-  width: calc(100% - clamp(2rem, 7vw, 7rem));
-  margin: calc(-1 * var(--space-7)) auto 0;
+  width: min(calc(100% - var(--space-7)), 70rem);
+  margin: calc(-1 * var(--space-6)) auto 0;
   padding: var(--space-4);
   border-top: 3px solid var(--color-accent);
   border-radius: var(--radius-md);
@@ -93,7 +93,8 @@ input {
 }
 
 .featured {
-  margin-top: var(--space-5);
+  width: min(calc(100% - var(--space-7)), 70rem);
+  margin: var(--space-5) auto 0;
 
   h2 {
     margin-bottom: var(--space-3);

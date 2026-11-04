@@ -36,9 +36,9 @@
   <section class="featured" aria-labelledby="featured-heading">
     <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
     <div class="condominium-grid">
-      @for (condominium of featuredCondominiums; track condominium.id) {
+      @for (condominium of featuredCondominiums(); track condominium.id) {
         <article class="condominium-card">
-          <img [src]="condominium.imageUrl" alt="" />
+          <img [src]="condominium.imageUrl || fallbackImage" alt="" />
           <div class="card-content">
             <div class="card-heading">
               <h3>{{ condominium.name }}</h3>

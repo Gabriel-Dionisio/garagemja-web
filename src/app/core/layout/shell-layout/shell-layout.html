@@ -17,6 +17,15 @@
     </button>
     <app-brand-logo [compact]="true" />
   }
+  <form class="topbar-search" (submit)="$event.preventDefault()">
+    <app-icon name="search" />
+    <label class="sr-only" for="global-search">{{ 'nav.searchPlaceholder' | transloco }}</label>
+    <input
+      id="global-search"
+      type="search"
+      [placeholder]="'nav.searchPlaceholder' | transloco"
+    />
+  </form>
   <app-language-switcher class="language" />
   @if (user(); as current) {
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />

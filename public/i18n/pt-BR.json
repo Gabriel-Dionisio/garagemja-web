@@ -97,6 +97,7 @@
     "openMenu": "Abrir menu",
     "menu": "Menu",
     "main": "Principal",
+    "searchPlaceholder": "Condomínio, bairro ou endereço",
     "logout": "Sair"
   },
   "routes": {
@@ -166,6 +167,10 @@
     }
   },
   "home": {
+    "greeting": "Olá, {{name}}",
+    "welcome": "Bem-vindo ao GaragemJá.",
+    "emptyTitle": "Suas vagas e aluguéis aparecerão aqui",
+    "emptyDescription": "A busca e o aluguel de vagas chegam nas próximas entregas.",
     "title": "Página inicial",
     "featuredTitle": "Condomínios em destaque",
     "availableVagas": "vagas disponíveis",
@@ -176,8 +181,8 @@
       "condominium": "Condomínio",
       "condominiumPlaceholder": "Ex.: Residencial Alpha",
       "period": "Período",
-      "start": "Data de início",
-      "end": "Data de término",
+      "start": "Início",
+      "end": "Fim",
       "submit": "Buscar"
     }
   },

@@ -97,6 +97,7 @@
     "openMenu": "Open menu",
     "menu": "Menu",
     "main": "Main",
+    "searchPlaceholder": "Condominium, neighborhood or address",
     "logout": "Sign out"
   },
   "routes": {
@@ -166,6 +167,10 @@
     }
   },
   "home": {
+    "greeting": "Hello, {{name}}",
+    "welcome": "Welcome to GaragemJá.",
+    "emptyTitle": "Your spots and rentals will appear here",
+    "emptyDescription": "Searching and renting spots arrive in the next releases.",
     "title": "Home",
     "featuredTitle": "Featured condominiums",
     "availableVagas": "available spots",
@@ -176,8 +181,8 @@
       "condominium": "Condominium",
       "condominiumPlaceholder": "Ex.: Residential Alpha",
       "period": "Period",
-      "start": "Start date",
-      "end": "End date",
+      "start": "Start",
+      "end": "End",
       "submit": "Search"
     }
   },

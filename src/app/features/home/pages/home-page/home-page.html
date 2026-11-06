@@ -6,39 +6,44 @@
   </div>
 
   <form class="search-panel" (submit)="$event.preventDefault()">
-    <label class="search-field">
-      <span>{{ 'home.search.condominium' | transloco }}</span>
-      <div class="input-wrap">
-        <input
-          type="search"
-          [placeholder]="'home.search.condominiumPlaceholder' | transloco"
-        />
-      </div>
-    </label>
-
-    <fieldset>
-      <legend>{{ 'home.search.period' | transloco }}</legend>
-      <div class="period-fields">
-        <label>
-          <span class="sr-only">{{ 'home.search.start' | transloco }}</span>
-          <input type="date" />
-        </label>
-        <label>
-          <span class="sr-only">{{ 'home.search.end' | transloco }}</span>
-          <input type="date" />
-        </label>
-      </div>
-    </fieldset>
-
+    <span class="search-label condominium-label">{{ 'home.search.condominium' | transloco }}</span>
+    <span class="search-label period-label">{{ 'home.search.period' | transloco }}</span>
+    <input
+      class="condominium-input"
+      type="search"
+      [attr.aria-label]="'home.search.condominium' | transloco"
+      [placeholder]="'home.search.condominiumPlaceholder' | transloco"
+    />
+    <input
+      class="date-input start-date"
+      type="date"
+      [attr.aria-label]="'home.search.start' | transloco"
+    />
+    <input
+      class="date-input end-date"
+      type="date"
+      [attr.aria-label]="'home.search.end' | transloco"
+    />
     <button type="submit">{{ 'home.search.submit' | transloco }}</button>
   </form>
 
   <section class="featured" aria-labelledby="featured-heading">
     <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
-    <div class="condominium-grid">
+    @if (loading()) {
+      <app-loading-block [label]="'home.loading' | transloco" />
+    } @else if (loadFailed()) {
+      <app-alert kind="error">{{ 'home.loadError' | transloco }}</app-alert>
+    } @else if (featuredCondominiums().length === 0) {
+      <app-empty-state
+        icon="car"
+        [title]="'home.emptyCondominiumsTitle' | transloco"
+        [description]="'home.emptyCondominiumsDescription' | transloco"
+      />
+    } @else {
+      <div class="condominium-grid">
       @for (condominium of featuredCondominiums(); track condominium.id) {
         <article class="condominium-card">
-          <img [src]="condominium.imageUrl || fallbackImage" alt="" />
+          <img [src]="condominium.imageUrl || fallbackImage" alt="" (error)="useFallback($event)" />
           <div class="card-content">
             <div class="card-heading">
               <h3>{{ condominium.name }}</h3>
@@ -59,6 +64,7 @@
           </div>
         </article>
       }
-    </div>
+      </div>
+    }
   </section>
 </section>

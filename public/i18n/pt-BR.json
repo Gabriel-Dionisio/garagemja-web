@@ -177,6 +177,10 @@
     "priceFrom": "A partir de R$",
     "perHour": "por hora",
     "viewCondominium": "Ver condomínio",
+    "loading": "Carregando condomínios...",
+    "loadError": "Não foi possível carregar os condomínios.",
+    "emptyCondominiumsTitle": "Nenhum condomínio disponível",
+    "emptyCondominiumsDescription": "Não há vagas disponíveis cadastradas no momento.",
     "search": {
       "condominium": "Condomínio",
       "condominiumPlaceholder": "Ex.: Residencial Alpha",

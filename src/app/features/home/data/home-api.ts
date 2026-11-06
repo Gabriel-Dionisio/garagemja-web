@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, forkJoin, map, of } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { FeaturedCondominium } from '../home.model';
 
 interface CondominiumResponse {
@@ -21,6 +21,13 @@ interface SpotAvailabilityResponse {
   active: boolean;
 }
 
+function listBody<T>(body: T[] | { items?: T[]; content?: T[] }): T[] {
+  if (Array.isArray(body)) return body;
+  if (Array.isArray(body.items)) return body.items;
+  if (Array.isArray(body.content)) return body.content;
+  throw new Error('Invalid list response');
+}
+
 @Injectable({ providedIn: 'root' })
 export class HomeApi {
   private readonly http = inject(HttpClient);
@@ -28,14 +35,14 @@ export class HomeApi {
   loadFeatured(): Observable<FeaturedCondominium[]> {
     return forkJoin({
       condominiums: this.http
-        .get<CondominiumResponse[]>('/api/v1/condominiums')
-        .pipe(catchError(() => of([]))),
+        .get<CondominiumResponse[] | { items: CondominiumResponse[] }>('/api/v1/condominiums')
+        .pipe(map(listBody)),
       spots: this.http
-        .get<ParkingSpotResponse[]>('/api/v1/parking-spots?status=ACTIVE')
-        .pipe(catchError(() => of([]))),
+        .get<ParkingSpotResponse[] | { items: ParkingSpotResponse[] }>('/api/v1/parking-spots?status=ACTIVE')
+        .pipe(map(listBody)),
       availabilities: this.http
-        .get<SpotAvailabilityResponse[]>('/api/v1/spot-availabilities?active=true')
-        .pipe(catchError(() => of([]))),
+        .get<SpotAvailabilityResponse[] | { items: SpotAvailabilityResponse[] }>('/api/v1/spot-availabilities?active=true')
+        .pipe(map(listBody)),
     }).pipe(
       map(({ condominiums, spots, availabilities }) => {
         const spotById = new Map(spots.map((spot) => [spot.id, spot]));

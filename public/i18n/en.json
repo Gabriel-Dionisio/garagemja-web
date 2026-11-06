@@ -177,6 +177,10 @@
     "priceFrom": "From R$",
     "perHour": "per hour",
     "viewCondominium": "View condominium",
+    "loading": "Loading condominiums...",
+    "loadError": "The condominiums could not be loaded.",
+    "emptyCondominiumsTitle": "No condominiums available",
+    "emptyCondominiumsDescription": "There are no registered available spots at the moment.",
     "search": {
       "condominium": "Condominium",
       "condominiumPlaceholder": "Ex.: Residential Alpha",

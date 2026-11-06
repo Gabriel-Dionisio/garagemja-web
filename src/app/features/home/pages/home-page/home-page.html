@@ -49,11 +49,13 @@
             <p class="availability">
               {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
             </p>
-            <p class="price">
-              {{ 'home.priceFrom' | transloco }}
-              <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
-              {{ 'home.perHour' | transloco }}
-            </p>
+            @if (condominium.pricePerHour != null) {
+              <p class="price">
+                {{ 'home.priceFrom' | transloco }}
+                <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
+                {{ 'home.perHour' | transloco }}
+              </p>
+            }
           </div>
         </article>
       }

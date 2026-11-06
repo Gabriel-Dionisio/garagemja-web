@@ -31,9 +31,8 @@
   align-items: end;
   gap: var(--space-3);
   width: min(calc(100% - var(--space-7)), 70rem);
-  margin: calc(-1 * var(--space-6)) auto 0;
+  margin: calc(-1 * var(--space-7)) auto 0;
   padding: var(--space-4);
-  border-top: 3px solid var(--color-accent);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   box-shadow: var(--shadow-overlay);

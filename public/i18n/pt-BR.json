@@ -93,6 +93,7 @@
   "nav": {
     "home": "Início",
     "users": "Usuários",
+    "settings": "Configurações",
     "skipToContent": "Pular para o conteúdo",
     "openMenu": "Abrir menu",
     "menu": "Menu",
@@ -111,7 +112,8 @@
     "adminUserDetail": "Detalhes do usuário",
     "status": "Status do sistema",
     "forgotPassword": "Esqueci a senha",
-    "resetPassword": "Redefinir senha"
+    "resetPassword": "Redefinir senha",
+    "settings": "Configurações"
   },
   "auth": {
     "login": {
@@ -188,6 +190,28 @@
       "start": "Início",
       "end": "Fim",
       "submit": "Buscar"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "unavailable": "Recurso indisponível no backend atual.",
+    "notifications": {
+      "title": "Notificações",
+      "requests": "Novas Solicitações",
+      "rentals": "Aluguéis e Pagamentos",
+      "system": "Novidades do Sistema"
+    },
+    "security": {
+      "title": "Segurança",
+      "changePassword": "Alterar senha",
+      "twoFactor": "Autenticação em duas etapas",
+      "resetSent": "Enviamos um link para redefinir sua senha.",
+      "resetFailed": "Não foi possível enviar o link de redefinição."
+    },
+    "preferences": {
+      "title": "Preferências",
+      "language": "Idioma",
+      "theme": "Tema"
     }
   },
   "admin": {

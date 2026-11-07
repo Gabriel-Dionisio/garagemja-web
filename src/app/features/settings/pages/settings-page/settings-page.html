@@ -1,0 +1,73 @@
+<section class="settings-page" aria-labelledby="settings-heading">
+  <h1 id="settings-heading">{{ 'settings.title' | transloco }}</h1>
+
+  <section class="settings-card" aria-labelledby="notifications-heading">
+    <h2 id="notifications-heading">{{ 'settings.notifications.title' | transloco }}</h2>
+    <div class="setting-row unavailable">
+      <span>{{ 'settings.notifications.requests' | transloco }}</span>
+      <button class="switch" type="button" role="switch" disabled aria-label="Indisponível">
+        <span></span>
+      </button>
+    </div>
+    <div class="setting-row unavailable">
+      <span>{{ 'settings.notifications.rentals' | transloco }}</span>
+      <button class="switch" type="button" role="switch" disabled aria-label="Indisponível">
+        <span></span>
+      </button>
+    </div>
+    <div class="setting-row unavailable">
+      <span>{{ 'settings.notifications.system' | transloco }}</span>
+      <button class="switch" type="button" role="switch" disabled aria-label="Indisponível">
+        <span></span>
+      </button>
+    </div>
+    <p class="availability-note">{{ 'settings.unavailable' | transloco }}</p>
+  </section>
+
+  <section class="settings-card" aria-labelledby="security-heading">
+    <h2 id="security-heading">{{ 'settings.security.title' | transloco }}</h2>
+    <button
+      class="setting-row password-reset"
+      type="button"
+      [disabled]="sendingReset()"
+      (click)="requestPasswordReset()"
+    >
+      <span>{{ 'settings.security.changePassword' | transloco }}</span>
+      <app-icon name="chevron-right" />
+    </button>
+    @if (resetSent()) {
+      <app-alert kind="success">{{ 'settings.security.resetSent' | transloco }}</app-alert>
+    }
+    @if (resetFailed()) {
+      <app-alert kind="error">{{ 'settings.security.resetFailed' | transloco }}</app-alert>
+    }
+    <div class="setting-row unavailable">
+      <span>{{ 'settings.security.twoFactor' | transloco }}</span>
+      <button class="switch" type="button" role="switch" disabled aria-label="Indisponível">
+        <span></span>
+      </button>
+    </div>
+  </section>
+
+  <section class="settings-card" aria-labelledby="preferences-heading">
+    <h2 id="preferences-heading">{{ 'settings.preferences.title' | transloco }}</h2>
+    <label class="setting-row language-setting" for="settings-language">
+      <span>{{ 'settings.preferences.language' | transloco }}</span>
+      <select
+        id="settings-language"
+        [ngModel]="locale.language()"
+        (ngModelChange)="changeLanguage($event)"
+      >
+        @for (language of languages; track language) {
+          <option [ngValue]="language">{{ 'language.' + language | transloco }}</option>
+        }
+      </select>
+    </label>
+    <div class="setting-row unavailable">
+      <span>{{ 'settings.preferences.theme' | transloco }}</span>
+      <button class="switch" type="button" role="switch" disabled aria-label="Indisponível">
+        <span></span>
+      </button>
+    </div>
+  </section>
+</section>

@@ -93,6 +93,7 @@
   "nav": {
     "home": "Home",
     "users": "Users",
+    "settings": "Settings",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
     "menu": "Menu",
@@ -111,7 +112,8 @@
     "adminUserDetail": "User details",
     "status": "System status",
     "forgotPassword": "Forgot password",
-    "resetPassword": "Reset password"
+    "resetPassword": "Reset password",
+    "settings": "Settings"
   },
   "auth": {
     "login": {
@@ -188,6 +190,28 @@
       "start": "Start",
       "end": "End",
       "submit": "Search"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "unavailable": "This feature is unavailable in the current backend.",
+    "notifications": {
+      "title": "Notifications",
+      "requests": "New Requests",
+      "rentals": "Rentals and Payments",
+      "system": "System Updates"
+    },
+    "security": {
+      "title": "Security",
+      "changePassword": "Change password",
+      "twoFactor": "Two-factor authentication",
+      "resetSent": "We sent you a link to reset your password.",
+      "resetFailed": "The password reset link could not be sent."
+    },
+    "preferences": {
+      "title": "Preferences",
+      "language": "Language",
+      "theme": "Theme"
     }
   },
   "admin": {

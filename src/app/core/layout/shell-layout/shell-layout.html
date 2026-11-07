@@ -2,6 +2,7 @@
   'nav.skipToContent' | transloco
 }}</a>
 
+@if (showTopbar()) {
 <header class="topbar">
   @if (viewport.usesDrawer()) {
     <button
@@ -31,6 +32,7 @@
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
   }
 </header>
+}
 
 @if (showSidebar()) {
   @if (viewport.usesDrawer()) {

@@ -6,6 +6,7 @@ import { AuthService } from '../../../../core/auth/auth-service';
 import { LANGUAGES, Language, LocaleService } from '../../../../core/i18n/locale-service';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Icon } from '../../../../shared/ui/icon/icon';
+import { ThemeService } from '../../../../core/theme/theme-service';
 
 @Component({
   selector: 'app-settings-page',
@@ -16,6 +17,7 @@ import { Icon } from '../../../../shared/ui/icon/icon';
 })
 export class SettingsPage {
   private readonly auth = inject(AuthService);
+  protected readonly theme = inject(ThemeService);
   protected readonly locale = inject(LocaleService);
   protected readonly languages = LANGUAGES;
   protected readonly sendingReset = signal(false);
@@ -24,6 +26,10 @@ export class SettingsPage {
 
   protected changeLanguage(language: Language): void {
     this.locale.set(language);
+  }
+
+  protected toggleTheme(): void {
+    this.theme.toggle();
   }
 
   protected requestPasswordReset(): void {

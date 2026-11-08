@@ -1,0 +1,54 @@
+<section class="profile-page" aria-labelledby="profile-heading">
+  <h1 id="profile-heading">{{ 'profile.title' | transloco }}</h1>
+
+  @if (loading()) {
+    <app-loading-block [label]="'profile.loading' | transloco" />
+  } @else if (profile(); as current) {
+    <article class="profile-card">
+      <header class="profile-summary">
+        <div class="avatar">
+          <app-avatar [name]="current.name" />
+        </div>
+        <div>
+          <strong>{{ current.name }}</strong>
+          <span>{{ current.email }}</span>
+        </div>
+      </header>
+
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <app-text-field
+          [label]="'profile.name' | transloco"
+          autocomplete="name"
+          [maxLength]="150"
+          [format]="formatName"
+          [control]="form.controls.name"
+        />
+
+        <div class="readonly-field">
+          <label>{{ 'profile.email' | transloco }}</label>
+          <input type="email" [value]="current.email" readonly />
+        </div>
+
+        <app-text-field
+          [label]="'profile.phone' | transloco"
+          type="tel"
+          inputMode="tel"
+          [format]="formatPhone"
+          [control]="form.controls.phone"
+        />
+
+        <button appButton type="submit" [loading]="saving()">
+          {{ 'profile.save' | transloco }}
+        </button>
+        @if (error.text(); as message) {
+          <p class="form-feedback error" role="alert">
+            {{ error.status() === 200 ? '' : 'HTTP ' + error.status() + ': ' }}{{ message }}
+          </p>
+        }
+        @if (saved()) {
+          <p class="form-feedback success" role="status">{{ 'profile.saved' | transloco }}</p>
+        }
+      </form>
+    </article>
+  }
+</section>

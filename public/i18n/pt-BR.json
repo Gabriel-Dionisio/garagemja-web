@@ -94,6 +94,7 @@
     "home": "Início",
     "users": "Usuários",
     "settings": "Configurações",
+    "profile": "Perfil",
     "skipToContent": "Pular para o conteúdo",
     "openMenu": "Abrir menu",
     "menu": "Menu",
@@ -113,7 +114,8 @@
     "status": "Status do sistema",
     "forgotPassword": "Esqueci a senha",
     "resetPassword": "Redefinir senha",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "profile": "Perfil"
   },
   "auth": {
     "login": {
@@ -213,6 +215,16 @@
       "language": "Idioma",
       "theme": "Tema"
     }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "loading": "Carregando perfil...",
+    "saved": "Perfil atualizado com sucesso.",
+    "name": "Nome completo",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "save": "Salvar alterações",
+    "updateError": "Não foi possível atualizar o perfil. Verifique os dados e tente novamente."
   },
   "admin": {
     "users": {

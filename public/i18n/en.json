@@ -94,6 +94,7 @@
     "home": "Home",
     "users": "Users",
     "settings": "Settings",
+    "profile": "Profile",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
     "menu": "Menu",
@@ -113,7 +114,8 @@
     "status": "System status",
     "forgotPassword": "Forgot password",
     "resetPassword": "Reset password",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profile": "Profile"
   },
   "auth": {
     "login": {
@@ -213,6 +215,16 @@
       "language": "Language",
       "theme": "Theme"
     }
+  },
+  "profile": {
+    "title": "My Profile",
+    "loading": "Loading profile...",
+    "saved": "Profile updated successfully.",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "save": "Save changes",
+    "updateError": "Unable to update profile. Check the details and try again."
   },
   "admin": {
     "users": {

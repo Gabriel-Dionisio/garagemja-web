@@ -30,6 +30,12 @@ export class AuthService {
     return this.currentUser()?.roles.includes(role) ?? false;
   }
 
+  updateCurrentUser(changes: { name?: string }): void {
+    this.currentUser.update((current) =>
+      current && changes.name !== undefined ? { ...current, name: changes.name } : current,
+    );
+  }
+
   login(credentials: Credentials): Observable<UserProfile> {
     return this.csrf().pipe(
       switchMap(() => this.http.post<unknown>(`${AUTH_URL}/login`, credentials)),

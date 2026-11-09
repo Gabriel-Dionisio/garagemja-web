@@ -1,4 +1,9 @@
-import { isHistoricalRental, isRentalRequest } from '../rental.model';
+import {
+  isActiveRental,
+  isHistoricalRental,
+  isRentalRequest,
+  RENTAL_STATUSES,
+} from '../rental.model';
 import { toRentalRecords, toResidentIds } from './rentals.mapper';
 
 describe('rentals mapper', () => {
@@ -9,7 +14,7 @@ describe('rentals mapper', () => {
     expect(() => toResidentIds([{ id: 'resident-2', userId: 'user-2' }], 'user-1')).toThrow();
   });
 
-  it('maps supported rental status groups from the API', () => {
+  it('classifies every API status into exactly one rental tab', () => {
     const rentals = toRentalRecords([
       {
         id: 'rental-1',
@@ -25,10 +30,21 @@ describe('rentals mapper', () => {
     ]);
 
     expect(isRentalRequest(rentals[0].status)).toBe(true);
-    expect(isHistoricalRental('FINISHED')).toBe(true);
-    expect(isHistoricalRental('REFUSED')).toBe(true);
-    expect(isHistoricalRental('CANCELED')).toBe(true);
+    expect(isRentalRequest('APPROVED')).toBe(true);
+    expect(isRentalRequest('REFUSED')).toBe(true);
+    expect(isRentalRequest('CANCELED')).toBe(true);
     expect(isRentalRequest('ACTIVE')).toBe(false);
+    expect(isHistoricalRental('FINISHED')).toBe(true);
+    expect(isHistoricalRental('CANCELED')).toBe(false);
+    expect(isHistoricalRental('ACTIVE')).toBe(false);
+    expect(isRentalRequest('FINISHED')).toBe(false);
+    for (const status of RENTAL_STATUSES) {
+      expect(
+        [isActiveRental(status), isRentalRequest(status), isHistoricalRental(status)].filter(
+          Boolean,
+        ),
+      ).toHaveLength(1);
+    }
   });
 
   it('rejects unknown API statuses instead of treating them as empty data', () => {

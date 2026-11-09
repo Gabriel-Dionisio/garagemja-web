@@ -9,7 +9,13 @@ import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
 import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { RentalItemCard } from '../../components/rental-item-card/rental-item-card';
-import { isHistoricalRental, isRentalRequest, RentalCard, RentalTab } from '../../rental.model';
+import {
+  isActiveRental,
+  isHistoricalRental,
+  isRentalRequest,
+  RentalCard,
+  RentalTab,
+} from '../../rental.model';
 import { RentalsApi } from '../../data/rentals-api';
 
 const TABS: readonly RentalTab[] = ['active', 'requests', 'history'];
@@ -32,7 +38,7 @@ export class MyRentalsPage {
   protected readonly loading = signal(false);
   protected readonly error = this.errorText.state();
   protected readonly activeRentals = computed(() =>
-    (this.rentals() ?? []).filter((rental) => rental.status === 'ACTIVE'),
+    (this.rentals() ?? []).filter((rental) => isActiveRental(rental.status)),
   );
   protected readonly requests = computed(() =>
     (this.rentals() ?? []).filter((rental) => isRentalRequest(rental.status)),

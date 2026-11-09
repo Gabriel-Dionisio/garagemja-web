@@ -37,24 +37,6 @@
           </ul>
         }
       </section>
-
-      <section class="rental-section" aria-labelledby="requests-heading">
-        <h2 id="requests-heading">
-          {{ 'rentals.requests.heading' | transloco }}
-          <span>({{ requests().length }})</span>
-        </h2>
-        @if (requests().length === 0) {
-          <app-empty-state icon="mail" [title]="'rentals.requests.empty' | transloco" />
-        } @else {
-          <ul class="cards">
-            @for (rental of requests(); track rental.id) {
-              <li>
-                <app-rental-item-card [rental]="rental" />
-              </li>
-            }
-          </ul>
-        }
-      </section>
     } @else if (selectedTab() === 'requests') {
       <section class="rental-section">
         <h2>

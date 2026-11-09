@@ -32,10 +32,16 @@ export function isRentalStatus(value: unknown): value is RentalStatus {
   return RENTAL_STATUSES.some((status) => status === value);
 }
 
+export function isActiveRental(status: RentalStatus): boolean {
+  return status === 'ACTIVE';
+}
+
 export function isRentalRequest(status: RentalStatus): boolean {
-  return status === 'PENDING' || status === 'APPROVED';
+  return (
+    status === 'PENDING' || status === 'APPROVED' || status === 'REFUSED' || status === 'CANCELED'
+  );
 }
 
 export function isHistoricalRental(status: RentalStatus): boolean {
-  return status === 'REFUSED' || status === 'CANCELED' || status === 'FINISHED';
+  return status === 'FINISHED';
 }

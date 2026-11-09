@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -14,6 +14,9 @@ const USER: UserProfile = {
   roles: ['ADMIN'],
 };
 
+@Component({ template: '' })
+class RoutePage {}
+
 describe('ShellLayout', () => {
   const logout = vi.fn(() => of(undefined));
   const mobile = signal(false);
@@ -22,7 +25,10 @@ describe('ShellLayout', () => {
     mobile.set(usesDrawer);
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter([
+          { path: 'home', component: RoutePage },
+          { path: 'rentals', component: RoutePage, data: { hideTopbar: true } },
+        ]),
         { provide: AuthService, useValue: { user: signal(user), logout } },
         {
           provide: ViewportService,
@@ -57,6 +63,37 @@ describe('ShellLayout', () => {
   it('não mostra badge para morador', async () => {
     const { element } = await setup(false, { ...USER, roles: ['RESIDENT'] });
     expect(element.querySelector('app-badge')).toBeNull();
+  });
+
+  it('oculta a barra somente na rota marcada e a restaura ao voltar para Home', async () => {
+    const { fixture, element } = await setup(false);
+    const router = TestBed.inject(Router);
+
+    await router.navigateByUrl('/rentals');
+    await fixture.whenStable();
+    expect(element.querySelector('header.topbar')).toBeNull();
+    expect(element.getAttribute('data-topbar')).toBe('hidden');
+
+    await router.navigateByUrl('/home');
+    await fixture.whenStable();
+    expect(element.querySelector('header.topbar')).not.toBeNull();
+    expect(element.querySelector('app-language-switcher')).not.toBeNull();
+    expect(element.getAttribute('data-topbar')).toBe('visible');
+  });
+
+  it('mantém acesso à sidebar drawer quando a barra está oculta', async () => {
+    const { fixture, element } = await setup(true);
+    await TestBed.inject(Router).navigateByUrl('/rentals');
+    await fixture.whenStable();
+
+    expect(element.querySelector('header.topbar')).toBeNull();
+    const open = element.querySelector(
+      'button.rentals-menu-button[aria-label="Abrir menu"]',
+    ) as HTMLButtonElement;
+    expect(open).not.toBeNull();
+    open.click();
+    await fixture.whenStable();
+    expect(element.querySelector('aside')).not.toBeNull();
   });
 
   it('mostra badge para síndico', async () => {

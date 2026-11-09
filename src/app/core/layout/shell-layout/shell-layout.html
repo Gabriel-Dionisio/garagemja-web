@@ -2,26 +2,40 @@
   'nav.skipToContent' | transloco
 }}</a>
 
-<header class="topbar">
-  @if (viewport.usesDrawer()) {
-    <button
-      #menuButton
-      class="icon-button"
-      type="button"
-      [attr.aria-label]="'nav.openMenu' | transloco"
-      aria-controls="app-nav"
-      [attr.aria-expanded]="drawerOpen()"
-      (click)="openDrawer()"
-    >
-      <app-icon name="menu" />
-    </button>
-    <app-brand-logo [compact]="true" />
-  }
-  <app-language-switcher class="language" />
-  @if (user(); as current) {
-    <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
-  }
-</header>
+@if (showTopbar()) {
+  <header class="topbar">
+    @if (viewport.usesDrawer()) {
+      <button
+        #menuButton
+        class="icon-button"
+        type="button"
+        [attr.aria-label]="'nav.openMenu' | transloco"
+        aria-controls="app-nav"
+        [attr.aria-expanded]="drawerOpen()"
+        (click)="openDrawer()"
+      >
+        <app-icon name="menu" />
+      </button>
+      <app-brand-logo [compact]="true" />
+    }
+    <app-language-switcher class="language" />
+    @if (user(); as current) {
+      <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
+    }
+  </header>
+} @else if (viewport.usesDrawer()) {
+  <button
+    #menuButton
+    class="rentals-menu-button"
+    type="button"
+    [attr.aria-label]="'nav.openMenu' | transloco"
+    aria-controls="app-nav"
+    [attr.aria-expanded]="drawerOpen()"
+    (click)="openDrawer()"
+  >
+    <app-icon name="menu" />
+  </button>
+}
 
 @if (showSidebar()) {
   @if (viewport.usesDrawer()) {

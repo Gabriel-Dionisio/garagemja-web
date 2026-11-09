@@ -54,6 +54,7 @@ export const routes: Routes = [
       },
       {
         path: 'rentals',
+        data: { hideTopbar: true },
         loadChildren: () =>
           import('./features/rentals/rentals.routes').then((m) => m.RENTALS_ROUTES),
       },

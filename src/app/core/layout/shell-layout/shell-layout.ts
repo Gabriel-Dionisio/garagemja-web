@@ -13,7 +13,14 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { filter } from 'rxjs';
 import { Alert } from '../../../shared/ui/alert/alert';
 import { BrandLogo } from '../../../shared/ui/brand-logo/brand-logo';
@@ -41,6 +48,9 @@ import { ViewportService } from '../viewport-service';
   templateUrl: './shell-layout.html',
   styleUrl: './shell-layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[attr.data-topbar]': "showTopbar() ? 'visible' : 'hidden'",
+  },
 })
 export class ShellLayout {
   private readonly auth = inject(AuthService);
@@ -55,6 +65,7 @@ export class ShellLayout {
   protected readonly drawerOpen = signal(false);
   protected readonly logoutError = this.errorText.state();
   protected readonly loggingOut = signal(false);
+  protected readonly showTopbar = signal(true);
   protected readonly showSidebar = computed(() => !this.viewport.usesDrawer() || this.drawerOpen());
 
   constructor() {
@@ -63,7 +74,12 @@ export class ShellLayout {
         filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(inject(DestroyRef)),
       )
-      .subscribe(() => this.mainElement().nativeElement.focus());
+      .subscribe(() => {
+        this.updateTopbarVisibility();
+        this.mainElement().nativeElement.focus();
+      });
+
+    this.updateTopbarVisibility();
 
     effect(() => {
       if (!this.viewport.usesDrawer()) this.drawerOpen.set(false);
@@ -94,5 +110,16 @@ export class ShellLayout {
         this.logoutError.setFrom(error);
       },
     });
+  }
+
+  private updateTopbarVisibility(): void {
+    this.showTopbar.set(!this.activeRouteHidesTopbar(this.router.routerState.snapshot.root));
+  }
+
+  private activeRouteHidesTopbar(route: ActivatedRouteSnapshot): boolean {
+    return (
+      route.data['hideTopbar'] === true ||
+      route.children.some((child) => this.activeRouteHidesTopbar(child))
+    );
   }
 }

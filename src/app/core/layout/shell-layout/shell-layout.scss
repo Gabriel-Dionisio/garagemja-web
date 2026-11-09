@@ -23,6 +23,15 @@
   }
 }
 
+:host([data-topbar='hidden']) {
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-areas: 'main';
+
+  @include from($bp-xl) {
+    grid-template-areas: 'sidebar main';
+  }
+}
+
 .skip-link {
   position: absolute;
   left: var(--space-3);
@@ -62,6 +71,22 @@
   border-radius: var(--radius-md);
   background: transparent;
   color: inherit;
+  cursor: pointer;
+}
+
+.rentals-menu-button {
+  position: fixed;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-secondary);
   cursor: pointer;
 }
 
@@ -196,7 +221,9 @@ main {
   min-width: 0;
   padding: var(--space-4);
   outline: none;
-  --page-height: calc(100dvh - var(--topbar-height) - 2 * var(--space-4));
+  --page-height: calc(
+    100dvh - var(--shell-topbar-height, var(--topbar-height)) - 2 * var(--space-4)
+  );
 
   @media (min-width: $bp-md) and (min-height: 40rem) {
     min-height: 0;
@@ -206,6 +233,12 @@ main {
 
   @include from($bp-md) {
     padding: var(--space-5);
-    --page-height: calc(100dvh - var(--topbar-height) - 2 * var(--space-5));
+    --page-height: calc(
+      100dvh - var(--shell-topbar-height, var(--topbar-height)) - 2 * var(--space-5)
+    );
   }
+}
+
+:host([data-topbar='hidden']) main {
+  --shell-topbar-height: 0px;
 }

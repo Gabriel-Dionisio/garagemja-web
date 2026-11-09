@@ -10,6 +10,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: readonly NavItem[] = [
   { labelKey: 'nav.home', path: '/home', icon: 'home' },
+  { labelKey: 'nav.myRentals', path: '/rentals', icon: 'car', roles: ['RESIDENT'] },
   { labelKey: 'nav.users', path: '/admin/users', icon: 'users', roles: ['ADMIN'] },
 ];
 

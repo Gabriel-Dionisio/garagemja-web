@@ -92,6 +92,7 @@
   },
   "nav": {
     "home": "Início",
+    "myRentals": "Meus aluguéis",
     "users": "Usuários",
     "skipToContent": "Pular para o conteúdo",
     "openMenu": "Abrir menu",
@@ -105,12 +106,48 @@
     "confirmEmail": "Confirmar e-mail",
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
+    "myRentals": "Meus aluguéis",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo usuário",
     "adminUserDetail": "Detalhes do usuário",
     "status": "Status do sistema",
     "forgotPassword": "Esqueci a senha",
     "resetPassword": "Redefinir senha"
+  },
+  "rentals": {
+    "title": "Meus aluguéis",
+    "loading": "Carregando aluguéis…",
+    "tabs": {
+      "label": "Seções de aluguéis",
+      "active": "Ativos",
+      "requests": "Solicitações",
+      "history": "Histórico"
+    },
+    "active": {
+      "heading": "Aluguéis ativos",
+      "empty": "Nenhum aluguel ativo."
+    },
+    "requests": {
+      "heading": "Solicitações",
+      "empty": "Você não possui solicitações."
+    },
+    "history": {
+      "empty": "Nenhum aluguel encontrado no histórico."
+    },
+    "card": {
+      "spot": "Vaga {{number}}",
+      "imageAlt": "Imagem de referência de uma vaga de estacionamento"
+    },
+    "status": {
+      "PENDING": "Pendente",
+      "APPROVED": "Aprovado",
+      "ACTIVE": "Ativo",
+      "REFUSED": "Recusado",
+      "CANCELED": "Cancelado",
+      "FINISHED": "Finalizado"
+    },
+    "details": "Ver detalhes",
+    "detailsUnavailable": "A tela de detalhes ainda não está disponível."
   },
   "auth": {
     "login": {

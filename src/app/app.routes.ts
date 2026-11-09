@@ -53,6 +53,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
+        path: 'rentals',
+        loadChildren: () =>
+          import('./features/rentals/rentals.routes').then((m) => m.RENTALS_ROUTES),
+      },
+      {
         path: 'admin',
         loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
       },

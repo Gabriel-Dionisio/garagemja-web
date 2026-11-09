@@ -92,6 +92,7 @@
   },
   "nav": {
     "home": "Home",
+    "myRentals": "My rentals",
     "users": "Users",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
@@ -105,12 +106,48 @@
     "confirmEmail": "Confirm email",
     "verifyEmail": "Verify email",
     "home": "Home",
+    "myRentals": "My rentals",
     "adminUsers": "Users",
     "adminUserNew": "New user",
     "adminUserDetail": "User details",
     "status": "System status",
     "forgotPassword": "Forgot password",
     "resetPassword": "Reset password"
+  },
+  "rentals": {
+    "title": "My rentals",
+    "loading": "Loading rentals…",
+    "tabs": {
+      "label": "Rental sections",
+      "active": "Active",
+      "requests": "Requests",
+      "history": "History"
+    },
+    "active": {
+      "heading": "Active rentals",
+      "empty": "No active rentals."
+    },
+    "requests": {
+      "heading": "Requests",
+      "empty": "You have no requests."
+    },
+    "history": {
+      "empty": "No rentals found in your history."
+    },
+    "card": {
+      "spot": "Parking spot {{number}}",
+      "imageAlt": "Reference image of a parking spot"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "ACTIVE": "Active",
+      "REFUSED": "Refused",
+      "CANCELED": "Canceled",
+      "FINISHED": "Finished"
+    },
+    "details": "View details",
+    "detailsUnavailable": "The details page is not available yet."
   },
   "auth": {
     "login": {

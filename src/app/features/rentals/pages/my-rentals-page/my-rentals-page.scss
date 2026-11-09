@@ -1,0 +1,68 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-5);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--color-divider);
+
+  button {
+    flex: 0 0 auto;
+    padding: var(--space-2) var(--space-1);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover,
+    &.selected {
+      color: var(--color-secondary);
+    }
+
+    &.selected {
+      border-bottom-color: var(--color-primary);
+    }
+  }
+}
+
+.tab-panel {
+  min-width: 0;
+  padding-top: var(--space-4);
+}
+
+.rental-section + .rental-section {
+  margin-top: var(--space-5);
+}
+
+h2 {
+  margin-bottom: var(--space-2);
+  color: var(--color-secondary);
+  font-size: var(--font-size-md);
+}
+
+h2 span {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.cards {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@include from($bp-md) {
+  .tabs {
+    gap: var(--space-6);
+  }
+}

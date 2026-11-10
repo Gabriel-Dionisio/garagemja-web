@@ -18,6 +18,12 @@
       <path d="M54 -5 L64 105" />
       <path d="M82 -5 L86 105" />
     </g>
+    @for (pin of pins; track $index) {
+      <g class="pin" [attr.transform]="'translate(' + pin.x + ' ' + pin.y + ')'">
+        <path d="M0 0 C-3.2 -4.2 -4 -5.6 -4 -7.4 A4 4 0 1 1 4 -7.4 C4 -5.6 3.2 -4.2 0 0 Z" />
+        <circle cy="-7.4" r="1.5" />
+      </g>
+    }
   </svg>
   <div class="zoom" aria-hidden="true">
     <span class="control">+</span>

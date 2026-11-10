@@ -92,6 +92,7 @@
   },
   "nav": {
     "home": "Home",
+    "searchVacancies": "Find Spots",
     "users": "Users",
     "settings": "Settings",
     "profile": "Profile",
@@ -108,6 +109,7 @@
     "confirmEmail": "Confirm email",
     "verifyEmail": "Verify email",
     "home": "Home",
+    "searchVacancies": "Find Spots",
     "adminUsers": "Users",
     "adminUserNew": "New user",
     "adminUserDetail": "User details",
@@ -168,6 +170,24 @@
     },
     "brand": {
       "tagline": "Rent and manage parking spots in condominiums in a simple, safe and organized way."
+    }
+  },
+  "searchVacancies": {
+    "title": "Find parking spots",
+    "empty": "No spots found",
+    "emptyDescription": "Try changing your search terms.",
+    "spot": "Spot {{number}}",
+    "spotBlock": "Spot {{number}} - {{block}}",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "priceFrom": "R$ {{price}}",
+    "unit": { "HOUR": "/hour", "DAY": "/day", "MONTH": "/month" },
+    "size": { "SMALL": "Small", "MEDIUM": "Medium", "LARGE": "Large" },
+    "map": {
+      "label": "Illustrative map",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit to view"
     }
   },
   "home": {

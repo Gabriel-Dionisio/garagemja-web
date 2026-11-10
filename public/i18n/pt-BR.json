@@ -92,6 +92,7 @@
   },
   "nav": {
     "home": "Início",
+    "searchVacancies": "Buscar Vagas",
     "users": "Usuários",
     "settings": "Configurações",
     "profile": "Perfil",
@@ -108,6 +109,7 @@
     "confirmEmail": "Confirmar e-mail",
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
+    "searchVacancies": "Buscar Vagas",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo usuário",
     "adminUserDetail": "Detalhes do usuário",
@@ -168,6 +170,24 @@
     },
     "brand": {
       "tagline": "Alugue e gerencie vagas de garagem em condomínios de forma simples, segura e organizada."
+    }
+  },
+  "searchVacancies": {
+    "title": "Buscar vagas",
+    "empty": "Nenhuma vaga encontrada",
+    "emptyDescription": "Tente alterar os termos da pesquisa.",
+    "spot": "Vaga {{number}}",
+    "spotBlock": "Vaga {{number}} - {{block}}",
+    "available": "Disponível",
+    "unavailable": "Indisponível",
+    "priceFrom": "R$ {{price}}",
+    "unit": { "HOUR": "/hora", "DAY": "/dia", "MONTH": "/mês" },
+    "size": { "SMALL": "Pequena", "MEDIUM": "Média", "LARGE": "Grande" },
+    "map": {
+      "label": "Mapa ilustrativo",
+      "zoomIn": "Aumentar zoom",
+      "zoomOut": "Diminuir zoom",
+      "fit": "Ajustar à tela"
     }
   },
   "home": {

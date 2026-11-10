@@ -175,19 +175,55 @@
   "searchVacancies": {
     "title": "Buscar vagas",
     "empty": "Nenhuma vaga encontrada",
-    "emptyDescription": "Tente alterar os termos da pesquisa.",
     "spot": "Vaga {{number}}",
     "spotBlock": "Vaga {{number}} - {{block}}",
     "available": "Disponível",
     "unavailable": "Indisponível",
     "priceFrom": "R$ {{price}}",
-    "unit": { "HOUR": "/hora", "DAY": "/dia", "MONTH": "/mês" },
-    "size": { "SMALL": "Pequena", "MEDIUM": "Média", "LARGE": "Grande" },
+    "unit": {
+      "HOUR": "/hora",
+      "DAY": "/dia",
+      "MONTH": "/mês"
+    },
+    "size": {
+      "SMALL": "Pequena",
+      "MEDIUM": "Média",
+      "LARGE": "Grande"
+    },
     "map": {
       "label": "Mapa ilustrativo",
       "zoomIn": "Aumentar zoom",
       "zoomOut": "Diminuir zoom",
       "fit": "Ajustar à tela"
+    },
+    "loading": "Carregando vagas...",
+    "loadError": "Não foi possível carregar as vagas.",
+    "retry": "Tentar novamente",
+    "noVacanciesDescription": "Ainda não há vagas disponíveis para você.",
+    "noResultsDescription": "Nenhuma vaga corresponde à pesquisa ou aos filtros.",
+    "clearFilters": "Limpar filtros",
+    "countOne": "{{count}} vaga encontrada",
+    "countOther": "{{count}} vagas encontradas",
+    "sort": {
+      "label": "Ordenar por",
+      "PRICE_ASC": "Menor preço",
+      "PRICE_DESC": "Maior preço"
+    },
+    "filters": {
+      "label": "Filtros",
+      "availability": {
+        "label": "Disponibilidade",
+        "ALL": "Todas",
+        "AVAILABLE": "Disponíveis",
+        "UNAVAILABLE": "Indisponíveis"
+      },
+      "size": {
+        "label": "Tamanho",
+        "ALL": "Todos os tamanhos",
+        "SMALL": "Pequena",
+        "MEDIUM": "Média",
+        "LARGE": "Grande"
+      }
     }
   },
   "home": {

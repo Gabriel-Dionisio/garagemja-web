@@ -1,0 +1,37 @@
+<div class="top">
+  <p class="count" role="status">
+    {{
+      (count() === 1 ? 'searchVacancies.countOne' : 'searchVacancies.countOther')
+        | transloco: { count: count() }
+    }}
+  </p>
+  <div class="sort">
+    <span class="sort-label">{{ 'searchVacancies.sort.label' | transloco }}</span>
+    <app-filter-select
+      [label]="'searchVacancies.sort.label' | transloco"
+      [options]="sortOptions"
+      [value]="criteria().sort"
+      (valueChange)="patch({ sort: $event })"
+    />
+  </div>
+</div>
+
+<div class="filters" role="group" [attr.aria-label]="'searchVacancies.filters.label' | transloco">
+  <app-filter-select
+    [label]="'searchVacancies.filters.availability.label' | transloco"
+    [options]="availabilityOptions"
+    [value]="criteria().availability"
+    (valueChange)="patch({ availability: $event })"
+  />
+  <app-filter-select
+    [label]="'searchVacancies.filters.size.label' | transloco"
+    [options]="sizeOptions"
+    [value]="criteria().size"
+    (valueChange)="patch({ size: $event })"
+  />
+  @if (hasFilters()) {
+    <button class="clear" type="button" (click)="cleared.emit()">
+      {{ 'searchVacancies.clearFilters' | transloco }}
+    </button>
+  }
+</div>

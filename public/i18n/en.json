@@ -175,19 +175,55 @@
   "searchVacancies": {
     "title": "Find parking spots",
     "empty": "No spots found",
-    "emptyDescription": "Try changing your search terms.",
     "spot": "Spot {{number}}",
     "spotBlock": "Spot {{number}} - {{block}}",
     "available": "Available",
     "unavailable": "Unavailable",
     "priceFrom": "R$ {{price}}",
-    "unit": { "HOUR": "/hour", "DAY": "/day", "MONTH": "/month" },
-    "size": { "SMALL": "Small", "MEDIUM": "Medium", "LARGE": "Large" },
+    "unit": {
+      "HOUR": "/hour",
+      "DAY": "/day",
+      "MONTH": "/month"
+    },
+    "size": {
+      "SMALL": "Small",
+      "MEDIUM": "Medium",
+      "LARGE": "Large"
+    },
     "map": {
       "label": "Illustrative map",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "fit": "Fit to view"
+    },
+    "loading": "Loading spots...",
+    "loadError": "Could not load the spots.",
+    "retry": "Try again",
+    "noVacanciesDescription": "There are no spots available to you yet.",
+    "noResultsDescription": "No spot matches your search or filters.",
+    "clearFilters": "Clear filters",
+    "countOne": "{{count}} spot found",
+    "countOther": "{{count}} spots found",
+    "sort": {
+      "label": "Sort by",
+      "PRICE_ASC": "Lowest price",
+      "PRICE_DESC": "Highest price"
+    },
+    "filters": {
+      "label": "Filters",
+      "availability": {
+        "label": "Availability",
+        "ALL": "All",
+        "AVAILABLE": "Available",
+        "UNAVAILABLE": "Unavailable"
+      },
+      "size": {
+        "label": "Size",
+        "ALL": "All sizes",
+        "SMALL": "Small",
+        "MEDIUM": "Medium",
+        "LARGE": "Large"
+      }
     }
   },
   "home": {

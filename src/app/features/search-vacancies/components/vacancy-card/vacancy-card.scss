@@ -1,0 +1,60 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: block;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(6rem, 10rem) minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  min-height: 6.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-divider);
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  color: var(--color-text);
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: auto;
+}
+
+.price {
+  color: var(--color-primary);
+
+  strong {
+    font-size: var(--font-size-md);
+  }
+}

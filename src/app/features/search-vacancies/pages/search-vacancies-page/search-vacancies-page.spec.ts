@@ -184,10 +184,16 @@ describe('SearchVacanciesPage', () => {
     expect(titles()).toHaveLength(3);
   });
 
-  it('exibe o mapa ilustrativo sem marcadores, pois a API não tem coordenadas', async () => {
+  it('exibe o mapa ilustrativo com marcadores decorativos fixos, que não acompanham os resultados', async () => {
     await load();
+    const pins = () => element.querySelectorAll('app-illustrative-map .pin').length;
     expect(element.querySelector('app-illustrative-map [role="img"]')).not.toBeNull();
-    expect(element.querySelector('app-illustrative-map .pin')).toBeNull();
+    const initial = pins();
+    expect(initial).toBeGreaterThan(0);
+
+    await choose('Tamanho', 'SMALL');
+    expect(titles()).toEqual(['Vaga 3']);
+    expect(pins()).toBe(initial);
   });
 
   it('limpa o termo da barra superior ao sair da tela', async () => {

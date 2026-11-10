@@ -34,6 +34,16 @@ svg {
   opacity: 0.8;
 }
 
+.pin {
+  path {
+    fill: var(--color-primary);
+  }
+
+  circle {
+    fill: var(--color-surface);
+  }
+}
+
 .zoom {
   position: absolute;
   top: var(--space-3);

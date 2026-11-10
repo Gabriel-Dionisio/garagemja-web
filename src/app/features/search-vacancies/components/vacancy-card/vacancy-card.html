@@ -1,0 +1,29 @@
+<article class="card">
+  <img class="photo" [src]="imageSrc()" alt="" loading="lazy" (error)="onImageError()" />
+  <div class="info">
+    <h2>
+      @if (vacancy().block) {
+        {{ 'searchVacancies.spotBlock' | transloco: { number: vacancy().number, block: vacancy().block } }}
+      } @else {
+        {{ 'searchVacancies.spot' | transloco: { number: vacancy().number } }}
+      }
+    </h2>
+    <p class="condominium">{{ vacancy().condominiumName }}</p>
+    @if (vacancy().size; as size) {
+      <p class="size">{{ 'searchVacancies.size.' + size | transloco }}</p>
+    }
+    <div class="footer">
+      @if (vacancy().price != null) {
+        <p class="price">
+          <strong>{{ 'searchVacancies.priceFrom' | transloco: { price: (vacancy().price | number: '1.2-2' : locale()) } }}</strong>
+          @if (vacancy().priceUnit; as unit) {
+            <span>{{ 'searchVacancies.unit.' + unit | transloco }}</span>
+          }
+        </p>
+      }
+      <app-badge [tone]="vacancy().available ? 'success' : 'neutral'">
+        {{ (vacancy().available ? 'searchVacancies.available' : 'searchVacancies.unavailable') | transloco }}
+      </app-badge>
+    </div>
+  </div>
+</article>

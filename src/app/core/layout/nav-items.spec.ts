@@ -3,9 +3,10 @@ import { navItemsFor } from './nav-items';
 describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
-  it('morador: início, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
+  it('morador: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
     expect(paths(navItemsFor(['RESIDENT']))).toEqual([
       '/home',
+      '/search-vacancies',
       '/condominiums',
       '/parking-spots',
       '/rentals',
@@ -15,9 +16,10 @@ describe('navItemsFor', () => {
     ]);
   });
 
-  it('síndico: início, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
+  it('síndico: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
     expect(paths(navItemsFor(['CONDOMINIUM_ADMIN', 'RESIDENT']))).toEqual([
       '/home',
+      '/search-vacancies',
       '/condominiums',
       '/parking-spots',
       '/rentals',

@@ -8,6 +8,7 @@ const base: Vacancy = {
   number: '23',
   block: 'Bloco A',
   condominiumName: 'Residencial Alpha',
+  address: null,
   size: 'MEDIUM',
   price: 8,
   priceUnit: 'HOUR',

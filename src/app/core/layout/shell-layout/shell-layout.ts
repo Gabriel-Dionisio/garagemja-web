@@ -21,6 +21,7 @@ import { LanguageSwitcher } from '../../../shared/ui/language-switcher/language-
 import { Icon } from '../../../shared/ui/icon/icon';
 import { AuthService } from '../../auth/auth-service';
 import { navItemsFor } from '../nav-items';
+import { TopbarSearch } from '../topbar-search';
 import { UserMenu } from '../user-menu/user-menu';
 import { ViewportService } from '../viewport-service';
 
@@ -60,6 +61,9 @@ export class ShellLayout {
   protected readonly loggingOut = signal(false);
   protected readonly showSidebar = computed(() => !this.viewport.usesDrawer() || this.drawerOpen());
   protected readonly showTopbar = signal(this.routeShowsTopbar());
+  protected readonly topbarSearch = inject(TopbarSearch);
+  /** Só rotas com `data.topbarSearch` ligam o campo da barra superior ao serviço de busca. */
+  protected readonly searchBound = signal(this.routeBindsSearch());
 
   constructor() {
     this.router.events
@@ -69,6 +73,7 @@ export class ShellLayout {
       )
       .subscribe(() => {
         this.showTopbar.set(this.routeShowsTopbar());
+        this.searchBound.set(this.routeBindsSearch());
         this.mainElement().nativeElement.focus();
       });
 
@@ -79,6 +84,22 @@ export class ShellLayout {
 
   protected openDrawer(): void {
     this.drawerOpen.set(true);
+  }
+
+  protected onSearchInput(event: Event): void {
+    if (this.searchBound()) this.topbarSearch.term.set((event.target as HTMLInputElement).value);
+  }
+
+  private routeBindsSearch(): boolean {
+    let route = this.router.routerState.snapshot.root;
+    let binds = false;
+
+    while (route.firstChild) {
+      route = route.firstChild;
+      if (route.data['topbarSearch'] === true) binds = true;
+    }
+
+    return binds;
   }
 
   private routeShowsTopbar(): boolean {

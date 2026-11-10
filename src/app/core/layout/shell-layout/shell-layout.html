@@ -25,6 +25,8 @@
       id="global-search"
       type="search"
       [placeholder]="'nav.searchPlaceholder' | transloco"
+      [value]="searchBound() ? topbarSearch.term() : ''"
+      (input)="onSearchInput($event)"
     />
   </form>
   <app-language-switcher class="language" />

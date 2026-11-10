@@ -1,3 +1,39 @@
+@use 'styles/mixins' as *;
+
 :host {
   display: block;
+}
+
+.search-page {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: start;
+    padding: var(--space-5);
+  }
+}
+
+.results {
+  min-width: 0;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.map {
+  min-height: 18rem;
+
+  @include from($bp-lg) {
+    position: sticky;
+    top: var(--space-4);
+    height: min(34rem, calc(100dvh - 2 * var(--space-5)));
+  }
 }

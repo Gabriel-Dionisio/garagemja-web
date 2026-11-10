@@ -1,3 +1,21 @@
 <section class="search-page" aria-labelledby="search-heading">
   <h1 id="search-heading" class="sr-only">{{ 'searchVacancies.title' | transloco }}</h1>
+
+  <div class="results">
+    @if (vacancies().length === 0) {
+      <app-empty-state
+        icon="car"
+        [title]="'searchVacancies.empty' | transloco"
+        [description]="'searchVacancies.emptyDescription' | transloco"
+      />
+    } @else {
+      <ul class="list">
+        @for (vacancy of vacancies(); track vacancy.id) {
+          <li><app-vacancy-card [vacancy]="vacancy" /></li>
+        }
+      </ul>
+    }
+  </div>
+
+  <app-illustrative-map class="map" />
 </section>

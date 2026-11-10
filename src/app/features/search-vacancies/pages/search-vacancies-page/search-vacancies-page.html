@@ -1,21 +1,56 @@
 <section class="search-page" aria-labelledby="search-heading">
   <h1 id="search-heading" class="sr-only">{{ 'searchVacancies.title' | transloco }}</h1>
 
-  <div class="results">
-    @if (vacancies().length === 0) {
-      <app-empty-state
-        icon="car"
-        [title]="'searchVacancies.empty' | transloco"
-        [description]="'searchVacancies.emptyDescription' | transloco"
-      />
-    } @else {
-      <ul class="list">
-        @for (vacancy of vacancies(); track vacancy.id) {
-          <li><app-vacancy-card [vacancy]="vacancy" /></li>
-        }
-      </ul>
-    }
-  </div>
+  @if (state().kind === 'ready') {
+    <app-vacancy-toolbar
+      class="toolbar"
+      [count]="vacancies().length"
+      [(criteria)]="criteria"
+      (cleared)="clearFilters()"
+    />
+  }
 
-  <app-illustrative-map class="map" />
+  <div class="content">
+    <div class="results">
+      @switch (state().kind) {
+        @case ('loading') {
+          <app-loading-block [label]="'searchVacancies.loading' | transloco" />
+        }
+        @case ('error') {
+          <app-alert kind="error">{{ 'searchVacancies.loadError' | transloco }}</app-alert>
+          <button appButton type="button" variant="secondary" class="retry" (click)="reload()">
+            {{ 'searchVacancies.retry' | transloco }}
+          </button>
+        }
+        @default {
+          @if (vacancies().length === 0) {
+            <app-empty-state
+              icon="car"
+              [title]="'searchVacancies.empty' | transloco"
+              [description]="
+                (hasConstraints()
+                  ? 'searchVacancies.noResultsDescription'
+                  : 'searchVacancies.noVacanciesDescription'
+                ) | transloco
+              "
+            >
+              @if (hasConstraints()) {
+                <button appButton type="button" variant="secondary" (click)="clearFilters()">
+                  {{ 'searchVacancies.clearFilters' | transloco }}
+                </button>
+              }
+            </app-empty-state>
+          } @else {
+            <ul class="list">
+              @for (vacancy of vacancies(); track vacancy.id) {
+                <li><app-vacancy-card [vacancy]="vacancy" /></li>
+              }
+            </ul>
+          }
+        }
+      }
+    </div>
+
+    <app-illustrative-map class="map" />
+  </div>
 </section>

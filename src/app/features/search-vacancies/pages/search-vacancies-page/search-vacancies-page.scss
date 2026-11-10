@@ -5,22 +5,41 @@
   min-width: 0;
 }
 
+// Barra de filtros ocupa toda a largura; abaixo, listagem (~64%) e mapa (~36%).
+// Em desktop o conteúdo cabe na altura útil e só a listagem rola.
 .search-page {
   display: grid;
   gap: var(--space-4);
   min-width: 0;
 
-  // Listagem ~64% e mapa ~36%, dentro da altura disponível do conteúdo.
   @include from($bp-lg) {
-    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr);
-    gap: var(--space-5);
+    grid-template-rows: auto minmax(0, 1fr);
     height: var(--page-height, 100%);
     min-height: 0;
   }
 }
 
+.toolbar {
+  min-width: 0;
+}
+
+.content {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: var(--space-5);
+    min-height: 0;
+  }
+}
+
 .results {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
   min-width: 0;
 
   @include from($bp-lg) {
@@ -35,6 +54,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.retry {
+  justify-self: start;
 }
 
 .map {

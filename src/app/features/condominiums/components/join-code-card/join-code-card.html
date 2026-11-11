@@ -1,0 +1,38 @@
+<p class="muted">{{ 'condominiums.code.hint' | transloco }}</p>
+<div class="body">
+  <div class="details">
+    <p class="code" data-testid="join-code">{{ code() }}</p>
+    <p class="link">{{ link() }}</p>
+    <div class="actions" aria-live="polite">
+      <button appButton type="button" (click)="copy('code')">
+        {{
+          (copied() === 'code' ? 'condominiums.code.copied' : 'condominiums.code.copyCode')
+            | transloco
+        }}
+      </button>
+      <button appButton type="button" variant="secondary" (click)="copy('link')">
+        {{
+          (copied() === 'link' ? 'condominiums.code.copied' : 'condominiums.code.copyLink')
+            | transloco
+        }}
+      </button>
+      @if (canShare) {
+        <button appButton type="button" variant="secondary" (click)="share()">
+          {{ 'condominiums.code.share' | transloco }}
+        </button>
+      }
+      <button appButton type="button" variant="ghost" [disabled]="busy()" (click)="rotate.emit()">
+        {{ 'condominiums.residents.rotate.confirm' | transloco }}
+      </button>
+    </div>
+  </div>
+  @if (qr(); as image) {
+    <img
+      class="qr"
+      [src]="image"
+      width="192"
+      height="192"
+      [alt]="'condominiums.code.qrAlt' | transloco"
+    />
+  }
+</div>

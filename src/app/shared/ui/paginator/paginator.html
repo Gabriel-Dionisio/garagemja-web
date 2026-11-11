@@ -1,4 +1,14 @@
 <nav [attr.aria-label]="'common.pagination.label' | transloco">
+  @if (sizeOptions().length) {
+    <label class="size">
+      {{ 'common.pagination.perPage' | transloco }}
+      <select (change)="pickSize($event)">
+        @for (option of sizeOptions(); track option) {
+          <option [value]="option" [selected]="option === size()">{{ option }}</option>
+        }
+      </select>
+    </label>
+  }
   <span class="summary" aria-live="polite">
     @if (range(); as current) {
       {{

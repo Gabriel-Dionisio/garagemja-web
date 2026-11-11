@@ -5,3 +5,8 @@ export interface FeaturedCondominium {
   pricePerHour: number | null;
   imageUrl: string | null;
 }
+
+export interface HomeSpots {
+  residencies: number;
+  condominiums: FeaturedCondominium[];
+}

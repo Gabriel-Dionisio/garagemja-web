@@ -1,0 +1,11 @@
+<app-join-panel
+  [mode]="data.mode ?? 'code'"
+  [code]="data.code"
+  [cnpj]="data.cnpj"
+  (joined)="ref.close(true)"
+/>
+<div class="actions">
+  <button appButton variant="secondary" type="button" (click)="ref.close(false)">
+    {{ 'common.actions.cancel' | transloco }}
+  </button>
+</div>

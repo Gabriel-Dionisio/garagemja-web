@@ -18,15 +18,13 @@ const USER: User = {
 
 describe('UsersPage', () => {
   const list = vi.fn();
-  const approve = vi.fn();
 
   beforeEach(() => {
     list.mockReset();
-    approve.mockReset();
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: UsersApi, useValue: { list, approve } },
+        { provide: UsersApi, useValue: { list } },
         { provide: ConfirmService, useValue: { confirm: () => of(true) } },
       ],
     });
@@ -37,13 +35,13 @@ describe('UsersPage', () => {
     const fixture = TestBed.createComponent(UsersPage);
     await fixture.whenStable();
     const text = (fixture.nativeElement as HTMLElement).textContent;
-    expect(list).toHaveBeenCalledWith({ email: '', cpf: '' }, 0, 20);
+    expect(list).toHaveBeenCalledWith({ email: '', cpf: '' }, 0, expect.any(Number));
     expect(text).toContain('Ana Souza');
     expect(text).toContain('Síndico');
     expect(text).toContain('Pendente');
     expect(
       (fixture.nativeElement as HTMLElement).querySelector('button[aria-label="Aprovar"]'),
-    ).not.toBeNull();
+    ).toBeNull();
   });
 
   it('mostra estado vazio sem resultados', async () => {
@@ -55,26 +53,18 @@ describe('UsersPage', () => {
     );
   });
 
-  it('aprova o síndico pendente ao confirmar', async () => {
-    list.mockReturnValue(of({ items: [USER], page: 0, size: 20, hasNext: false }));
-    approve.mockReturnValue(of({ ...USER, status: 'ACTIVE' }));
+  it('lista um administrador sem CPF e telefone', async () => {
+    list.mockReturnValue(
+      of({
+        items: [{ ...USER, cpf: null, phone: null, roles: ['ADMIN'], status: 'ACTIVE' }],
+        page: 0,
+        size: 20,
+        hasNext: false,
+      }),
+    );
     const fixture = TestBed.createComponent(UsersPage);
     await fixture.whenStable();
-    approveButton(fixture.nativeElement)?.click();
-    await fixture.whenStable();
-    expect(approve).toHaveBeenCalledWith('u1');
-    expect(list).toHaveBeenCalledTimes(2);
-  });
-
-  it('não aprova quando o diálogo é cancelado', async () => {
-    TestBed.overrideProvider(ConfirmService, { useValue: { confirm: () => of(false) } });
-    list.mockReturnValue(of({ items: [USER], page: 0, size: 20, hasNext: false }));
-    const fixture = TestBed.createComponent(UsersPage);
-    await fixture.whenStable();
-    approveButton(fixture.nativeElement)?.click();
-    await fixture.whenStable();
-    expect(approve).not.toHaveBeenCalled();
-    expect(list).toHaveBeenCalledTimes(1);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Ana Souza');
   });
 
   it('mostra erro e para de carregar quando a listagem falha', async () => {
@@ -85,7 +75,3 @@ describe('UsersPage', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('app-loading-block')).toBeNull();
   });
 });
-
-function approveButton(root: HTMLElement): HTMLButtonElement | null {
-  return root.querySelector('button[aria-label="Aprovar"]');
-}

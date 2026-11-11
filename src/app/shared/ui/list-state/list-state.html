@@ -1,0 +1,14 @@
+@if (loading()) {
+  <app-skeleton [label]="loadingLabel()" [rows]="rows()" [rowHeight]="rowHeight()" />
+} @else if (error(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+} @else if (empty()) {
+  <app-empty-state [icon]="emptyIcon()" [title]="emptyTitle()" [description]="emptyDescription()">
+    <ng-content select="[emptyAction]" />
+  </app-empty-state>
+} @else {
+  <ul class="items" [attr.aria-label]="listLabel()">
+    <ng-content />
+  </ul>
+  <ng-content select="[paginator]" />
+}

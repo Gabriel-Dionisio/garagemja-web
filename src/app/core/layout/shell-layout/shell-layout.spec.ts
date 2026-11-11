@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../auth/auth-service';
 import { UserProfile } from '../../auth/auth.model';
+import { NavBadges } from '../nav-badges';
 import { ViewportService } from '../viewport-service';
 import { ShellLayout } from './shell-layout';
 
@@ -23,7 +24,15 @@ describe('ShellLayout', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: AuthService, useValue: { user: signal(user), logout } },
+        {
+          provide: AuthService,
+          useValue: {
+            user: signal(user),
+            logout,
+            hasRole: (r: string) => user.roles.includes(r as never),
+          },
+        },
+        { provide: NavBadges, useValue: { condominiums: signal(3), refresh: vi.fn() } },
         {
           provide: ViewportService,
           useValue: { usesDrawer: () => mobile(), isDesktop: () => !mobile() },
@@ -38,7 +47,7 @@ describe('ShellLayout', () => {
   it('mostra a navegação por papel e destaca nome e iniciais no desktop', async () => {
     const { element } = await setup(false);
     const links = Array.from(element.querySelectorAll('nav a')).map((a) => a.textContent?.trim());
-    expect(links).toEqual(['Início', 'Usuários', 'Configurações', 'Perfil']);
+    expect(links).toEqual(['Painel', 'Condomínios3', 'Usuários', 'Auditoria', 'Configurações', 'Perfil']);
     expect(element.querySelector('app-avatar')?.textContent?.trim()).toBe('AS');
     expect(element.querySelector('button[aria-label="Abrir menu"]')).toBeNull();
   });
@@ -51,17 +60,17 @@ describe('ShellLayout', () => {
   });
 
   it('mostra badge só para admin', async () => {
-    expect((await setup(false)).element.querySelector('app-badge')).not.toBeNull();
+    expect((await setup(false)).element.querySelector('app-badge:not(.count)')).not.toBeNull();
   });
 
   it('não mostra badge para morador', async () => {
     const { element } = await setup(false, { ...USER, roles: ['RESIDENT'] });
-    expect(element.querySelector('app-badge')).toBeNull();
+    expect(element.querySelector('app-badge:not(.count)')).toBeNull();
   });
 
   it('mostra badge para síndico', async () => {
     const { element } = await setup(false, { ...USER, roles: ['CONDOMINIUM_ADMIN'] });
-    expect(element.querySelector('app-badge')?.textContent?.trim()).toBe('Síndico');
+    expect(element.querySelector('app-badge:not(.count)')?.textContent?.trim()).toBe('Síndico');
   });
 
   it('no celular abre e fecha o menu em gaveta', async () => {

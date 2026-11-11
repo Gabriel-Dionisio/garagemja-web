@@ -1,5 +1,5 @@
 export type Role = 'ADMIN' | 'CONDOMINIUM_ADMIN' | 'RESIDENT';
-export type AccountType = 'RESIDENT' | 'CONDOMINIUM_ADMIN';
+export type AccountType = 'RESIDENT';
 
 export interface UserProfile {
   id: string;

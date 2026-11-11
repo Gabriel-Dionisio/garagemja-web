@@ -1,0 +1,55 @@
+@if (!hidden()) {
+  <section class="owner">
+    <h2>{{ 'dashboard.sections.owner' | transloco }}</h2>
+    @if (error.text(); as message) {
+      <app-alert kind="error">{{ message }}</app-alert>
+    }
+
+    @if (summary(); as current) {
+      @if (current.spots === 0) {
+        <app-card>
+          <app-empty-state
+            icon="car"
+            [title]="'dashboard.owner.emptyTitle' | transloco"
+            [description]="'dashboard.owner.emptyDescription' | transloco"
+          />
+        </app-card>
+      } @else {
+        <section class="kpis" [attr.aria-label]="'dashboard.owner.title' | transloco">
+          <app-stat-card
+            [value]="current.pending"
+            [label]="'dashboard.owner.kpi.pending' | transloco"
+            [highlight]="current.pending > 0"
+          />
+          <app-stat-card
+            [value]="current.active"
+            [label]="'dashboard.owner.kpi.active' | transloco"
+          />
+          <app-stat-card
+            [value]="current.upcoming"
+            [label]="'dashboard.owner.kpi.upcoming' | transloco"
+          />
+          <app-stat-card
+            [value]="current.spots"
+            [label]="'dashboard.owner.kpi.spots' | transloco"
+          />
+        </section>
+
+        <app-card class="earnings">
+          <small>{{ 'dashboard.owner.kpi.monthEarnings' | transloco }}</small>
+          <strong>R$ {{ current.monthEarnings | number: '1.2-2' }}</strong>
+        </app-card>
+
+        <app-rentals-list mode="owned" />
+      }
+    } @else if (!error.text()) {
+      <app-skeleton [label]="'dashboard.owner.loading' | transloco">
+        <div class="kpis">
+          @for (item of placeholders; track item) {
+            <app-skeleton-block height="4.5rem" />
+          }
+        </div>
+      </app-skeleton>
+    }
+  </section>
+}

@@ -1,0 +1,27 @@
+<app-text-field
+  class="wide"
+  [label]="'condominiums.fields.address' | transloco"
+  [maxLength]="255"
+  [control]="controls().address"
+/>
+<app-text-field
+  [label]="'condominiums.fields.number' | transloco"
+  [maxLength]="20"
+  [control]="controls().number"
+/>
+<app-text-field
+  [label]="'condominiums.fields.district' | transloco"
+  [maxLength]="100"
+  [control]="controls().district"
+/>
+<app-text-field
+  [label]="'condominiums.fields.city' | transloco"
+  [maxLength]="100"
+  [control]="controls().city"
+/>
+<app-text-field
+  [label]="'condominiums.fields.state' | transloco"
+  placeholder="UF"
+  [format]="formatUf"
+  [control]="controls().state"
+/>

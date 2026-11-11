@@ -1,0 +1,97 @@
+@if (condominium().status === 'BLOCKED') {
+  <app-alert kind="warning">{{ 'condominiums.info.blocked' | transloco }}</app-alert>
+}
+
+<app-card>
+  @if (gallery().length > 0) {
+    <ul class="gallery" [attr.aria-label]="'condominiums.info.photos' | transloco">
+      @for (url of gallery(); track url) {
+        <li><img [src]="url" alt="" /></li>
+      }
+    </ul>
+  } @else {
+    <div class="cover placeholder"><app-icon name="building" /></div>
+  }
+  <h2>{{ condominium().name }}</h2>
+  <dl>
+    @if (street(); as value) {
+      <div>
+        <dt>{{ 'condominiums.fields.address' | transloco }}</dt>
+        <dd>{{ value }}</dd>
+      </div>
+    }
+    @if (region(); as value) {
+      <div>
+        <dt>{{ 'condominiums.info.region' | transloco }}</dt>
+        <dd>{{ value }}</dd>
+      </div>
+    }
+    @if (zipCode(); as value) {
+      <div>
+        <dt>{{ 'condominiums.fields.zipCode' | transloco }}</dt>
+        <dd>{{ value }}</dd>
+      </div>
+    }
+  </dl>
+</app-card>
+
+@if (ruleItems().length > 0 || rules()?.maxPricePerDay != null) {
+  <app-card>
+    <h2>{{ 'condominiums.info.rules' | transloco }}</h2>
+    <dl>
+      @for (item of ruleItems(); track item.key) {
+        <div>
+          <dt>{{ 'condominiums.info.ruleLabels.' + item.key | transloco }}</dt>
+          <dd>{{ item.value }}</dd>
+        </div>
+      }
+      @if (rules()?.maxPricePerDay; as price) {
+        <div>
+          <dt>{{ 'condominiums.info.ruleLabels.maxPricePerDay' | transloco }}</dt>
+          <dd>{{ price | currency: 'BRL' }}</dd>
+        </div>
+      }
+    </dl>
+  </app-card>
+}
+
+@if (condominium().contacts.length > 0) {
+  <app-card>
+    <h2>{{ 'condominiums.info.contacts' | transloco }}</h2>
+    <ul class="contacts">
+      @for (contact of condominium().contacts; track $index) {
+        <li>
+          <strong>{{ contact.name }}</strong>
+          @if (contact.email; as email) {
+            <a [href]="'mailto:' + email">{{ email }}</a>
+          }
+        </li>
+      }
+    </ul>
+  </app-card>
+}
+
+@if (condominium().residency; as residency) {
+  <app-card>
+    <h2>{{ 'condominiums.info.myLink' | transloco }}</h2>
+    <dl>
+      @if (place(); as value) {
+        <div>
+          <dt>{{ 'condominiums.info.unit' | transloco }}</dt>
+          <dd>{{ value }}</dd>
+        </div>
+      }
+      <div>
+        <dt>{{ 'condominiums.info.status' | transloco }}</dt>
+        <dd>
+          <app-badge [tone]="tones[residency.status]">{{
+            statusLabels[residency.status] | transloco
+          }}</app-badge>
+        </dd>
+      </div>
+    </dl>
+    <button appButton type="button" variant="danger" [disabled]="busy()" (click)="leave.emit()">
+      {{ 'condominiums.residencies.leave.label' | transloco }}
+    </button>
+  </app-card>
+}

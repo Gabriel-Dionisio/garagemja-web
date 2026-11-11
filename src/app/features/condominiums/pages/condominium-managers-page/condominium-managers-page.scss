@@ -1,0 +1,32 @@
+.section {
+  display: block;
+}
+
+h2 {
+  margin-bottom: var(--space-3);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.muted,
+small {
+  color: var(--color-text-muted);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.text {
+  display: grid;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+app-alert {
+  display: block;
+}

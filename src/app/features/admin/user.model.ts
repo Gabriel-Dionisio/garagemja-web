@@ -6,17 +6,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  phone: string;
-  cpf: string;
+  phone: string | null;
+  cpf: string | null;
   roles: Role[];
   status: UserStatus;
-}
-
-export interface UsersSummary {
-  total: number;
-  active: number;
-  pending: number;
-  blocked: number;
 }
 
 export interface UserFilter {
@@ -25,18 +18,14 @@ export interface UserFilter {
   status?: UserStatus;
 }
 
-export interface UserDraft {
+export interface AdminDraft {
   name: string;
   email: string;
   password: string;
-  phone: string;
-  cpf: string;
-  roles: Role[];
 }
 
 export interface UserChanges {
   name?: string;
   phone?: string;
   status?: UserStatus;
-  roles?: Role[];
 }

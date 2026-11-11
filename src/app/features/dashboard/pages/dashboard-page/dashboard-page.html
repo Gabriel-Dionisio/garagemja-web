@@ -1,0 +1,32 @@
+<app-page>
+  <app-page-header
+    [title]="'dashboard.title' | transloco"
+    [subtitle]="'dashboard.subtitle' | transloco"
+  />
+
+  <div class="content">
+    @if (isAdmin()) {
+      <section>
+        <h2>{{ 'dashboard.sections.platform' | transloco }}</h2>
+        <app-admin-dashboard />
+      </section>
+    }
+
+    @if (isManager()) {
+      <section>
+        <h2>{{ 'dashboard.sections.manager' | transloco }}</h2>
+        <app-manager-dashboard />
+      </section>
+    }
+
+    <app-owner-dashboard [hideWhenEmpty]="isManager() || isAdmin()" />
+
+    <section>
+      <app-rentals-list
+        mode="rented"
+        [hideWhenEmpty]="true"
+        [heading]="'dashboard.sections.rented' | transloco"
+      />
+    </section>
+  </div>
+</app-page>

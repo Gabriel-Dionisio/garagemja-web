@@ -1,157 +1,121 @@
-<app-page-header
-  [title]="'admin.users.title' | transloco"
-  [subtitle]="'admin.users.subtitle' | transloco"
-/>
+<app-page [fill]="true">
+  <app-page-header
+    [title]="'admin.users.title' | transloco"
+    [subtitle]="'admin.users.subtitle' | transloco"
+  />
 
-<section class="filters">
-  <div class="toolbar">
-    <button
-      type="button"
-      class="toggle"
-      aria-controls="user-filters"
-      [attr.aria-expanded]="filtersOpen()"
-      (click)="toggleFilters()"
-    >
-      <app-icon name="filter" />
-      <span class="toggle-label">{{ 'admin.users.filters' | transloco }}</span>
-      @if (activeFilters() > 0) {
-        <span class="count">{{ activeFilters() }}</span>
-      }
-      <app-icon class="chevron" name="chevron-right" />
-    </button>
-    <a appButton class="new-inline" routerLink="/admin/users/new">
+  <app-filter-panel
+    [label]="'admin.users.filters' | transloco"
+    [activeCount]="activeFilters()"
+    [(open)]="filtersOpen"
+  >
+    <a filterActions appButton class="new-inline" routerLink="/admin/users/new">
       <app-icon name="plus" />
       {{ 'admin.users.new' | transloco }}
     </a>
-  </div>
-
-  <div id="user-filters" class="panel" [hidden]="!filtersOpen()">
-    <div class="chips" role="group" [attr.aria-label]="'admin.users.tabs' | transloco">
-      @for (tab of tabs; track tab) {
-        <button
-          type="button"
-          [class.active]="(tab ?? undefined) === status()"
-          [attr.aria-pressed]="(tab ?? undefined) === status()"
-          (click)="selectStatus(tab)"
-        >
-          {{ (tab ? statusLabels[tab] : 'admin.users.all') | transloco }}
-        </button>
-      }
-    </div>
+    <app-chip-group
+      [label]="'admin.users.tabs' | transloco"
+      [options]="tabs"
+      [value]="status() ?? null"
+      (valueChange)="selectStatus($event)"
+    />
     <app-user-filter (filterChange)="applyFilter($event)" />
-  </div>
-</section>
+  </app-filter-panel>
 
-@if (error.text(); as message) {
-  <app-alert kind="error">{{ message }}</app-alert>
-}
-@if (resetSent()) {
-  <app-alert kind="success">{{ 'admin.detail.passwordResetSent' | transloco }}</app-alert>
-}
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  @if (resetSent()) {
+    <app-alert kind="success">{{ 'admin.detail.passwordResetSent' | transloco }}</app-alert>
+  }
 
-<div class="results" [attr.aria-busy]="loading()">
-  <div class="list-area">
-    @if (loading() && !result()) {
-      <app-loading-block [label]="'admin.users.loading' | transloco" />
-    } @else if (result(); as current) {
-      @if (current.items.length === 0) {
-        <app-empty-state
-          icon="users"
-          [title]="'admin.users.emptyTitle' | transloco"
-          [description]="'admin.users.emptyDescription' | transloco"
-        />
-      } @else {
-        <ul class="cards" [attr.aria-label]="'admin.users.caption' | transloco">
-          @for (user of current.items; track user.id) {
-            <li>
-              <app-user-summary
-                [name]="user.name"
-                [email]="user.email"
-                [caption]="roleLabels[user.roles[0]] | transloco"
-              />
-              <app-user-status-badge [status]="user.status" />
-              <span class="actions">
-                <a
-                  appIconButton
-                  [label]="'admin.users.details' | transloco"
-                  [routerLink]="['/admin/users', user.id]"
-                >
-                  <app-icon name="eye" />
-                </a>
-                @if (user.status === 'PENDING') {
-                  <button
-                    appIconButton
-                    variant="primary"
-                    type="button"
-                    [label]="'admin.users.approve' | transloco"
-                    [loading]="busy()"
-                    (click)="approve(user)"
-                  >
-                    <app-icon name="check" />
-                  </button>
-                }
-                @if (canResetPassword(user)) {
-                  <button
-                    appIconButton
-                    type="button"
-                    [label]="'admin.users.resetPassword' | transloco"
-                    [loading]="busy()"
-                    (click)="sendPasswordReset(user)"
-                  >
-                    <app-icon name="key" />
-                  </button>
-                }
-                @if (user.status === 'INACTIVE') {
-                  <button
-                    appIconButton
-                    variant="primary"
-                    type="button"
-                    [label]="'admin.users.reactivate' | transloco"
-                    [loading]="busy()"
-                    (click)="reactivate(user)"
-                  >
-                    <app-icon name="user-check" />
-                  </button>
-                }
-                @if (canDeactivate(user)) {
-                  <button
-                    appIconButton
-                    type="button"
-                    [label]="'admin.users.deactivate' | transloco"
-                    [loading]="busy()"
-                    (click)="deactivate(user)"
-                  >
-                    <app-icon name="ban" />
-                  </button>
-                }
-              </span>
-            </li>
-          }
-        </ul>
-      }
-    }
-  </div>
-  <div class="footer">
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [empty]="result()?.items?.length === 0"
+    [loadingLabel]="'admin.users.loading' | transloco"
+    emptyIcon="users"
+    [emptyTitle]="'admin.users.emptyTitle' | transloco"
+    [emptyDescription]="'admin.users.emptyDescription' | transloco"
+    [listLabel]="'admin.users.caption' | transloco"
+  >
     @if (result(); as current) {
+      @for (user of current.items; track user.id) {
+        <li appListItem>
+          <app-user-summary
+            [name]="user.name"
+            [email]="user.email"
+            [caption]="roleLabels[user.roles[0]] | transloco"
+          />
+          <span status><app-user-status-badge [status]="user.status" /></span>
+          <span actions>
+            <a
+              appIconButton
+              [label]="'admin.users.details' | transloco"
+              [routerLink]="['/admin/users', user.id]"
+            >
+              <app-icon name="eye" />
+            </a>
+            @if (canResetPassword(user)) {
+              <button
+                appIconButton
+                type="button"
+                [label]="'admin.users.resetPassword' | transloco"
+                [loading]="busy()"
+                (click)="sendPasswordReset(user)"
+              >
+                <app-icon name="key" />
+              </button>
+            }
+            @if (user.status === 'INACTIVE') {
+              <button
+                appIconButton
+                variant="primary"
+                type="button"
+                [label]="'admin.users.reactivate' | transloco"
+                [loading]="busy()"
+                (click)="reactivate(user)"
+              >
+                <app-icon name="user-check" />
+              </button>
+            }
+            @if (canDeactivate(user)) {
+              <button
+                appIconButton
+                type="button"
+                [label]="'admin.users.deactivate' | transloco"
+                [loading]="busy()"
+                (click)="deactivate(user)"
+              >
+                <app-icon name="ban" />
+              </button>
+            }
+          </span>
+        </li>
+      }
       @if (current.items.length > 0) {
         <app-paginator
+          paginator
           [page]="current.page"
           [size]="current.size"
           [total]="current.total"
           [itemCount]="current.items.length"
           [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
           (pageChange)="goTo($event)"
         />
       }
     }
-    <a
-      appIconButton
-      variant="fab"
-      class="fab"
-      routerLink="/admin/users/new"
-      [label]="'admin.users.new' | transloco"
-    >
-      <app-icon name="plus" />
-    </a>
-  </div>
-</div>
+  </app-list-state>
+
+  <a
+    appIconButton
+    variant="fab"
+    class="fab"
+    routerLink="/admin/users/new"
+    [label]="'admin.users.new' | transloco"
+  >
+    <app-icon name="plus" />
+  </a>
+</app-page>

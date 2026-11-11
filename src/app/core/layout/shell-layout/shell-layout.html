@@ -9,6 +9,7 @@
       class="icon-button"
       type="button"
       [attr.aria-label]="'nav.openMenu' | transloco"
+      [attr.title]="'nav.openMenu' | transloco"
       aria-controls="app-nav"
       [attr.aria-expanded]="drawerOpen()"
       (click)="openDrawer()"
@@ -17,6 +18,11 @@
     </button>
     <app-brand-logo [compact]="true" />
   }
+  <form class="topbar-search" (submit)="$event.preventDefault()">
+    <app-icon name="search" />
+    <label class="sr-only" for="global-search">{{ 'nav.searchPlaceholder' | transloco }}</label>
+    <input id="global-search" type="search" [placeholder]="'nav.searchPlaceholder' | transloco" />
+  </form>
   <app-language-switcher class="language" />
   @if (user(); as current) {
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
@@ -39,27 +45,53 @@
     (keydown.escape)="dismissSidebar()"
   >
     <div class="panel">
-      <a class="brand" routerLink="/home" aria-label="GaragemJá.com">
+      <a class="brand" [routerLink]="homeLink()" aria-label="GaragemJá.com" title="GaragemJá.com">
         <app-icon name="car" />
         <span class="label">GaragemJá.com</span>
       </a>
       <nav [attr.aria-label]="'nav.main' | transloco">
         <ul>
-          @for (item of items(); track item.path) {
+          @for (item of mainItems(); track item.path) {
             <li>
               <a
                 [routerLink]="item.path"
                 routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: !!item.exact }"
                 ariaCurrentWhenActive="page"
                 [attr.title]="viewport.usesDrawer() ? null : (item.labelKey | transloco)"
                 (click)="closeDrawer()"
               >
                 <app-icon [name]="item.icon" />
                 <span class="label">{{ item.labelKey | transloco }}</span>
+                @if (item.badge && badgeCount() > 0) {
+                  <app-badge class="count" tone="warning">{{ badgeCount() }}</app-badge>
+                }
               </a>
             </li>
           }
         </ul>
+        @if (managementItems().length > 0) {
+          <p class="group-title" id="nav-management">
+            <span class="label">{{ 'nav.management' | transloco }}</span>
+          </p>
+          <ul aria-labelledby="nav-management">
+            @for (item of managementItems(); track item.path) {
+              <li>
+                <a
+                  [routerLink]="item.path"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: !!item.exact }"
+                  ariaCurrentWhenActive="page"
+                  [attr.title]="viewport.usesDrawer() ? null : (item.labelKey | transloco)"
+                  (click)="closeDrawer()"
+                >
+                  <app-icon [name]="item.icon" />
+                  <span class="label">{{ item.labelKey | transloco }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
       </nav>
       <button
         class="logout"

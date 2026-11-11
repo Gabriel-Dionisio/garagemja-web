@@ -4,12 +4,13 @@ import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { provideTestTranslations } from '../../../../testing/translations';
+import { PendingVerificationStore } from '../../pending-verification';
 import { ConfirmEmailPage } from './confirm-email-page';
 
 describe('ConfirmEmailPage', () => {
   const confirmEmail = vi.fn();
 
-  async function setup(oobCode: string | undefined) {
+  async function setup(oobCode: string | undefined, email?: string) {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -17,6 +18,7 @@ describe('ConfirmEmailPage', () => {
         { provide: AuthService, useValue: { confirmEmail } },
       ],
     });
+    if (email) TestBed.inject(PendingVerificationStore).hold({ email, password: 'x' });
     const fixture = TestBed.createComponent(ConfirmEmailPage);
     fixture.componentRef.setInput('oobCode', oobCode);
     await fixture.whenStable();
@@ -52,5 +54,11 @@ describe('ConfirmEmailPage', () => {
     const element = await setup(undefined);
     expect(confirmEmail).not.toHaveBeenCalled();
     expect(element.textContent).toContain('inválido');
+  });
+
+  it('leva ao login com o e-mail do cadastro preenchido', async () => {
+    confirmEmail.mockReturnValue(of(undefined));
+    const element = await setup('abc', 'ana@x.com');
+    expect(element.querySelector('a[href="/login?email=ana@x.com"]')).not.toBeNull();
   });
 });

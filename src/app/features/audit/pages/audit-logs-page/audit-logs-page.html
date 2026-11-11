@@ -1,0 +1,162 @@
+<app-page [fill]="true">
+  <app-page-header
+    [title]="'audit.title' | transloco"
+    [subtitle]="'audit.subtitle' | transloco"
+    [backLink]="backLink"
+  />
+
+  @if (condominiumId) {
+    <app-condominium-tabs [id]="condominiumId" [residents]="!isAdmin()" [history]="true" />
+  }
+
+  <section class="filters">
+    <div class="toolbar">
+      <button
+        type="button"
+        class="toggle"
+        aria-controls="audit-filters"
+        [attr.aria-expanded]="filtersOpen()"
+        (click)="toggleFilters()"
+      >
+        <app-icon name="filter" />
+        <span class="toggle-label">{{ 'audit.filters.title' | transloco }}</span>
+        @if (activeFilters() > 0) {
+          <span class="count">{{ activeFilters() }}</span>
+        }
+        <app-icon class="chevron" name="chevron-right" />
+      </button>
+      <a appButton variant="secondary" [href]="exportUrl()" download="audit-logs.csv">
+        {{ 'audit.export' | transloco }}
+      </a>
+    </div>
+
+    <div id="audit-filters" class="panel" [hidden]="!filtersOpen()">
+      <span class="group-label">{{ 'audit.filters.entityLabel' | transloco }}</span>
+      <app-chip-group
+        [label]="'audit.filters.entity' | transloco"
+        [options]="entityOptions"
+        [value]="entityType()"
+        (valueChange)="selectEntityType($event)"
+      />
+      <span class="group-label">{{ 'audit.filters.actionLabel' | transloco }}</span>
+      <app-chip-group
+        [label]="'audit.filters.action' | transloco"
+        [options]="actionOptions"
+        [value]="action()"
+        (valueChange)="selectAction($event)"
+      />
+      <div class="lookups">
+        @if (isAdmin()) {
+          <app-lookup-field
+            [label]="'audit.filters.author' | transloco"
+            [placeholder]="'audit.filters.authorPlaceholder' | transloco"
+            [hint]="'audit.filters.authorHint' | transloco"
+            [clearLabel]="'common.actions.clear' | transloco"
+            [search]="searchUsers"
+            [selected]="user()"
+            [minLength]="5"
+            (picked)="pickUser($event)"
+            (cleared)="pickUser(null)"
+          />
+        }
+        @if (!condominiumId) {
+          <app-lookup-field
+            [label]="'audit.filters.condominium' | transloco"
+            [placeholder]="'audit.filters.condominiumPlaceholder' | transloco"
+            [clearLabel]="'common.actions.clear' | transloco"
+            [search]="searchCondominiums"
+            [selected]="condominium()"
+            (picked)="pickCondominium($event)"
+            (cleared)="pickCondominium(null)"
+          />
+        }
+        <div class="dates">
+          <label>
+            <span class="date-label">{{ 'audit.filters.from' | transloco }}</span>
+            <app-date-field
+              [label]="'audit.filters.from' | transloco"
+              [isoValue]="from()"
+              [isoMax]="to() || null"
+              (isoValueChange)="setFrom($event)"
+            />
+          </label>
+          <label>
+            <span class="date-label">{{ 'audit.filters.to' | transloco }}</span>
+            <app-date-field
+              [label]="'audit.filters.to' | transloco"
+              [isoValue]="to()"
+              [isoMin]="from() || null"
+              (isoValueChange)="setTo($event)"
+            />
+          </label>
+          <p class="time-zone">{{ 'audit.filters.timeZone' | transloco: { zone: timeZone() } }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [error]="error.text()"
+    [empty]="result()?.items?.length === 0"
+    [loadingLabel]="'audit.loading' | transloco"
+    emptyIcon="search"
+    [emptyTitle]="'audit.emptyTitle' | transloco"
+    [emptyDescription]="'audit.emptyDescription' | transloco"
+    [listLabel]="'audit.caption' | transloco"
+  >
+    @if (result(); as current) {
+      @for (log of current.items; track log.id) {
+        <li appListItem>
+          <div class="entry">
+            <button
+              type="button"
+              class="row"
+              [attr.aria-expanded]="expanded() === log.id"
+              (click)="toggle(log.id)"
+            >
+              <span class="what">
+                <app-badge [tone]="actionTones[log.action]">
+                  {{ 'audit.action.' + log.action | transloco }}
+                </app-badge>
+                <strong>{{ 'audit.entity.' + log.entityType | transloco }}</strong>
+              </span>
+              <small
+                >{{ log.createdAt | date: 'short' }}
+                <span class="zone">{{ offset(log.createdAt) }}</span></small
+              >
+              <app-icon class="chevron" name="chevron-right" />
+            </button>
+            @if (expanded() === log.id) {
+              <dl class="diff">
+                @for (change of changes(log); track change.field) {
+                  <dt>{{ change.field }}</dt>
+                  <dd>
+                    <del>{{ change.before }}</del>
+                    <ins>{{ change.after }}</ins>
+                  </dd>
+                } @empty {
+                  <dd>{{ 'audit.noChanges' | transloco }}</dd>
+                }
+              </dl>
+            }
+          </div>
+        </li>
+      }
+      @if (current.items.length > 0) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      }
+    }
+  </app-list-state>
+</app-page>

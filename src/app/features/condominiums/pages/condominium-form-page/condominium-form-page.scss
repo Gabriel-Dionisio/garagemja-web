@@ -1,0 +1,77 @@
+@use 'styles/mixins' as *;
+
+app-page-header {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+app-alert {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+h2 {
+  margin-bottom: var(--space-4);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.page {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+
+  &.has-aside {
+    @include from($bp-lg) {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    }
+  }
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+
+  @include from($bp-md) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+
+.image {
+  order: -1;
+  width: 100%;
+  max-width: 24rem;
+  margin-inline: auto;
+
+  @include from($bp-md) {
+    order: 0;
+    max-width: none;
+    margin-top: calc(1lh + 0.125rem);
+  }
+}
+
+.exists-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+aside {
+  @include from($bp-lg) {
+    position: sticky;
+    top: 0;
+  }
+}
+
+form app-form-actions {
+  @include from($bp-md) {
+    position: sticky;
+    bottom: 0;
+    padding-block: var(--space-3);
+    background: var(--color-surface);
+  }
+}

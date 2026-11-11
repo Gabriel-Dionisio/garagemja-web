@@ -23,4 +23,12 @@ describe('ErrorText', () => {
     state.clear();
     expect(state.text()).toBeNull();
   });
+
+  it('usa o texto do status quando a API não manda mensagem', () => {
+    const other = TestBed.inject(ErrorText).state({ 403: 'chave.inexistente' });
+    other.set({ ...apiError, status: 403 });
+    expect(other.text()).toBe('chave.inexistente');
+    other.set({ ...apiError, status: 500 });
+    expect(other.text()).not.toBe('chave.inexistente');
+  });
 });

@@ -1,0 +1,164 @@
+<app-page size="wide">
+  <app-page-header
+    [title]="
+      residentView()?.name ??
+      ((editing() ? 'condominiums.form.editTitle' : 'condominiums.form.newTitle') | transloco)
+    "
+    [backLink]="backLink()"
+  />
+
+  @if (showTabs() && id(); as condominiumId) {
+    <app-condominium-tabs
+      [id]="condominiumId"
+      [residents]="canOpenResidents()"
+      [managers]="canOpenManagers()"
+      [history]="hasHistory()"
+    />
+  }
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  @if (saved()) {
+    <app-alert kind="success">{{ 'condominiums.form.saved' | transloco }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-loading-block [label]="'condominiums.form.loading' | transloco" />
+  } @else if (residentView(); as current) {
+    <app-condominium-info
+      [condominium]="current"
+      [images]="images()"
+      [rules]="rules()"
+      [busy]="busy()"
+      (leave)="leaveResidency()"
+    />
+  } @else {
+    @if (!condominium() && !editing() && !isAdmin()) {
+      <app-alert kind="info">{{ 'condominiums.form.newNote' | transloco }}</app-alert>
+    }
+
+    <div class="page" [class.has-aside]="condominium()">
+      <app-card>
+        <form appAutofocusFirst [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <h2>{{ 'condominiums.form.data' | transloco }}</h2>
+          <div class="fields">
+            <app-form-section>
+              <app-text-field
+                [label]="'condominiums.fields.cnpj' | transloco"
+                placeholder="00.000.000/0000-00"
+                [format]="formatCnpj"
+                [control]="form.controls.cnpj"
+              />
+              @if (existing(); as found) {
+                <app-alert class="wide" kind="warning">
+                  {{ 'condominiums.form.exists' | transloco: { name: found.name } }}
+                  @if (requested()) {
+                    <strong>{{ 'condominiums.form.requestSent' | transloco }}</strong>
+                  } @else if (found.status === 'ACTIVE') {
+                    <span class="exists-actions">
+                      <button
+                        appButton
+                        type="button"
+                        variant="secondary"
+                        aria-haspopup="dialog"
+                        [disabled]="busy()"
+                        (click)="joinAsResident(found)"
+                      >
+                        {{ 'condominiums.form.joinAsResident' | transloco }}
+                      </button>
+                      <button
+                        appButton
+                        type="button"
+                        variant="secondary"
+                        [disabled]="busy()"
+                        (click)="requestManagement(found)"
+                      >
+                        {{ 'condominiums.form.requestManagement' | transloco }}
+                      </button>
+                    </span>
+                  }
+                </app-alert>
+              }
+              @if (autofill.inactiveCnpj()) {
+                <app-alert class="wide" kind="warning">{{
+                  'condominiums.lookup.inactive' | transloco
+                }}</app-alert>
+              }
+              <app-text-field
+                [label]="'condominiums.fields.zipCode' | transloco"
+                inputMode="numeric"
+                placeholder="00000-000"
+                [format]="formatCep"
+                [control]="form.controls.zipCode"
+              />
+              <app-text-field
+                class="wide"
+                [label]="'condominiums.fields.name' | transloco"
+                [maxLength]="150"
+                [format]="formatName"
+                [control]="form.controls.name"
+              />
+              <app-address-fields [controls]="form.controls" />
+              @if (!editing()) {
+                <app-checkbox
+                  class="wide"
+                  [label]="'condominiums.form.notResident' | transloco"
+                  [control]="notResident"
+                />
+              }
+            </app-form-section>
+            <app-condominium-images
+              class="image"
+              [(images)]="images"
+              [editing]="editing()"
+              [busy]="busy()"
+              [disabled]="!canChangeImage()"
+            />
+          </div>
+          <app-form-actions>
+            @if (!canEdit()) {
+              <a appButton variant="secondary" [routerLink]="backLink()">
+                {{ 'common.actions.back' | transloco }}
+              </a>
+            } @else if (!editing() || dirty()) {
+              <a appButton variant="secondary" [routerLink]="backLink()">
+                {{ 'common.actions.cancel' | transloco }}
+              </a>
+            }
+            @if (canDelete()) {
+              <button
+                appButton
+                type="button"
+                variant="danger"
+                [disabled]="busy()"
+                (click)="remove()"
+              >
+                {{ 'condominiums.form.delete' | transloco }}
+              </button>
+            }
+            @if (canEdit()) {
+              <button appButton type="submit" [loading]="busy()">
+                {{ (editing() ? 'common.actions.save' : 'condominiums.form.submit') | transloco }}
+              </button>
+            }
+          </app-form-actions>
+        </form>
+      </app-card>
+      @if (condominium(); as current) {
+        <aside>
+          <app-condominium-status-panel
+            [condominium]="current"
+            [counts]="counts()"
+            [statusActions]="statusActions()"
+            [membershipOpen]="membershipOpen()"
+            [busy]="busy()"
+            (toggleResidency)="toggleResidency()"
+            (leaveManagement)="leaveManagement()"
+            (changeStatus)="changeStatus($event)"
+          />
+        </aside>
+      }
+    </div>
+  }
+</app-page>

@@ -48,7 +48,7 @@ describe('refreshInterceptor', () => {
     http.expectOne('/api/v1/auth/refresh').flush(null, unauthorized);
 
     expect(status).toBe(401);
-    expect(navigate).toHaveBeenCalledWith(['/login'], expect.anything());
+    expect(navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('não tenta renovar em login, logout nem em renovação', () => {

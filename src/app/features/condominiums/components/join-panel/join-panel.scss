@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+h2 {
+  margin: 0 0 var(--space-1);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+app-alert {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  margin: var(--space-2) 0;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-brand);
+}

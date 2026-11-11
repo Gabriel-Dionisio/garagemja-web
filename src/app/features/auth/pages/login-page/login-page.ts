@@ -63,9 +63,16 @@ export class LoginPage {
   protected readonly submitting = signal(false);
   protected readonly error = this.errorText.state();
   private readonly email = toSignal(this.form.controls.email.valueChanges, { initialValue: '' });
+
+  constructor() {
+    const email = this.route.snapshot.queryParamMap.get('email');
+    if (email) this.form.controls.email.setValue(email);
+  }
+
   protected readonly registerParams = computed(() => {
     const email = this.email().trim();
-    return email ? { email } : {};
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    return { ...(email && { email }), ...(returnUrl && { returnUrl }) };
   });
 
   protected submit(): void {

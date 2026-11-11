@@ -19,7 +19,13 @@
       "personName": "Informe nome e sobrenome usando apenas letras (espaços e apóstrofos são permitidos).",
       "passwordPolicy": "Use de {{min}} a {{max}} caracteres com maiúscula, minúscula, número e símbolo.",
       "mismatch": "As senhas não coincidem.",
-      "invalid": "Valor inválido."
+      "invalid": "Valor inválido.",
+      "cnpj": "CNPJ inválido.",
+      "pattern": "Formato inválido."
+    },
+    "condominium": {
+      "forbidden": "Você não tem permissão para esta ação neste condomínio.",
+      "notFound": "Condomínio não encontrado ou indisponível."
     }
   },
   "common": {
@@ -32,7 +38,6 @@
       "cpf": "CPF",
       "role": "Perfil",
       "status": "Status",
-      "accountType": "Tipo de conta",
       "confirmPassword": "Confirmar senha",
       "initialPassword": "Senha inicial",
       "roles": "Perfis"
@@ -59,6 +64,7 @@
       "clear": "Limpar"
     },
     "pagination": {
+      "perPage": "Itens por página",
       "label": "Paginação",
       "previous": "Anterior",
       "next": "Próxima",
@@ -66,6 +72,8 @@
       "showingOf": "{{from}}–{{to}} de {{total}}"
     },
     "password": {
+      "capsLockShort": "Caps Lock",
+      "capsLock": "Caps Lock ativado",
       "show": "Mostrar senha",
       "hide": "Ocultar senha"
     },
@@ -88,6 +96,23 @@
       "met": "As senhas coincidem",
       "unmet": "As senhas não coincidem",
       "pending": "Confirmando…"
+    },
+    "image": {
+      "choose": "Escolher imagem",
+      "empty": "Nenhuma imagem ainda",
+      "emptyHint": "Toque para adicionar até {{max}} imagens, uma a uma ou todas de uma vez",
+      "add": "Adicionar imagem",
+      "previous": "Imagem anterior",
+      "next": "Próxima imagem",
+      "change": "Trocar imagem",
+      "moveBack": "Mover para trás",
+      "moveForward": "Mover para frente",
+      "cover": "Capa",
+      "remove": "Remover imagem",
+      "rejected": {
+        "type": "Escolha um arquivo de imagem.",
+        "size": "A imagem deve ter no máximo 5 MB."
+      }
     }
   },
   "nav": {
@@ -97,7 +122,12 @@
     "openMenu": "Abrir menu",
     "menu": "Menu",
     "main": "Principal",
-    "logout": "Sair"
+    "searchPlaceholder": "Condomínio, bairro ou endereço",
+    "logout": "Sair",
+    "condominiums": "Condomínios",
+    "audit": "Auditoria",
+    "dashboard": "Painel",
+    "management": "Gestão"
   },
   "routes": {
     "login": "Entrar",
@@ -106,11 +136,23 @@
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
     "adminUsers": "Usuários",
-    "adminUserNew": "Novo usuário",
+    "adminUserNew": "Novo administrador",
     "adminUserDetail": "Detalhes do usuário",
     "status": "Status do sistema",
     "forgotPassword": "Esqueci a senha",
-    "resetPassword": "Redefinir senha"
+    "resetPassword": "Redefinir senha",
+    "condominiums": "Condomínios",
+    "condominiumNew": "Novo condomínio",
+    "condominiumDetail": "Detalhes do condomínio",
+    "condominiumManagers": "Síndicos",
+    "join": "Entrar em condomínio",
+    "condominiumResidents": "Moradores",
+    "history": "Histórico",
+    "auditLogs": "Auditoria",
+    "myResidencies": "Onde moro",
+    "managerDashboard": "Painel do síndico",
+    "adminDashboard": "Painel da plataforma",
+    "dashboard": "Painel"
   },
   "auth": {
     "login": {
@@ -126,15 +168,18 @@
       "heading": "Criar sua conta",
       "subtitle": "Crie sua conta para começar a alugar vagas.",
       "namePlaceholder": "Digite seu nome completo",
-      "roleAdminPending": "Síndico (requer aprovação)",
       "submit": "Criar conta",
       "haveAccount": "Já possui uma conta?",
       "signIn": "Entrar"
     },
     "confirmEmail": {
-      "heading": "Confirmar e-mail",
+      "heading": {
+        "confirming": "Confirmando e-mail",
+        "confirmed": "E-mail confirmado",
+        "failed": "Não foi possível confirmar"
+      },
       "confirming": "Confirmando seu e-mail…",
-      "success": "E-mail confirmado! Agora você já pode entrar.",
+      "success": "Sua conta está ativa. Entre com seu e-mail e senha para começar.",
       "invalid": "Este link é inválido ou expirou. Entre para pedir um novo."
     },
     "verifyEmail": {
@@ -169,20 +214,46 @@
     "greeting": "Olá, {{name}}",
     "welcome": "Bem-vindo ao GaragemJá.",
     "emptyTitle": "Suas vagas e aluguéis aparecerão aqui",
-    "emptyDescription": "A busca e o aluguel de vagas chegam nas próximas entregas."
+    "emptyDescription": "A busca e o aluguel de vagas chegam nas próximas entregas.",
+    "title": "Início",
+    "featuredTitle": "Vagas do meu condomínio",
+    "availableVagas": "vagas disponíveis",
+    "priceFrom": "A partir de R$",
+    "perHour": "por hora",
+    "viewCondominium": "Ver condomínio",
+    "loading": "Carregando condomínios...",
+    "loadError": "Não foi possível carregar os condomínios.",
+    "emptyCondominiumsTitle": "Nenhuma vaga disponível",
+    "emptyCondominiumsDescription": "Não há vagas cadastradas nos condomínios onde você mora.",
+    "search": {
+      "condominium": "Condomínio",
+      "condominiumPlaceholder": "Ex.: Residencial Alpha",
+      "period": "Período",
+      "start": "Início",
+      "end": "Fim",
+      "submit": "Buscar"
+    },
+    "joinTitle": "Entre no seu condomínio",
+    "joinDescription": "Use o código do seu síndico ou cadastre o condomínio.",
+    "joinAction": "Tenho um código",
+    "myCondominiumAction": "Meu condomínio",
+    "manageAction": "Cadastrar condomínio",
+    "usersSection": "Usuários",
+    "condominiumsSection": "Condomínios",
+    "noResidencyTitle": "Você ainda não mora em um condomínio",
+    "noResidencyDescription": "Entre com o código do síndico e aguarde a aprovação para ver as vagas."
   },
   "admin": {
     "users": {
       "title": "Usuários",
       "subtitle": "Gerencie as contas da plataforma.",
-      "new": "Novo usuário",
+      "new": "Novo administrador",
       "loading": "Carregando usuários...",
       "emptyTitle": "Nenhum usuário encontrado",
       "emptyDescription": "Ajuste os filtros e tente novamente.",
       "caption": "Lista de usuários",
       "actions": "Ações",
       "details": "Detalhes",
-      "approve": "Aprovar",
       "all": "Todos",
       "tabs": "Filtrar por status",
       "filters": "Filtros",
@@ -194,30 +265,21 @@
       "title": "Detalhes do usuário",
       "loading": "Carregando usuário...",
       "saved": "Alterações salvas.",
-      "approveManager": "Aprovar síndico",
       "sendPasswordReset": "Enviar link de redefinição de senha",
       "passwordResetSent": "Link de redefinição enviado ao usuário.",
       "moreActions": "Outras ações",
       "editTitle": "Dados da conta",
-      "selfNote": "Esta é a sua conta. Status e perfis só podem ser alterados por outro administrador.",
-      "accessTitle": "Acesso",
-      "rolesRequired": "Selecione ao menos um perfil.",
+      "selfNote": "Esta é a sua conta. O status só pode ser alterado por outro administrador.",
       "deactivate": "Inativar",
       "block": "Bloquear acesso",
       "unblock": "Desbloquear acesso",
-      "reactivate": "Reativar conta"
+      "reactivate": "Reativar conta",
+      "history": "Histórico de ações"
     },
     "form": {
-      "title": "Novo usuário",
-      "submit": "Criar usuário",
-      "personal": "Dados pessoais",
-      "access": "Acesso"
-    },
-    "approveDialog": {
-      "title": "Aprovar usuário",
-      "message": "Aprovar {{name}} como síndico?",
-      "messageSelf": "Aprovar este usuário como síndico?",
-      "confirm": "Aprovar"
+      "title": "Novo administrador",
+      "submit": "Criar administrador",
+      "adminOnly": "Cria uma conta de administrador da plataforma. Moradores e síndicos se cadastram sozinhos."
     },
     "dashboard": {
       "loading": "Carregando painel...",
@@ -226,13 +288,24 @@
         "total": "Usuários",
         "active": "Ativos",
         "pending": "Pendentes",
-        "blocked": "Bloqueados"
+        "blocked": "Bloqueados",
+        "other": "Outros"
       },
-      "pendingTitle": "Aprovações pendentes",
       "pendingEmpty": "Nenhuma aprovação pendente",
       "recentTitle": "Cadastros recentes",
       "recentEmpty": "Nenhum cadastro ainda",
-      "seeAll": "Ver todos"
+      "seeAll": "Ver todos",
+      "title": "Painel da plataforma",
+      "subtitle": "Números de usuários e condomínios.",
+      "usersTitle": "Usuários",
+      "condominiumsTitle": "Condomínios",
+      "usersChart": "Usuários por situação",
+      "condominiumsChart": "Condomínios por situação",
+      "monthlyChart": "Novos cadastros por mês",
+      "monthly": {
+        "users": "Usuários",
+        "condominiums": "Condomínios"
+      }
     },
     "passwordResetDialog": {
       "title": "Enviar link de redefinição",
@@ -297,6 +370,470 @@
       "degraded": "Instável",
       "down": "Fora do ar",
       "noData": "Sem dados"
+    }
+  },
+  "condominiums": {
+    "status": {
+      "PENDING": "Aguardando aprovação",
+      "ACTIVE": "Ativo",
+      "REJECTED": "Rejeitado",
+      "BLOCKED": "Bloqueado",
+      "CLOSED": "Encerrado"
+    },
+    "list": {
+      "title": "Condomínios",
+      "subtitle": "Condomínios cadastrados na plataforma.",
+      "new": "Cadastrar condomínio",
+      "all": "Todos",
+      "tabs": "Filtrar por status",
+      "filters": "Filtros",
+      "details": "Detalhes",
+      "loading": "Carregando condomínios...",
+      "emptyTitle": "Nenhum condomínio encontrado",
+      "emptyDescription": "Se o seu condomínio já está no GaragemJá, peça um convite ao síndico atual. Se não, cadastre-o.",
+      "caption": "Lista de condomínios",
+      "resides": "Moro aqui",
+      "join": "Entrar com código",
+      "pending": "{{count}} morador(es) aguardando aprovação"
+    },
+    "form": {
+      "newTitle": "Cadastrar condomínio",
+      "editTitle": "Dados do condomínio",
+      "data": "Dados do condomínio",
+      "submit": "Cadastrar condomínio",
+      "saved": "Alterações salvas.",
+      "loading": "Carregando condomínio...",
+      "delete": "Excluir condomínio",
+      "review": "Análise do cadastro",
+      "statusTitle": "Situação",
+      "newNote": "Ao cadastrar, você declara ser síndico deste condomínio. O cadastro será analisado pelo administrador da plataforma antes de ser ativado.",
+      "notResident": "Não moro neste condomínio",
+      "exists": "Este CNPJ já está cadastrado como {{name}}. Escolha como deseja continuar.",
+      "requestManagement": "Sou o novo síndico",
+      "requestSent": "Pedido enviado. Um síndico atual precisa aprová-lo.",
+      "joinAsResident": "Entrar como morador"
+    },
+    "fields": {
+      "name": "Nome do condomínio",
+      "cnpj": "CNPJ",
+      "zipCode": "CEP",
+      "address": "Endereço",
+      "city": "Cidade",
+      "state": "UF",
+      "statusReason": "Motivo",
+      "district": "Bairro",
+      "number": "Número"
+    },
+    "actions": {
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "block": "Bloquear",
+      "unblock": "Desbloquear",
+      "reopen": "Reabrir análise",
+      "close": "Encerrar"
+    },
+    "dialog": {
+      "approve": {
+        "title": "Aprovar condomínio",
+        "message": "Aprovar {{name}}? O solicitante passará a ser síndico deste condomínio.",
+        "confirm": "Aprovar"
+      },
+      "reject": {
+        "title": "Rejeitar condomínio",
+        "message": "Rejeitar o cadastro de {{name}}?",
+        "confirm": "Rejeitar"
+      },
+      "block": {
+        "title": "Bloquear condomínio",
+        "message": "Bloquear {{name}}? Ele deixa de aparecer para os moradores.",
+        "confirm": "Bloquear"
+      },
+      "unblock": {
+        "title": "Desbloquear condomínio",
+        "message": "Desbloquear {{name}}?",
+        "confirm": "Desbloquear"
+      },
+      "reopen": {
+        "title": "Reabrir análise",
+        "message": "Reabrir a análise de {{name}}?",
+        "confirm": "Reabrir"
+      },
+      "delete": {
+        "title": "Excluir condomínio",
+        "message": "Excluir {{name}}? Esta ação não pode ser desfeita.",
+        "confirm": "Excluir"
+      },
+      "close": {
+        "title": "Encerrar condomínio",
+        "message": "Encerrar {{name}}? Os síndicos perdem o vínculo e a ação não pode ser desfeita.",
+        "confirm": "Encerrar"
+      }
+    },
+    "image": {
+      "alt": "Imagem do condomínio"
+    },
+    "timeline": {
+      "received": "Cadastro recebido",
+      "review": "Em análise pelo administrador",
+      "approved": "Aprovado",
+      "rejected": "Rejeitado",
+      "closed": "Encerrado",
+      "reason": "Motivo: {{reason}}",
+      "state": {
+        "done": "concluído",
+        "current": "em andamento",
+        "failed": "não concluído",
+        "todo": "pendente"
+      },
+      "label": "Andamento do cadastro",
+      "hint": "Você será habilitado como síndico após a aprovação."
+    },
+    "managers": {
+      "showEmail": "Mostrar meu e-mail aos moradores",
+      "showEmailHint": "Seu nome aparece sempre; o e-mail só com esta opção ligada.",
+      "title": "Síndicos",
+      "loading": "Carregando síndicos...",
+      "empty": "Nenhum síndico vinculado.",
+      "remove": "Remover",
+      "leave": "Sair",
+      "inviteTitle": "Convidar síndico",
+      "inviteHint": "A pessoa convidada precisa ter uma conta e aceitar o convite. Útil para passar o cargo a um sucessor.",
+      "invite": "Convidar",
+      "inviteSent": "Se existir uma conta com este e-mail, o convite foi enviado.",
+      "cancelInvite": "Cancelar convite",
+      "expiresAt": "Expira em {{date}}",
+      "dialog": {
+        "remove": {
+          "title": "Remover síndico",
+          "message": "Remover {{manager}} de {{name}}?",
+          "confirm": "Remover"
+        },
+        "leave": {
+          "title": "Sair do condomínio",
+          "message": "Deixar de ser síndico de {{name}}? Você perde o acesso de gestão.",
+          "confirm": "Sair"
+        }
+      },
+      "transfer": {
+        "action": "Transferir",
+        "title": "Transferir cargo de {{manager}}",
+        "hint": "O novo síndico precisa ter uma conta ativa. O atual perde o acesso de gestão.",
+        "reason": "Motivo da transferência",
+        "confirm": "Transferir"
+      },
+      "removeReason": "Motivo da remoção",
+      "pending": "Convite pendente",
+      "current": "Síndicos atuais",
+      "requests": "Pedidos para ser síndico",
+      "sentInvites": "Convites enviados",
+      "approve": "Aprovar pedido",
+      "rejectRequest": "Recusar pedido"
+    },
+    "invites": {
+      "title": "Convites de síndico",
+      "message": "Você foi convidado para ser síndico de {{name}}.",
+      "accept": "Aceitar",
+      "decline": "Recusar",
+      "notResident": "Não moro neste condomínio"
+    },
+    "residents": {
+      "title": "Moradores",
+      "loading": "Carregando moradores...",
+      "inviteTitle": "Convidar moradores",
+      "inviteHint": "Envie este link aos moradores. Cada pedido precisa da sua aprovação.",
+      "copy": "Copiar link",
+      "copied": "Link copiado",
+      "awaitingEmail": "Aguardando confirmação de e-mail",
+      "awaitingEmailHint": "O pedido só pode ser aprovado depois que o morador confirmar o e-mail.",
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "rotate": {
+        "title": "Gerar novo código",
+        "message": "O link atual deixa de funcionar. Continuar?",
+        "confirm": "Gerar novo código"
+      },
+      "block": "Bloquear",
+      "reactivate": "Reativar",
+      "tabs": {
+        "label": "Filtrar por situação",
+        "PENDING": "Pendentes",
+        "APPROVED": "Aprovados",
+        "REJECTED": "Recusados",
+        "BLOCKED": "Bloqueados",
+        "all": "Todos"
+      },
+      "emptyTitle": "Nenhum morador nesta situação",
+      "emptyDescription": "Escolha outra situação ou compartilhe o link de convite.",
+      "filter": {
+        "search": "Buscar por nome ou e-mail",
+        "label": "Filtros"
+      }
+    },
+    "join": {
+      "title": "Entrar em um condomínio",
+      "subtitle": "Use o código enviado pelo seu síndico.",
+      "code": "Código do condomínio",
+      "continue": "Continuar",
+      "loading": "Buscando condomínio...",
+      "block": "Bloco (opcional)",
+      "unit": "Unidade",
+      "submit": "Pedir para entrar",
+      "sent": "Pedido enviado. Aguarde a aprovação do síndico.",
+      "cnpjTitle": "Procurar meu condomínio",
+      "cnpjSubtitle": "Informe o CNPJ para pedir entrada.",
+      "cnpjNotFound": "Nenhum condomínio ativo com este CNPJ."
+    },
+    "dashboard": {
+      "loading": "Carregando condomínios...",
+      "kpis": "Resumo de condomínios",
+      "kpi": {
+        "total": "Condomínios",
+        "active": "Ativos",
+        "pending": "Pendentes",
+        "blocked": "Indisponíveis"
+      },
+      "pendingTitle": "Aguardando aprovação",
+      "pendingEmpty": "Nenhum condomínio pendente",
+      "seeAll": "Ver todos",
+      "recentTitle": "Cadastros recentes",
+      "recentEmpty": "Nenhum condomínio cadastrado"
+    },
+    "lookup": {
+      "inactive": "Este CNPJ não consta como ativo na Receita Federal. Confira o número."
+    },
+    "counts": {
+      "residents": "Moradores",
+      "parkingSpots": "Vagas",
+      "activeRentals": "Aluguéis"
+    },
+    "history": {
+      "open": "Histórico"
+    },
+    "residencies": {
+      "title": "Onde moro",
+      "subtitle": "Entre com um código e acompanhe seus pedidos.",
+      "loading": "Carregando vínculos...",
+      "emptyTitle": "Nenhum condomínio ainda",
+      "emptyDescription": "Digite acima o código que o síndico enviou.",
+      "status": {
+        "PENDING": "Aguardando aprovação",
+        "APPROVED": "Aprovado",
+        "REJECTED": "Rejeitado",
+        "BLOCKED": "Bloqueado"
+      },
+      "hint": {
+        "PENDING": "Aguardando aprovação do síndico.",
+        "APPROVED": "Você já pode alugar e anunciar vagas.",
+        "REJECTED": "Pedido recusado. Digite o código acima para pedir de novo.",
+        "BLOCKED": "Acesso bloqueado. Fale com o síndico."
+      },
+      "managerCta": "É síndico e o condomínio ainda não está aqui?",
+      "managerCtaLink": "Cadastrar condomínio",
+      "leave": {
+        "label": "Deixar este condomínio",
+        "title": "Deixar o condomínio?",
+        "message": "Você perde o acesso a vagas e aluguéis de {{name}}. Para voltar, será preciso pedir de novo com o código.",
+        "confirm": "Deixar"
+      }
+    },
+    "managerDashboard": {
+      "loading": "Carregando seus condomínios...",
+      "kpis": "Resumo dos seus condomínios",
+      "kpi": {
+        "pendingResidents": "Moradores aguardando",
+        "residents": "Moradores",
+        "parkingSpots": "Vagas",
+        "activeRentals": "Aluguéis ativos"
+      },
+      "reviewResidents": "Analisar {{count}} pedido(s)",
+      "emptyTitle": "Você ainda não administra nenhum condomínio",
+      "emptyDescription": "Quando um condomínio for aprovado, ele aparece aqui.",
+      "becomeResident": "Passei a morar aqui",
+      "title": "Painel do síndico",
+      "subtitle": "Resumo dos condomínios que você administra.",
+      "statusChart": "Seus condomínios por situação",
+      "comparisonChart": "Comparativo por condomínio ativo",
+      "noneActive": "Nenhum dos seus condomínios está ativo. Os números aparecem após a aprovação.",
+      "notResiding": "Você não está vinculado como morador de {{name}}.",
+      "monthlyChart": "Pedidos e aluguéis por mês",
+      "monthly": {
+        "requests": "Pedidos de moradores",
+        "rentals": "Aluguéis"
+      }
+    },
+    "tabs": {
+      "label": "Seções do condomínio",
+      "details": "Detalhes",
+      "residents": "Moradores",
+      "managers": "Síndicos",
+      "history": "Histórico"
+    },
+    "info": {
+      "blocked": "Condomínio bloqueado: novos pedidos de entrada e aluguéis estão suspensos.",
+      "region": "Localização",
+      "photos": "Fotos do condomínio",
+      "rules": "Regras de aluguel",
+      "contacts": "Contatos dos síndicos",
+      "myLink": "Meu vínculo",
+      "unit": "Bloco / unidade",
+      "status": "Situação",
+      "ruleLabels": {
+        "maxRentalDays": "Máximo de dias por aluguel",
+        "minAdvanceHours": "Antecedência mínima (horas)",
+        "cancellationDeadlineHours": "Prazo para cancelar (horas)",
+        "maxPricePerDay": "Preço máximo por dia"
+      }
+    },
+    "membership": {
+      "title": "Meu vínculo",
+      "becomeResident": "Morar neste condomínio",
+      "leaveResidency": "Deixar de morar aqui",
+      "leaveManagement": "Deixar de administrar",
+      "leaveResidencyDialog": {
+        "title": "Deixar de morar aqui?",
+        "message": "Você deixa de ser morador de {{name}} e continua como síndico. Aluguéis em aberto impedem a saída.",
+        "confirm": "Deixar de morar"
+      },
+      "leaveManagementDialog": {
+        "title": "Deixar de administrar?",
+        "message": "Você perde o acesso de síndico a {{name}}. O último síndico não pode sair.",
+        "confirm": "Deixar de administrar"
+      }
+    },
+    "code": {
+      "title": "Código de entrada",
+      "hint": "Compartilhe o código ou o link com os moradores. Cada pedido precisa da sua aprovação.",
+      "copyCode": "Copiar código",
+      "copyLink": "Copiar link",
+      "copied": "Copiado",
+      "share": "Compartilhar",
+      "qrAlt": "QR code do link de entrada"
+    },
+    "welcome": {
+      "title": "Bem-vindo! Vamos vincular você a um condomínio",
+      "subtitle": "Escolha como deseja começar.",
+      "code": {
+        "title": "Tenho um código",
+        "description": "Use o código ou link enviado pelo síndico."
+      },
+      "cnpj": {
+        "title": "Procurar meu condomínio",
+        "description": "Busque pelo CNPJ e peça para entrar."
+      },
+      "register": {
+        "title": "Cadastrar meu condomínio",
+        "description": "Sou síndico e quero cadastrar o condomínio."
+      }
+    }
+  },
+  "audit": {
+    "title": "Auditoria",
+    "subtitle": "Quem alterou o quê, e quando.",
+    "loading": "Carregando histórico...",
+    "caption": "Registros de auditoria",
+    "emptyTitle": "Nenhum registro",
+    "emptyDescription": "Nada foi alterado com esses filtros.",
+    "export": "Exportar CSV",
+    "noChanges": "Sem campos alterados.",
+    "filters": {
+      "title": "Filtros",
+      "all": "Todos",
+      "entity": "Filtrar por tipo",
+      "entityLabel": "O que foi alterado",
+      "action": "Filtrar por ação",
+      "author": "Quem fez",
+      "authorPlaceholder": "E-mail completo do usuário",
+      "authorHint": "Digite o e-mail completo para buscar.",
+      "condominium": "Condomínio",
+      "condominiumPlaceholder": "Nome do condomínio",
+      "from": "De",
+      "to": "Até",
+      "timeZone": "Datas no fuso do seu navegador: {{zone}}",
+      "actionLabel": "O que foi feito"
+    },
+    "entity": {
+      "CONDOMINIUM": "Condomínio",
+      "CONDOMINIUM_RULE": "Regras",
+      "USER": "Usuário",
+      "RESIDENT": "Morador",
+      "MANAGER": "Síndico",
+      "MANAGER_INVITE": "Convite de síndico",
+      "JOIN_CODE": "Código de entrada",
+      "PARKING_SPOT": "Vaga",
+      "SPOT_AVAILABILITY": "Disponibilidade",
+      "VEHICLE": "Veículo",
+      "RENTAL": "Aluguel"
+    },
+    "action": {
+      "CREATE": "Criou",
+      "UPDATE": "Alterou",
+      "DELETE": "Excluiu",
+      "STATUS_CHANGE": "Mudou o status",
+      "TRANSFER": "Trocou"
+    }
+  },
+  "dashboard": {
+    "title": "Painel",
+    "subtitle": "Seu resumo conforme os papéis que você tem.",
+    "sections": {
+      "platform": "Plataforma",
+      "manager": "Condomínios que administro",
+      "owner": "Minhas vagas",
+      "rented": "Vagas que aluguei"
+    },
+    "owner": {
+      "title": "Resumo das minhas vagas",
+      "loading": "Carregando suas vagas...",
+      "emptyTitle": "Você ainda não tem vagas",
+      "emptyDescription": "Quando o síndico atribuir uma vaga a você, os pedidos de aluguel e os ganhos aparecem aqui.",
+      "kpi": {
+        "pending": "Pedidos para decidir",
+        "active": "Em andamento",
+        "upcoming": "Aprovados a iniciar",
+        "spots": "Vagas",
+        "monthEarnings": "Ganhos do mês"
+      }
+    },
+    "rentals": {
+      "loading": "Carregando aluguéis...",
+      "column": {
+        "spot": "Vaga",
+        "period": "Período",
+        "price": "Valor",
+        "status": "Situação"
+      },
+      "status": {
+        "PENDING": "Aguardando decisão",
+        "APPROVED": "Aprovado",
+        "ACTIVE": "Em andamento",
+        "REFUSED": "Recusado",
+        "CANCELED": "Cancelado",
+        "FINISHED": "Finalizado"
+      },
+      "filter": "Filtrar por situação",
+      "all": "Todos",
+      "ownedEmptyTitle": "Nenhum aluguel encontrado",
+      "ownedEmptyDescription": "Os pedidos de aluguel das suas vagas aparecem aqui.",
+      "rentedEmptyTitle": "Nenhuma locação encontrada",
+      "rentedEmptyDescription": "As vagas que você alugar aparecem aqui."
+    }
+  },
+  "dateField": {
+    "open": "Abrir calendário",
+    "previousMonth": "Mês anterior",
+    "nextMonth": "Próximo mês",
+    "previousYear": "Ano anterior",
+    "nextYear": "Próximo ano",
+    "today": "Hoje",
+    "invalid": "Data inválida",
+    "outOfRange": "Data fora do período permitido",
+    "incomplete": "Data incompleta"
+  },
+  "charts": {
+    "axis": {
+      "month": "Mês",
+      "count": "Quantidade",
+      "condominium": "Condomínio"
     }
   }
 }

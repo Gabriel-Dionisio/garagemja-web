@@ -9,14 +9,42 @@
 nav {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
 }
 
 .summary {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   font-variant-numeric: tabular-nums;
+}
+
+.size {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: auto;
+  color: var(--color-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+
+  select {
+    padding: var(--space-1) var(--space-5) var(--space-1) var(--space-2);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    appearance: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
+      no-repeat right var(--space-1) center / 1rem;
+    color: var(--color-text);
+    font: inherit;
+    font-weight: 400;
+    cursor: pointer;
+
+    &:focus {
+      border-color: var(--color-border);
+      outline: none;
+    }
+  }
 }
 
 .controls {

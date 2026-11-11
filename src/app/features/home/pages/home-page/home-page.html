@@ -1,16 +1,112 @@
-<app-page-header
-  [title]="'home.greeting' | transloco: { name: name() }"
-  [subtitle]="'home.welcome' | transloco"
-/>
+<section class="home-page" aria-labelledby="home-heading">
+  <h1 id="home-heading" class="sr-only">{{ 'home.title' | transloco }}</h1>
 
-@if (isAdmin()) {
-  <app-admin-dashboard />
-} @else {
-  <app-card>
-    <app-empty-state
-      icon="car"
-      [title]="'home.emptyTitle' | transloco"
-      [description]="'home.emptyDescription' | transloco"
+  <div class="hero">
+    <picture>
+      <source
+        type="image/avif"
+        srcset="/images/home-hero-800.avif 800w, /images/home-hero-1600.avif 1600w"
+        sizes="100vw"
+      />
+      <source
+        type="image/webp"
+        srcset="/images/home-hero-800.webp 800w, /images/home-hero-1600.webp 1600w"
+        sizes="100vw"
+      />
+      <img
+        src="/images/home-hero-1600.jpg"
+        width="1600"
+        height="638"
+        fetchpriority="high"
+        decoding="async"
+        alt=""
+      />
+    </picture>
+  </div>
+
+  <form class="search-panel" (submit)="$event.preventDefault()">
+    <span class="search-label condominium-label">{{ 'home.search.condominium' | transloco }}</span>
+    <span class="search-label period-label">{{ 'home.search.period' | transloco }}</span>
+    <input
+      class="condominium-input"
+      type="search"
+      [attr.aria-label]="'home.search.condominium' | transloco"
+      [placeholder]="'home.search.condominiumPlaceholder' | transloco"
     />
-  </app-card>
-}
+    <app-date-field class="date-input start-date" [label]="'home.search.start' | transloco" />
+    <app-date-field class="date-input end-date" [label]="'home.search.end' | transloco" />
+    <button type="submit">{{ 'home.search.submit' | transloco }}</button>
+  </form>
+
+  <section class="featured" aria-labelledby="featured-heading">
+    <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
+    @if (loading()) {
+      <app-skeleton [label]="'home.loading' | transloco">
+        <div class="condominium-grid">
+          @for (item of placeholders; track item) {
+            <div class="condominium-card">
+              <app-skeleton-block height="auto" />
+              <div class="card-content">
+                <app-skeleton-block width="60%" height="1.25rem" />
+                <app-skeleton-block class="availability" width="40%" />
+                <app-skeleton-block class="availability" width="50%" />
+              </div>
+            </div>
+          }
+        </div>
+      </app-skeleton>
+    } @else if (loadFailed()) {
+      <app-alert kind="error">{{ 'home.loadError' | transloco }}</app-alert>
+    } @else if (!hasResidency()) {
+      <app-empty-state
+        icon="building"
+        [title]="'home.noResidencyTitle' | transloco"
+        [description]="'home.noResidencyDescription' | transloco"
+      >
+        <a appButton routerLink="/condominiums">{{ 'home.joinAction' | transloco }}</a>
+      </app-empty-state>
+    } @else if (featuredCondominiums().length === 0) {
+      <app-empty-state
+        icon="car"
+        [title]="'home.emptyCondominiumsTitle' | transloco"
+        [description]="'home.emptyCondominiumsDescription' | transloco"
+      />
+    } @else {
+      <div class="condominium-grid">
+        @for (condominium of featuredCondominiums(); track condominium.id) {
+          <article class="condominium-card">
+            <img
+              [src]="condominium.imageUrl || fallbackImage"
+              loading="lazy"
+              decoding="async"
+              alt=""
+              (error)="useFallback($event)"
+            />
+            <div class="card-content">
+              <div class="card-heading">
+                <h3>{{ condominium.name }}</h3>
+                <button
+                  type="button"
+                  aria-label="{{ 'home.viewCondominium' | transloco }}"
+                  title="{{ 'home.viewCondominium' | transloco }}"
+                >
+                  <span aria-hidden="true">›</span>
+                </button>
+              </div>
+              <p class="availability">
+                {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
+              </p>
+              @if (condominium.pricePerHour != null) {
+                <p class="price">
+                  {{ 'home.priceFrom' | transloco }}
+                  <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
+                  {{ 'home.perHour' | transloco }}
+                </p>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</section>

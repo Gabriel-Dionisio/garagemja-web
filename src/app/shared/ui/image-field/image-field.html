@@ -1,0 +1,109 @@
+<div class="frame">
+  @if (current(); as image) {
+    <img [src]="image.url" [alt]="alt()" />
+    @if (!multiple() && !disabled()) {
+      <button
+        class="cover"
+        type="button"
+        [disabled]="busy()"
+        [attr.aria-label]="'common.image.change' | transloco"
+        [attr.title]="'common.image.change' | transloco"
+        (click)="file.click()"
+      ></button>
+    }
+    @if (!disabled()) {
+      <button
+        class="round remove"
+        type="button"
+        [disabled]="busy()"
+        [attr.aria-label]="'common.image.remove' | transloco"
+        [attr.title]="'common.image.remove' | transloco"
+        (click)="removed.emit(image.id)"
+      >
+        <app-icon name="close" />
+      </button>
+      @if (images().length > 1) {
+        <button
+          class="round move-back"
+          type="button"
+          [disabled]="busy() || position() === 0"
+          [attr.aria-label]="'common.image.moveBack' | transloco"
+          [attr.title]="'common.image.moveBack' | transloco"
+          (click)="moved.emit({ id: image.id, step: -1 })"
+        >
+          <app-icon name="chevron-left" />
+        </button>
+        <button
+          class="round move-forward"
+          type="button"
+          [disabled]="busy() || position() === images().length - 1"
+          [attr.aria-label]="'common.image.moveForward' | transloco"
+          [attr.title]="'common.image.moveForward' | transloco"
+          (click)="moved.emit({ id: image.id, step: 1 })"
+        >
+          <app-icon name="chevron-right" />
+        </button>
+      }
+    }
+    @if (position() === 0 && images().length > 1) {
+      <span class="badge-cover">{{ 'common.image.cover' | transloco }}</span>
+    }
+  } @else if (canAdd()) {
+    <button
+      class="add"
+      type="button"
+      [disabled]="busy()"
+      [attr.aria-label]="'common.image.add' | transloco"
+      [attr.title]="'common.image.add' | transloco"
+      (click)="file.click()"
+    >
+      <app-icon-label icon="plus">
+        {{ (images().length ? 'common.image.add' : 'common.image.empty') | transloco }}
+      </app-icon-label>
+      @if (!images().length && max() !== infinity) {
+        <small>{{ 'common.image.emptyHint' | transloco: { max: max() } }}</small>
+      }
+    </button>
+  } @else {
+    <div class="empty">
+      <app-icon-label icon="building">{{ 'common.image.empty' | transloco }}</app-icon-label>
+    </div>
+  }
+  @if (total() > 1) {
+    <button
+      class="round prev"
+      type="button"
+      [attr.aria-label]="'common.image.previous' | transloco"
+      [attr.title]="'common.image.previous' | transloco"
+      (click)="go(-1)"
+    >
+      <app-icon name="chevron-left" />
+    </button>
+    <button
+      class="round next"
+      type="button"
+      [attr.aria-label]="'common.image.next' | transloco"
+      [attr.title]="'common.image.next' | transloco"
+      (click)="go(1)"
+    >
+      <app-icon name="chevron-right" />
+    </button>
+    <span class="count" aria-live="polite">{{ position() + 1 }} / {{ total() }}</span>
+  }
+</div>
+<input
+  #file
+  class="file"
+  type="file"
+  accept="image/*"
+  tabindex="-1"
+  [multiple]="multiple()"
+  [disabled]="disabled()"
+  [attr.aria-label]="'common.image.choose' | transloco"
+  (change)="pick($event)"
+/>
+@if (!disabled()) {
+  @if (rejected(); as reason) {
+    <small class="error" role="alert">{{ 'common.image.rejected.' + reason | transloco }}</small>
+  }
+}

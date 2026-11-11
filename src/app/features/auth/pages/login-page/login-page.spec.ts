@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../core/auth/auth-service';
@@ -105,5 +105,22 @@ describe('LoginPage', () => {
       email: 'ana@x.com',
       password: 'Abcdef1!',
     });
+  });
+
+  it('preenche o e-mail vindo do endereço', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: { login } },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap({ email: 'ana@x.com' }) } },
+        },
+      ],
+    });
+    const fixture = TestBed.createComponent(LoginPage);
+    await fixture.whenStable();
+    const input = (fixture.nativeElement as HTMLElement).querySelector('input[type="email"]');
+    expect((input as HTMLInputElement).value).toBe('ana@x.com');
   });
 });

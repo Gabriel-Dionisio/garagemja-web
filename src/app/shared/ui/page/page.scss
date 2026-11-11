@@ -1,0 +1,31 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  min-width: 0;
+
+  @media (min-width: $bp-md) and (min-height: 40rem) {
+    height: var(--page-height);
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+:host(.fill) {
+  overflow-y: hidden;
+}
+
+:host([data-size='narrow']) {
+  max-width: var(--page-width-narrow);
+}
+
+:host([data-size='form']) {
+  max-width: var(--page-width-form);
+}
+
+:host([data-size='wide']) {
+  max-width: var(--page-width-wide);
+}

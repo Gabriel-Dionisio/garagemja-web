@@ -28,8 +28,8 @@
   z-index: 2;
   display: grid;
   grid-template-columns: minmax(18rem, 1.2fr) repeat(2, minmax(10rem, 0.5fr)) auto;
-  grid-template-rows: auto var(--control-height);
-  align-items: end;
+  grid-template-rows: auto auto;
+  align-items: start;
   gap: var(--space-3);
   width: min(calc(100% - var(--space-6)), 74rem);
   margin: calc(-1 * var(--space-7)) auto 0;
@@ -88,7 +88,7 @@ input {
   height: var(--control-height);
   grid-column: 4;
   grid-row: 2;
-  align-self: end;
+  align-self: start;
   padding: 0 var(--space-4);
   border: 0;
   border-radius: var(--radius-sm);
@@ -123,7 +123,7 @@ input {
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
 
-  > img {
+  > :first-child {
     display: block;
     width: 100%;
     aspect-ratio: 16 / 5;
@@ -241,7 +241,7 @@ input {
     grid-row: 5;
   }
 
-  .condominium-card > img {
+  .condominium-card > :first-child {
     aspect-ratio: 16 / 7;
   }
 }
@@ -256,44 +256,19 @@ input {
   }
 
   .search-panel {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, auto);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     width: calc(100% - var(--space-4));
     margin-top: calc(-1 * var(--space-4));
     padding: var(--space-3);
   }
 
-  .condominium-label,
-  .condominium-input,
   .period-label,
   .start-date,
   .end-date,
   .search-panel button {
-    grid-column: 1;
-  }
-
-  .condominium-label {
-    grid-row: 1;
-  }
-
-  .condominium-input {
-    grid-row: 2;
-  }
-
-  .period-label {
-    grid-row: 3;
-  }
-
-  .start-date {
-    grid-row: 4;
-  }
-
-  .end-date {
-    grid-row: 5;
-  }
-
-  .search-panel button {
-    grid-row: 6;
+    order: 1;
   }
 
   .featured {
@@ -305,7 +280,7 @@ input {
     grid-template-columns: 1fr;
   }
 
-  .condominium-card > img {
+  .condominium-card > :first-child {
     aspect-ratio: 16 / 8;
   }
 

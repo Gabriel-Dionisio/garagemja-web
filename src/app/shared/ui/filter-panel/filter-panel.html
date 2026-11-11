@@ -1,0 +1,21 @@
+<div class="toolbar">
+  <button
+    type="button"
+    class="toggle"
+    [attr.aria-controls]="panelId"
+    [attr.aria-expanded]="open()"
+    (click)="open.set(!open())"
+  >
+    <app-icon name="filter" />
+    <span class="toggle-label">{{ label() }}</span>
+    @if (activeCount() > 0) {
+      <span class="count">{{ activeCount() }}</span>
+    }
+    <app-icon class="chevron" name="chevron-right" />
+  </button>
+  <ng-content select="[filterActions]" />
+</div>
+
+<div class="panel" [id]="panelId" [hidden]="!open()">
+  <ng-content />
+</div>

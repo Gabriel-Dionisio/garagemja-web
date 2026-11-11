@@ -1,0 +1,29 @@
+app-chip-group {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.pending {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+small {
+  color: var(--color-text-muted);
+}
+
+.thumb {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+
+  &.placeholder {
+    display: grid;
+    place-items: center;
+    background: var(--color-info-bg);
+    color: var(--color-primary);
+  }
+}

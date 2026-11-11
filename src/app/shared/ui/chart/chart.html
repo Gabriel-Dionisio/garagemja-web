@@ -1,0 +1,68 @@
+@if (kind() === 'share') {
+  <p class="total">
+    <strong>{{ total() }}</strong>
+  </p>
+  <div class="track" aria-hidden="true">
+    @for (entry of entries(); track entry.label; let index = $index) {
+      @if (entry.value > 0) {
+        <span
+          class="segment"
+          [class.dimmed]="selected().size > 0 && !selected().has(index)"
+          [style.flex-grow]="entry.value"
+          [style.background]="entry.color"
+        >
+          @if (entry.share !== null && entry.share >= 8) {
+            {{ entry.value }}
+          }
+        </span>
+      }
+    }
+  </div>
+} @else {
+  <div class="canvas">
+    <canvas
+      baseChart
+      type="bar"
+      [data]="data()"
+      [options]="options()"
+      [plugins]="plugins()"
+    ></canvas>
+  </div>
+}
+<ul class="legend" role="group" [attr.aria-label]="description()">
+  @for (entry of entries(); track entry.label; let index = $index) {
+    <li>
+      <button
+        type="button"
+        [attr.aria-pressed]="single() ? null : selected().has(index)"
+        [disabled]="single()"
+        [class.dimmed]="selected().size > 0 && !selected().has(index)"
+        (click)="toggle(index)"
+      >
+        <span class="dot" [style.background]="entry.color"></span>
+        <span class="name">{{ entry.label }}</span>
+        <span class="value">{{ entry.value }}</span>
+        @if (entry.share !== null && !single()) {
+          <span class="share">{{ entry.share }}%</span>
+        }
+      </button>
+    </li>
+  }
+</ul>
+<table class="sr-only">
+  <caption>
+    {{
+      description()
+    }}
+  </caption>
+  <tbody>
+    @for (row of rows(); track row.label) {
+      <tr>
+        <th scope="row">{{ row.label }}</th>
+        @for (value of row.values; track $index) {
+          <td>{{ value }}</td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>

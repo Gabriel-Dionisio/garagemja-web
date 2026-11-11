@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+app-paginator {
+  display: block;
+  margin-top: var(--space-3);
+}
+
+h2 {
+  margin-bottom: var(--space-3);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}

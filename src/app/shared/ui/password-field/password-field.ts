@@ -1,6 +1,7 @@
 import { TranslocoPipe } from '@jsverse/transloco';
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CapsLock } from '../../forms/caps-lock';
 import { formatPasswordInput } from '../../forms/masks';
 import { controlChanges, controlErrorMessage, controlSettled } from '../../forms/field-errors';
 import { uniqueId } from '../../forms/unique-id';
@@ -27,6 +28,9 @@ export class PasswordField {
 
   protected readonly id = uniqueId('password');
   protected readonly visible = signal(false);
+  private readonly capsLock = inject(CapsLock);
+  protected readonly focused = signal(false);
+  protected readonly capsWarning = computed(() => this.focused() && this.capsLock.active());
   protected readonly limits = { min: PASSWORD_MIN, max: PASSWORD_MAX };
   private readonly fieldError = controlErrorMessage(this.control);
   private readonly changes = controlChanges(this.control);

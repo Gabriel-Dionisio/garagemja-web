@@ -1,63 +1,45 @@
-<app-page-header [title]="'admin.form.title' | transloco" backLink="/admin/users" />
+<app-page size="form">
+  <app-page-header [title]="'admin.form.title' | transloco" backLink="/admin/users" />
 
-@if (error.text(); as message) {
-  <app-alert kind="error">{{ message }}</app-alert>
-}
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
 
-<app-card>
-  <form appAutofocusFirst [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <app-form-section [heading]="'admin.form.personal' | transloco">
-      <app-text-field
-        class="wide"
-        [label]="'common.fields.fullName' | transloco"
-        autocomplete="off"
-        [maxLength]="150"
-        [format]="formatName"
-        [control]="form.controls.name"
-      />
-      <app-text-field
-        [label]="'common.fields.email' | transloco"
-        type="email"
-        inputMode="email"
-        class="wide"
-        autocomplete="off"
-        [maxLength]="180"
-        [format]="formatEmail"
-        [control]="form.controls.email"
-      />
-      <app-text-field
-        [label]="'common.fields.phone' | transloco"
-        type="tel"
-        inputMode="tel"
-        placeholder="(00) 00000-0000"
-        [format]="formatPhone"
-        [control]="form.controls.phone"
-      />
-      <app-text-field
-        [label]="'common.fields.cpf' | transloco"
-        inputMode="numeric"
-        placeholder="000.000.000-00"
-        [format]="formatCpf"
-        [control]="form.controls.cpf"
-      />
-    </app-form-section>
-    <app-form-section [heading]="'admin.form.access' | transloco">
-      <app-role-picker
-        [group]="form.controls.roles"
-        [missing]="rolesMissing()"
-        (changed)="rolesMissing.set(false)"
-      />
-      <app-password-field
-        [label]="'common.fields.initialPassword' | transloco"
-        autocomplete="new-password"
-        [hint]="'common.hints.password' | transloco"
-        [control]="form.controls.password"
-      />
-    </app-form-section>
-    <app-form-actions>
-      <button appButton type="submit" [loading]="submitting()">
-        {{ 'admin.form.submit' | transloco }}
-      </button>
-    </app-form-actions>
-  </form>
-</app-card>
+  <app-card>
+    <form appAutofocusFirst [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <app-form-section>
+        <p class="wide muted">{{ 'admin.form.adminOnly' | transloco }}</p>
+        <app-text-field
+          class="wide"
+          [label]="'common.fields.fullName' | transloco"
+          autocomplete="off"
+          [maxLength]="150"
+          [format]="formatName"
+          [control]="form.controls.name"
+        />
+        <app-text-field
+          [label]="'common.fields.email' | transloco"
+          type="email"
+          inputMode="email"
+          class="wide"
+          autocomplete="off"
+          [maxLength]="180"
+          [format]="formatEmail"
+          [control]="form.controls.email"
+        />
+        <app-password-field
+          class="wide"
+          [label]="'common.fields.initialPassword' | transloco"
+          autocomplete="new-password"
+          [showRules]="true"
+          [control]="form.controls.password"
+        />
+      </app-form-section>
+      <app-form-actions>
+        <button appButton type="submit" [loading]="submitting()">
+          {{ 'admin.form.submit' | transloco }}
+        </button>
+      </app-form-actions>
+    </form>
+  </app-card>
+</app-page>

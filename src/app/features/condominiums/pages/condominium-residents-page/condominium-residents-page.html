@@ -1,0 +1,125 @@
+<app-page [fill]="true">
+  <app-page-header
+    [title]="'condominiums.residents.title' | transloco"
+    [subtitle]="condominium()?.name ?? ''"
+    [backLink]="'/condominiums'"
+  />
+
+  <app-condominium-tabs [id]="id()" [managers]="hasManagers()" [history]="hasHistory()" />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-skeleton
+      [label]="'condominiums.residents.loading' | transloco"
+      [rows]="4"
+      rowHeight="4rem"
+    />
+  } @else if (condominium()) {
+    <app-card class="invite">
+      <button
+        type="button"
+        class="invite-toggle"
+        aria-controls="invite-body"
+        [attr.aria-expanded]="inviteOpen()"
+        (click)="inviteOpen.set(!inviteOpen())"
+      >
+        <h2>{{ 'condominiums.residents.inviteTitle' | transloco }}</h2>
+        <app-icon class="chevron" name="chevron-right" />
+      </button>
+      <div id="invite-body" [hidden]="!inviteOpen()">
+        <app-join-code-card
+          [code]="code()"
+          [condominiumName]="condominium()?.name ?? ''"
+          [busy]="busy()"
+          (rotate)="rotate()"
+        />
+      </div>
+    </app-card>
+
+    <app-filter-panel
+      [label]="'condominiums.residents.filter.label' | transloco"
+      [activeCount]="activeFilters()"
+      [(open)]="filtersOpen"
+    >
+      <app-chip-group
+        [label]="'condominiums.residents.tabs.label' | transloco"
+        [options]="tabs"
+        [value]="status()"
+        (valueChange)="selectStatus($event)"
+      />
+      <app-resident-filter (searchChange)="applySearch($event)" />
+    </app-filter-panel>
+
+    <app-list-state
+      [attr.aria-busy]="listLoading()"
+      [loading]="listLoading() && !result()"
+      [empty]="result()?.items?.length === 0"
+      [loadingLabel]="'condominiums.residents.loading' | transloco"
+      emptyIcon="users"
+      [emptyTitle]="'condominiums.residents.emptyTitle' | transloco"
+      [emptyDescription]="'condominiums.residents.emptyDescription' | transloco"
+      [listLabel]="'condominiums.residents.title' | transloco"
+    >
+      @if (result(); as current) {
+        @for (resident of current.items; track resident.id) {
+          <li appListItem>
+            <app-user-summary
+              [name]="resident.name"
+              [email]="resident.email"
+              [caption]="place(resident)"
+            />
+            @if (awaitsEmail(resident)) {
+              <p class="email-hint" [id]="'email-hint-' + resident.id">
+                {{ 'condominiums.residents.awaitingEmailHint' | transloco }}
+              </p>
+            }
+            <app-badge status [tone]="awaitsEmail(resident) ? 'warning' : tones[resident.status]">{{
+              (awaitsEmail(resident)
+                ? 'condominiums.residents.awaitingEmail'
+                : statusLabels[resident.status]
+              ) | transloco
+            }}</app-badge>
+            <span actions>
+              @for (action of actionsFor(resident); track action.key) {
+                <button
+                  appIconButton
+                  type="button"
+                  [variant]="action.primary ? 'primary' : 'neutral'"
+                  [label]="
+                    ('condominiums.residents.' + action.key | transloco) + ': ' + resident.name
+                  "
+                  [loading]="busy()"
+                  [disabled]="action.key === 'approve' && awaitsEmail(resident)"
+                  [attr.aria-describedby]="
+                    action.key === 'approve' && awaitsEmail(resident)
+                      ? 'email-hint-' + resident.id
+                      : null
+                  "
+                  (click)="decide(resident, action)"
+                >
+                  <app-icon [name]="action.icon" />
+                </button>
+              }
+            </span>
+          </li>
+        }
+        @if (current.items.length > 0) {
+          <app-paginator
+            paginator
+            [page]="current.page"
+            [size]="current.size"
+            [total]="current.total"
+            [itemCount]="current.items.length"
+            [hasNext]="current.hasNext"
+            [sizeOptions]="pageSizes"
+            (sizeChange)="changeSize($event)"
+            (pageChange)="goTo($event)"
+          />
+        }
+      }
+    </app-list-state>
+  }
+</app-page>

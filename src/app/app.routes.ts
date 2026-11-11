@@ -1,4 +1,7 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { homeGuard } from './core/auth/home-guard';
+import { roleGuard } from './core/auth/role-guard';
+import { Router, Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth-guard';
 import { guestGuard } from './core/auth/guest-guard';
 import { AuthLayout } from './core/layout/auth-layout/auth-layout';
@@ -50,7 +53,47 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
+        canActivate: [homeGuard],
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
+      },
+      {
+        path: 'condominiums/:id/history',
+        title: 'routes.history',
+        canActivate: [roleGuard('ADMIN', 'CONDOMINIUM_ADMIN')],
+        loadComponent: () =>
+          import('./features/audit/pages/audit-logs-page/audit-logs-page').then(
+            (m) => m.AuditLogsPage,
+          ),
+      },
+      {
+        path: 'admin/audit-logs',
+        title: 'routes.auditLogs',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./features/audit/pages/audit-logs-page/audit-logs-page').then(
+            (m) => m.AuditLogsPage,
+          ),
+      },
+      {
+        path: 'condominiums',
+        loadChildren: () =>
+          import('./features/condominiums/condominiums.routes').then((m) => m.CONDOMINIUM_ROUTES),
+      },
+      {
+        path: 'dashboard',
+        title: 'routes.dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/pages/dashboard-page/dashboard-page').then(
+            (m) => m.DashboardPage,
+          ),
+      },
+      { path: 'join', pathMatch: 'full', redirectTo: 'condominiums' },
+      {
+        path: 'join/:code',
+        redirectTo: ({ params }) =>
+          inject(Router).createUrlTree(['/condominiums'], {
+            queryParams: { code: params['code'] },
+          }),
       },
       {
         path: 'admin',

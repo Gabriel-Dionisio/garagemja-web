@@ -1,3 +1,5 @@
+import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { DEFAULT_PAGE_SIZE, PAGE_SIZES } from '../../../../shared/ui/paginator/paginator';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,11 +20,13 @@ import { Icon } from '../../../../shared/ui/icon/icon';
 import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
+import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
+import { ListItem } from '../../../../shared/ui/list-item/list-item';
+import { ListState } from '../../../../shared/ui/list-state/list-state';
+import { Page as PageLayout } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { Paginator } from '../../../../shared/ui/paginator/paginator';
-import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
-import { UserSummary } from '../../components/user-summary/user-summary';
+import { UserSummary } from '../../../../shared/ui/user-summary/user-summary';
 import { UserFilterForm } from '../../components/user-filter/user-filter';
 import { UserStatusBadge } from '../../components/user-status-badge/user-status-badge';
 import { UsersApi } from '../../data/users-api';
@@ -30,22 +34,24 @@ import { ROLE_LABELS } from '../../../../core/auth/role';
 import { isUserStatus, STATUS_LABELS } from '../../user-status';
 import { User, UserFilter, UserStatus } from '../../user.model';
 
-const PAGE_SIZE = 20;
 const TABS: readonly (UserStatus | null)[] = [null, 'PENDING', 'ACTIVE', 'BLOCKED'];
 
 @Component({
   selector: 'app-users-page',
   imports: [
+    ChipGroup,
     TranslocoPipe,
     RouterLink,
     Alert,
     Button,
+    FilterPanel,
     Icon,
     IconButton,
-    EmptyState,
+    ListItem,
+    ListState,
     PageHeader,
+    PageLayout,
     Paginator,
-    LoadingBlock,
     UserFilterForm,
     UserStatusBadge,
     UserSummary,
@@ -66,8 +72,10 @@ export class UsersPage {
   private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
   protected readonly roleLabels = ROLE_LABELS;
-  protected readonly tabs = TABS;
-  protected readonly statusLabels = STATUS_LABELS;
+  protected readonly tabs: readonly ChipOption<UserStatus>[] = TABS.map((tab) => ({
+    value: tab,
+    labelKey: tab ? STATUS_LABELS[tab] : 'admin.users.all',
+  }));
   protected readonly status = signal<UserFilter['status']>(
     isUserStatus(this.initialStatus) ? this.initialStatus : undefined,
   );
@@ -79,6 +87,8 @@ export class UsersPage {
   protected readonly loading = signal(false);
   protected readonly error = this.errorText.state();
   protected readonly page = signal(0);
+  protected readonly size = signal(DEFAULT_PAGE_SIZE);
+  protected readonly pageSizes = PAGE_SIZES;
   protected readonly busy = signal(false);
   protected readonly resetSent = signal(false);
 
@@ -90,7 +100,7 @@ export class UsersPage {
           this.error.clear();
         }),
         switchMap(() =>
-          this.api.list(this.currentFilter(), this.page(), PAGE_SIZE).pipe(
+          this.api.list(this.currentFilter(), this.page(), this.size()).pipe(
             catchError((error: unknown) => {
               this.error.setFrom(error);
               this.loading.set(false);
@@ -105,10 +115,6 @@ export class UsersPage {
         this.loading.set(false);
       });
     this.query$.next();
-  }
-
-  protected toggleFilters(): void {
-    this.filtersOpen.update((open) => !open);
   }
 
   protected selectStatus(status: UserStatus | null): void {
@@ -129,6 +135,12 @@ export class UsersPage {
 
   protected applyFilter(filter: UserFilter): void {
     this.filter.set(filter);
+    this.page.set(0);
+    this.query$.next();
+  }
+
+  protected changeSize(size: number): void {
+    this.size.set(size);
     this.page.set(0);
     this.query$.next();
   }
@@ -206,28 +218,6 @@ export class UsersPage {
       })
       .pipe(
         switchMap((confirmed) => (confirmed ? this.api.deactivate(user.id) : EMPTY)),
-        finalize(() => this.busy.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: () => this.query$.next(),
-        error: (error: unknown) => this.error.setFrom(error),
-      });
-  }
-
-  protected approve(user: User): void {
-    if (this.busy()) return;
-    this.busy.set(true);
-    this.error.clear();
-    this.confirm
-      .confirm({
-        title: 'admin.approveDialog.title',
-        message: 'admin.approveDialog.message',
-        params: { name: user.name },
-        confirmLabel: 'admin.approveDialog.confirm',
-      })
-      .pipe(
-        switchMap((confirmed) => (confirmed ? this.api.approve(user.id) : EMPTY)),
         finalize(() => this.busy.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )

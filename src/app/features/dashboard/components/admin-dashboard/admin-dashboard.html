@@ -1,0 +1,72 @@
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+} @else if (!usersSummary() || !condominiumsSummary()) {
+  <app-loading-block [label]="'admin.dashboard.loading' | transloco" />
+} @else {
+  <section class="group" [attr.aria-label]="'admin.dashboard.kpis' | transloco">
+    <h2>{{ 'admin.dashboard.usersTitle' | transloco }}</h2>
+    <div class="kpis">
+      @for (kpi of userKpis; track kpi.key) {
+        <app-stat-card
+          [value]="usersSummary()![kpi.key]"
+          [label]="'admin.dashboard.kpi.' + kpi.key | transloco"
+          [highlight]="!!kpi.highlight && usersSummary()![kpi.key] > 0"
+          link="/admin/users"
+          [queryParams]="kpi.status ? { status: kpi.status } : null"
+        />
+      }
+    </div>
+  </section>
+
+  <section class="group" [attr.aria-label]="'condominiums.dashboard.kpis' | transloco">
+    <h2>{{ 'admin.dashboard.condominiumsTitle' | transloco }}</h2>
+    <div class="kpis">
+      @for (kpi of condominiumKpis; track kpi) {
+        <app-stat-card
+          [value]="condominiumsSummary()![kpi]"
+          [label]="'condominiums.dashboard.kpi.' + kpi | transloco"
+          [highlight]="kpi === 'pending' && condominiumsSummary()!.pending > 0"
+          link="/condominiums/managed"
+        />
+      }
+    </div>
+  </section>
+
+  <div class="charts">
+    @if (monthlyChart(); as chart) {
+      <app-card class="wide">
+        <h2>{{ chart.title }}</h2>
+        <app-chart
+          kind="bar"
+          [xLabel]="'charts.axis.month' | transloco"
+          [yLabel]="'charts.axis.count' | transloco"
+          [labels]="chart.labels"
+          [series]="chart.series"
+          [description]="chart.title"
+        />
+      </app-card>
+    }
+    @if (userChart(); as chart) {
+      <app-card>
+        <h2>{{ chart.title }}</h2>
+        <app-chart
+          kind="share"
+          [labels]="chart.labels"
+          [series]="chart.series"
+          [description]="chart.title"
+        />
+      </app-card>
+    }
+    @if (condominiumChart(); as chart) {
+      <app-card>
+        <h2>{{ chart.title }}</h2>
+        <app-chart
+          kind="share"
+          [labels]="chart.labels"
+          [series]="chart.series"
+          [description]="chart.title"
+        />
+      </app-card>
+    }
+  </div>
+}

@@ -1,0 +1,26 @@
+<h2 id="manager-email-title">{{ data.title | transloco: data.params }}</h2>
+<p class="muted">{{ data.hint | transloco }}</p>
+<form (submit)="$event.preventDefault(); submit()" novalidate>
+  <app-text-field
+    [label]="'common.fields.email' | transloco"
+    type="email"
+    inputMode="email"
+    placeholder="email@example.com"
+    [maxLength]="180"
+    [format]="formatEmail"
+    [control]="email"
+  />
+  @if (data.withReason) {
+    <app-text-field
+      [label]="'condominiums.managers.transfer.reason' | transloco"
+      [maxLength]="500"
+      [control]="reason"
+    />
+  }
+  <div class="actions">
+    <button appButton variant="secondary" type="button" (click)="cancel()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="submit">{{ data.confirmLabel | transloco }}</button>
+  </div>
+</form>

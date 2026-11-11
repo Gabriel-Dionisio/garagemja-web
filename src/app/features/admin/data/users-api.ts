@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Page, toPage } from '../../../shared/models/page';
-import { User, UserChanges, UserDraft, UserFilter, UsersSummary } from '../user.model';
-import { toUser, toUsersSummary } from './user.mapper';
+import { User, UserChanges, AdminDraft, UserFilter } from '../user.model';
+import { toUser } from './user.mapper';
 
 const USERS_URL = '/api/v1/users';
 
@@ -26,24 +26,16 @@ export class UsersApi {
     );
   }
 
-  summary(): Observable<UsersSummary> {
-    return this.http.get<unknown>(`${USERS_URL}/summary`).pipe(map(toUsersSummary));
-  }
-
   get(id: string): Observable<User> {
     return this.http.get<unknown>(`${USERS_URL}/${id}`).pipe(map(toUser));
   }
 
-  create(draft: UserDraft): Observable<User> {
+  create(draft: AdminDraft): Observable<User> {
     return this.http.post<unknown>(USERS_URL, draft).pipe(map(toUser));
   }
 
   update(id: string, changes: UserChanges): Observable<User> {
     return this.http.patch<unknown>(`${USERS_URL}/${id}`, changes).pipe(map(toUser));
-  }
-
-  approve(id: string): Observable<User> {
-    return this.http.patch<unknown>(`${USERS_URL}/${id}/approve`, {}).pipe(map(toUser));
   }
 
   deactivate(id: string): Observable<void> {

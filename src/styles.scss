@@ -35,6 +35,11 @@ a {
   color: var(--color-primary);
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text-muted) 35%, transparent) transparent;
+}
+
 :focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
@@ -57,4 +62,9 @@ a {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+}
+
+main > :not(router-outlet) {
+  display: block;
+  min-width: 0;
 }

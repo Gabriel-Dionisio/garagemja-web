@@ -35,7 +35,12 @@ export class AuthService {
       switchMap(() => this.http.post<unknown>(`${AUTH_URL}/login`, credentials)),
       map(toUserProfile),
       tap((user) => this.currentUser.set(user)),
-      switchMap((user) => this.csrf().pipe(catchError(() => of(undefined)), map(() => user))),
+      switchMap((user) =>
+        this.csrf().pipe(
+          catchError(() => of(undefined)),
+          map(() => user),
+        ),
+      ),
     );
   }
 
@@ -115,9 +120,24 @@ export class AuthService {
 
   logout(): Observable<void> {
     return this.csrf().pipe(
-      switchMap(() => this.http.post<void>(`${AUTH_URL}/logout`, {})),
+      switchMap(() =>
+        this.http
+          .post<void>(`${AUTH_URL}/logout`, {})
+          .pipe(
+            catchError((error: unknown) =>
+              error instanceof HttpErrorResponse && error.status === 401
+                ? of(undefined)
+                : throwError(() => error),
+            ),
+          ),
+      ),
       tap(() => this.currentUser.set(null)),
-      switchMap(() => this.csrf().pipe(catchError(() => of(undefined)), map(() => undefined))),
+      switchMap(() =>
+        this.csrf().pipe(
+          catchError(() => of(undefined)),
+          map(() => undefined),
+        ),
+      ),
     );
   }
 

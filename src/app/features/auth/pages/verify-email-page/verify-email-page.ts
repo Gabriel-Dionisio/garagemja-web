@@ -32,6 +32,9 @@ export class VerifyEmailPage implements OnDestroy {
 
   protected readonly email = this.pending?.email ?? '';
   protected readonly canResend = this.pending !== null;
+  protected readonly loginParams = this.pending?.returnUrl
+    ? { returnUrl: this.pending.returnUrl }
+    : null;
   protected readonly submitting = signal(false);
   protected readonly resent = signal(false);
   protected readonly error = this.errorText.state();

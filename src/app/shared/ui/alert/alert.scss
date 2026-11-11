@@ -1,10 +1,10 @@
 :host {
-  display: flex;
-  gap: var(--space-3);
+  display: block;
   padding: var(--space-3) var(--space-4);
   border: 1px solid currentColor;
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
+  overflow-wrap: anywhere;
 }
 
 :host([data-kind='error']) {
@@ -24,7 +24,14 @@
 
 :host([data-kind='info']) {
   background: var(--color-info-bg);
-  color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+app-icon {
+  float: left;
+  width: 1lh;
+  height: 1lh;
+  margin-right: var(--space-3);
 }
 
 .content {

@@ -27,5 +27,7 @@
       {{ 'auth.verifyEmail.resend' | transloco }}
     </button>
   }
-  <a appButton routerLink="/login" [block]="true">{{ 'auth.verifyEmail.goToLogin' | transloco }}</a>
+  <a appButton routerLink="/login" [queryParams]="loginParams" [block]="true">{{
+    'auth.verifyEmail.goToLogin' | transloco
+  }}</a>
 </app-auth-panel>

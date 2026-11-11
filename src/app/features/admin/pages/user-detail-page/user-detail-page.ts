@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
 import { setServerErrors } from '../../../../shared/forms/field-errors';
 import { focusFirstInvalid } from '../../../../shared/forms/focus-first-invalid';
@@ -32,16 +32,15 @@ import { ActionList } from '../../../../shared/ui/action-list/action-list';
 import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { FormSection } from '../../../../shared/ui/form-section/form-section';
 import { SplitLayout } from '../../../../shared/ui/split-layout/split-layout';
-import { RolePicker } from '../../components/role-picker/role-picker';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
+import { Page } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { UserStatusBadge } from '../../components/user-status-badge/user-status-badge';
-import { UserSummary } from '../../components/user-summary/user-summary';
+import { UserSummary } from '../../../../shared/ui/user-summary/user-summary';
 import { UsersApi } from '../../data/users-api';
-import { ROLES, ROLE_LABELS } from '../../../../core/auth/role';
-import { Role } from '../../../../core/auth/auth.model';
+import { ROLE_LABELS } from '../../../../core/auth/role';
 import { User, UserStatus } from '../../user.model';
 
 @Component({
@@ -49,6 +48,7 @@ import { User, UserStatus } from '../../user.model';
   imports: [
     TranslocoPipe,
     ReactiveFormsModule,
+    RouterLink,
     Alert,
     Button,
     Card,
@@ -56,8 +56,8 @@ import { User, UserStatus } from '../../user.model';
     ActionList,
     FormActions,
     FormSection,
-    RolePicker,
     SplitLayout,
+    Page,
     PageHeader,
     LoadingBlock,
     TextField,
@@ -90,15 +90,9 @@ export class UserDetailPage {
   protected readonly error = this.errorText.state();
   protected readonly saved = signal(false);
   protected readonly resetSent = signal(false);
-  protected readonly rolesMissing = signal(false);
   protected readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(150), personNameValidator]],
-    phone: ['', [Validators.required, phoneValidator]],
-    roles: this.fb.group({
-      ADMIN: false,
-      CONDOMINIUM_ADMIN: false,
-      RESIDENT: false,
-    }),
+    phone: ['', [phoneValidator]],
   });
   protected readonly isSelf = computed(() => this.auth.user()?.id === this.id());
 
@@ -136,13 +130,7 @@ export class UserDetailPage {
       focusFirstInvalid(this.host.nativeElement);
       return;
     }
-    const { name, phone, roles } = this.form.getRawValue();
-    const selected = ROLES.filter((role) => roles[role]);
-    if (!this.isSelf() && selected.length === 0) {
-      this.rolesMissing.set(true);
-      return;
-    }
-    this.rolesMissing.set(false);
+    const { name, phone } = this.form.getRawValue();
     this.saving.set(true);
     this.busy.set(true);
     this.saved.set(false);
@@ -150,10 +138,12 @@ export class UserDetailPage {
     this.api
       .update(this.id(), {
         name: formatPersonName(name),
-        phone: onlyDigits(phone),
-        ...(this.isSelf() ? {} : { roles: selected }),
+        ...(phone ? { phone: onlyDigits(phone) } : {}),
       })
-      .pipe(finalize(() => this.busy.set(false)), takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.busy.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (user) => {
           this.setUser(user);
@@ -165,27 +155,6 @@ export class UserDetailPage {
           this.saving.set(false);
           if (!setServerErrors(this.form.controls, apiError.fieldErrors)) this.error.set(apiError);
         },
-      });
-  }
-
-  protected approve(): void {
-    if (this.busy()) return;
-    this.busy.set(true);
-    this.confirm
-      .confirm({
-        title: 'admin.approveDialog.title',
-        message: 'admin.approveDialog.message',
-        params: { name: this.user()?.name ?? '' },
-        confirmLabel: 'admin.approveDialog.confirm',
-      })
-      .pipe(
-        switchMap((confirmed) => (confirmed ? this.api.approve(this.id()) : EMPTY)),
-        finalize(() => this.busy.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (user) => this.setUser(user),
-        error: (error: unknown) => this.error.setFrom(error),
       });
   }
 
@@ -258,11 +227,7 @@ export class UserDetailPage {
     this.user.set(user);
     this.form.reset({
       name: user.name,
-      phone: formatPhone(user.phone),
-      roles: Object.fromEntries(ROLES.map((role) => [role, user.roles.includes(role)])) as Record<
-        Role,
-        boolean
-      >,
+      phone: formatPhone(user.phone ?? ''),
     });
   }
 }

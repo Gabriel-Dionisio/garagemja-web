@@ -1,9 +1,7 @@
-:host {
-  display: block;
-  max-width: 56rem;
-}
-
 app-page-header {
   display: block;
-  margin-bottom: var(--space-4);
+}
+
+.muted {
+  color: var(--color-text-muted);
 }

@@ -7,11 +7,11 @@ export class ErrorState {
   readonly text: Signal<string | null>;
   readonly status: Signal<number | null>;
 
-  constructor(fallback: () => string) {
+  constructor(fallback: (status: number) => string) {
     this.status = computed(() => this.error()?.status ?? null);
     this.text = computed(() => {
       const error = this.error();
-      return error && (error.message ?? fallback());
+      return error && (error.message ?? fallback(error.status));
     });
   }
 

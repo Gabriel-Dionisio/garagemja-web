@@ -1,0 +1,48 @@
+<app-text-field
+  [label]="'common.fields.fullName' | transloco"
+  [placeholder]="'auth.register.namePlaceholder' | transloco"
+  autocomplete="name"
+  [maxLength]="150"
+  [format]="formatName"
+  [control]="form().controls.name"
+/>
+<app-text-field
+  [label]="'common.fields.email' | transloco"
+  type="email"
+  placeholder="email@example.com"
+  autocomplete="email"
+  inputMode="email"
+  [maxLength]="180"
+  [format]="formatEmail"
+  [control]="form().controls.email"
+/>
+<div class="pair">
+  <app-text-field
+    [label]="'common.fields.phone' | transloco"
+    type="tel"
+    placeholder="(00) 00000-0000"
+    autocomplete="tel"
+    inputMode="tel"
+    [format]="formatPhone"
+    [control]="form().controls.phone"
+  />
+  <app-text-field
+    [label]="'common.fields.cpf' | transloco"
+    placeholder="000.000.000-00"
+    inputMode="numeric"
+    [format]="formatCpf"
+    [control]="form().controls.cpf"
+  />
+</div>
+<app-password-field
+  [label]="'common.fields.password' | transloco"
+  autocomplete="new-password"
+  [showRules]="true"
+  [control]="form().controls.password"
+/>
+<app-password-field
+  [label]="'common.fields.confirmPassword' | transloco"
+  autocomplete="new-password"
+  [control]="form().controls.confirmPassword"
+  [matchWith]="form().controls.password"
+/>

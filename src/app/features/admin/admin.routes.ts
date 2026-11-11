@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { roleGuard } from '../../core/auth/role-guard';
 
 export const ADMIN_ROUTES: Routes = [
+  { path: 'dashboard', redirectTo: '/dashboard' },
   {
     path: 'users',
     canActivate: [roleGuard('ADMIN')],

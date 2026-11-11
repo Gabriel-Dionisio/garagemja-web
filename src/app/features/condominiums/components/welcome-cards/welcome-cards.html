@@ -1,0 +1,25 @@
+<h2>{{ 'condominiums.welcome.title' | transloco }}</h2>
+<p class="muted">{{ 'condominiums.welcome.subtitle' | transloco }}</p>
+<ul>
+  <li>
+    <button type="button" aria-haspopup="dialog" (click)="code.emit()">
+      <app-icon name="key" />
+      <strong>{{ 'condominiums.welcome.code.title' | transloco }}</strong>
+      <span>{{ 'condominiums.welcome.code.description' | transloco }}</span>
+    </button>
+  </li>
+  <li>
+    <button type="button" aria-haspopup="dialog" (click)="cnpj.emit()">
+      <app-icon name="search" />
+      <strong>{{ 'condominiums.welcome.cnpj.title' | transloco }}</strong>
+      <span>{{ 'condominiums.welcome.cnpj.description' | transloco }}</span>
+    </button>
+  </li>
+  <li>
+    <a routerLink="/condominiums/new">
+      <app-icon name="building" />
+      <strong>{{ 'condominiums.welcome.register.title' | transloco }}</strong>
+      <span>{{ 'condominiums.welcome.register.description' | transloco }}</span>
+    </a>
+  </li>
+</ul>

@@ -15,14 +15,14 @@ import { ErrorText } from '../../../../core/i18n/error-text';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { AuthPanel } from '../../../../shared/ui/auth-panel/auth-panel';
 import { Button } from '../../../../shared/ui/button/button';
-import { Icon } from '../../../../shared/ui/icon/icon';
 import { Spinner } from '../../../../shared/ui/spinner/spinner';
+import { PendingVerificationStore } from '../../pending-verification';
 
 type ConfirmState = 'confirming' | 'confirmed' | 'failed';
 
 @Component({
   selector: 'app-confirm-email-page',
-  imports: [TranslocoPipe, RouterLink, Alert, AuthPanel, Button, Icon, Spinner],
+  imports: [TranslocoPipe, RouterLink, Alert, AuthPanel, Button, Spinner],
   templateUrl: './confirm-email-page.html',
   styleUrl: './confirm-email-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +34,11 @@ export class ConfirmEmailPage implements OnInit {
   private readonly errorText = inject(ErrorText);
 
   readonly oobCode = input<string>();
+
+  protected readonly loginParams = (() => {
+    const email = inject(PendingVerificationStore).recentEmail();
+    return email ? { email } : {};
+  })();
 
   protected readonly state = signal<ConfirmState>('confirming');
   protected readonly error = this.errorText.state();

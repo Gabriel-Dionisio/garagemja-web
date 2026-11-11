@@ -99,4 +99,14 @@ describe('AuthService', () => {
     http.expectOne('/api/v1/auth/csrf').flush(null);
     expect(service.user()).toBeNull();
   });
+
+  it('encerra a sessão local quando o logout volta 401 (sessão já expirada)', () => {
+    service.loadSession().subscribe();
+    http.expectOne('/api/v1/auth/me').flush(PROFILE);
+    service.logout().subscribe();
+    http.expectOne('/api/v1/auth/csrf').flush(null);
+    http.expectOne('/api/v1/auth/logout').flush(null, { status: 401, statusText: 'Unauthorized' });
+    http.expectOne('/api/v1/auth/csrf').flush(null);
+    expect(service.user()).toBeNull();
+  });
 });

@@ -1,0 +1,142 @@
+<app-page [fill]="true">
+  <app-page-header
+    [title]="'condominiums.list.title' | transloco"
+    [subtitle]="'condominiums.list.subtitle' | transloco"
+  >
+    @if (!isAdmin() && !showWelcome()) {
+      <button
+        appButton
+        variant="secondary"
+        type="button"
+        aria-haspopup="dialog"
+        (click)="openJoin({ mode: 'code' })"
+      >
+        {{ 'condominiums.list.join' | transloco }}
+      </button>
+      <a appButton routerLink="/condominiums/new">
+        <app-icon name="plus" />
+        {{ 'condominiums.list.new' | transloco }}
+      </a>
+    }
+  </app-page-header>
+
+  @if (!isAdmin()) {
+    <app-received-invites (accepted)="refresh()" />
+  }
+
+  @if (showWelcome()) {
+    <app-welcome-cards (code)="openJoin({ mode: 'code' })" (cnpj)="openJoin({ mode: 'cnpj' })" />
+  } @else {
+    <app-filter-panel
+      [label]="'condominiums.list.filters' | transloco"
+      [activeCount]="activeFilters()"
+      [(open)]="filtersOpen"
+    >
+      @if (isAdmin()) {
+        <app-chip-group
+          [label]="'condominiums.list.tabs' | transloco"
+          [options]="tabs"
+          [value]="status()"
+          (valueChange)="selectStatus($event)"
+        />
+      }
+      <app-condominium-filter (filterChange)="applyFilter($event)" />
+    </app-filter-panel>
+
+    @if (joined()) {
+      <app-alert kind="success">{{ 'condominiums.join.sent' | transloco }}</app-alert>
+    }
+
+    @if (error.text(); as message) {
+      <app-alert kind="error">{{ message }}</app-alert>
+    }
+
+    <app-list-state
+      [attr.aria-busy]="loading()"
+      [loading]="loading() && !result()"
+      [empty]="result()?.items?.length === 0"
+      [loadingLabel]="'condominiums.list.loading' | transloco"
+      emptyIcon="building"
+      [emptyTitle]="'condominiums.list.emptyTitle' | transloco"
+      [emptyDescription]="'condominiums.list.emptyDescription' | transloco"
+      [listLabel]="'condominiums.list.caption' | transloco"
+    >
+      @if (result(); as current) {
+        @for (condominium of current.items; track condominium.id) {
+          <li appListItem [link]="['/condominiums', condominium.id]">
+            <span leading>
+              @if (condominium.thumbnailUrl) {
+                <img class="thumb" [src]="condominium.thumbnailUrl" alt="" />
+              } @else {
+                <span class="thumb placeholder"><app-icon name="building" /></span>
+              }
+            </span>
+            <strong>{{ condominium.name }}</strong>
+            @if (condominium.residency; as residency) {
+              @if (residency.status === 'APPROVED') {
+                <small class="resides">{{ 'condominiums.list.resides' | transloco }}</small>
+              } @else {
+                <app-badge [tone]="residencyTones[residency.status]">{{
+                  residencyLabels[residency.status] | transloco
+                }}</app-badge>
+              }
+            }
+            <small
+              >{{ condominium.city }}{{ condominium.state ? ' / ' + condominium.state : '' }}</small
+            >
+            <span status>
+              <app-condominium-status-badge [status]="condominium.status" />
+            </span>
+            <span actions>
+              @if (pending()[condominium.id]; as count) {
+                <a
+                  class="pending"
+                  [routerLink]="['/condominiums', condominium.id, 'residents']"
+                  [queryParams]="{ status: 'PENDING' }"
+                  [attr.aria-label]="'condominiums.list.pending' | transloco: { count }"
+                >
+                  <app-badge tone="warning">{{ count }}</app-badge>
+                </a>
+              }
+              @if (condominium.residency && !condominium.canManage) {
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'condominiums.residencies.leave.label' | transloco"
+                  (click)="leave(condominium)"
+                >
+                  <app-icon name="logout" />
+                </button>
+              }
+              @for (action of rowActions(condominium); track action.key) {
+                <button
+                  appIconButton
+                  type="button"
+                  [variant]="action.primary ? 'primary' : 'neutral'"
+                  [label]="'condominiums.actions.' + action.key | transloco"
+                  [loading]="busy()"
+                  (click)="changeStatus(condominium, action)"
+                >
+                  <app-icon [name]="action.icon" />
+                </button>
+              }
+            </span>
+          </li>
+        }
+        @if (current.items.length > 0) {
+          <app-paginator
+            paginator
+            [page]="current.page"
+            [size]="current.size"
+            [total]="current.total"
+            [itemCount]="current.items.length"
+            [hasNext]="current.hasNext"
+            [sizeOptions]="pageSizes"
+            (sizeChange)="changeSize($event)"
+            (pageChange)="goTo($event)"
+          />
+        }
+      }
+    </app-list-state>
+  }
+</app-page>

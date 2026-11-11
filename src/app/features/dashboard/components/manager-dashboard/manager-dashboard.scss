@@ -1,0 +1,42 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: block;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+
+  @include from($bp-md) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+.notice {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+
+  @include from($bp-lg) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+h2 {
+  margin-bottom: var(--space-3);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}

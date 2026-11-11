@@ -1,0 +1,48 @@
+<h2 id="join-title">
+  {{ (byCnpj() ? 'condominiums.join.cnpjTitle' : 'condominiums.join.title') | transloco }}
+</h2>
+<p class="muted">
+  {{ (byCnpj() ? 'condominiums.join.cnpjSubtitle' : 'condominiums.join.subtitle') | transloco }}
+</p>
+
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
+@if (notFound()) {
+  <app-alert kind="warning">{{ 'condominiums.join.cnpjNotFound' | transloco }}</app-alert>
+}
+
+<form (submit)="$event.preventDefault(); submit()" novalidate>
+  <app-text-field
+    [label]="(byCnpj() ? 'condominiums.fields.cnpj' : 'condominiums.join.code') | transloco"
+    [maxLength]="byCnpj() ? 18 : 10"
+    [format]="format()"
+    [control]="typed"
+  />
+
+  @if (loading()) {
+    <app-loading-block [label]="'condominiums.join.loading' | transloco" />
+  } @else if (preview(); as item) {
+    <div class="preview">
+      <strong>{{ item.name }}</strong>
+      @if (item.city) {
+        <small class="muted">{{ item.city }}{{ item.state ? ' / ' + item.state : '' }}</small>
+      }
+    </div>
+    <app-text-field
+      [label]="'condominiums.join.unit' | transloco"
+      [maxLength]="20"
+      [control]="unit"
+    />
+    <app-text-field
+      [label]="'condominiums.join.block' | transloco"
+      [maxLength]="20"
+      [control]="block"
+    />
+    <app-form-actions>
+      <button appButton type="submit" [loading]="busy()">
+        {{ 'condominiums.join.submit' | transloco }}
+      </button>
+    </app-form-actions>
+  }
+</form>

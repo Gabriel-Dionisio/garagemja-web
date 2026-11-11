@@ -1,0 +1,11 @@
+<app-image-field
+  [images]="shown()"
+  [multiple]="true"
+  [max]="maxImages"
+  [alt]="'condominiums.image.alt' | transloco"
+  [busy]="busy()"
+  [disabled]="disabled()"
+  (selected)="add($event)"
+  (removed)="remove($event)"
+  (moved)="move($event)"
+/>

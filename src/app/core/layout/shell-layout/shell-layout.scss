@@ -161,6 +161,21 @@
     color: #fff;
   }
 
+  .count {
+    margin-left: auto;
+  }
+
+  .group-title {
+    margin: var(--space-4) 0 var(--space-2);
+    padding: var(--space-3) var(--space-3) 0;
+    border-top: 1px solid rgb(255 255 255 / 15%);
+    color: var(--color-tertiary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .brand {
     font-size: var(--font-size-lg);
     font-weight: 700;

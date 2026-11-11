@@ -2,16 +2,21 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 const PATHS = {
   home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+  building: 'M3 21h18M5 21V3h9v18M14 9h5v12M9 7h1M9 11h1M9 15h1',
+  'building-user':
+    'M3 21h8M5 21V3h9v7M9 7h1M9 11h1M9 15h1M17.5 15a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM14 21v-1a3.5 3.5 0 0 1 7 0v1',
   search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',
   car: 'M5 17H3v-5l2-5h14l2 5v5h-2M5 17a2 2 0 1 0 4 0M15 17a2 2 0 1 0 4 0M9 17h6M3 12h18',
   mail: 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM22 6l-10 7L2 6',
   user: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
   users:
     'M16 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM21 20v-1a4 4 0 0 0-3-3.9M16 4.1a3.5 3.5 0 0 1 0 6.8',
+  caps: 'M12 3l8 9h-5v5H9v-5H4l8-9zM9 21h6',
   logout: 'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9',
   bell: 'M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
   menu: 'M4 6h16M4 12h16M4 18h16',
   close: 'M6 6l12 12M18 6L6 18',
+  transfer: 'M17 3l4 4-4 4M21 7H9M7 21l-4-4 4-4M3 17h12',
   plus: 'M12 5v14M5 12h14',
   check: 'M5 13l4 4L19 7',
   key: 'M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.8 7.8 5.5 5.5 0 0 1 7.8-7.8zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4',
@@ -26,6 +31,7 @@ const PATHS = {
   info: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',
   'chevron-left': 'M15 18l-6-6 6-6',
   'chevron-right': 'M9 18l6-6-6-6',
+  calendar: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
   filter: 'M3 5h18l-7 8v6l-4 2v-8L3 5z',
   dot: 'M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',
   globe:

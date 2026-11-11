@@ -1,0 +1,11 @@
+@if (link(); as path) {
+  <a class="kpi" [class.highlight]="highlight()" [routerLink]="path" [queryParams]="queryParams()">
+    <span class="value">{{ value() }}</span>
+    <span class="label">{{ label() }}</span>
+  </a>
+} @else {
+  <div class="kpi" [class.highlight]="highlight()">
+    <span class="value">{{ value() }}</span>
+    <span class="label">{{ label() }}</span>
+  </div>
+}

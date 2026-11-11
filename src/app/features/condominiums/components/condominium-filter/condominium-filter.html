@@ -1,0 +1,24 @@
+<form [formGroup]="form" (ngSubmit)="apply()" novalidate>
+  <app-text-field
+    [label]="'condominiums.fields.name' | transloco"
+    [maxLength]="150"
+    [control]="form.controls.name"
+  />
+  <app-text-field
+    [label]="'condominiums.fields.city' | transloco"
+    [maxLength]="100"
+    [control]="form.controls.city"
+  />
+  <app-text-field
+    [label]="'condominiums.fields.state' | transloco"
+    placeholder="UF"
+    [format]="formatUf"
+    [control]="form.controls.state"
+  />
+  <div class="actions">
+    <button appButton variant="secondary" type="button" (click)="clear()">
+      {{ 'common.actions.clear' | transloco }}
+    </button>
+    <button appButton type="submit">{{ 'common.actions.filter' | transloco }}</button>
+  </div>
+</form>

@@ -1,0 +1,8 @@
+:host {
+  display: block;
+}
+
+.shapes {
+  display: grid;
+  gap: var(--space-3);
+}

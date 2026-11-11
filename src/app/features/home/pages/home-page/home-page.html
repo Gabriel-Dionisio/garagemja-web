@@ -2,7 +2,26 @@
   <h1 id="home-heading" class="sr-only">{{ 'home.title' | transloco }}</h1>
 
   <div class="hero">
-    <img src="/images/home-hero.png" alt="" />
+    <picture>
+      <source
+        type="image/avif"
+        srcset="/images/home-hero-800.avif 800w, /images/home-hero-1600.avif 1600w"
+        sizes="100vw"
+      />
+      <source
+        type="image/webp"
+        srcset="/images/home-hero-800.webp 800w, /images/home-hero-1600.webp 1600w"
+        sizes="100vw"
+      />
+      <img
+        src="/images/home-hero-1600.jpg"
+        width="1600"
+        height="638"
+        fetchpriority="high"
+        decoding="async"
+        alt=""
+      />
+    </picture>
   </div>
 
   <form class="search-panel" (submit)="$event.preventDefault()">
@@ -14,25 +33,38 @@
       [attr.aria-label]="'home.search.condominium' | transloco"
       [placeholder]="'home.search.condominiumPlaceholder' | transloco"
     />
-    <input
-      class="date-input start-date"
-      type="date"
-      [attr.aria-label]="'home.search.start' | transloco"
-    />
-    <input
-      class="date-input end-date"
-      type="date"
-      [attr.aria-label]="'home.search.end' | transloco"
-    />
+    <app-date-field class="date-input start-date" [label]="'home.search.start' | transloco" />
+    <app-date-field class="date-input end-date" [label]="'home.search.end' | transloco" />
     <button type="submit">{{ 'home.search.submit' | transloco }}</button>
   </form>
 
   <section class="featured" aria-labelledby="featured-heading">
     <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
     @if (loading()) {
-      <app-loading-block [label]="'home.loading' | transloco" />
+      <app-skeleton [label]="'home.loading' | transloco">
+        <div class="condominium-grid">
+          @for (item of placeholders; track item) {
+            <div class="condominium-card">
+              <app-skeleton-block height="auto" />
+              <div class="card-content">
+                <app-skeleton-block width="60%" height="1.25rem" />
+                <app-skeleton-block class="availability" width="40%" />
+                <app-skeleton-block class="availability" width="50%" />
+              </div>
+            </div>
+          }
+        </div>
+      </app-skeleton>
     } @else if (loadFailed()) {
       <app-alert kind="error">{{ 'home.loadError' | transloco }}</app-alert>
+    } @else if (!hasResidency()) {
+      <app-empty-state
+        icon="building"
+        [title]="'home.noResidencyTitle' | transloco"
+        [description]="'home.noResidencyDescription' | transloco"
+      >
+        <a appButton routerLink="/condominiums">{{ 'home.joinAction' | transloco }}</a>
+      </app-empty-state>
     } @else if (featuredCondominiums().length === 0) {
       <app-empty-state
         icon="car"
@@ -41,29 +73,39 @@
       />
     } @else {
       <div class="condominium-grid">
-      @for (condominium of featuredCondominiums(); track condominium.id) {
-        <article class="condominium-card">
-          <img [src]="condominium.imageUrl || fallbackImage" alt="" (error)="useFallback($event)" />
-          <div class="card-content">
-            <div class="card-heading">
-              <h3>{{ condominium.name }}</h3>
-              <button type="button" aria-label="{{ 'home.viewCondominium' | transloco }}">
-                <span aria-hidden="true">›</span>
-              </button>
-            </div>
-            <p class="availability">
-              {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
-            </p>
-            @if (condominium.pricePerHour != null) {
-              <p class="price">
-                {{ 'home.priceFrom' | transloco }}
-                <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
-                {{ 'home.perHour' | transloco }}
+        @for (condominium of featuredCondominiums(); track condominium.id) {
+          <article class="condominium-card">
+            <img
+              [src]="condominium.imageUrl || fallbackImage"
+              loading="lazy"
+              decoding="async"
+              alt=""
+              (error)="useFallback($event)"
+            />
+            <div class="card-content">
+              <div class="card-heading">
+                <h3>{{ condominium.name }}</h3>
+                <button
+                  type="button"
+                  aria-label="{{ 'home.viewCondominium' | transloco }}"
+                  title="{{ 'home.viewCondominium' | transloco }}"
+                >
+                  <span aria-hidden="true">›</span>
+                </button>
+              </div>
+              <p class="availability">
+                {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
               </p>
-            }
-          </div>
-        </article>
-      }
+              @if (condominium.pricePerHour != null) {
+                <p class="price">
+                  {{ 'home.priceFrom' | transloco }}
+                  <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
+                  {{ 'home.perHour' | transloco }}
+                </p>
+              }
+            </div>
+          </article>
+        }
       </div>
     }
   </section>

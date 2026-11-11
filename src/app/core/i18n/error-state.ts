@@ -6,10 +6,10 @@ export class ErrorState {
   private readonly error = signal<ApiError | null>(null);
   readonly text: Signal<string | null>;
 
-  constructor(fallback: () => string) {
+  constructor(fallback: (status: number) => string) {
     this.text = computed(() => {
       const error = this.error();
-      return error && (error.message ?? fallback());
+      return error && (error.message ?? fallback(error.status));
     });
   }
 

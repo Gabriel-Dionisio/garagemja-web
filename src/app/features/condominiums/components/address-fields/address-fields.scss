@@ -1,0 +1,11 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: contents;
+}
+
+.wide {
+  @include from($bp-md) {
+    grid-column: 1 / -1;
+  }
+}

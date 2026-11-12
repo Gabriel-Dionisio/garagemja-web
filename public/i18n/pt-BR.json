@@ -119,6 +119,7 @@
   "nav": {
     "home": "Início",
     "myRentals": "Meus aluguéis",
+    "requests": "Solicitações",
     "users": "Usuários",
     "settings": "Configurações",
     "skipToContent": "Pular para o conteúdo",
@@ -139,6 +140,7 @@
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
     "myRentals": "Meus aluguéis",
+    "requests": "Solicitações",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo administrador",
     "adminUserDetail": "Detalhes do usuário",
@@ -158,6 +160,48 @@
     "adminDashboard": "Painel da plataforma",
     "dashboard": "Painel",
     "settings": "Configurações"
+  },
+  "requests": {
+    "title": "Solicitações",
+    "subtitle": "Pedidos de aluguel recebidos para as suas vagas.",
+    "loading": "Carregando solicitações…",
+    "retry": "Tentar novamente",
+    "spot": "Vaga {{number}}",
+    "approve": "Aprovar",
+    "refuse": "Recusar",
+    "tabs": {
+      "label": "Situação das solicitações",
+      "pending": "Pendentes",
+      "approved": "Aprovados",
+      "refused": "Recusados"
+    },
+    "status": {
+      "PENDING": "Pendente",
+      "APPROVED": "Aprovada",
+      "REFUSED": "Recusada"
+    },
+    "empty": {
+      "PENDING": "Nenhuma solicitação pendente",
+      "APPROVED": "Nenhuma solicitação aprovada",
+      "REFUSED": "Nenhuma solicitação recusada"
+    },
+    "emptyDescription": {
+      "PENDING": "Os pedidos de aluguel das suas vagas que aguardam decisão aparecerão aqui.",
+      "APPROVED": "Os pedidos que você aprovar aparecerão aqui.",
+      "REFUSED": "Os pedidos que você recusar aparecerão aqui."
+    },
+    "dialog": {
+      "approve": {
+        "title": "Aprovar solicitação",
+        "message": "Aprovar o pedido de aluguel da vaga {{spot}}? Outros pedidos pendentes que coincidam com o período serão recusados.",
+        "confirm": "Aprovar"
+      },
+      "refuse": {
+        "title": "Recusar solicitação",
+        "message": "Recusar o pedido de aluguel da vaga {{spot}}?",
+        "confirm": "Recusar"
+      }
+    }
   },
   "rentals": {
     "title": "Meus aluguéis",

@@ -119,6 +119,7 @@
   "nav": {
     "home": "Home",
     "myRentals": "My rentals",
+    "requests": "Requests",
     "users": "Users",
     "settings": "Settings",
     "skipToContent": "Skip to content",
@@ -139,6 +140,7 @@
     "verifyEmail": "Verify email",
     "home": "Home",
     "myRentals": "My rentals",
+    "requests": "Requests",
     "adminUsers": "Users",
     "adminUserNew": "New administrator",
     "adminUserDetail": "User details",
@@ -158,6 +160,48 @@
     "adminDashboard": "Platform dashboard",
     "dashboard": "Dashboard",
     "settings": "Settings"
+  },
+  "requests": {
+    "title": "Requests",
+    "subtitle": "Rental requests received for your parking spots.",
+    "loading": "Loading requests…",
+    "retry": "Try again",
+    "spot": "Spot {{number}}",
+    "approve": "Approve",
+    "refuse": "Refuse",
+    "tabs": {
+      "label": "Request status",
+      "pending": "Pending",
+      "approved": "Approved",
+      "refused": "Refused"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REFUSED": "Refused"
+    },
+    "empty": {
+      "PENDING": "No pending requests",
+      "APPROVED": "No approved requests",
+      "REFUSED": "No refused requests"
+    },
+    "emptyDescription": {
+      "PENDING": "Rental requests for your spots that await a decision will appear here.",
+      "APPROVED": "Requests you approve will appear here.",
+      "REFUSED": "Requests you refuse will appear here."
+    },
+    "dialog": {
+      "approve": {
+        "title": "Approve request",
+        "message": "Approve the rental request for spot {{spot}}? Other pending requests overlapping the period will be refused.",
+        "confirm": "Approve"
+      },
+      "refuse": {
+        "title": "Refuse request",
+        "message": "Refuse the rental request for spot {{spot}}?",
+        "confirm": "Refuse"
+      }
+    }
   },
   "rentals": {
     "title": "My rentals",

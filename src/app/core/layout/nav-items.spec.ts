@@ -3,14 +3,8 @@ import { navItemsFor } from './nav-items';
 describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
-  it('morador: início, condomínios, meus aluguéis, configurações e perfil', () => {
-    expect(paths(navItemsFor(['RESIDENT']))).toEqual([
-      '/home',
-      '/condominiums',
-      '/rentals',
-      '/settings',
-      '/profile',
-    ]);
+  it('morador: início, condomínios e meus aluguéis', () => {
+    expect(paths(navItemsFor(['RESIDENT']))).toEqual(['/home', '/condominiums', '/rentals']);
   });
 
   it('síndico: início, condomínios, meus aluguéis e painel', () => {
@@ -19,8 +13,6 @@ describe('navItemsFor', () => {
       '/condominiums',
       '/rentals',
       '/dashboard',
-      '/settings',
-      '/profile',
     ]);
   });
 
@@ -30,8 +22,6 @@ describe('navItemsFor', () => {
       '/condominiums',
       '/admin/users',
       '/admin/audit-logs',
-      '/settings',
-      '/profile',
     ]);
   });
 });

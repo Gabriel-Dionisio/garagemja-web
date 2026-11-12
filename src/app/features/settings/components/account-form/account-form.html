@@ -1,0 +1,28 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <app-form-section [heading]="'settings.account.title' | transloco">
+    <app-text-field
+      [class.wide]="!showPhone()"
+      [label]="'common.fields.fullName' | transloco"
+      autocomplete="name"
+      [maxLength]="150"
+      showCount
+      [format]="formatName"
+      [control]="form.controls.name"
+    />
+    @if (showPhone()) {
+      <app-text-field
+        [label]="'common.fields.phone' | transloco"
+        type="tel"
+        inputMode="tel"
+        [maxLength]="15"
+        [format]="formatPhone"
+        [control]="form.controls.phone"
+      />
+    }
+  </app-form-section>
+  <app-form-actions>
+    <button appButton type="submit" [loading]="saving()">
+      {{ 'settings.account.save' | transloco }}
+    </button>
+  </app-form-actions>
+</form>

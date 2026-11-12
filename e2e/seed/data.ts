@@ -31,7 +31,7 @@ const account = (role: string, n: number, name: string, cpfIndex: number, note: 
   ({ email: emailOf(role, n), name, cpfIndex, role, note });
 
 export const ACCOUNTS: Account[] = [
-  account('admin', 1, 'Seed Admin Um', 1, 'ADMIN (promoted via SQL)'),
+  account('admin', 1, 'Seed Admin Um', 1, 'ADMIN (promoted via SQL; no CPF)'),
   account('manager', 1, 'Seed Sindico Um', 2, 'Sindico of the ACTIVE condominium; has an open invite out'),
   account('resident', 1, 'Seed Morador Um', 3, 'Resident PENDING (join by code)'),
   account('resident', 2, 'Seed Morador Dois', 4, 'Resident APPROVED (join by code)'),
@@ -42,7 +42,7 @@ export const ACCOUNTS: Account[] = [
   account('requester', 2, 'Seed Solicitante Dois', 8, 'Owns a REJECTED condominium'),
   account('requester', 3, 'Seed Solicitante Tres', 9, 'Sindico of a BLOCKED condominium'),
   account('requester', 4, 'Seed Solicitante Quatro', 10, 'Ex-sindico of a CLOSED condominium'),
-  account('nolink', 1, 'Seed Sem Vinculo', 11, 'No link (welcome screen)'),
+  account('nolink', 1, 'Seed Sem Vinculo', 11, 'No link (welcome screen); no phone'),
   account('invitee', 1, 'Seed Convidado Um', 12, 'Has an open sindico invite'),
 ];
 

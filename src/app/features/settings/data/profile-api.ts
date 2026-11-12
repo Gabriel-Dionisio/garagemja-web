@@ -17,6 +17,16 @@ export class ProfileApi {
   update(id: string, changes: ProfileChanges): Observable<Profile> {
     return this.http.patch<unknown>(`${USERS_URL}/${id}`, changes).pipe(map(toProfile));
   }
+
+  uploadPhoto(id: string, file: File): Observable<Profile> {
+    const body = new FormData();
+    body.append('file', file);
+    return this.http.put<unknown>(`${USERS_URL}/${id}/photo`, body).pipe(map(toProfile));
+  }
+
+  removePhoto(id: string): Observable<Profile> {
+    return this.http.delete<unknown>(`${USERS_URL}/${id}/photo`).pipe(map(toProfile));
+  }
 }
 
 export function toProfile(value: unknown): Profile {
@@ -25,8 +35,7 @@ export function toProfile(value: unknown): Profile {
   if (
     typeof data['id'] !== 'string' ||
     typeof data['name'] !== 'string' ||
-    typeof data['email'] !== 'string' ||
-    typeof data['phone'] !== 'string'
+    typeof data['email'] !== 'string'
   ) {
     throw new Error('Invalid profile');
   }
@@ -34,6 +43,12 @@ export function toProfile(value: unknown): Profile {
     id: data['id'],
     name: data['name'],
     email: data['email'],
-    phone: onlyDigits(data['phone']),
+    phone: onlyDigits(optionalText(data['phone'])),
+    cpf: onlyDigits(optionalText(data['cpf'])),
+    photoUrl: typeof data['photoUrl'] === 'string' ? data['photoUrl'] : null,
   };
+}
+
+function optionalText(value: unknown): string {
+  return typeof value === 'string' ? value : '';
 }

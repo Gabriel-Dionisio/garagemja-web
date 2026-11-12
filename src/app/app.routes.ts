@@ -53,6 +53,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
+        data: { showSearch: true },
         canActivate: [homeGuard],
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
@@ -106,11 +107,12 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
-        loadChildren: () => import('./features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
+        loadChildren: () =>
+          import('./features/settings/settings.routes').then((m) => m.SETTINGS_ROUTES),
       },
       {
         path: 'profile',
-        loadChildren: () => import('./features/profile/profile.routes').then((m) => m.PROFILE_ROUTES),
+        redirectTo: 'settings',
       },
     ],
   },

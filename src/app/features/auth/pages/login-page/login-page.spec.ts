@@ -8,11 +8,16 @@ import { PendingVerificationStore } from '../../pending-verification';
 
 describe('LoginPage', () => {
   const login = vi.fn();
+  const completeSecondFactor = vi.fn();
 
   async function setup() {
     login.mockReset();
+    completeSecondFactor.mockReset();
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: AuthService, useValue: { login } }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: { login, completeSecondFactor } },
+      ],
     });
     const fixture = TestBed.createComponent(LoginPage);
     await fixture.whenStable();
@@ -41,7 +46,7 @@ describe('LoginPage', () => {
   it('autentica e navega para a rota pedida', async () => {
     const { fill, submit } = await setup();
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
-    login.mockReturnValue(of({ id: '1' }));
+    login.mockReturnValue(of({ kind: 'authenticated', user: { id: '1' } }));
     fill('E-mail', 'ana@x.com');
     fill('Senha', 'Abcdef1!');
     await submit();
@@ -53,10 +58,26 @@ describe('LoginPage', () => {
     expect(navigate).toHaveBeenCalledWith('/home');
   });
 
+  it('pede o código quando há segundo fator e conclui o login', async () => {
+    const { fixture, element, fill, submit } = await setup();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    login.mockReturnValue(of({ kind: 'second-factor', challenge: 'abc' }));
+    completeSecondFactor.mockReturnValue(of({ kind: 'authenticated', user: { id: '1' } }));
+    fill('E-mail', 'ana@x.com');
+    fill('Senha', 'Abcdef1!');
+    await submit();
+    expect(navigate).not.toHaveBeenCalled();
+    fill('Código', '123456');
+    (element.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    expect(completeSecondFactor).toHaveBeenCalledWith('abc', '123456');
+    expect(navigate).toHaveBeenCalledWith('/home');
+  });
+
   it('envia senha fora da política de cadastro e remove espaços do e-mail', async () => {
     const { fill, submit } = await setup();
     vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
-    login.mockReturnValue(of({ id: '1' }));
+    login.mockReturnValue(of({ kind: 'authenticated', user: { id: '1' } }));
     fill('E-mail', 'ana@x.com ');
     fill('Senha', 'fraca');
     await submit();
@@ -111,7 +132,7 @@ describe('LoginPage', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: AuthService, useValue: { login } },
+        { provide: AuthService, useValue: { login, completeSecondFactor } },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { queryParamMap: convertToParamMap({ email: 'ana@x.com' }) } },

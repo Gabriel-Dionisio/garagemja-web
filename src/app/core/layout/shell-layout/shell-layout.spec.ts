@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, Routes } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../auth/auth-service';
 import { UserProfile } from '../../auth/auth.model';
@@ -13,17 +13,18 @@ const USER: UserProfile = {
   name: 'Ana Souza',
   email: 'a@x.com',
   roles: ['ADMIN'],
+  photoUrl: null,
 };
 
 describe('ShellLayout', () => {
   const logout = vi.fn(() => of(undefined));
   const mobile = signal(false);
 
-  async function setup(usesDrawer: boolean, user: UserProfile = USER) {
+  async function setup(usesDrawer: boolean, user: UserProfile = USER, routes: Routes = []) {
     mobile.set(usesDrawer);
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(routes),
         {
           provide: AuthService,
           useValue: {
@@ -47,16 +48,27 @@ describe('ShellLayout', () => {
   it('mostra a navegação por papel e destaca nome e iniciais no desktop', async () => {
     const { element } = await setup(false);
     const links = Array.from(element.querySelectorAll('nav a')).map((a) => a.textContent?.trim());
-    expect(links).toEqual([
-      'Painel',
-      'Condomínios3',
-      'Configurações',
-      'Perfil',
-      'Usuários',
-      'Auditoria',
-    ]);
+    expect(links).toEqual(['Painel', 'Condomínios3', 'Usuários', 'Auditoria']);
+    const footer = element.querySelector('.footer');
+    expect(footer?.querySelector('a')?.getAttribute('href')).toBe('/settings');
+    expect(footer?.querySelector('button.logout')).not.toBeNull();
+    expect(element.querySelector('app-language-switcher')).toBeNull();
     expect(element.querySelector('app-avatar')?.textContent?.trim()).toBe('AS');
     expect(element.querySelector('button[aria-label="Abrir menu"]')).toBeNull();
+  });
+
+  it('esconde a busca fora das rotas que a pedem', async () => {
+    const { element } = await setup(false);
+    expect(element.querySelector('.topbar-search')).toBeNull();
+  });
+
+  it('mostra a busca na rota com showSearch', async () => {
+    const { fixture, element } = await setup(false, USER, [
+      { path: 'home', data: { showSearch: true }, children: [] },
+    ]);
+    await TestBed.inject(Router).navigateByUrl('/home');
+    await fixture.whenStable();
+    expect(element.querySelector('.topbar-search')).not.toBeNull();
   });
 
   it('mostra só o primeiro nome, ignorando espaços iniciais', async () => {

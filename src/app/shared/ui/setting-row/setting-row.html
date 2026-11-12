@@ -1,0 +1,7 @@
+<div class="text">
+  <span class="label">{{ label() }}</span>
+  @if (hint(); as text) {
+    <small class="hint">{{ text }}</small>
+  }
+</div>
+<div class="control"><ng-content /></div>

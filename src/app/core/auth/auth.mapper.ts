@@ -4,7 +4,7 @@ import { isRole } from './role';
 export function toUserProfile(value: unknown): UserProfile {
   if (typeof value !== 'object' || value === null) throw new Error('Invalid profile');
   const data = Object.fromEntries(Object.entries(value));
-  const { id, name, email, roles } = data;
+  const { id, name, email, roles, photoUrl } = data;
   if (
     typeof id !== 'string' ||
     !id ||
@@ -16,5 +16,5 @@ export function toUserProfile(value: unknown): UserProfile {
   ) {
     throw new Error('Invalid profile');
   }
-  return { id, name, email, roles };
+  return { id, name, email, roles, photoUrl: typeof photoUrl === 'string' ? photoUrl : null };
 }

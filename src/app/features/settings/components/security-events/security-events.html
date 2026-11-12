@@ -1,0 +1,32 @@
+<app-list-state
+  [loading]="loading() && !result()"
+  [refreshing]="loading()"
+  [error]="error.text()"
+  [empty]="result()?.items?.length === 0"
+  [loadingLabel]="'settings.events.loading' | transloco"
+  emptyIcon="shield"
+  [emptyTitle]="'settings.events.empty' | transloco"
+  [listLabel]="'settings.events.title' | transloco"
+  [rows]="3"
+  rowHeight="3.5rem"
+>
+  @if (result(); as current) {
+    @for (event of current.items; track event.id) {
+      <li appListItem>
+        <strong>{{ 'settings.events.types.' + event.type | transloco }}</strong>
+        <small>{{ event.createdAt | date: 'short' }}</small>
+      </li>
+    }
+  }
+  @if (result(); as current) {
+    <app-paginator
+      paginator
+      [page]="current.page"
+      [size]="current.size"
+      [total]="current.total"
+      [itemCount]="current.items.length"
+      [hasNext]="current.hasNext"
+      (pageChange)="goTo($event)"
+    />
+  }
+</app-list-state>

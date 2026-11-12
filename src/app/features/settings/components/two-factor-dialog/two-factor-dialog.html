@@ -1,0 +1,61 @@
+@if (recoveryCodes(); as codes) {
+  <h2 id="two-factor-title">{{ 'settings.twoFactor.codes.title' | transloco }}</h2>
+  <p>{{ 'settings.twoFactor.codes.warning' | transloco }}</p>
+  <ul class="codes">
+    @for (item of codes; track item) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+  <div class="actions">
+    <button appButton variant="secondary" type="button" (click)="copy()">
+      {{
+        (copied() ? 'settings.twoFactor.codes.copied' : 'settings.twoFactor.codes.copy') | transloco
+      }}
+    </button>
+    <button appButton type="button" (click)="close()">
+      {{ 'settings.twoFactor.codes.done' | transloco }}
+    </button>
+  </div>
+} @else {
+  <h2 id="two-factor-title">{{ 'settings.twoFactor.dialog.' + mode + '.title' | transloco }}</h2>
+  <p>{{ 'settings.twoFactor.dialog.' + mode + '.message' | transloco }}</p>
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  @if (mode === 'enable') {
+    <div class="setup">
+      @if (qr(); as src) {
+        <img [src]="src" width="192" height="192" [alt]="'settings.twoFactor.qrAlt' | transloco" />
+      }
+      @if (setup(); as current) {
+        <p class="secret">
+          <span>{{ 'settings.twoFactor.manualKey' | transloco }}</span>
+          <code>{{ current.secret }}</code>
+        </p>
+      }
+    </div>
+  }
+  <form [formGroup]="codeForm" (ngSubmit)="submit()" novalidate>
+    <app-text-field
+      [label]="'settings.twoFactor.code' | transloco"
+      autocomplete="one-time-code"
+      inputMode="numeric"
+      [maxLength]="16"
+      [control]="code"
+    />
+    <div class="actions">
+      <button appButton variant="secondary" type="button" (click)="close()">
+        {{ 'common.actions.cancel' | transloco }}
+      </button>
+      <button
+        appButton
+        type="submit"
+        [variant]="mode === 'disable' ? 'danger' : 'primary'"
+        [loading]="busy()"
+        [disabled]="mode === 'enable' && !setup()"
+      >
+        {{ 'settings.twoFactor.dialog.' + mode + '.submit' | transloco }}
+      </button>
+    </div>
+  </form>
+}

@@ -13,7 +13,7 @@ import {
 } from 'rxjs';
 import { REPORT_ONLY } from '../http/availability-context';
 import { toUserProfile } from './auth.mapper';
-import { Credentials, Registration, Role, UserProfile } from './auth.model';
+import { Credentials, LoginOutcome, Registration, Role, UserProfile } from './auth.model';
 
 const AUTH_URL = '/api/v1/auth';
 
@@ -30,23 +30,37 @@ export class AuthService {
     return this.currentUser()?.roles.includes(role) ?? false;
   }
 
-  updateCurrentUser(changes: { name?: string }): void {
-    this.currentUser.update((current) =>
-      current && changes.name !== undefined ? { ...current, name: changes.name } : current,
+  updateCurrentUser(changes: { name?: string; photoUrl?: string | null }): void {
+    this.currentUser.update((current) => (current ? { ...current, ...changes } : current));
+  }
+
+  login(credentials: Credentials): Observable<LoginOutcome> {
+    return this.csrf().pipe(
+      switchMap(() => this.http.post<unknown>(`${AUTH_URL}/login`, credentials)),
+      switchMap((body) => {
+        const challenge = secondFactorChallenge(body);
+        return challenge
+          ? of<LoginOutcome>({ kind: 'second-factor', challenge })
+          : this.startSession(body);
+      }),
     );
   }
 
-  login(credentials: Credentials): Observable<UserProfile> {
+  completeSecondFactor(challenge: string, code: string): Observable<LoginOutcome> {
     return this.csrf().pipe(
-      switchMap(() => this.http.post<unknown>(`${AUTH_URL}/login`, credentials)),
-      map(toUserProfile),
-      tap((user) => this.currentUser.set(user)),
-      switchMap((user) =>
-        this.csrf().pipe(
-          catchError(() => of(undefined)),
-          map(() => user),
-        ),
+      switchMap(() =>
+        this.http.post<unknown>(`${AUTH_URL}/login/second-factor`, { challenge, code }),
       ),
+      switchMap((body) => this.startSession(body)),
+    );
+  }
+
+  private startSession(body: unknown): Observable<LoginOutcome> {
+    const user = toUserProfile(body);
+    this.currentUser.set(user);
+    return this.csrf().pipe(
+      catchError(() => of(undefined)),
+      map((): LoginOutcome => ({ kind: 'authenticated', user })),
     );
   }
 
@@ -150,4 +164,10 @@ export class AuthService {
   private csrf(): Observable<void> {
     return this.http.get<void>(`${AUTH_URL}/csrf`);
   }
+}
+
+function secondFactorChallenge(body: unknown): string | null {
+  if (typeof body !== 'object' || body === null) return null;
+  const { secondFactorRequired, challenge } = Object.fromEntries(Object.entries(body));
+  return secondFactorRequired === true && typeof challenge === 'string' ? challenge : null;
 }

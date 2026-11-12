@@ -18,12 +18,19 @@
     </button>
     <app-brand-logo [compact]="true" />
   }
-  <form class="topbar-search" (submit)="$event.preventDefault()">
-    <app-icon name="search" />
-    <label class="sr-only" for="global-search">{{ 'nav.searchPlaceholder' | transloco }}</label>
-    <input id="global-search" type="search" [placeholder]="'nav.searchPlaceholder' | transloco" />
-  </form>
-  <app-language-switcher class="language" />
+  @if (showSearch()) {
+    <form class="topbar-search" (submit)="$event.preventDefault()">
+      <label class="sr-only" for="global-search">{{ 'nav.searchPlaceholder' | transloco }}</label>
+      <input id="global-search" type="search" [placeholder]="'nav.searchPlaceholder' | transloco" />
+      <button
+        class="icon-button"
+        type="submit"
+        [attr.aria-label]="'nav.searchPlaceholder' | transloco"
+      >
+        <app-icon name="search" />
+      </button>
+    </form>
+  }
   @if (user(); as current) {
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
   }
@@ -93,16 +100,28 @@
           </ul>
         }
       </nav>
-      <button
-        class="logout"
-        type="button"
-        [disabled]="loggingOut()"
-        [attr.title]="viewport.usesDrawer() ? null : ('nav.logout' | transloco)"
-        (click)="logout()"
-      >
-        <app-icon name="logout" />
-        <span class="label">{{ 'nav.logout' | transloco }}</span>
-      </button>
+      <div class="footer">
+        <a
+          routerLink="/settings"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          [attr.title]="viewport.usesDrawer() ? null : ('nav.settings' | transloco)"
+          (click)="closeDrawer()"
+        >
+          <app-icon name="settings" />
+          <span class="label">{{ 'nav.settings' | transloco }}</span>
+        </a>
+        <button
+          class="logout"
+          type="button"
+          [disabled]="loggingOut()"
+          [attr.title]="viewport.usesDrawer() ? null : ('nav.logout' | transloco)"
+          (click)="logout()"
+        >
+          <app-icon name="logout" />
+          <span class="label">{{ 'nav.logout' | transloco }}</span>
+        </button>
+      </div>
     </div>
   </aside>
 }

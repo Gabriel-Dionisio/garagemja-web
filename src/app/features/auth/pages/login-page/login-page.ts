@@ -13,6 +13,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth-service';
+import { LoginOutcome } from '../../../../core/auth/auth.model';
 import { safeReturnUrl } from '../../../../core/auth/return-url';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { focusFirstInvalid } from '../../../../shared/forms/focus-first-invalid';
@@ -60,6 +61,11 @@ export class LoginPage {
     password: ['', [Validators.required, Validators.maxLength(128)]],
     rememberMe: false,
   });
+  protected readonly codeForm = inject(NonNullableFormBuilder).group({
+    code: ['', [Validators.required, Validators.maxLength(16)]],
+  });
+  protected readonly code = this.codeForm.controls.code;
+  protected readonly challenge = signal<string | null>(null);
   protected readonly submitting = signal(false);
   protected readonly error = this.errorText.state();
   private readonly email = toSignal(this.form.controls.email.valueChanges, { initialValue: '' });
@@ -89,10 +95,7 @@ export class LoginPage {
       .login({ ...rest, email: email.trim() })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () =>
-          void this.router.navigateByUrl(
-            safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl')),
-          ),
+        next: (outcome) => this.finish(outcome),
         error: (error: unknown) => {
           const apiError = toApiError(error);
           if (apiError.code === EMAIL_NOT_VERIFIED_CODE) {
@@ -105,5 +108,43 @@ export class LoginPage {
           this.error.set(apiError);
         },
       });
+  }
+
+  protected submitCode(): void {
+    const challenge = this.challenge();
+    if (!challenge) return;
+    if (this.code.invalid) {
+      this.code.markAsTouched();
+      return;
+    }
+    this.submitting.set(true);
+    this.error.clear();
+    this.auth
+      .completeSecondFactor(challenge, this.code.value.trim())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (outcome) => this.finish(outcome),
+        error: (error: unknown) => {
+          this.submitting.set(false);
+          this.error.set(toApiError(error));
+        },
+      });
+  }
+
+  protected backToCredentials(): void {
+    this.challenge.set(null);
+    this.code.reset();
+    this.error.clear();
+  }
+
+  private finish(outcome: LoginOutcome): void {
+    if (outcome.kind === 'second-factor') {
+      this.challenge.set(outcome.challenge);
+      this.submitting.set(false);
+      return;
+    }
+    void this.router.navigateByUrl(
+      safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl')),
+    );
   }
 }

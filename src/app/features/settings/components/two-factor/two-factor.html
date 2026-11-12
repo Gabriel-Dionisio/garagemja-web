@@ -1,0 +1,34 @@
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+  <button appButton type="button" variant="secondary" (click)="load()">
+    {{ 'common.actions.retry' | transloco }}
+  </button>
+} @else if (status(); as current) {
+  <app-setting-row
+    [label]="'settings.twoFactor.title' | transloco"
+    [hint]="
+      (current.enabled ? 'settings.twoFactor.enabledHint' : 'settings.twoFactor.disabledHint')
+        | transloco: { count: current.recoveryCodesRemaining }
+    "
+  >
+    @if (current.enabled) {
+      <button appButton type="button" variant="danger" (click)="open('disable')">
+        {{ 'settings.twoFactor.disable' | transloco }}
+      </button>
+    } @else {
+      <button appButton type="button" (click)="open('enable')">
+        {{ 'settings.twoFactor.enable' | transloco }}
+      </button>
+    }
+  </app-setting-row>
+  @if (current.enabled) {
+    <app-setting-row
+      [label]="'settings.twoFactor.recovery' | transloco"
+      [hint]="'settings.twoFactor.recoveryHint' | transloco"
+    >
+      <button appButton type="button" variant="secondary" (click)="open('regenerate')">
+        {{ 'settings.twoFactor.regenerate' | transloco }}
+      </button>
+    </app-setting-row>
+  }
+}

@@ -1,10 +1,42 @@
-<app-page size="narrow">
+<app-page size="form">
   <app-page-header [title]="'settings.title' | transloco" />
+
+  @if (accountError.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  @if (saved()) {
+    <app-alert kind="success">{{ 'settings.account.saved' | transloco }}</app-alert>
+  }
+
+  @if (profile(); as current) {
+    <app-card>
+      <div class="account">
+        <app-account-photo
+          [profile]="current"
+          [roles]="roles()"
+          [busy]="photoBusy()"
+          (selected)="uploadPhoto($event)"
+          (removed)="removePhoto()"
+        />
+        <app-account-form
+          [profile]="current"
+          [showPhone]="showPhone()"
+          [saving]="saving()"
+          (save)="saveAccount($event)"
+        />
+      </div>
+    </app-card>
+  } @else if (loading()) {
+    <app-loading-block [label]="'settings.account.loading' | transloco" />
+  }
 
   <app-card>
     <app-form-section [heading]="'settings.security.title' | transloco">
-      <div class="setting-row wide">
-        <span>{{ 'settings.security.changePassword' | transloco }}</span>
+      <app-setting-row
+        class="wide"
+        [label]="'settings.security.changePassword' | transloco"
+        [hint]="'settings.security.changePasswordHint' | transloco"
+      >
         <button
           appButton
           type="button"
@@ -15,7 +47,7 @@
         >
           {{ 'settings.security.sendResetLink' | transloco }}
         </button>
-      </div>
+      </app-setting-row>
       @if (resetSent()) {
         <app-alert class="wide" kind="success">{{
           'settings.security.resetSent' | transloco
@@ -24,6 +56,13 @@
       @if (resetError.text(); as message) {
         <app-alert class="wide" kind="error">{{ message }}</app-alert>
       }
+      <app-two-factor class="wide" />
+    </app-form-section>
+  </app-card>
+
+  <app-card>
+    <app-form-section [heading]="'settings.events.title' | transloco">
+      <app-security-events class="wide" />
     </app-form-section>
   </app-card>
 
@@ -35,14 +74,17 @@
         [control]="languageControl"
         [options]="languageOptions"
       />
-      <div class="setting-row wide">
-        <span>{{ 'settings.preferences.theme' | transloco }}</span>
+      <app-setting-row
+        class="wide"
+        [label]="'settings.preferences.darkTheme' | transloco"
+        [hint]="'settings.preferences.themeHint' | transloco"
+      >
         <app-switch
           [label]="'settings.preferences.darkTheme' | transloco"
           [checked]="theme.isDark()"
           (toggled)="theme.toggle()"
         />
-      </div>
+      </app-setting-row>
     </app-form-section>
   </app-card>
 </app-page>

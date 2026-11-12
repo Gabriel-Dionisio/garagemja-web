@@ -20,10 +20,12 @@
     </app-skeleton>
   } @else if (noResidency()) {
     <app-alert kind="info">
-      {{ 'vehicles.form.noResidency' | transloco }}
-      <a appButton variant="secondary" routerLink="/condominiums">
-        {{ 'vehicles.form.goToCondominiums' | transloco }}
-      </a>
+      <div class="notice">
+        <span>{{ 'vehicles.form.noResidency' | transloco }}</span>
+        <a appButton variant="secondary" routerLink="/condominiums">
+          {{ 'vehicles.form.goToCondominiums' | transloco }}
+        </a>
+      </div>
     </app-alert>
   } @else if (!failedToLoad()) {
     <app-card>

@@ -249,24 +249,17 @@
   },
   "settings": {
     "title": "Settings",
-    "unavailable": "This feature is unavailable in the current backend.",
-    "notifications": {
-      "title": "Notifications",
-      "requests": "New Requests",
-      "rentals": "Rentals and Payments",
-      "system": "System Updates"
-    },
     "security": {
       "title": "Security",
       "changePassword": "Change password",
-      "twoFactor": "Two-factor authentication",
       "resetSent": "We sent you a link to reset your password.",
-      "resetFailed": "The password reset link could not be sent."
+      "sendResetLink": "Send link"
     },
     "preferences": {
       "title": "Preferences",
       "language": "Language",
-      "theme": "Theme"
+      "theme": "Theme",
+      "darkTheme": "Dark theme"
     }
   },
   "profile": {
@@ -276,8 +269,7 @@
     "name": "Full name",
     "email": "Email",
     "phone": "Phone",
-    "save": "Save changes",
-    "updateError": "Unable to update profile. Check the details and try again."
+    "save": "Save changes"
   },
   "admin": {
     "users": {

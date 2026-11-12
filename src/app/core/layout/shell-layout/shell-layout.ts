@@ -29,9 +29,6 @@ import { ViewportService } from '../viewport-service';
 
 @Component({
   selector: 'app-shell-layout',
-  host: {
-    '[class.topbar-hidden]': '!showTopbar()',
-  },
   imports: [
     TranslocoPipe,
     A11yModule,
@@ -72,7 +69,6 @@ export class ShellLayout {
   protected readonly logoutError = this.errorText.state();
   protected readonly loggingOut = signal(false);
   protected readonly showSidebar = computed(() => !this.viewport.usesDrawer() || this.drawerOpen());
-  protected readonly showTopbar = signal(this.routeShowsTopbar());
 
   constructor() {
     this.router.events
@@ -80,10 +76,7 @@ export class ShellLayout {
         filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(inject(DestroyRef)),
       )
-      .subscribe(() => {
-        this.showTopbar.set(this.routeShowsTopbar());
-        this.mainElement().nativeElement.focus();
-      });
+      .subscribe(() => this.mainElement().nativeElement.focus());
 
     effect(() => {
       if (this.user()) untracked(() => this.navBadges.refresh());
@@ -96,19 +89,6 @@ export class ShellLayout {
 
   protected openDrawer(): void {
     this.drawerOpen.set(true);
-  }
-
-  private routeShowsTopbar(): boolean {
-    let route = this.router.routerState.snapshot.root;
-    let showsTopbar = true;
-
-    while (route.firstChild) {
-      route = route.firstChild;
-      if (route.data['showTopbar'] === false) showsTopbar = false;
-      if (route.data['showTopbar'] === true) showsTopbar = true;
-    }
-
-    return showsTopbar;
   }
 
   protected dismissSidebar(): void {

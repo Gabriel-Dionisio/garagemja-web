@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { onlyDigits } from '../../../shared/forms/masks';
 import { Profile, ProfileChanges } from '../profile.model';
 
 const USERS_URL = '/api/v1/users';
@@ -33,6 +34,6 @@ export function toProfile(value: unknown): Profile {
     id: data['id'],
     name: data['name'],
     email: data['email'],
-    phone: data['phone'].replace(/\D/g, ''),
+    phone: onlyDigits(data['phone']),
   };
 }

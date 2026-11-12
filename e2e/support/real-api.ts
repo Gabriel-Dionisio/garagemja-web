@@ -1,10 +1,10 @@
 import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
 const MAILPIT = 'http://localhost:8025/api/v1';
-export const PASSWORD = 'Senha@123';
+export const PASSWORD = '@Teste123';
 
 export function uniqueEmail(prefix: string): string {
-  return `${prefix}.${Date.now()}${Math.floor(Math.random() * 1000)}@garagemja.test`;
+  return `${prefix}.${Date.now()}${Math.floor(Math.random() * 1000)}@email.com.br`;
 }
 
 export function cpfFromBase(base: number[]): string {

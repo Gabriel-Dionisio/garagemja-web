@@ -11,7 +11,13 @@ import { Role, UserProfile } from './core/auth/auth.model';
 
 describe('app routes', () => {
   const user = signal<UserProfile | null>(null);
-  const profile = { id: 'u1', name: 'Ana', email: 'ana@x.com', roles: ['RESIDENT'] as Role[] };
+  const profile = {
+    id: 'u1',
+    name: 'Ana',
+    email: 'ana@x.com',
+    roles: ['RESIDENT'] as Role[],
+    photoUrl: null,
+  };
 
   beforeEach(() => {
     user.set(null);

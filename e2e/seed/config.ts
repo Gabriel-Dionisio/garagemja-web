@@ -7,7 +7,7 @@ export const MAILPIT_URL = process.env['MAILPIT_URL'] ?? 'http://localhost:8025/
 export const EMULATOR_HOST = process.env['FIREBASE_AUTH_EMULATOR_HOST'] ?? 'localhost:9099';
 export const EMULATOR_PROJECT = process.env['FIREBASE_PROJECT_ID'] ?? 'demo-garagemja';
 export const EMULATOR_URL = `http://${EMULATOR_HOST}`;
-export const SEED_DOMAIN = 'garagemja.test';
+export const SEED_DOMAIN = 'email.com.br';
 
 const MIGRATIONS_DIR =
   process.env['MIGRATIONS_DIR'] ??

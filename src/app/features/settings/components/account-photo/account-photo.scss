@@ -1,0 +1,83 @@
+:host {
+  --avatar-size: 5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.name {
+  overflow-wrap: anywhere;
+  font-size: var(--font-size-lg);
+}
+
+.detail {
+  overflow-wrap: anywhere;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.photo {
+  position: relative;
+  flex: none;
+}
+
+.view {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.action {
+  position: absolute;
+  bottom: -0.125rem;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+
+  app-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-text);
+    outline-offset: 2px;
+  }
+}
+
+.edit {
+  right: -0.125rem;
+}
+
+.remove {
+  left: -0.125rem;
+  background: var(--color-danger);
+}
+
+.error {
+  color: var(--color-danger);
+}

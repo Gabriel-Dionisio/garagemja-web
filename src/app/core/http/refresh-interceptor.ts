@@ -7,6 +7,7 @@ import { STATUS_URL } from './api-availability';
 
 const NO_REFRESH_PATHS = [
   '/auth/login',
+  '/auth/login/second-factor',
   '/auth/register',
   '/auth/resend-verification',
   '/auth/csrf',

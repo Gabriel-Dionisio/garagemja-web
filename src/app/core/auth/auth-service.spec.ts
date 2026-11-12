@@ -8,6 +8,7 @@ const PROFILE = {
   name: 'Ana',
   email: 'a***@x.com',
   roles: ['RESIDENT'],
+  photoUrl: null,
 };
 
 describe('AuthService', () => {
@@ -28,7 +29,7 @@ describe('AuthService', () => {
     let result: unknown;
     service
       .login({ email: 'a@x.com', password: 'Abcdef1!', rememberMe: true })
-      .subscribe((user) => (result = user));
+      .subscribe((outcome) => (result = outcome));
 
     http.expectOne('/api/v1/auth/csrf').flush(null);
     const login = http.expectOne('/api/v1/auth/login');
@@ -40,10 +41,31 @@ describe('AuthService', () => {
     login.flush(PROFILE);
     http.expectOne('/api/v1/auth/csrf').flush(null);
 
-    expect(result).toEqual(PROFILE);
+    expect(result).toEqual({ kind: 'authenticated', user: PROFILE });
     expect(service.user()).toEqual(PROFILE);
     expect(service.hasRole('RESIDENT')).toBe(true);
     expect(service.hasRole('ADMIN')).toBe(false);
+  });
+
+  it('devolve o desafio sem autenticar quando há segundo fator', () => {
+    let result: unknown;
+    service.login({ email: 'a@x.com', password: 'x' }).subscribe((outcome) => (result = outcome));
+    http.expectOne('/api/v1/auth/csrf').flush(null);
+    http.expectOne('/api/v1/auth/login').flush({ secondFactorRequired: true, challenge: 'abc' });
+    expect(result).toEqual({ kind: 'second-factor', challenge: 'abc' });
+    expect(service.isAuthenticated()).toBe(false);
+  });
+
+  it('conclui o login com o código do segundo fator', () => {
+    let result: unknown;
+    service.completeSecondFactor('abc', '123456').subscribe((outcome) => (result = outcome));
+    http.expectOne('/api/v1/auth/csrf').flush(null);
+    const request = http.expectOne('/api/v1/auth/login/second-factor');
+    expect(request.request.body).toEqual({ challenge: 'abc', code: '123456' });
+    request.flush(PROFILE);
+    http.expectOne('/api/v1/auth/csrf').flush(null);
+    expect(result).toEqual({ kind: 'authenticated', user: PROFILE });
+    expect(service.user()).toEqual(PROFILE);
   });
 
   it('rejeita perfil inválido sem autenticar', () => {

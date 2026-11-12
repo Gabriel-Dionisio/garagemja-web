@@ -36,8 +36,6 @@ export const NAV_ITEMS: readonly NavItem[] = [
     roles: ['ADMIN'],
     group: 'management',
   },
-  { labelKey: 'nav.settings', path: '/settings', icon: 'settings' },
-  { labelKey: 'nav.profile', path: '/profile', icon: 'user' },
 ];
 
 export function navItemsFor(roles: readonly Role[]): NavItem[] {

@@ -121,7 +121,6 @@
     "myRentals": "My rentals",
     "users": "Users",
     "settings": "Settings",
-    "profile": "Profile",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
     "menu": "Menu",
@@ -158,12 +157,13 @@
     "managerDashboard": "Manager dashboard",
     "adminDashboard": "Platform dashboard",
     "dashboard": "Dashboard",
-    "settings": "Settings",
-    "profile": "Profile"
+    "settings": "Settings"
   },
   "rentals": {
     "title": "My rentals",
     "loading": "Loading rentals…",
+    "subtitle": "Track your parking spot requests.",
+    "filters": "Filters",
     "filter": "Filter rentals by status",
     "all": "All",
     "spot": "Parking spot {{number}}",
@@ -176,9 +176,7 @@
       "REFUSED": "Refused",
       "CANCELED": "Canceled",
       "FINISHED": "Finished"
-    },
-    "subtitle": "Track your parking spot requests.",
-    "filters": "Filters"
+    }
   },
   "auth": {
     "login": {
@@ -188,7 +186,13 @@
       "submit": "Sign in",
       "createAccount": "Create account",
       "noAccount": "Don't have an account?",
-      "forgotPassword": "Forgot your password?"
+      "forgotPassword": "Forgot your password?",
+      "secondFactor": {
+        "hint": "Enter the code from your authenticator app or a recovery code.",
+        "code": "Code",
+        "submit": "Verify",
+        "back": "Back"
+      }
     },
     "register": {
       "heading": "Create your account",
@@ -271,27 +275,86 @@
   },
   "settings": {
     "title": "Settings",
+    "account": {
+      "title": "Account",
+      "loading": "Loading your account...",
+      "saved": "Account updated successfully.",
+      "save": "Save changes"
+    },
     "security": {
       "title": "Security",
       "changePassword": "Change password",
+      "changePasswordHint": "We email you a link to set a new password.",
       "resetSent": "We sent you a link to reset your password.",
       "sendResetLink": "Send link"
     },
     "preferences": {
       "title": "Preferences",
       "language": "Language",
-      "theme": "Theme",
-      "darkTheme": "Dark theme"
+      "darkTheme": "Dark theme",
+      "themeHint": "Starts with your system setting; your choice is saved in this browser.",
+      "languages": {
+        "pt-BR": "Portuguese (Brazil)",
+        "en": "English"
+      }
+    },
+    "photo": {
+      "view": "View photo",
+      "close": "Close",
+      "edit": "Edit photo",
+      "remove": "Remove photo"
+    },
+    "twoFactor": {
+      "title": "Two-step verification",
+      "enabledHint": "On. Recovery codes left: {{count}}.",
+      "disabledHint": "Ask for an authenticator app code when signing in.",
+      "enable": "Turn on",
+      "disable": "Turn off",
+      "recovery": "Recovery codes",
+      "recoveryHint": "Use a code if you lose access to the app. Generating new ones voids the old ones.",
+      "regenerate": "Generate new",
+      "code": "Code",
+      "qrAlt": "QR code for the authenticator app",
+      "manualKey": "Or enter the key manually",
+      "dialog": {
+        "enable": {
+          "title": "Turn on two-step verification",
+          "message": "Scan the QR code with your authenticator app and enter the 6-digit code.",
+          "submit": "Turn on"
+        },
+        "disable": {
+          "title": "Turn off two-step verification",
+          "message": "Enter an app code or a recovery code to confirm.",
+          "submit": "Turn off"
+        },
+        "regenerate": {
+          "title": "Generate new codes",
+          "message": "Enter an app code or a recovery code. Current codes stop working.",
+          "submit": "Generate"
+        }
+      },
+      "codes": {
+        "title": "Recovery codes",
+        "warning": "Keep these codes somewhere safe. Each works once and they will not be shown again.",
+        "copy": "Copy",
+        "copied": "Copied",
+        "done": "Done"
+      }
+    },
+    "events": {
+      "title": "Security activity",
+      "loading": "Loading activity...",
+      "empty": "No activity recorded.",
+      "types": {
+        "LOGIN": "Signed in",
+        "SECOND_FACTOR_FAILED": "Second factor failed",
+        "RECOVERY_CODE_USED": "Recovery code used",
+        "TOTP_ENABLED": "Two-step verification turned on",
+        "TOTP_DISABLED": "Two-step verification turned off",
+        "SESSIONS_REVOKED": "Sessions ended",
+        "RECOVERY_CODES_REGENERATED": "Recovery codes generated"
+      }
     }
-  },
-  "profile": {
-    "title": "My Profile",
-    "loading": "Loading profile...",
-    "saved": "Profile updated successfully.",
-    "name": "Full name",
-    "email": "Email",
-    "phone": "Phone",
-    "save": "Save changes"
   },
   "admin": {
     "users": {
@@ -445,8 +508,8 @@
       "caption": "Condominium list",
       "resides": "I live here",
       "join": "Join with a code",
-      "pending": "{{count}} resident(s) awaiting approval",
-      "createMenu": "Create"
+      "createMenu": "Create",
+      "pending": "{{count}} resident(s) awaiting approval"
     },
     "form": {
       "newTitle": "Register condominium",

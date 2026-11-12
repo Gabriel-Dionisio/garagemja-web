@@ -62,10 +62,10 @@ export async function assertApiUp(): Promise<void> {
 }
 
 export async function assertApiUsesEmulator(): Promise<void> {
-  const email = `seed.canary.1@garagemja.test`;
+  const email = `seed.canary.1@email.com.br`;
   const base = `${EMULATOR_URL}/identitytoolkit.googleapis.com/v1/accounts`;
   const json = { 'content-type': 'application/json' };
-  const created = await fetch(`${base}:signUp?key=fake`, { method: 'POST', headers: json, body: JSON.stringify({ email, password: 'Senha@123' }) });
+  const created = await fetch(`${base}:signUp?key=fake`, { method: 'POST', headers: json, body: JSON.stringify({ email, password: '@Teste123' }) });
   const { idToken } = (await created.json()) as { idToken?: string };
   try {
     const csrf = await fetch(`${API_URL}/api/v1/auth/csrf`);
@@ -74,7 +74,7 @@ export async function assertApiUsesEmulator(): Promise<void> {
     const login = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { ...json, cookie, 'x-xsrf-token': decodeURIComponent(token) },
-      body: JSON.stringify({ email, password: 'Senha@123' }),
+      body: JSON.stringify({ email, password: '@Teste123' }),
     });
     if (login.status !== 403) {
       throw new SeedError(`API does not appear to use the Firebase emulator (canary login returned ${login.status}, expected 403). Start the API with FIREBASE_AUTH_EMULATOR_HOST=${EMULATOR_HOST}. Refusing to seed real Firebase.`);

@@ -40,13 +40,14 @@ async function ensureAccount(account: Account): Promise<void> {
   }, [202]);
   await waitForUser(account.email);
   await verifyEmail(account.email);
+  if (account.role === 'nolink') psql(`update users set phone = null where email = ${sqlString(account.email)}`);
   log(`created  ${account.email}`);
 }
 
 function promoteAdmin(email: string): void {
   const id = `(select id from users where email = ${sqlString(email)})`;
   if (psql(`select 1 from user_roles where user_id = ${id} and role = 'ADMIN'`) === '1') return;
-  psql(`update users set cpf = null, phone = null where id = ${id};
+  psql(`update users set cpf = null where id = ${id};
     delete from user_roles where user_id = ${id};
     insert into user_roles(user_id, role) values (${id}, 'ADMIN');`, true);
   log(`promoted ${email} to ADMIN`);

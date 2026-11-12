@@ -6,6 +6,7 @@ export interface UserProfile {
   name: string;
   email: string;
   roles: Role[];
+  photoUrl: string | null;
 }
 
 export interface Credentials {
@@ -22,3 +23,6 @@ export interface Registration {
   phone: string;
   accountTypes: AccountType[];
 }
+
+export type LoginOutcome =
+  { kind: 'authenticated'; user: UserProfile } | { kind: 'second-factor'; challenge: string };

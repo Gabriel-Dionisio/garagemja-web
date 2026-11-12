@@ -121,7 +121,6 @@
     "myRentals": "Meus aluguéis",
     "users": "Usuários",
     "settings": "Configurações",
-    "profile": "Perfil",
     "skipToContent": "Pular para o conteúdo",
     "openMenu": "Abrir menu",
     "menu": "Menu",
@@ -158,12 +157,13 @@
     "managerDashboard": "Painel do síndico",
     "adminDashboard": "Painel da plataforma",
     "dashboard": "Painel",
-    "settings": "Configurações",
-    "profile": "Perfil"
+    "settings": "Configurações"
   },
   "rentals": {
     "title": "Meus aluguéis",
     "loading": "Carregando aluguéis…",
+    "subtitle": "Acompanhe suas solicitações de vaga.",
+    "filters": "Filtros",
     "filter": "Filtrar aluguéis por status",
     "all": "Todos",
     "spot": "Vaga {{number}}",
@@ -176,9 +176,7 @@
       "REFUSED": "Recusado",
       "CANCELED": "Cancelado",
       "FINISHED": "Concluído"
-    },
-    "subtitle": "Acompanhe suas solicitações de vaga.",
-    "filters": "Filtros"
+    }
   },
   "auth": {
     "login": {
@@ -188,7 +186,13 @@
       "submit": "Entrar",
       "createAccount": "Criar conta",
       "noAccount": "Não tem uma conta?",
-      "forgotPassword": "Esqueceu a senha?"
+      "forgotPassword": "Esqueceu a senha?",
+      "secondFactor": {
+        "hint": "Digite o código do app autenticador ou um código de recuperação.",
+        "code": "Código",
+        "submit": "Verificar",
+        "back": "Voltar"
+      }
     },
     "register": {
       "heading": "Criar sua conta",
@@ -271,27 +275,86 @@
   },
   "settings": {
     "title": "Configurações",
+    "account": {
+      "title": "Conta",
+      "loading": "Carregando sua conta...",
+      "saved": "Conta atualizada com sucesso.",
+      "save": "Salvar alterações"
+    },
     "security": {
       "title": "Segurança",
       "changePassword": "Alterar senha",
+      "changePasswordHint": "Enviamos um link por e-mail para você definir uma nova senha.",
       "resetSent": "Enviamos um link para redefinir sua senha.",
       "sendResetLink": "Enviar link"
     },
     "preferences": {
       "title": "Preferências",
       "language": "Idioma",
-      "theme": "Tema",
-      "darkTheme": "Tema escuro"
+      "darkTheme": "Tema escuro",
+      "themeHint": "Começa com o tema do sistema; sua escolha fica salva neste navegador.",
+      "languages": {
+        "pt-BR": "Português (Brasil)",
+        "en": "Inglês"
+      }
+    },
+    "photo": {
+      "view": "Ver foto",
+      "close": "Fechar",
+      "edit": "Editar foto",
+      "remove": "Remover foto"
+    },
+    "twoFactor": {
+      "title": "Verificação em duas etapas",
+      "enabledHint": "Ativa. Códigos de recuperação restantes: {{count}}.",
+      "disabledHint": "Peça um código do app autenticador ao entrar.",
+      "enable": "Ativar",
+      "disable": "Desativar",
+      "recovery": "Códigos de recuperação",
+      "recoveryHint": "Use um código se perder o acesso ao app. Gerar novos invalida os anteriores.",
+      "regenerate": "Gerar novos",
+      "code": "Código",
+      "qrAlt": "QR code para o app autenticador",
+      "manualKey": "Ou digite a chave manualmente",
+      "dialog": {
+        "enable": {
+          "title": "Ativar verificação em duas etapas",
+          "message": "Leia o QR code no app autenticador e digite o código de 6 dígitos.",
+          "submit": "Ativar"
+        },
+        "disable": {
+          "title": "Desativar verificação em duas etapas",
+          "message": "Digite um código do app ou um código de recuperação para confirmar.",
+          "submit": "Desativar"
+        },
+        "regenerate": {
+          "title": "Gerar novos códigos",
+          "message": "Digite um código do app ou um código de recuperação. Os códigos atuais deixam de valer.",
+          "submit": "Gerar"
+        }
+      },
+      "codes": {
+        "title": "Códigos de recuperação",
+        "warning": "Guarde estes códigos em local seguro. Cada um vale uma vez e eles não serão exibidos novamente.",
+        "copy": "Copiar",
+        "copied": "Copiados",
+        "done": "Concluir"
+      }
+    },
+    "events": {
+      "title": "Atividade de segurança",
+      "loading": "Carregando atividade...",
+      "empty": "Nenhuma atividade registrada.",
+      "types": {
+        "LOGIN": "Login realizado",
+        "SECOND_FACTOR_FAILED": "Falha no segundo fator",
+        "RECOVERY_CODE_USED": "Código de recuperação usado",
+        "TOTP_ENABLED": "Verificação em duas etapas ativada",
+        "TOTP_DISABLED": "Verificação em duas etapas desativada",
+        "SESSIONS_REVOKED": "Sessões encerradas",
+        "RECOVERY_CODES_REGENERATED": "Códigos de recuperação gerados"
+      }
     }
-  },
-  "profile": {
-    "title": "Meu Perfil",
-    "loading": "Carregando perfil...",
-    "saved": "Perfil atualizado com sucesso.",
-    "name": "Nome completo",
-    "email": "E-mail",
-    "phone": "Telefone",
-    "save": "Salvar alterações"
   },
   "admin": {
     "users": {
@@ -445,8 +508,8 @@
       "caption": "Lista de condomínios",
       "resides": "Moro aqui",
       "join": "Entrar com código",
-      "pending": "{{count}} morador(es) aguardando aprovação",
-      "createMenu": "Criar"
+      "createMenu": "Criar",
+      "pending": "{{count}} morador(es) aguardando aprovação"
     },
     "form": {
       "newTitle": "Cadastrar condomínio",

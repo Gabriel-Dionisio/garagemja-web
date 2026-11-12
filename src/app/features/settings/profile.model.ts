@@ -6,6 +6,8 @@ export interface Profile {
   name: string;
   email: string;
   phone: string;
+  cpf: string;
+  photoUrl: string | null;
 }
 
 export interface ProfileChanges {
@@ -17,6 +19,6 @@ export function profileChanges(current: Profile, name: string, phone: string): P
   const next = { name: formatPersonName(name), phone: onlyDigits(phone) };
   return {
     ...(current.name !== next.name ? { name: next.name } : {}),
-    ...(current.phone !== next.phone ? { phone: next.phone } : {}),
+    ...(next.phone && current.phone !== next.phone ? { phone: next.phone } : {}),
   };
 }

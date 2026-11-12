@@ -22,7 +22,8 @@
       "invalid": "Invalid value.",
       "cnpj": "Invalid CNPJ.",
       "pattern": "Invalid format.",
-      "money": "Enter a value greater than zero."
+      "money": "Enter a value greater than zero.",
+      "plate": "Enter a valid plate (AAA1234 or AAA1A23)."
     },
     "condominium": {
       "forbidden": "You do not have permission for this action in this condominium.",
@@ -138,7 +139,8 @@
     "audit": "Audit",
     "dashboard": "Dashboard",
     "management": "Management",
-    "myParkingSpots": "My parking spots"
+    "myParkingSpots": "My parking spots",
+    "myVehicles": "My vehicles"
   },
   "routes": {
     "login": "Sign in",
@@ -171,7 +173,10 @@
     "parkingSpots": "Parking spots",
     "parkingSpotNew": "Register spot",
     "parkingSpotEdit": "Edit spot",
-    "myParkingSpots": "My parking spots"
+    "myParkingSpots": "My parking spots",
+    "myVehicles": "My vehicles",
+    "vehicleNew": "Add vehicle",
+    "vehicleEdit": "Edit vehicle"
   },
   "requests": {
     "title": "Requests",
@@ -1202,6 +1207,42 @@
       "windowSection": "Hourly rental hours",
       "priceMissing": "Enter the daily price, the hourly price or both.",
       "ownerOnly": "Only the owner manages the availability of this spot."
+    }
+  },
+  "vehicles": {
+    "list": {
+      "title": "My vehicles",
+      "subtitle": "Vehicles registered in the condominiums where you live.",
+      "new": "Add vehicle",
+      "edit": "Edit",
+      "retry": "Try again",
+      "loading": "Loading vehicles…",
+      "caption": "Vehicle list",
+      "emptyTitle": "No vehicles registered",
+      "emptyDescription": "Register a vehicle to use it in your rentals."
+    },
+    "form": {
+      "newTitle": "Add vehicle",
+      "editTitle": "Edit vehicle",
+      "data": "Vehicle details",
+      "loading": "Loading vehicle details…",
+      "pick": "Select the condominium",
+      "plateHint": "Format AAA1234 or AAA1A23.",
+      "cancel": "Cancel",
+      "submit": "Save vehicle",
+      "noResidency": "To register a vehicle you need an approved residency in a condominium.",
+      "goToCondominiums": "View condominiums"
+    },
+    "fields": {
+      "residency": "Condominium",
+      "brand": "Brand",
+      "model": "Model",
+      "plate": "Plate",
+      "color": "Color"
+    },
+    "errors": {
+      "forbidden": "You do not have permission for this action on this vehicle.",
+      "notFound": "Vehicle not found or unavailable."
     }
   }
 }

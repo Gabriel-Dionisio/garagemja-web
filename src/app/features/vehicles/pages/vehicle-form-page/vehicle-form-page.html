@@ -1,0 +1,75 @@
+<app-page size="form">
+  <app-page-header
+    [title]="(editing() ? 'vehicles.form.editTitle' : 'vehicles.form.newTitle') | transloco"
+    [backLink]="listUrl"
+  />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-skeleton [label]="'vehicles.form.loading' | transloco">
+      <app-card>
+        <app-form-section>
+          @for (field of skeletonFields; track field) {
+            <app-skeleton-block height="3rem" />
+          }
+        </app-form-section>
+      </app-card>
+    </app-skeleton>
+  } @else if (noResidency()) {
+    <app-alert kind="info">
+      {{ 'vehicles.form.noResidency' | transloco }}
+      <a appButton variant="secondary" routerLink="/condominiums">
+        {{ 'vehicles.form.goToCondominiums' | transloco }}
+      </a>
+    </app-alert>
+  } @else if (!failedToLoad()) {
+    <app-card>
+      <form appAutofocusFirst [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <h2>{{ 'vehicles.form.data' | transloco }}</h2>
+        <app-form-section>
+          <app-select-field
+            [label]="'vehicles.fields.residency' | transloco"
+            [options]="options()"
+            [control]="form.controls.residentId"
+          />
+          <app-text-field
+            [label]="'vehicles.fields.brand' | transloco"
+            placeholder="Honda"
+            [maxLength]="maxText"
+            [control]="form.controls.brand"
+          />
+          <app-text-field
+            [label]="'vehicles.fields.model' | transloco"
+            placeholder="Civic"
+            [maxLength]="maxText"
+            [control]="form.controls.model"
+          />
+          <app-text-field
+            [label]="'vehicles.fields.plate' | transloco"
+            placeholder="ABC1D23"
+            [hint]="'vehicles.form.plateHint' | transloco"
+            [format]="formatPlate"
+            [control]="form.controls.plate"
+          />
+          <app-text-field
+            [label]="'vehicles.fields.color' | transloco"
+            placeholder="Prata"
+            [maxLength]="maxText"
+            [control]="form.controls.color"
+          />
+        </app-form-section>
+        <app-form-actions>
+          <a appButton variant="secondary" [routerLink]="listUrl">
+            {{ 'vehicles.form.cancel' | transloco }}
+          </a>
+          <button appButton type="submit" [loading]="busy()">
+            {{ 'vehicles.form.submit' | transloco }}
+          </button>
+        </app-form-actions>
+      </form>
+    </app-card>
+  }
+</app-page>

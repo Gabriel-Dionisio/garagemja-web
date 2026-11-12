@@ -17,6 +17,7 @@ import { languageInterceptor } from './core/http/language-interceptor';
 import { refreshInterceptor } from './core/http/refresh-interceptor';
 import { TranslatedTitleStrategy } from './core/i18n/title-strategy';
 import { TranslocoHttpLoader } from './core/i18n/transloco-loader';
+import { ThemeService } from './core/theme/theme-service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,6 +39,7 @@ export const appConfig: ApplicationConfig = {
     }),
     { provide: TitleStrategy, useExisting: TranslatedTitleStrategy },
     provideAppInitializer(() => inject(LocaleService).load()),
+    provideAppInitializer(() => inject(ThemeService).initialize()),
     provideAppInitializer(() =>
       inject(AuthService)
         .loadSession()

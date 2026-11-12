@@ -1,0 +1,11 @@
+app-card {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}

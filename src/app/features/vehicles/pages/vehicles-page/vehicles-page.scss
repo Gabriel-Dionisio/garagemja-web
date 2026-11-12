@@ -1,0 +1,31 @@
+.thumb {
+  display: grid;
+  flex: none;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-info-bg);
+  color: var(--color-primary-text);
+}
+
+strong,
+.meta {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+strong {
+  color: var(--color-text);
+  font-size: var(--font-size-md, 1rem);
+}
+
+.plate {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+app-alert button {
+  margin-top: var(--space-2);
+}

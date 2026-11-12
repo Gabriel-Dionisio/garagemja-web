@@ -21,7 +21,8 @@
       "mismatch": "As senhas não coincidem.",
       "invalid": "Valor inválido.",
       "cnpj": "CNPJ inválido.",
-      "pattern": "Formato inválido."
+      "pattern": "Formato inválido.",
+      "plate": "Informe uma placa válida (AAA1234 ou AAA1A23)."
     },
     "condominium": {
       "forbidden": "Você não tem permissão para esta ação neste condomínio.",
@@ -119,6 +120,7 @@
   "nav": {
     "home": "Início",
     "myRentals": "Meus aluguéis",
+    "myVehicles": "Meus veículos",
     "users": "Usuários",
     "settings": "Configurações",
     "skipToContent": "Pular para o conteúdo",
@@ -139,6 +141,9 @@
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
     "myRentals": "Meus aluguéis",
+    "myVehicles": "Meus veículos",
+    "vehicleNew": "Cadastrar veículo",
+    "vehicleEdit": "Editar veículo",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo administrador",
     "adminUserDetail": "Detalhes do usuário",
@@ -158,6 +163,42 @@
     "adminDashboard": "Painel da plataforma",
     "dashboard": "Painel",
     "settings": "Configurações"
+  },
+  "vehicles": {
+    "list": {
+      "title": "Meus veículos",
+      "subtitle": "Veículos cadastrados nos condomínios onde você mora.",
+      "new": "Cadastrar veículo",
+      "edit": "Editar",
+      "retry": "Tentar novamente",
+      "loading": "Carregando veículos…",
+      "caption": "Lista de veículos",
+      "emptyTitle": "Nenhum veículo cadastrado",
+      "emptyDescription": "Cadastre um veículo para usá-lo nos seus aluguéis."
+    },
+    "form": {
+      "newTitle": "Cadastrar veículo",
+      "editTitle": "Editar veículo",
+      "data": "Dados do veículo",
+      "loading": "Carregando dados do veículo…",
+      "pick": "Selecione o condomínio",
+      "plateHint": "Formato AAA1234 ou AAA1A23.",
+      "cancel": "Cancelar",
+      "submit": "Salvar veículo",
+      "noResidency": "Para cadastrar um veículo, você precisa ter uma residência aprovada em um condomínio.",
+      "goToCondominiums": "Ver condomínios"
+    },
+    "fields": {
+      "residency": "Condomínio",
+      "brand": "Marca",
+      "model": "Modelo",
+      "plate": "Placa",
+      "color": "Cor"
+    },
+    "errors": {
+      "forbidden": "Você não tem permissão para esta ação neste veículo.",
+      "notFound": "Veículo não encontrado ou indisponível."
+    }
   },
   "rentals": {
     "title": "Meus aluguéis",

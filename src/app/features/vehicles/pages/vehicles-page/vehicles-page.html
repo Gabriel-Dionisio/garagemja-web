@@ -1,0 +1,53 @@
+<app-page>
+  <app-page-header
+    [title]="'vehicles.list.title' | transloco"
+    [subtitle]="'vehicles.list.subtitle' | transloco"
+  >
+    <a appButton routerLink="/vehicles/new">
+      <app-icon name="plus" />
+      {{ 'vehicles.list.new' | transloco }}
+    </a>
+  </app-page-header>
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">
+      {{ message }}
+      <button appButton type="button" variant="secondary" (click)="load()">
+        {{ 'vehicles.list.retry' | transloco }}
+      </button>
+    </app-alert>
+  }
+
+  @if (!error.text()) {
+    <app-list-state
+      [attr.aria-busy]="loading()"
+      [loading]="loading() && !vehicles()"
+      [empty]="empty()"
+      [loadingLabel]="'vehicles.list.loading' | transloco"
+      emptyIcon="car"
+      [emptyTitle]="'vehicles.list.emptyTitle' | transloco"
+      [emptyDescription]="'vehicles.list.emptyDescription' | transloco"
+      [listLabel]="'vehicles.list.caption' | transloco"
+    >
+      @for (vehicle of vehicles(); track vehicle.id) {
+        <li appListItem>
+          <span leading class="thumb"><app-icon name="car" /></span>
+          <strong>{{ title(vehicle) }}</strong>
+          <span class="meta plate">{{ displayPlate(vehicle.plate) }}</span>
+          @if (vehicle.color) {
+            <span class="meta">{{ vehicle.color }}</span>
+          }
+          @if (place(vehicle)) {
+            <span class="meta">{{ place(vehicle) }}</span>
+          }
+          <span actions>
+            <a appButton variant="secondary" [routerLink]="['/vehicles', vehicle.id]">
+              {{ 'vehicles.list.edit' | transloco }}
+              <span class="sr-only">{{ title(vehicle) }}</span>
+            </a>
+          </span>
+        </li>
+      }
+    </app-list-state>
+  }
+</app-page>

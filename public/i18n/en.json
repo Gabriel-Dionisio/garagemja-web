@@ -21,7 +21,8 @@
       "mismatch": "Passwords do not match.",
       "invalid": "Invalid value.",
       "cnpj": "Invalid CNPJ.",
-      "pattern": "Invalid format."
+      "pattern": "Invalid format.",
+      "plate": "Enter a valid plate (AAA1234 or AAA1A23)."
     },
     "condominium": {
       "forbidden": "You do not have permission for this action in this condominium.",
@@ -119,6 +120,7 @@
   "nav": {
     "home": "Home",
     "myRentals": "My rentals",
+    "myVehicles": "My vehicles",
     "users": "Users",
     "settings": "Settings",
     "skipToContent": "Skip to content",
@@ -139,6 +141,9 @@
     "verifyEmail": "Verify email",
     "home": "Home",
     "myRentals": "My rentals",
+    "myVehicles": "My vehicles",
+    "vehicleNew": "Add vehicle",
+    "vehicleEdit": "Edit vehicle",
     "adminUsers": "Users",
     "adminUserNew": "New administrator",
     "adminUserDetail": "User details",
@@ -158,6 +163,42 @@
     "adminDashboard": "Platform dashboard",
     "dashboard": "Dashboard",
     "settings": "Settings"
+  },
+  "vehicles": {
+    "list": {
+      "title": "My vehicles",
+      "subtitle": "Vehicles registered in the condominiums where you live.",
+      "new": "Add vehicle",
+      "edit": "Edit",
+      "retry": "Try again",
+      "loading": "Loading vehicles…",
+      "caption": "Vehicle list",
+      "emptyTitle": "No vehicles registered",
+      "emptyDescription": "Register a vehicle to use it in your rentals."
+    },
+    "form": {
+      "newTitle": "Add vehicle",
+      "editTitle": "Edit vehicle",
+      "data": "Vehicle details",
+      "loading": "Loading vehicle details…",
+      "pick": "Select the condominium",
+      "plateHint": "Format AAA1234 or AAA1A23.",
+      "cancel": "Cancel",
+      "submit": "Save vehicle",
+      "noResidency": "To register a vehicle you need an approved residency in a condominium.",
+      "goToCondominiums": "View condominiums"
+    },
+    "fields": {
+      "residency": "Condominium",
+      "brand": "Brand",
+      "model": "Model",
+      "plate": "Plate",
+      "color": "Color"
+    },
+    "errors": {
+      "forbidden": "You do not have permission for this action on this vehicle.",
+      "notFound": "Vehicle not found or unavailable."
+    }
   },
   "rentals": {
     "title": "My rentals",

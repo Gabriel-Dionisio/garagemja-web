@@ -1,0 +1,15 @@
+app-page-header,
+app-alert {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+h2 {
+  margin-bottom: var(--space-4);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+app-alert a {
+  margin-top: var(--space-2);
+}

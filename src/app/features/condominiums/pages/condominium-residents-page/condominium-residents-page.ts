@@ -20,6 +20,7 @@ import { Badge } from '../../../../shared/ui/badge/badge';
 import { Card } from '../../../../shared/ui/card/card';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { CondominiumTabs } from '../../../../shared/ui/condominium-tabs/condominium-tabs';
+import { CondominiumTabsState } from '../../../../shared/ui/condominium-tabs/condominium-tabs-state';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
 import { Icon, IconName } from '../../../../shared/ui/icon/icon';
@@ -34,6 +35,7 @@ import {
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
+import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { UserSummary } from '../../../../shared/ui/user-summary/user-summary';
 import { JoinCodeCard } from '../../components/join-code-card/join-code-card';
 import { ResidentFilterForm } from '../../components/resident-filter/resident-filter';
@@ -44,6 +46,8 @@ import {
   RESIDENT_STATUS_TONES,
   isResidentStatus,
 } from '../../resident-status';
+
+const SKELETON_ROWS = [0, 1, 2, 3];
 
 const TABS: readonly (ResidentStatus | null)[] = [
   null,
@@ -90,6 +94,7 @@ const ACTIONS: Record<ResidentStatus, readonly ResidentAction[]> = {
     Paginator,
     ResidentFilterForm,
     Skeleton,
+    SkeletonBlock,
     UserSummary,
   ],
   templateUrl: './condominium-residents-page.html',
@@ -102,6 +107,7 @@ export class CondominiumResidentsPage {
   private readonly confirm = inject(ConfirmService);
   private readonly errorText = inject(ErrorText);
   private readonly navBadges = inject(NavBadges);
+  private readonly tabsState = inject(CondominiumTabsState);
   private readonly destroyRef = inject(DestroyRef);
   private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
@@ -120,11 +126,8 @@ export class CondominiumResidentsPage {
   protected readonly status = signal<ResidentStatus | null>(
     isResidentStatus(this.initialStatus) ? this.initialStatus : null,
   );
-  protected readonly hasManagers = computed(() => {
-    const current = this.condominium()?.status;
-    return current === 'ACTIVE' || current === 'BLOCKED';
-  });
-  protected readonly hasHistory = computed(() => this.condominium()?.status !== 'PENDING');
+  protected readonly skeletonRows = SKELETON_ROWS;
+  protected readonly knownName = computed(() => this.tabsState.nameOf(this.id()));
   protected readonly search = signal('');
   protected readonly filtersOpen = signal(this.initialStatus !== null);
   protected readonly inviteOpen = signal(false);
@@ -164,6 +167,7 @@ export class CondominiumResidentsPage {
       )
       .subscribe(({ condominium, code }) => {
         this.condominium.set(condominium);
+        this.tabsState.set(condominium, this.auth.hasRole('ADMIN'));
         this.code.set(code);
         this.loading.set(false);
       });

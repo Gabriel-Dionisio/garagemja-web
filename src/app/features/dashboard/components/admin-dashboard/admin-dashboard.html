@@ -15,6 +15,12 @@
           [queryParams]="kpi.status ? { status: kpi.status } : null"
         />
       }
+      @if (newUsersThisMonth() !== null) {
+        <app-stat-card
+          [value]="newUsersThisMonth()!"
+          [label]="'admin.dashboard.kpi.newThisMonth' | transloco"
+        />
+      }
     </div>
   </section>
 

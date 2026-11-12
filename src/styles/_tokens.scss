@@ -1,6 +1,8 @@
 :root {
+  --fab-bottom: calc(5.5rem + env(safe-area-inset-bottom));
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
+  --color-primary-text: #2563eb;
   --color-secondary: #1e3a5f;
   --color-tertiary: #94a3b8;
   --color-control-off: #94a3b8;
@@ -9,9 +11,12 @@
   --color-bg: #f8fafc;
   --color-bg-brand: #eaf1f8;
   --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
   --color-border: #94a3b8;
   --color-divider: #dbe2ea;
   --color-danger: #b91c1c;
+  --color-danger-solid: #b91c1c;
+  --color-danger-solid-hover: #991b1b;
   --color-danger-bg: #fef2f2;
   --color-success: #15803d;
   --color-success-bg: #f0fdf4;
@@ -55,29 +60,33 @@
 
 :root[data-theme='dark'] {
   --color-primary: #2563eb;
-  --color-primary-hover: #3b82f6;
+  --color-primary-hover: #3b6cf0;
+  --color-primary-text: #6aa9ff;
   --color-secondary: #cbd5e1;
-  --color-tertiary: #64748b;
-  --color-control-off: #64748b;
-  --color-text: #e2e8f0;
-  --color-text-muted: #a8b4c6;
-  --color-bg: #0f172a;
-  --color-bg-brand: #172033;
-  --color-surface: #1e293b;
-  --color-border: #64748b;
-  --color-divider: #334155;
-  --color-danger: #f87171;
-  --color-danger-bg: #3f1d2b;
-  --color-success: #4ade80;
-  --color-success-bg: #153526;
-  --color-warning: #fbbf24;
-  --color-warning-bg: #3b3017;
-  --color-info-bg: #172554;
-  --color-sidebar: #0b1220;
-  --color-sidebar-text: #e2e8f0;
-  --color-control-bg: #172033;
-  --shadow-card: 0 1px 3px rgb(0 0 0 / 35%);
-  --shadow-overlay: 0 10px 30px rgb(0 0 0 / 55%);
+  --color-tertiary: #7b8696;
+  --color-control-off: #7b8696;
+  --color-text: #e6eaf0;
+  --color-text-muted: #aab4c3;
+  --color-bg: #222831;
+  --color-bg-brand: #272d38;
+  --color-surface: #2c323d;
+  --color-surface-raised: #373e4b;
+  --color-border: #7b8696;
+  --color-divider: #373e4b;
+  --color-danger: #f59e9e;
+  --color-danger-solid: #d13b3b;
+  --color-danger-solid-hover: #c93131;
+  --color-danger-bg: #4a2631;
+  --color-success: #86efac;
+  --color-success-bg: #1f3a2d;
+  --color-warning: #fcd34d;
+  --color-warning-bg: #403720;
+  --color-info-bg: #1f3358;
+  --color-sidebar: #1b1f27;
+  --color-sidebar-text: #e6eaf0;
+  --color-control-bg: #262c36;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 20%);
+  --shadow-overlay: 0 10px 30px rgb(0 0 0 / 50%);
   color-scheme: dark;
 }
 

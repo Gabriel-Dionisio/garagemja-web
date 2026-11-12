@@ -1,5 +1,15 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import {
   BarController,
   BarElement,
@@ -37,7 +47,21 @@ const TONE_TOKENS: Record<ChartTone, string> = {
   muted: '--color-text-muted',
 };
 
-function valueLabels(color: string): Plugin<'bar'> {
+const DIMMED_ALPHA = 0.45;
+
+function dimUnselected(isDimmed: (index: number) => boolean): Plugin<'bar'> {
+  return {
+    id: 'dimUnselected',
+    beforeDatasetDraw(chart, args) {
+      chart.ctx.globalAlpha = isDimmed(args.index) ? DIMMED_ALPHA : 1;
+    },
+    afterDatasetDraw(chart) {
+      chart.ctx.globalAlpha = 1;
+    },
+  };
+}
+
+function valueLabels(color: string, isDimmed: (index: number) => boolean): Plugin<'bar'> {
   return {
     id: 'valueLabels',
     afterDatasetsDraw(chart) {
@@ -48,7 +72,7 @@ function valueLabels(color: string): Plugin<'bar'> {
       ctx.textBaseline = 'bottom';
       ctx.fillStyle = color;
       chart.data.datasets.forEach((dataset, index) => {
-        if (!chart.isDatasetVisible(index)) return;
+        ctx.globalAlpha = isDimmed(index) ? DIMMED_ALPHA : 1;
         chart.getDatasetMeta(index).data.forEach((bar, position) => {
           ctx.fillText(String(dataset.data[position]), bar.x, bar.y - 4);
         });
@@ -74,6 +98,8 @@ export class Chart {
   private readonly styles = inject(DOCUMENT).defaultView?.getComputedStyle(
     inject(DOCUMENT).documentElement,
   );
+
+  private readonly canvas = viewChild(BaseChartDirective);
 
   readonly kind = input.required<ChartKind>();
   readonly labels = input.required<readonly string[]>();
@@ -114,21 +140,22 @@ export class Chart {
   );
 
   protected readonly data = computed<ChartData>(() => {
-    const picked = this.selected();
     return {
       labels: [...this.labels()],
-      datasets: this.series().map((series, index) => ({
+      datasets: this.series().map((series) => ({
         label: series.label,
         data: [...series.data],
         backgroundColor: this.tones(series)[0],
-        hidden: picked.size > 0 && !picked.has(index),
         borderRadius: 4,
         maxBarThickness: 28,
       })),
     } as ChartData;
   });
 
-  protected readonly plugins = computed(() => [valueLabels(this.token('--color-text'))]);
+  protected readonly plugins = computed(() => [
+    dimUnselected((index) => this.isDimmed(index)),
+    valueLabels(this.token('--color-text'), (index) => this.isDimmed(index)),
+  ]);
 
   protected readonly options = computed<ChartConfiguration['options']>(() => ({
     responsive: true,
@@ -170,6 +197,15 @@ export class Chart {
     })),
   );
 
+  constructor() {
+    effect(() => {
+      this.selected();
+      const chart = untracked(() => this.canvas()?.chart);
+      if (!chart) return;
+      chart.draw();
+    });
+  }
+
   protected toggle(index: number): void {
     if (this.single()) return;
     this.selected.update((current) => {
@@ -177,6 +213,11 @@ export class Chart {
       if (!next.delete(index)) next.add(index);
       return next.size === this.entries().length ? new Set() : next;
     });
+  }
+
+  private isDimmed(index: number): boolean {
+    const picked = this.selected();
+    return picked.size > 0 && !picked.has(index);
   }
 
   private axisTitle(text: string | undefined) {

@@ -1,22 +1,24 @@
-<app-page [fill]="true">
+<app-page size="wide">
   <app-page-header
     [title]="'condominiums.residents.title' | transloco"
-    [subtitle]="condominium()?.name ?? ''"
+    [subtitle]="condominium()?.name ?? knownName()"
     [backLink]="'/condominiums'"
   />
 
-  <app-condominium-tabs [id]="id()" [managers]="hasManagers()" [history]="hasHistory()" />
+  <app-condominium-tabs [id]="id()" [loading]="loading()" />
 
   @if (error.text(); as message) {
     <app-alert kind="error">{{ message }}</app-alert>
   }
 
   @if (loading()) {
-    <app-skeleton
-      [label]="'condominiums.residents.loading' | transloco"
-      [rows]="4"
-      rowHeight="4rem"
-    />
+    <app-skeleton [label]="'condominiums.residents.loading' | transloco">
+      <app-card><app-skeleton-block height="2.5rem" /></app-card>
+      <app-skeleton-block height="2.75rem" />
+      @for (row of skeletonRows; track row) {
+        <app-skeleton-block height="4.5rem" />
+      }
+    </app-skeleton>
   } @else if (condominium()) {
     <app-card class="invite">
       <button
@@ -56,6 +58,7 @@
     <app-list-state
       [attr.aria-busy]="listLoading()"
       [loading]="listLoading() && !result()"
+      [refreshing]="listLoading()"
       [empty]="result()?.items?.length === 0"
       [loadingLabel]="'condominiums.residents.loading' | transloco"
       emptyIcon="users"
@@ -106,19 +109,19 @@
             </span>
           </li>
         }
-        @if (current.items.length > 0) {
-          <app-paginator
-            paginator
-            [page]="current.page"
-            [size]="current.size"
-            [total]="current.total"
-            [itemCount]="current.items.length"
-            [hasNext]="current.hasNext"
-            [sizeOptions]="pageSizes"
-            (sizeChange)="changeSize($event)"
-            (pageChange)="goTo($event)"
-          />
-        }
+      }
+      @if (result(); as current) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
       }
     </app-list-state>
   }

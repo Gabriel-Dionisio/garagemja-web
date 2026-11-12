@@ -1,12 +1,15 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Page as ResultPage } from '../../../../shared/models/page';
+import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge, BadgeTone } from '../../../../shared/ui/badge/badge';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
 import { Icon } from '../../../../shared/ui/icon/icon';
 import { ListItem } from '../../../../shared/ui/list-item/list-item';
 import { ListState } from '../../../../shared/ui/list-state/list-state';
@@ -18,7 +21,7 @@ import {
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
 import { RentalsApi } from '../../data/rentals-api';
-import { RENTAL_STATUSES, Rental, RentalStatus } from '../../rental.model';
+import { RENTAL_STATUSES, Rental, RentalStatus, isRentalStatus } from '../../rental.model';
 
 const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
   PENDING: 'warning',
@@ -34,8 +37,10 @@ const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
   imports: [
     DecimalPipe,
     TranslocoPipe,
+    Alert,
     Badge,
     ChipGroup,
+    FilterPanel,
     Icon,
     ListItem,
     ListState,
@@ -49,6 +54,8 @@ const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
 })
 export class MyRentalsPage {
   private readonly api = inject(RentalsApi);
+  private readonly router = inject(Router);
+  private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
   protected readonly tones = STATUS_TONES;
   protected readonly pageSizes = PAGE_SIZES;
@@ -57,7 +64,11 @@ export class MyRentalsPage {
     ...RENTAL_STATUSES.map((value) => ({ value, labelKey: `rentals.status.${value}` })),
   ];
   protected readonly error = inject(ErrorText).state();
-  protected readonly status = signal<RentalStatus | null>(null);
+  protected readonly status = signal<RentalStatus | null>(
+    isRentalStatus(this.initialStatus) ? this.initialStatus : null,
+  );
+  protected readonly filtersOpen = signal(this.status() !== null);
+  protected readonly activeFilters = computed(() => (this.status() ? 1 : 0));
   protected readonly page = signal(0);
   protected readonly size = signal(DEFAULT_PAGE_SIZE);
   protected readonly loading = signal(true);
@@ -97,6 +108,11 @@ export class MyRentalsPage {
   protected filter(status: RentalStatus | null): void {
     this.status.set(status);
     this.page.set(0);
+    void this.router.navigate([], {
+      queryParams: { status },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   protected changeSize(size: number): void {

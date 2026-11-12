@@ -181,7 +181,7 @@ describe('CondominiumsPage', () => {
     expect(element.querySelector('app-alert')?.textContent).toContain('Pedido enviado');
   });
 
-  it('mostra ao síndico sem moradia só os administrados, com ações no cabeçalho e sem boas-vindas', async () => {
+  it('mostra ao síndico sem moradia só os administrados, com ações na barra de filtros e sem boas-vindas', async () => {
     const managedOnly = { ...item('m', true), resides: false } as unknown as ReturnType<
       typeof item
     >;
@@ -190,8 +190,8 @@ describe('CondominiumsPage', () => {
     expect(list).toHaveBeenCalledWith({ mine: true, status: undefined }, 0, expect.any(Number));
     expect(element.querySelectorAll('li[appListItem]')).toHaveLength(1);
     expect(element.querySelector('app-welcome-cards')).toBeNull();
-    const header = element.querySelector('app-page-header')!;
-    expect(header.textContent).toContain('Entrar com código');
-    expect(header.querySelector('a[href="/condominiums/new"]')).not.toBeNull();
+    const actions = element.querySelector('app-filter-panel [filterActions]')!;
+    expect(actions.textContent).toContain('Entrar com código');
+    expect(actions.querySelector('a[href="/condominiums/new"]')).not.toBeNull();
   });
 });

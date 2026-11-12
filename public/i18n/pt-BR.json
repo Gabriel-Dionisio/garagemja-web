@@ -61,7 +61,8 @@
       "cancel": "Cancelar",
       "save": "Salvar",
       "filter": "Filtrar",
-      "clear": "Limpar"
+      "clear": "Limpar",
+      "retry": "Tentar de novo"
     },
     "pagination": {
       "perPage": "Itens por página",
@@ -175,7 +176,9 @@
       "REFUSED": "Recusado",
       "CANCELED": "Cancelado",
       "FINISHED": "Concluído"
-    }
+    },
+    "subtitle": "Acompanhe suas solicitações de vaga.",
+    "filters": "Filtros"
   },
   "auth": {
     "login": {
@@ -336,7 +339,8 @@
         "active": "Ativos",
         "pending": "Pendentes",
         "blocked": "Bloqueados",
-        "other": "Outros"
+        "other": "Outros",
+        "newThisMonth": "Novos no mês"
       },
       "pendingEmpty": "Nenhuma aprovação pendente",
       "recentTitle": "Cadastros recentes",
@@ -441,7 +445,8 @@
       "caption": "Lista de condomínios",
       "resides": "Moro aqui",
       "join": "Entrar com código",
-      "pending": "{{count}} morador(es) aguardando aprovação"
+      "pending": "{{count}} morador(es) aguardando aprovação",
+      "createMenu": "Criar"
     },
     "form": {
       "newTitle": "Cadastrar condomínio",

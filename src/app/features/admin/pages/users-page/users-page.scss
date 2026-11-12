@@ -1,6 +1,6 @@
 @use 'styles/mixins' as *;
 
-.new-inline {
+.new-inline[filterActions] {
   display: none;
 
   @include from($bp-md) {
@@ -9,10 +9,6 @@
 }
 
 .fab {
-  flex: none;
-  align-self: flex-end;
-  margin: 0 var(--space-2) var(--space-2) 0;
-
   @include from($bp-md) {
     display: none;
   }
@@ -21,4 +17,10 @@
 app-chip-group {
   display: block;
   margin-bottom: var(--space-4);
+}
+
+app-list-state {
+  @include until($bp-md) {
+    --list-pad-bottom: 4.5rem;
+  }
 }

@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 @Component({
   selector: 'app-avatar',
-  template: '{{ initials() }}',
+  template: `@if (src(); as url) {
+      <img [src]="url" alt="" />
+    } @else {
+      {{ initials() }}
+    }`,
   styleUrl: './avatar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -12,6 +16,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 })
 export class Avatar {
   readonly name = input.required<string>();
+  readonly src = input<string | null>(null);
   readonly background = input<string>('var(--color-text-muted)');
   protected readonly initials = computed(() =>
     this.name()

@@ -1,12 +1,12 @@
-<app-page [fill]="true">
+<app-page [size]="condominiumId ? 'wide' : 'full'">
   <app-page-header
     [title]="'audit.title' | transloco"
-    [subtitle]="'audit.subtitle' | transloco"
+    [subtitle]="(condominiumId && knownName()) || ('audit.subtitle' | transloco)"
     [backLink]="backLink"
   />
 
   @if (condominiumId) {
-    <app-condominium-tabs [id]="condominiumId" [residents]="!isAdmin()" [history]="true" />
+    <app-condominium-tabs [id]="condominiumId" [residents]="!isAdmin()" />
   }
 
   <section class="filters">
@@ -98,6 +98,7 @@
   <app-list-state
     [attr.aria-busy]="loading()"
     [loading]="loading() && !result()"
+    [refreshing]="loading()"
     [error]="error.text()"
     [empty]="result()?.items?.length === 0"
     [loadingLabel]="'audit.loading' | transloco"
@@ -144,19 +145,19 @@
           </div>
         </li>
       }
-      @if (current.items.length > 0) {
-        <app-paginator
-          paginator
-          [page]="current.page"
-          [size]="current.size"
-          [total]="current.total"
-          [itemCount]="current.items.length"
-          [hasNext]="current.hasNext"
-          [sizeOptions]="pageSizes"
-          (sizeChange)="changeSize($event)"
-          (pageChange)="goTo($event)"
-        />
-      }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
     }
   </app-list-state>
 </app-page>

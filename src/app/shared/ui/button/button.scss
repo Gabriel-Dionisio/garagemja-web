@@ -31,7 +31,7 @@
 :host([data-variant='secondary']) {
   background: var(--color-surface);
   border-color: var(--color-border);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 :host([data-variant='secondary']:hover) {
@@ -39,13 +39,17 @@
 }
 
 :host([data-variant='danger']) {
-  background: var(--color-danger);
+  background: var(--color-danger-solid);
   color: #fff;
+}
+
+:host([data-variant='danger']:hover) {
+  background: var(--color-danger-solid-hover);
 }
 
 :host([data-variant='ghost']) {
   background: transparent;
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 :host([data-variant='ghost']:hover) {

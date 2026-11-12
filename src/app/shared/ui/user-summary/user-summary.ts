@@ -12,4 +12,5 @@ export class UserSummary {
   readonly name = input.required<string>();
   readonly email = input.required<string>();
   readonly caption = input('');
+  readonly photoUrl = input<string | null>(null);
 }

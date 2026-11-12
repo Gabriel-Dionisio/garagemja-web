@@ -41,7 +41,9 @@ export class EntityLookup {
   }
 
   user(id: string): Observable<LookupOption> {
-    return this.http.get<unknown>(`/api/v1/users/${id}`).pipe(map((body) => toOption(body, 'email')));
+    return this.http
+      .get<unknown>(`/api/v1/users/${id}`)
+      .pipe(map((body) => toOption(body, 'email')));
   }
 
   condominium(id: string): Observable<LookupOption> {

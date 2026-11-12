@@ -19,10 +19,12 @@ import { EMPTY, catchError, filter, finalize, switchMap } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Page } from '../../../../shared/models/page';
+import { ActionItem } from '../../../../shared/ui/action-list/action-item';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
+import { Fab } from '../../../../shared/ui/fab/fab';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
 import { Icon } from '../../../../shared/ui/icon/icon';
 import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
@@ -58,8 +60,10 @@ const TABS: readonly (CondominiumStatus | null)[] = [
     ChipGroup,
     TranslocoPipe,
     RouterLink,
+    ActionItem,
     Alert,
     Button,
+    Fab,
     Icon,
     IconButton,
     ListItem,

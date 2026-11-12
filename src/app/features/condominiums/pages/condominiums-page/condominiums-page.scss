@@ -1,3 +1,5 @@
+@use 'styles/mixins' as *;
+
 app-chip-group {
   display: block;
   margin-bottom: var(--space-4);
@@ -24,6 +26,18 @@ small {
     display: grid;
     place-items: center;
     background: var(--color-info-bg);
-    color: var(--color-primary);
+    color: var(--color-primary-text);
+  }
+}
+
+.header-action[filterActions] {
+  @include until($bp-md) {
+    display: none;
+  }
+}
+
+app-list-state {
+  @include until($bp-md) {
+    --list-pad-bottom: 4.5rem;
   }
 }

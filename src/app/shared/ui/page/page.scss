@@ -1,31 +1,39 @@
 @use 'styles/mixins' as *;
 
 :host {
+  --page-inset: var(--space-4);
+  --page-max: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  width: 100%;
   min-width: 0;
+  margin-inline: calc(-1 * var(--page-inset));
+  padding-inline: max(var(--page-inset), calc((100% - var(--page-max)) / 2));
 
-  @media (min-width: $bp-md) and (min-height: 40rem) {
+  @include from($bp-md) {
+    --page-inset: var(--space-5);
+  }
+
+  @media (min-height: 40rem) {
     height: var(--page-height);
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
 }
 
-:host(.fill) {
-  overflow-y: hidden;
+:host(:not(.fill)) {
+  --list-max: 28rem;
 }
 
 :host([data-size='narrow']) {
-  max-width: var(--page-width-narrow);
+  --page-max: var(--page-width-narrow);
 }
 
 :host([data-size='form']) {
-  max-width: var(--page-width-form);
+  --page-max: var(--page-width-form);
 }
 
 :host([data-size='wide']) {
-  max-width: var(--page-width-wide);
+  --page-max: var(--page-width-wide);
 }

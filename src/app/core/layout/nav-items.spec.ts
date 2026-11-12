@@ -3,7 +3,7 @@ import { navItemsFor } from './nav-items';
 describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
-  it('morador: início, condomínios e meus aluguéis', () => {
+  it('morador: início, condomínios, meus aluguéis, configurações e perfil', () => {
     expect(paths(navItemsFor(['RESIDENT']))).toEqual([
       '/home',
       '/condominiums',

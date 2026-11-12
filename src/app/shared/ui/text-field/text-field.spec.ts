@@ -74,4 +74,26 @@ describe('TextField', () => {
     expect(fixture.componentInstance.control.value).toBe('123.456.789-01');
     expect(input.value).toBe('123.456.789-01');
   });
+
+  it('mostra o contador n/máx só quando showCount está ligado', async () => {
+    @Component({
+      imports: [TextField],
+      template: `<app-text-field label="Nome" [maxLength]="10" showCount [control]="control" />`,
+    })
+    class Counted {
+      readonly control = new FormControl('abc', { nonNullable: true });
+    }
+    const fixture = TestBed.createComponent(Counted);
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.count')?.textContent).toBe('3/10');
+    fixture.componentInstance.control.setValue('abcde');
+    await fixture.whenStable();
+    expect(element.querySelector('.count')?.textContent).toBe('5/10');
+  });
+
+  it('não mostra contador por padrão', async () => {
+    const { element } = await setup();
+    expect(element.querySelector('.count')).toBeNull();
+  });
 });

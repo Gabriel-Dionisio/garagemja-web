@@ -38,7 +38,23 @@
   color: var(--color-text-muted);
 }
 
+.footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
 .error {
   min-height: 1.125rem;
   color: var(--color-danger);
+}
+
+.count {
+  margin-top: 0.125rem;
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }

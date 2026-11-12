@@ -1,24 +1,8 @@
-<app-page [fill]="true">
+<app-page>
   <app-page-header
     [title]="'condominiums.list.title' | transloco"
     [subtitle]="'condominiums.list.subtitle' | transloco"
-  >
-    @if (!isAdmin() && !showWelcome()) {
-      <button
-        appButton
-        variant="secondary"
-        type="button"
-        aria-haspopup="dialog"
-        (click)="openJoin({ mode: 'code' })"
-      >
-        {{ 'condominiums.list.join' | transloco }}
-      </button>
-      <a appButton routerLink="/condominiums/new">
-        <app-icon name="plus" />
-        {{ 'condominiums.list.new' | transloco }}
-      </a>
-    }
-  </app-page-header>
+  />
 
   @if (!isAdmin()) {
     <app-received-invites (accepted)="refresh()" />
@@ -32,6 +16,23 @@
       [activeCount]="activeFilters()"
       [(open)]="filtersOpen"
     >
+      @if (!isAdmin()) {
+        <div filterActions class="header-action">
+          <button
+            appButton
+            variant="secondary"
+            type="button"
+            aria-haspopup="dialog"
+            (click)="openJoin({ mode: 'code' })"
+          >
+            {{ 'condominiums.list.join' | transloco }}
+          </button>
+          <a appButton routerLink="/condominiums/new">
+            <app-icon name="plus" />
+            {{ 'condominiums.list.new' | transloco }}
+          </a>
+        </div>
+      }
       @if (isAdmin()) {
         <app-chip-group
           [label]="'condominiums.list.tabs' | transloco"
@@ -54,6 +55,7 @@
     <app-list-state
       [attr.aria-busy]="loading()"
       [loading]="loading() && !result()"
+      [refreshing]="loading()"
       [empty]="result()?.items?.length === 0"
       [loadingLabel]="'condominiums.list.loading' | transloco"
       emptyIcon="building"
@@ -123,20 +125,31 @@
             </span>
           </li>
         }
-        @if (current.items.length > 0) {
-          <app-paginator
-            paginator
-            [page]="current.page"
-            [size]="current.size"
-            [total]="current.total"
-            [itemCount]="current.items.length"
-            [hasNext]="current.hasNext"
-            [sizeOptions]="pageSizes"
-            (sizeChange)="changeSize($event)"
-            (pageChange)="goTo($event)"
-          />
-        }
+      }
+      @if (result(); as current) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
       }
     </app-list-state>
+
+    @if (!isAdmin()) {
+      <app-fab [label]="'condominiums.list.createMenu' | transloco">
+        <button appActionItem icon="key" type="button" (click)="openJoin({ mode: 'code' })">
+          {{ 'condominiums.list.join' | transloco }}
+        </button>
+        <a appActionItem icon="plus" routerLink="/condominiums/new">
+          {{ 'condominiums.list.new' | transloco }}
+        </a>
+      </app-fab>
+    }
   }
 </app-page>

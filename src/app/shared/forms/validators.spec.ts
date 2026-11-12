@@ -12,6 +12,17 @@ describe('masks', () => {
     expect(formatPhone('1134567890')).toBe('(11) 3456-7890');
     expect(onlyDigits('(11) 9-8765')).toBe('1198765');
   });
+
+  it('formata telefones brasileiros com 10 ou 11 dígitos e remove caracteres', () => {
+    expect(formatPhone('(16) 3333-3333')).toBe('(16) 3333-3333');
+    expect(formatPhone('(16) 99999-9999')).toBe('(16) 99999-9999');
+    expect(formatPhone('16abc999993333')).toBe('(16) 99999-3333');
+    expect(formatPhone('163333333399999')).toBe('(16) 33333-3339');
+  });
+
+  it('limita o telefone aos 11 dígitos numéricos', () => {
+    expect(onlyDigits(formatPhone('163333333399999'))).toBe('16333333339');
+  });
 });
 
 describe('validators', () => {

@@ -5,10 +5,14 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   template: '{{ initials() }}',
   styleUrl: './avatar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { 'aria-hidden': 'true' },
+  host: {
+    'aria-hidden': 'true',
+    '[style.--avatar-background]': 'background()',
+  },
 })
 export class Avatar {
   readonly name = input.required<string>();
+  readonly background = input<string>('var(--color-text-muted)');
   protected readonly initials = computed(() =>
     this.name()
       .split(/\s+/)

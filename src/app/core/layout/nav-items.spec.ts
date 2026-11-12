@@ -4,7 +4,12 @@ describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
   it('morador: início e condomínios', () => {
-    expect(paths(navItemsFor(['RESIDENT']))).toEqual(['/home', '/condominiums', '/settings']);
+    expect(paths(navItemsFor(['RESIDENT']))).toEqual([
+      '/home',
+      '/condominiums',
+      '/settings',
+      '/profile',
+    ]);
   });
 
   it('síndico: início, condomínios e painel', () => {
@@ -13,6 +18,7 @@ describe('navItemsFor', () => {
       '/condominiums',
       '/dashboard',
       '/settings',
+      '/profile',
     ]);
   });
 
@@ -23,6 +29,7 @@ describe('navItemsFor', () => {
       '/admin/users',
       '/admin/audit-logs',
       '/settings',
+      '/profile',
     ]);
   });
 });

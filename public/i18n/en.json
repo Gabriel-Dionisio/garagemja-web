@@ -119,6 +119,7 @@
     "home": "Home",
     "users": "Users",
     "settings": "Settings",
+    "profile": "Profile",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
     "menu": "Menu",
@@ -154,7 +155,8 @@
     "managerDashboard": "Manager dashboard",
     "adminDashboard": "Platform dashboard",
     "dashboard": "Dashboard",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profile": "Profile"
   },
   "auth": {
     "login": {
@@ -259,6 +261,15 @@
       "theme": "Theme",
       "darkTheme": "Dark theme"
     }
+  },
+  "profile": {
+    "title": "My Profile",
+    "loading": "Loading profile...",
+    "saved": "Profile updated successfully.",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "save": "Save changes"
   },
   "admin": {
     "users": {

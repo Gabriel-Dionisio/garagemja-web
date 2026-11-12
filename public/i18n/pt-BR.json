@@ -119,6 +119,7 @@
     "home": "Início",
     "users": "Usuários",
     "settings": "Configurações",
+    "profile": "Perfil",
     "skipToContent": "Pular para o conteúdo",
     "openMenu": "Abrir menu",
     "menu": "Menu",
@@ -154,7 +155,8 @@
     "managerDashboard": "Painel do síndico",
     "adminDashboard": "Painel da plataforma",
     "dashboard": "Painel",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "profile": "Perfil"
   },
   "auth": {
     "login": {
@@ -259,6 +261,15 @@
       "theme": "Tema",
       "darkTheme": "Tema escuro"
     }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "loading": "Carregando perfil...",
+    "saved": "Perfil atualizado com sucesso.",
+    "name": "Nome completo",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "save": "Salvar alterações"
   },
   "admin": {
     "users": {

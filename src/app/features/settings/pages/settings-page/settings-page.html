@@ -1,0 +1,48 @@
+<app-page size="narrow">
+  <app-page-header [title]="'settings.title' | transloco" />
+
+  <app-card>
+    <app-form-section [heading]="'settings.security.title' | transloco">
+      <div class="setting-row wide">
+        <span>{{ 'settings.security.changePassword' | transloco }}</span>
+        <button
+          appButton
+          type="button"
+          variant="secondary"
+          [loading]="sendingReset()"
+          [disabled]="!email()"
+          (click)="requestPasswordReset()"
+        >
+          {{ 'settings.security.sendResetLink' | transloco }}
+        </button>
+      </div>
+      @if (resetSent()) {
+        <app-alert class="wide" kind="success">{{
+          'settings.security.resetSent' | transloco
+        }}</app-alert>
+      }
+      @if (resetError.text(); as message) {
+        <app-alert class="wide" kind="error">{{ message }}</app-alert>
+      }
+    </app-form-section>
+  </app-card>
+
+  <app-card>
+    <app-form-section [heading]="'settings.preferences.title' | transloco">
+      <app-select-field
+        class="wide"
+        [label]="'settings.preferences.language' | transloco"
+        [control]="languageControl"
+        [options]="languageOptions"
+      />
+      <div class="setting-row wide">
+        <span>{{ 'settings.preferences.theme' | transloco }}</span>
+        <app-switch
+          [label]="'settings.preferences.darkTheme' | transloco"
+          [checked]="theme.isDark()"
+          (toggled)="theme.toggle()"
+        />
+      </div>
+    </app-form-section>
+  </app-card>
+</app-page>

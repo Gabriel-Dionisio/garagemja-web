@@ -44,6 +44,9 @@ export async function clean(): Promise<void> {
     delete from condominium_managers where condominium_id in (select id from seed_condos) or user_id in (select id from seed_users);
     delete from audit_logs where condominium_id in (select id from seed_condos) or user_id in (select id from seed_users);
     delete from condominiums where id in (select id from seed_condos);
+    delete from user_totp where user_id in (select id from seed_users);
+    delete from user_recovery_codes where user_id in (select id from seed_users);
+    delete from security_events where user_id in (select id from seed_users);
     delete from user_roles where user_id in (select id from seed_users);
     delete from users where id in (select id from seed_users);
     delete from rate_limits;

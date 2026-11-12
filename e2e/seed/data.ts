@@ -37,6 +37,7 @@ export const ACCOUNTS: Account[] = [
   account('resident', 2, 'Seed Morador Dois', 4, 'Resident APPROVED (join by code)'),
   account('resident', 3, 'Seed Morador Tres', 5, 'Resident REJECTED (join by code)'),
   account('resident', 4, 'Seed Morador Quatro', 6, 'Resident PENDING (join by CNPJ)'),
+  account('resident', 5, 'Seed Morador Cinco', 13, 'Resident APPROVED (renter with vehicle and rentals)'),
   account('requester', 1, 'Seed Solicitante Um', 7, 'Owns a PENDING condominium'),
   account('requester', 2, 'Seed Solicitante Dois', 8, 'Owns a REJECTED condominium'),
   account('requester', 3, 'Seed Solicitante Tres', 9, 'Sindico of a BLOCKED condominium'),
@@ -58,6 +59,39 @@ export const RESIDENTS: Resident[] = [
   { account: emailOf('resident', 2), condo: 'active', via: 'code', unit: '102', block: 'A', target: 'APPROVED' },
   { account: emailOf('resident', 3), condo: 'active', via: 'code', unit: '201', block: 'B', target: 'REJECTED' },
   { account: emailOf('resident', 4), condo: 'active', via: 'cnpj', unit: '202', target: 'PENDING' },
+  { account: emailOf('resident', 5), condo: 'active', via: 'code', unit: '301', block: 'C', target: 'APPROVED' },
+];
+
+export type SpotSize = 'SMALL' | 'MEDIUM' | 'LARGE';
+export type RentalTarget = 'PENDING' | 'APPROVED' | 'REFUSED' | 'CANCELED';
+export interface Spot { key: string; condo: string; number: string; location: string; size: SpotSize; owner?: string; price: number }
+export interface Vehicle { owner: string; plate: string; brand: string; model: string; color: string }
+export interface Rental { spot: string; renter: string; plate: string; startOffset: number; endOffset: number; target: RentalTarget; reason?: string }
+
+export const AVAILABILITY_DAYS = 180;
+
+export const dateIn = (days: number): string => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
+};
+
+export const SPOTS: Spot[] = [
+  { key: 'a-01', condo: 'active', number: 'A-01', location: 'Subsolo 1', size: 'MEDIUM', owner: emailOf('resident', 2), price: 8 },
+  { key: 'a-02', condo: 'active', number: 'A-02', location: 'Subsolo 1', size: 'SMALL', owner: emailOf('resident', 2), price: 6 },
+  { key: 'b-01', condo: 'active', number: 'B-01', location: 'Terreo', size: 'LARGE', price: 12 },
+];
+
+export const VEHICLES: Vehicle[] = [
+  { owner: emailOf('resident', 5), plate: 'ABC1D23', brand: 'Fiat', model: 'Argo', color: 'Prata' },
+  { owner: emailOf('resident', 2), plate: 'DEF4567', brand: 'Honda', model: 'Civic', color: 'Preto' },
+];
+
+export const RENTALS: Rental[] = [
+  { spot: 'a-01', renter: emailOf('resident', 5), plate: 'ABC1D23', startOffset: 10, endOffset: 12, target: 'PENDING' },
+  { spot: 'a-01', renter: emailOf('resident', 5), plate: 'ABC1D23', startOffset: 20, endOffset: 22, target: 'APPROVED' },
+  { spot: 'a-01', renter: emailOf('resident', 5), plate: 'ABC1D23', startOffset: 30, endOffset: 32, target: 'REFUSED' },
+  { spot: 'a-01', renter: emailOf('resident', 5), plate: 'ABC1D23', startOffset: 40, endOffset: 42, target: 'CANCELED', reason: 'Seed: plans changed' },
 ];
 
 export const STATUS_PATH: Record<CondoStatus, CondoStatus[]> = {

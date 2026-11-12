@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  contentChildren,
+  input,
+} from '@angular/core';
+import { ListState } from '../list-state/list-state';
 
 export type PageSize = 'narrow' | 'form' | 'wide' | 'full';
 
@@ -11,5 +18,6 @@ export type PageSize = 'narrow' | 'form' | 'wide' | 'full';
 })
 export class Page {
   readonly size = input<PageSize>('full');
-  readonly fill = input(false);
+  private readonly lists = contentChildren(ListState);
+  protected readonly fill = computed(() => this.lists().length === 1);
 }

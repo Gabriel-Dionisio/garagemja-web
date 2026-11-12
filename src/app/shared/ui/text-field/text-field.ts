@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  booleanAttribute,
+  computed,
+  input,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { controlErrorMessage } from '../../forms/field-errors';
+import { controlChanges, controlErrorMessage } from '../../forms/field-errors';
 import { uniqueId } from '../../forms/unique-id';
 
 @Component({
@@ -19,10 +25,17 @@ export class TextField {
   readonly inputMode = input<'text' | 'numeric' | 'tel' | 'email' | 'search'>('text');
   readonly hint = input('');
   readonly maxLength = input<number | null>(null);
+  readonly showCount = input(false, { transform: booleanAttribute });
   readonly format = input<((value: string) => string) | null>(null);
 
   protected readonly id = uniqueId('field');
   protected readonly error = controlErrorMessage(this.control);
+  private readonly changes = controlChanges(this.control);
+  protected readonly count = computed(() => {
+    this.changes();
+    const max = this.maxLength();
+    return this.showCount() && max ? `${this.control().value.length}/${max}` : null;
+  });
   protected readonly describedBy = computed(() => {
     const ids = [
       this.hint() && !this.error() ? `${this.id}-hint` : '',

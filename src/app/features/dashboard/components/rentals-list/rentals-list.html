@@ -33,48 +33,50 @@
         [description]="'dashboard.rentals.' + mode() + 'EmptyDescription' | transloco"
       />
     } @else {
-      <app-data-table>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">{{ 'dashboard.rentals.column.spot' | transloco }}</th>
-              <th scope="col">{{ 'dashboard.rentals.column.period' | transloco }}</th>
-              <th scope="col">{{ 'dashboard.rentals.column.price' | transloco }}</th>
-              <th scope="col">{{ 'dashboard.rentals.column.status' | transloco }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (rental of rentals.items; track rental.id) {
+      <div class="table-card">
+        <app-data-table>
+          <table>
+            <thead>
               <tr>
-                <td [attr.data-label]="'dashboard.rentals.column.spot' | transloco">
-                  {{ rental.parkingSpotNumber }} · {{ rental.condominiumName }}
-                </td>
-                <td [attr.data-label]="'dashboard.rentals.column.period' | transloco">
-                  {{ rental.startDate }} → {{ rental.endDate }}
-                </td>
-                <td [attr.data-label]="'dashboard.rentals.column.price' | transloco">
-                  R$ {{ rental.price | number: '1.2-2' }}
-                </td>
-                <td [attr.data-label]="'dashboard.rentals.column.status' | transloco">
-                  <app-badge [tone]="tones[rental.status]">{{
-                    'dashboard.rentals.status.' + rental.status | transloco
-                  }}</app-badge>
-                </td>
+                <th scope="col">{{ 'dashboard.rentals.column.spot' | transloco }}</th>
+                <th scope="col">{{ 'dashboard.rentals.column.period' | transloco }}</th>
+                <th scope="col">{{ 'dashboard.rentals.column.price' | transloco }}</th>
+                <th scope="col">{{ 'dashboard.rentals.column.status' | transloco }}</th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </app-data-table>
-      <app-paginator
-        [page]="rentals.page"
-        [size]="rentals.size"
-        [total]="rentals.total"
-        [itemCount]="rentals.items.length"
-        [hasNext]="rentals.hasNext"
-        [sizeOptions]="pageSizes"
-        (sizeChange)="changeSize($event)"
-        (pageChange)="goTo($event)"
-      />
+            </thead>
+            <tbody>
+              @for (rental of rentals.items; track rental.id) {
+                <tr>
+                  <td [attr.data-label]="'dashboard.rentals.column.spot' | transloco">
+                    {{ rental.parkingSpotNumber }} · {{ rental.condominiumName }}
+                  </td>
+                  <td [attr.data-label]="'dashboard.rentals.column.period' | transloco">
+                    {{ rental.startDate }} → {{ rental.endDate }}
+                  </td>
+                  <td [attr.data-label]="'dashboard.rentals.column.price' | transloco">
+                    R$ {{ rental.price | number: '1.2-2' }}
+                  </td>
+                  <td [attr.data-label]="'dashboard.rentals.column.status' | transloco">
+                    <app-badge [tone]="tones[rental.status]">{{
+                      'dashboard.rentals.status.' + rental.status | transloco
+                    }}</app-badge>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </app-data-table>
+        <app-paginator
+          [page]="rentals.page"
+          [size]="rentals.size"
+          [total]="rentals.total"
+          [itemCount]="rentals.items.length"
+          [hasNext]="rentals.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      </div>
     }
   }
 }

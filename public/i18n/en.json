@@ -61,7 +61,8 @@
       "cancel": "Cancel",
       "save": "Save",
       "filter": "Filter",
-      "clear": "Clear"
+      "clear": "Clear",
+      "retry": "Try again"
     },
     "pagination": {
       "perPage": "Items per page",
@@ -175,7 +176,9 @@
       "REFUSED": "Refused",
       "CANCELED": "Canceled",
       "FINISHED": "Finished"
-    }
+    },
+    "subtitle": "Track your parking spot requests.",
+    "filters": "Filters"
   },
   "auth": {
     "login": {
@@ -336,7 +339,8 @@
         "active": "Active",
         "pending": "Pending",
         "blocked": "Blocked",
-        "other": "Other"
+        "other": "Other",
+        "newThisMonth": "New this month"
       },
       "pendingEmpty": "No pending approvals",
       "recentTitle": "Recent sign-ups",
@@ -441,7 +445,8 @@
       "caption": "Condominium list",
       "resides": "I live here",
       "join": "Join with a code",
-      "pending": "{{count}} resident(s) awaiting approval"
+      "pending": "{{count}} resident(s) awaiting approval",
+      "createMenu": "Create"
     },
     "form": {
       "newTitle": "Register condominium",

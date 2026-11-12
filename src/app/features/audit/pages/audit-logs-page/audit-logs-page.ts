@@ -1,3 +1,4 @@
+import { CondominiumTabsState } from '../../../../shared/ui/condominium-tabs/condominium-tabs-state';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { DEFAULT_PAGE_SIZE, PAGE_SIZES } from '../../../../shared/ui/paginator/paginator';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -77,6 +78,7 @@ const ACTION_TONES: Record<AuditAction, BadgeTone> = {
 export class AuditLogsPage {
   private readonly api = inject(AuditLogsApi);
   private readonly auth = inject(AuthService);
+  private readonly tabsState = inject(CondominiumTabsState);
   private readonly errorText = inject(ErrorText);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -95,6 +97,7 @@ export class AuditLogsPage {
   ];
   protected readonly actionTones = ACTION_TONES;
   protected readonly condominiumId = this.route.snapshot.paramMap.get('id') ?? undefined;
+  protected readonly knownName = computed(() => this.tabsState.nameOf(this.condominiumId ?? ''));
   protected readonly backLink = this.condominiumId ? `/condominiums/${this.condominiumId}` : null;
 
   private readonly query = this.route.snapshot.queryParamMap;

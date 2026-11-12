@@ -5,7 +5,9 @@ import { EntityLookup } from './entity-lookup';
 
 describe('EntityLookup', () => {
   function setup() {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
     return { lookup: TestBed.inject(EntityLookup), http: TestBed.inject(HttpTestingController) };
   }
 

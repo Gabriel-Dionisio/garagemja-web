@@ -25,6 +25,7 @@
 }
 
 @if (open()) {
+  <div class="backdrop" aria-hidden="true" (click)="close()"></div>
   <div class="popup" role="dialog" [attr.aria-label]="label()">
     <header>
       <span class="stepper">

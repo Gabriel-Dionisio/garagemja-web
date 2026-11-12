@@ -2,6 +2,7 @@
   class="wide"
   [label]="'condominiums.fields.address' | transloco"
   [maxLength]="255"
+  showCount
   [control]="controls().address"
 />
 <app-text-field
@@ -12,11 +13,13 @@
 <app-text-field
   [label]="'condominiums.fields.district' | transloco"
   [maxLength]="100"
+  showCount
   [control]="controls().district"
 />
 <app-text-field
   [label]="'condominiums.fields.city' | transloco"
   [maxLength]="100"
+  showCount
   [control]="controls().city"
 />
 <app-text-field

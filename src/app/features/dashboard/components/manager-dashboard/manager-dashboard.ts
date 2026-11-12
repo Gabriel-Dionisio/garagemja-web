@@ -93,7 +93,9 @@ export class ManagerDashboard {
   protected readonly statusChart = computed(() => {
     this.language();
     const items = this.condominiums() ?? [];
-    const present = MANAGED_STATUSES.filter((status) => items.some((item) => item.status === status));
+    const present = MANAGED_STATUSES.filter((status) =>
+      items.some((item) => item.status === status),
+    );
     const title = this.transloco.translate('condominiums.managerDashboard.statusChart');
     const series: ChartSeries[] = [
       {

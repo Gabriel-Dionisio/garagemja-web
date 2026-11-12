@@ -1,29 +1,6 @@
 @use 'styles/mixins' as *;
 
 :host {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-secondary: #1e3a5f;
-  --color-tertiary: #94a3b8;
-  --color-control-off: #94a3b8;
-  --color-text: #172033;
-  --color-text-muted: #475569;
-  --color-bg: #f8fafc;
-  --color-bg-brand: #eaf1f8;
-  --color-surface: #ffffff;
-  --color-border: #94a3b8;
-  --color-divider: #dbe2ea;
-  --color-danger: #b91c1c;
-  --color-danger-bg: #fef2f2;
-  --color-success: #15803d;
-  --color-success-bg: #f0fdf4;
-  --color-warning: #92400e;
-  --color-warning-bg: #fffbeb;
-  --color-info-bg: #eff6ff;
-  --color-control-bg: #f1f4f8;
-  --shadow-card: 0 1px 3px rgb(15 23 42 / 12%);
-  --shadow-overlay: 0 10px 30px rgb(15 23 42 / 25%);
-  color-scheme: light;
   --auth-form-width: 30rem;
   --brand-balance: 8rem;
   position: relative;
@@ -45,7 +22,7 @@
   justify-content: center;
   padding: var(--space-7) var(--space-5) var(--space-6);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  background: #eaf1f8;
+  background: var(--color-bg-brand);
   color: var(--color-secondary);
   text-align: center;
 
@@ -56,7 +33,7 @@
       padding: var(--space-3) 6rem var(--space-3) var(--space-4);
       border-radius: 0;
       border-bottom: 1px solid var(--color-divider);
-      background: #ffffff;
+      background: var(--color-surface);
       text-align: left;
     }
   }
@@ -67,13 +44,20 @@
     padding: var(--space-7);
     border-radius: 0;
     text-align: left;
-    background: url('/images/login-bg.jpeg') center / cover no-repeat #eaf1f8;
+    background: url('/images/login-bg.jpeg') center / cover no-repeat var(--color-bg-brand);
     background: image-set(
         url('/images/login-bg.avif') type('image/avif'),
         url('/images/login-bg.webp') type('image/webp'),
         url('/images/login-bg.jpeg') type('image/jpeg')
       )
-      center / cover no-repeat #eaf1f8;
+      center / cover no-repeat var(--color-bg-brand);
+  }
+}
+
+:host-context([data-theme='dark']) .brand {
+  @include from($bp-lg) {
+    background-image:
+      linear-gradient(rgb(34 40 49 / 70%), rgb(34 40 49 / 70%)), url('/images/login-bg.jpeg');
   }
 }
 
@@ -125,7 +109,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-5) var(--space-4);
-  background: #f8fafc;
+  background: var(--color-bg);
 
   @include until($bp-lg) {
     padding-bottom: var(--brand-balance);

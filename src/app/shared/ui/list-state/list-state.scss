@@ -1,3 +1,15 @@
+@property --fade-top {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fade-bottom {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 :host {
   display: flex;
   flex: 1 1 auto;
@@ -6,15 +18,71 @@
   min-height: 0;
 }
 
+.card {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 12rem;
+  max-height: var(--list-max, none);
+  overflow: hidden;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-brand);
+}
+
 .items {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
   gap: var(--space-3);
-  min-height: 9rem;
+  min-height: 0;
   margin: 0;
-  padding: 2px;
+  padding: var(--space-3) var(--space-3) calc(var(--space-3) + var(--list-pad-bottom, 0px));
   overflow-y: auto;
-  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   list-style: none;
+}
+
+.footer {
+  flex: none;
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-surface);
+
+  &:empty {
+    display: none;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .items {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--fade-top),
+      #000 calc(100% - var(--fade-bottom)),
+      transparent
+    );
+    animation: edge-fade linear both;
+    animation-timeline: scroll(self);
+  }
+}
+
+@keyframes edge-fade {
+  0% {
+    --fade-top: 0px;
+    --fade-bottom: 1rem;
+  }
+
+  3% {
+    --fade-top: 1rem;
+  }
+
+  97% {
+    --fade-bottom: 1rem;
+  }
+
+  100% {
+    --fade-top: 1rem;
+    --fade-bottom: 0px;
+  }
 }

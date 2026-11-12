@@ -1,4 +1,4 @@
-<app-page [fill]="true">
+<app-page>
   <app-page-header
     [title]="'admin.users.title' | transloco"
     [subtitle]="'admin.users.subtitle' | transloco"
@@ -32,6 +32,7 @@
   <app-list-state
     [attr.aria-busy]="loading()"
     [loading]="loading() && !result()"
+    [refreshing]="loading()"
     [empty]="result()?.items?.length === 0"
     [loadingLabel]="'admin.users.loading' | transloco"
     emptyIcon="users"
@@ -93,19 +94,19 @@
           </span>
         </li>
       }
-      @if (current.items.length > 0) {
-        <app-paginator
-          paginator
-          [page]="current.page"
-          [size]="current.size"
-          [total]="current.total"
-          [itemCount]="current.items.length"
-          [hasNext]="current.hasNext"
-          [sizeOptions]="pageSizes"
-          (sizeChange)="changeSize($event)"
-          (pageChange)="goTo($event)"
-        />
-      }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
     }
   </app-list-state>
 

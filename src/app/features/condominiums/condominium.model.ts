@@ -144,4 +144,3 @@ export interface CondominiumFilter {
   newestFirst?: boolean;
   mine?: boolean;
 }
-

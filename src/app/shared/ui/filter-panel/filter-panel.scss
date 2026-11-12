@@ -8,9 +8,25 @@
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
+}
+
+:host ::ng-deep [filterActions] {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column-reverse;
+  order: -1;
+  gap: var(--space-3);
+
+  @include from($bp-md) {
+    flex: none;
+    order: 0;
+    flex-direction: row;
+    align-items: center;
+    margin-left: auto;
+  }
 }
 
 .toggle {
@@ -30,7 +46,7 @@
 
   &[aria-expanded='true'] {
     border-color: var(--color-primary);
-    color: var(--color-primary);
+    color: var(--color-primary-text);
   }
 
   @include from($bp-md) {

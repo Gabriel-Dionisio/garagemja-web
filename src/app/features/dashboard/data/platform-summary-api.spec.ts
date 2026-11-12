@@ -5,7 +5,9 @@ import { PlatformSummaryApi } from './platform-summary-api';
 
 describe('PlatformSummaryApi', () => {
   function setup() {
-    TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
     return {
       api: TestBed.inject(PlatformSummaryApi),
       http: TestBed.inject(HttpTestingController),
@@ -24,7 +26,9 @@ describe('PlatformSummaryApi', () => {
     const { api, http } = setup();
     let result: unknown;
     api.condominiums().subscribe((value) => (result = value));
-    http.expectOne('/api/v1/condominiums/summary').flush({ total: 4, active: 2, pending: 1, blocked: 1 });
+    http
+      .expectOne('/api/v1/condominiums/summary')
+      .flush({ total: 4, active: 2, pending: 1, blocked: 1 });
     expect(result).toEqual({ total: 4, active: 2, pending: 1, blocked: 1 });
   });
 

@@ -22,6 +22,7 @@ import { CondominiumImages } from '../../components/condominium-images/condomini
 import { CondominiumStatusPanel } from '../../components/condominium-status-panel/condominium-status-panel';
 import { CondominiumInfo } from '../../components/condominium-info/condominium-info';
 import { CondominiumTabs } from '../../../../shared/ui/condominium-tabs/condominium-tabs';
+import { CondominiumTabsState } from '../../../../shared/ui/condominium-tabs/condominium-tabs-state';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router, RouterLink } from '@angular/router';
 import {
@@ -59,7 +60,8 @@ import { Card } from '../../../../shared/ui/card/card';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
 import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { FormSection } from '../../../../shared/ui/form-section/form-section';
-import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
+import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
+import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { Page as PageLayout } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
@@ -74,6 +76,7 @@ import { CondominiumsApi } from '../../data/condominiums-api';
 import { STATUS_ACTIONS, StatusAction, askStatusChange } from '../../condominium-status-actions';
 
 const optional = (value: string): string | undefined => value.trim() || undefined;
+const SKELETON_FIELDS = Array.from({ length: 8 }, (_, index) => index);
 
 @Component({
   selector: 'app-condominium-form-page',
@@ -93,7 +96,8 @@ const optional = (value: string): string | undefined => value.trim() || undefine
     Card,
     FormActions,
     FormSection,
-    LoadingBlock,
+    Skeleton,
+    SkeletonBlock,
     PageHeader,
     PageLayout,
     TextField,
@@ -112,6 +116,7 @@ export class CondominiumFormPage {
   private readonly destroyRef = inject(DestroyRef);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly dialog = inject(Dialog);
+  private readonly tabsState = inject(CondominiumTabsState);
 
   private readonly imageEditor = viewChild(CondominiumImages);
 
@@ -119,6 +124,8 @@ export class CondominiumFormPage {
   readonly from = input<string>();
   protected readonly backLink = computed(() => '/condominiums');
 
+  protected readonly skeletonFields = SKELETON_FIELDS;
+  protected readonly knownName = computed(() => this.tabsState.nameOf(this.id() ?? ''));
   protected readonly formatCnpj = formatCnpj;
   protected readonly formatCep = formatCep;
   protected readonly formatUf = formatUf;
@@ -150,14 +157,6 @@ export class CondominiumFormPage {
     if (!current || (current.status !== 'ACTIVE' && current.status !== 'BLOCKED')) return false;
     return this.isAdmin() || current.canManage;
   });
-  protected readonly showTabs = computed(() => {
-    const current = this.condominium();
-    return !!current && (current.canManage || this.isAdmin());
-  });
-  protected readonly canOpenResidents = computed(
-    () => this.canOpenManagers() && !this.isAdmin() && this.condominium()?.canManage === true,
-  );
-  protected readonly hasHistory = computed(() => this.condominium()?.status !== 'PENDING');
   protected readonly canEdit = computed(() => {
     const current = this.condominium();
     if (!this.editing()) return true;
@@ -452,6 +451,7 @@ export class CondominiumFormPage {
 
   private setCondominium(condominium: Condominium): void {
     this.condominium.set(condominium);
+    this.tabsState.set(condominium, this.isAdmin());
     this.form.reset({
       name: condominium.name,
       cnpj: formatCnpj(condominium.cnpj ?? ''),

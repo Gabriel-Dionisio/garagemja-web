@@ -31,7 +31,7 @@ button {
   }
 
   &:focus-visible {
-    outline: 3px solid var(--color-primary);
+    outline: 3px solid var(--color-primary-text);
     outline-offset: 2px;
   }
 }

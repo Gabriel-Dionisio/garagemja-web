@@ -17,7 +17,11 @@ import { AdminMonthlyStats, StatsApi } from '../../data/stats-api';
 import { Chart, ChartSeries, ChartTone } from '../../../../shared/ui/chart/chart';
 import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
 import { StatCard } from '../../../../shared/ui/stat-card/stat-card';
-import { CondominiumsTotals, PlatformSummaryApi, UsersTotals } from '../../data/platform-summary-api';
+import {
+  CondominiumsTotals,
+  PlatformSummaryApi,
+  UsersTotals,
+} from '../../data/platform-summary-api';
 
 interface UserKpi {
   key: keyof UsersTotals;
@@ -61,6 +65,10 @@ export class AdminDashboard {
   protected readonly error = this.errorText.state();
 
   protected readonly monthly = signal<AdminMonthlyStats | null>(null);
+
+  protected readonly newUsersThisMonth = computed(
+    () => this.monthly()?.users.at(-1)?.count ?? null,
+  );
 
   protected readonly monthlyChart = computed(() => {
     const stats = this.monthly();

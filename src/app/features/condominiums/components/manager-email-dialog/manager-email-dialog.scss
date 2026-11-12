@@ -3,9 +3,10 @@
   width: min(28rem, calc(100vw - 2rem));
   max-height: calc(100dvh - 2rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-5);
   border-radius: var(--radius-lg);
-  background: var(--color-surface);
+  background: var(--color-surface-raised);
   box-shadow: var(--shadow-overlay);
 }
 

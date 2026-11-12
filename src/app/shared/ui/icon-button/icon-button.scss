@@ -17,11 +17,11 @@
 
 :host(:hover) {
   background: var(--color-info-bg);
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 :host([data-variant='primary']) {
-  color: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 :host([data-variant='primary']:hover) {
@@ -36,6 +36,10 @@
 }
 
 :host([data-variant='fab']) {
+  position: fixed;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: var(--fab-bottom);
+  z-index: 5;
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;

@@ -8,13 +8,24 @@ const memoryStorage = {
   setItem: (key: string, value: string) => void store.set(key, value),
 };
 
+let systemListener: ((event: MediaQueryListEvent) => void) | undefined;
+
 function createService(systemDark: boolean): ThemeService {
+  systemListener = undefined;
   Object.defineProperty(window, 'matchMedia', {
-    value: () => ({ matches: systemDark }) as MediaQueryList,
+    value: () =>
+      ({
+        matches: systemDark,
+        addEventListener: (_: string, listener: (event: MediaQueryListEvent) => void) =>
+          (systemListener = listener),
+        removeEventListener: () => undefined,
+      }) as unknown as MediaQueryList,
     configurable: true,
   });
   return TestBed.inject(ThemeService);
 }
+
+const systemChanges = (matches: boolean) => systemListener?.({ matches } as MediaQueryListEvent);
 
 describe('ThemeService', () => {
   beforeEach(() => {
@@ -48,5 +59,26 @@ describe('ThemeService', () => {
     expect(service.isDark()).toBe(true);
     expect(document.documentElement.dataset['theme']).toBe('dark');
     expect(store.get('garagemja-theme')).toBe('dark');
+  });
+
+  it('follows system changes while there is no stored choice', () => {
+    const service = createService(false);
+    systemChanges(true);
+    expect(service.isDark()).toBe(true);
+    expect(document.documentElement.dataset['theme']).toBe('dark');
+  });
+
+  it('ignores system changes once the user chose a theme', () => {
+    const service = createService(false);
+    service.toggle();
+    systemChanges(false);
+    expect(service.isDark()).toBe(true);
+  });
+
+  it('ignores system changes when a choice was already stored', () => {
+    store.set('garagemja-theme', 'light');
+    const service = createService(false);
+    systemChanges(true);
+    expect(service.isDark()).toBe(false);
   });
 });

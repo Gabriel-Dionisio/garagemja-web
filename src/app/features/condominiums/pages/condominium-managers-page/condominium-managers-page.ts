@@ -28,9 +28,11 @@ import { Checkbox } from '../../../../shared/ui/checkbox/checkbox';
 import { ListItem } from '../../../../shared/ui/list-item/list-item';
 import { Page } from '../../../../shared/ui/page/page';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
+import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { UserSummary } from '../../../../shared/ui/user-summary/user-summary';
 import { CondominiumTabs } from '../../../../shared/ui/condominium-tabs/condominium-tabs';
+import { CondominiumTabsState } from '../../../../shared/ui/condominium-tabs/condominium-tabs-state';
 import {
   ManagerEmailDialog,
   ManagerEmailDialogData,
@@ -38,6 +40,8 @@ import {
 } from '../../components/manager-email-dialog/manager-email-dialog';
 import { Condominium, Manager, ManagerInvite } from '../../condominium.model';
 import { CondominiumsApi } from '../../data/condominiums-api';
+
+const SKELETON_ROWS = [0, 1, 2];
 
 @Component({
   selector: 'app-condominium-managers-page',
@@ -56,6 +60,7 @@ import { CondominiumsApi } from '../../data/condominiums-api';
     Page,
     PageHeader,
     Skeleton,
+    SkeletonBlock,
     UserSummary,
   ],
   templateUrl: './condominium-managers-page.html',
@@ -88,10 +93,8 @@ export class CondominiumManagersPage {
   protected readonly ownManager = computed(() =>
     this.managers().find((manager) => manager.userId === this.currentUserId()),
   );
-  protected readonly canSeeResidents = computed(
-    () => !this.isAdmin() && this.condominium()?.canManage === true,
-  );
-  protected readonly hasHistory = computed(() => this.condominium()?.status !== 'PENDING');
+  protected readonly skeletonRows = SKELETON_ROWS;
+  protected readonly knownName = computed(() => this.tabsState.nameOf(this.id()));
   protected readonly isAdmin = computed(() => this.auth.hasRole('ADMIN'));
   protected readonly currentUserId = computed(() => this.auth.user()?.id);
   protected readonly canInvite = computed(
@@ -102,6 +105,7 @@ export class CondominiumManagersPage {
     return status === 'ACTIVE' || status === 'BLOCKED';
   });
   private readonly dialog = inject(Dialog);
+  private readonly tabsState = inject(CondominiumTabsState);
 
   constructor() {
     effect(() => {
@@ -143,6 +147,7 @@ export class CondominiumManagersPage {
       )
       .subscribe(({ condominium, managers, invites }) => {
         this.condominium.set(condominium);
+        this.tabsState.set(condominium, this.isAdmin());
         this.managers.set(managers);
         this.invites.set(invites);
         this.loading.set(false);

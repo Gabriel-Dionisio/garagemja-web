@@ -16,4 +16,9 @@
 @if (hint() && !error()) {
   <p class="hint" [id]="id + '-hint'">{{ hint() }}</p>
 }
-<p class="error" [id]="id + '-error'" aria-live="polite">{{ error() }}</p>
+<div class="footer">
+  <p class="error" [id]="id + '-error'" aria-live="polite">{{ error() }}</p>
+  @if (count(); as text) {
+    <span class="count" aria-hidden="true">{{ text }}</span>
+  }
+</div>

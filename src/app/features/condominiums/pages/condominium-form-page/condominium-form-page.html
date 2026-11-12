@@ -4,16 +4,12 @@
       residentView()?.name ??
       ((editing() ? 'condominiums.form.editTitle' : 'condominiums.form.newTitle') | transloco)
     "
+    [subtitle]="editing() ? (condominium()?.name ?? knownName()) : ''"
     [backLink]="backLink()"
   />
 
-  @if (showTabs() && id(); as condominiumId) {
-    <app-condominium-tabs
-      [id]="condominiumId"
-      [residents]="canOpenResidents()"
-      [managers]="canOpenManagers()"
-      [history]="hasHistory()"
-    />
+  @if (id(); as condominiumId) {
+    <app-condominium-tabs [id]="condominiumId" [loading]="loading()" />
   }
 
   @if (error.text(); as message) {
@@ -24,7 +20,21 @@
   }
 
   @if (loading()) {
-    <app-loading-block [label]="'condominiums.form.loading' | transloco" />
+    <app-skeleton [label]="'condominiums.form.loading' | transloco">
+      <div class="page has-aside">
+        <app-card>
+          <app-skeleton-block width="30%" height="1.5rem" />
+          <app-form-section>
+            @for (field of skeletonFields; track field) {
+              <app-skeleton-block height="3rem" />
+            }
+          </app-form-section>
+        </app-card>
+        <aside>
+          <app-card><app-skeleton-block height="10rem" /></app-card>
+        </aside>
+      </div>
+    </app-skeleton>
   } @else if (residentView(); as current) {
     <app-condominium-info
       [condominium]="current"
@@ -96,6 +106,7 @@
                 class="wide"
                 [label]="'condominiums.fields.name' | transloco"
                 [maxLength]="150"
+                showCount
                 [format]="formatName"
                 [control]="form.controls.name"
               />

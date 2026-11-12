@@ -63,3 +63,30 @@ describe('ListState', () => {
     expect(element.querySelector('ul')).toBeNull();
   });
 });
+
+@Component({
+  imports: [ListState],
+  template: `<app-list-state [refreshing]="refreshing()" loadingLabel="Carregando"
+    ><li>um</li></app-list-state
+  >`,
+})
+class RefreshHost {
+  readonly refreshing = signal(false);
+}
+
+describe('ListState refresh', () => {
+  it('shows the skeleton only when the refresh is slow', async () => {
+    const fixture = TestBed.createComponent(RefreshHost);
+    await fixture.whenStable();
+    const root: HTMLElement = fixture.nativeElement;
+    fixture.componentInstance.refreshing.set(true);
+    await fixture.whenStable();
+    expect(root.querySelector('app-skeleton')).toBeNull();
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    await fixture.whenStable();
+    expect(root.querySelector('app-skeleton')).not.toBeNull();
+    fixture.componentInstance.refreshing.set(false);
+    await fixture.whenStable();
+    expect(root.querySelector('app-skeleton')).toBeNull();
+  });
+});

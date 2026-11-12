@@ -1,0 +1,21 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: contents;
+
+  @include from($bp-md) {
+    display: none;
+  }
+}
+
+.menu {
+  position: fixed;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: calc(var(--fab-bottom) + 4.25rem);
+  z-index: 5;
+  min-width: 14rem;
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
+}

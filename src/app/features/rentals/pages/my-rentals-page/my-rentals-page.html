@@ -1,17 +1,30 @@
-<app-page size="wide">
-  <app-page-header [title]="'rentals.title' | transloco" />
-
-  <app-chip-group
-    [label]="'rentals.filter' | transloco"
-    [options]="filters"
-    [value]="status()"
-    (valueChange)="filter($event)"
+<app-page>
+  <app-page-header
+    [title]="'rentals.title' | transloco"
+    [subtitle]="'rentals.subtitle' | transloco"
   />
+
+  <app-filter-panel
+    [label]="'rentals.filters' | transloco"
+    [activeCount]="activeFilters()"
+    [(open)]="filtersOpen"
+  >
+    <app-chip-group
+      [label]="'rentals.filter' | transloco"
+      [options]="filters"
+      [value]="status()"
+      (valueChange)="filter($event)"
+    />
+  </app-filter-panel>
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
 
   <app-list-state
     [attr.aria-busy]="loading()"
     [loading]="loading() && !result()"
-    [error]="error.text()"
+    [refreshing]="loading()"
     [empty]="empty()"
     [loadingLabel]="'rentals.loading' | transloco"
     emptyIcon="car"
@@ -35,19 +48,19 @@
           </span>
         </li>
       }
-      @if (current.items.length > 0) {
-        <app-paginator
-          paginator
-          [page]="current.page"
-          [size]="current.size"
-          [total]="current.total"
-          [itemCount]="current.items.length"
-          [hasNext]="current.hasNext"
-          [sizeOptions]="pageSizes"
-          (sizeChange)="changeSize($event)"
-          (pageChange)="goTo($event)"
-        />
-      }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
     }
   </app-list-state>
 </app-page>

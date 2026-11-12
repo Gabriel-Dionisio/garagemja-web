@@ -1,0 +1,86 @@
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
+@if (!condominiums()) {
+  @if (!error.text()) {
+    <app-loading-block [label]="'condominiums.managerDashboard.loading' | transloco" />
+  }
+} @else if (condominiums()!.length === 0) {
+  <app-card>
+    <app-empty-state
+      icon="building"
+      [title]="'condominiums.managerDashboard.emptyTitle' | transloco"
+      [description]="'condominiums.managerDashboard.emptyDescription' | transloco"
+    />
+  </app-card>
+} @else {
+  @if (active().length === 0) {
+    <app-alert kind="info">{{ 'condominiums.managerDashboard.noneActive' | transloco }}</app-alert>
+  } @else {
+    <section class="kpis" [attr.aria-label]="'condominiums.managerDashboard.kpis' | transloco">
+      @for (name of kpis; track name) {
+        <app-stat-card
+          [value]="totals()[name]"
+          [label]="'condominiums.managerDashboard.kpi.' + name | transloco"
+          [highlight]="name === 'pendingResidents' && totals()[name] > 0"
+          [link]="name === 'pendingResidents' ? pendingLink() : null"
+        />
+      }
+    </section>
+  }
+
+  @for (item of notResiding(); track item.id) {
+    <app-alert class="notice" kind="info">
+      <span>{{
+        'condominiums.managerDashboard.notResiding' | transloco: { name: item.name }
+      }}</span>
+      <button
+        appButton
+        type="button"
+        variant="secondary"
+        [disabled]="busyId() !== null"
+        (click)="becomeResident(item)"
+      >
+        {{ 'condominiums.managerDashboard.becomeResident' | transloco }}
+      </button>
+    </app-alert>
+  }
+
+  <div class="charts">
+    @if (monthlyChart(); as chart) {
+      <app-card class="wide">
+        <h2>{{ chart.title }}</h2>
+        <app-chart
+          kind="bar"
+          [xLabel]="'charts.axis.month' | transloco"
+          [yLabel]="'charts.axis.count' | transloco"
+          [labels]="chart.labels"
+          [series]="chart.series"
+          [description]="chart.title"
+        />
+      </app-card>
+    }
+    @if (active().length > 0) {
+      <app-card class="wide">
+        <h2>{{ comparisonChart().title }}</h2>
+        <app-chart
+          kind="bar"
+          [xLabel]="'charts.axis.condominium' | transloco"
+          [yLabel]="'charts.axis.count' | transloco"
+          [labels]="comparisonChart().labels"
+          [series]="comparisonChart().series"
+          [description]="comparisonChart().title"
+        />
+      </app-card>
+    }
+    <app-card class="wide">
+      <h2>{{ statusChart().title }}</h2>
+      <app-chart
+        kind="share"
+        [labels]="statusChart().labels"
+        [series]="statusChart().series"
+        [description]="statusChart().title"
+      />
+    </app-card>
+  </div>
+}

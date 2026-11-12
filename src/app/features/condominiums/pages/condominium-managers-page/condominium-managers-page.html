@@ -1,0 +1,154 @@
+<app-page size="narrow">
+  <app-page-header
+    [title]="'condominiums.managers.title' | transloco"
+    [subtitle]="condominium()?.name ?? ''"
+    backLink="/condominiums"
+  >
+    @if (canInvite()) {
+      <button appButton type="button" [disabled]="busy()" (click)="openInvite()">
+        <app-icon name="plus" />
+        {{ 'condominiums.managers.inviteTitle' | transloco }}
+      </button>
+    }
+  </app-page-header>
+
+  <app-condominium-tabs [id]="id()" [residents]="canSeeResidents()" [history]="hasHistory()" />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  @if (sent()) {
+    <app-alert kind="success">{{ 'condominiums.managers.inviteSent' | transloco }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-skeleton
+      [label]="'condominiums.managers.loading' | transloco"
+      [rows]="3"
+      rowHeight="4rem"
+    />
+  } @else if (condominium()) {
+    @if (!isAdmin() && ownManager(); as own) {
+      <app-card class="own-email">
+        <app-checkbox
+          [label]="'condominiums.managers.showEmail' | transloco"
+          [control]="showEmail"
+        />
+        <small>{{ 'condominiums.managers.showEmailHint' | transloco }}</small>
+      </app-card>
+    }
+
+    @if (requests().length > 0) {
+      <section class="section">
+        <h2>{{ 'condominiums.managers.requests' | transloco }}</h2>
+        <ul class="list">
+          @for (request of requests(); track request.id) {
+            <li appListItem>
+              <span class="text">
+                <strong>{{ request.invitedEmail }}</strong>
+                <small>{{
+                  'condominiums.managers.expiresAt'
+                    | transloco: { date: (request.expiresAt | date: 'shortDate') }
+                }}</small>
+              </span>
+              <span actions>
+                @if (canInvite()) {
+                  <button
+                    appIconButton
+                    type="button"
+                    [label]="'condominiums.managers.approve' | transloco"
+                    [disabled]="busy()"
+                    (click)="approve(request)"
+                  >
+                    <app-icon name="check" />
+                  </button>
+                }
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'condominiums.managers.rejectRequest' | transloco"
+                  [disabled]="busy()"
+                  (click)="cancelInvite(request)"
+                >
+                  <app-icon name="close" />
+                </button>
+              </span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    <section class="section">
+      <h2>{{ 'condominiums.managers.current' | transloco }}</h2>
+      @if (managers().length === 0) {
+        <p class="muted">{{ 'condominiums.managers.empty' | transloco }}</p>
+      } @else {
+        <ul class="list">
+          @for (manager of managers(); track manager.userId) {
+            <li appListItem>
+              <app-user-summary [name]="manager.name" [email]="manager.email" />
+              <span actions>
+                @if (isAdmin() && canTransfer()) {
+                  <button
+                    appIconButton
+                    type="button"
+                    [label]="'condominiums.managers.transfer.action' | transloco"
+                    [disabled]="busy()"
+                    (click)="openTransfer(manager)"
+                  >
+                    <app-icon name="transfer" />
+                  </button>
+                }
+                @if (canRemove(manager)) {
+                  <button
+                    appIconButton
+                    type="button"
+                    [label]="removeLabel(manager) | transloco"
+                    [disabled]="busy()"
+                    (click)="remove(manager)"
+                  >
+                    <app-icon [name]="manager.userId === currentUserId() ? 'logout' : 'ban'" />
+                  </button>
+                }
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    @if (sentInvites().length > 0) {
+      <section class="section">
+        <h2>{{ 'condominiums.managers.sentInvites' | transloco }}</h2>
+        <ul class="list">
+          @for (invite of sentInvites(); track invite.id) {
+            <li appListItem>
+              <span class="text">
+                <strong>{{ invite.invitedEmail }}</strong>
+                <small>{{
+                  'condominiums.managers.expiresAt'
+                    | transloco: { date: (invite.expiresAt | date: 'shortDate') }
+                }}</small>
+              </span>
+              <app-badge status tone="warning">{{
+                'condominiums.managers.pending' | transloco
+              }}</app-badge>
+              <span actions>
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'condominiums.managers.cancelInvite' | transloco"
+                  [disabled]="busy()"
+                  (click)="cancelInvite(invite)"
+                >
+                  <app-icon name="close" />
+                </button>
+              </span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+</app-page>

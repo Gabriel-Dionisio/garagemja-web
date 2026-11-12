@@ -11,10 +11,10 @@ export class ErrorText {
     this.transloco.langChanges$.pipe(switchMap((lang) => this.transloco.load(lang))),
   );
 
-  state(): ErrorState {
-    return new ErrorState(() => {
+  state(statusKeys: Readonly<Record<number, string>> = {}): ErrorState {
+    return new ErrorState((status) => {
       this.loaded();
-      return this.transloco.translate('errors.generic');
+      return this.transloco.translate(statusKeys[status] ?? 'errors.generic');
     });
   }
 }

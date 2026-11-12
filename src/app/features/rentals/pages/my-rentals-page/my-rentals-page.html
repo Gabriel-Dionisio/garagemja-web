@@ -1,78 +1,53 @@
-<app-page-header [title]="'rentals.title' | transloco" />
+<app-page size="wide">
+  <app-page-header [title]="'rentals.title' | transloco" />
 
-@if (error.text(); as message) {
-  <app-alert kind="error">{{ message }}</app-alert>
-} @else if (loading()) {
-  <app-loading-block [label]="'rentals.loading' | transloco" />
-} @else {
-  <div class="tabs" role="group" [attr.aria-label]="'rentals.tabs.label' | transloco">
-    @for (tab of tabs; track tab) {
-      <button
-        type="button"
-        [attr.aria-pressed]="selectedTab() === tab"
-        [class.selected]="selectedTab() === tab"
-        (click)="selectTab(tab)"
-      >
-        {{ 'rentals.tabs.' + tab | transloco }}
-      </button>
-    }
-  </div>
+  <app-chip-group
+    [label]="'rentals.filter' | transloco"
+    [options]="filters"
+    [value]="status()"
+    (valueChange)="filter($event)"
+  />
 
-  <div class="tab-panel">
-    @if (selectedTab() === 'active') {
-      <section class="rental-section" aria-labelledby="active-rentals-heading">
-        <h2 id="active-rentals-heading">
-          {{ 'rentals.active.heading' | transloco }}
-          <span>({{ activeRentals().length }})</span>
-        </h2>
-        @if (activeRentals().length === 0) {
-          <app-empty-state icon="car" [title]="'rentals.active.empty' | transloco" />
-        } @else {
-          <ul class="cards">
-            @for (rental of activeRentals(); track rental.id) {
-              <li>
-                <app-rental-item-card [rental]="rental" />
-              </li>
-            }
-          </ul>
-        }
-      </section>
-    } @else if (selectedTab() === 'requests') {
-      <section class="rental-section">
-        <h2>
-          {{ 'rentals.requests.heading' | transloco }}
-          <span>({{ requests().length }})</span>
-        </h2>
-        @if (requests().length === 0) {
-          <app-empty-state icon="mail" [title]="'rentals.requests.empty' | transloco" />
-        } @else {
-          <ul class="cards">
-            @for (rental of requests(); track rental.id) {
-              <li>
-                <app-rental-item-card [rental]="rental" />
-              </li>
-            }
-          </ul>
-        }
-      </section>
-    } @else {
-      <section class="rental-section">
-        <h2>
-          {{ 'rentals.tabs.history' | transloco }}
-          <span>({{ history().length }})</span>
-        </h2>
-        @if (history().length === 0) {
-          <app-empty-state icon="car" [title]="'rentals.history.empty' | transloco" />
-        } @else {
-          <ul class="cards">
-            @for (rental of history(); track rental.id) {
-              <li>
-                <app-rental-item-card [rental]="rental" />
-              </li>
-            }
-          </ul>
-        }
-      </section>
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [error]="error.text()"
+    [empty]="empty()"
+    [loadingLabel]="'rentals.loading' | transloco"
+    emptyIcon="car"
+    [emptyTitle]="'rentals.emptyTitle' | transloco"
+    [emptyDescription]="'rentals.emptyDescription' | transloco"
+    [listLabel]="'rentals.title' | transloco"
+  >
+    @if (result(); as current) {
+      @for (rental of current.items; track rental.id) {
+        <li appListItem>
+          <app-icon leading name="car" />
+          <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
+          <span class="meta">{{ rental.condominiumName }}</span>
+          <span class="meta">
+            {{ rental.startDate }} → {{ rental.endDate }} · R$ {{ rental.price | number: '1.2-2' }}
+          </span>
+          <span status>
+            <app-badge [tone]="tones[rental.status]">{{
+              'rentals.status.' + rental.status | transloco
+            }}</app-badge>
+          </span>
+        </li>
+      }
+      @if (current.items.length > 0) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      }
     }
-  </div>
-}
+  </app-list-state>
+</app-page>

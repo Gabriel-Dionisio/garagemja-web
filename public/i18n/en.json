@@ -19,7 +19,13 @@
       "personName": "Enter first and last name using letters only (spaces and apostrophes allowed).",
       "passwordPolicy": "Use {{min}} to {{max}} characters with an uppercase letter, a lowercase letter, a number and a symbol.",
       "mismatch": "Passwords do not match.",
-      "invalid": "Invalid value."
+      "invalid": "Invalid value.",
+      "cnpj": "Invalid CNPJ.",
+      "pattern": "Invalid format."
+    },
+    "condominium": {
+      "forbidden": "You do not have permission for this action in this condominium.",
+      "notFound": "Condominium not found or unavailable."
     }
   },
   "common": {
@@ -32,7 +38,6 @@
       "cpf": "CPF",
       "role": "Role",
       "status": "Status",
-      "accountType": "Account type",
       "confirmPassword": "Confirm password",
       "initialPassword": "Initial password",
       "roles": "Roles"
@@ -59,6 +64,7 @@
       "clear": "Clear"
     },
     "pagination": {
+      "perPage": "Items per page",
       "label": "Pagination",
       "previous": "Previous",
       "next": "Next",
@@ -66,6 +72,8 @@
       "showingOf": "{{from}}–{{to}} of {{total}}"
     },
     "password": {
+      "capsLockShort": "Caps Lock",
+      "capsLock": "Caps Lock is on",
       "show": "Show password",
       "hide": "Hide password"
     },
@@ -88,6 +96,23 @@
       "met": "Passwords match",
       "unmet": "Passwords don't match",
       "pending": "Checking…"
+    },
+    "image": {
+      "choose": "Choose image",
+      "empty": "No image yet",
+      "emptyHint": "Tap to add up to {{max}} images, one by one or all at once",
+      "add": "Add image",
+      "previous": "Previous image",
+      "next": "Next image",
+      "change": "Change image",
+      "moveBack": "Move earlier",
+      "moveForward": "Move later",
+      "cover": "Cover",
+      "remove": "Remove image",
+      "rejected": {
+        "type": "Choose an image file.",
+        "size": "The image must be at most 5 MB."
+      }
     }
   },
   "nav": {
@@ -98,7 +123,12 @@
     "openMenu": "Open menu",
     "menu": "Menu",
     "main": "Main",
-    "logout": "Sign out"
+    "searchPlaceholder": "Condominium, neighborhood or address",
+    "logout": "Sign out",
+    "condominiums": "Condominiums",
+    "audit": "Audit",
+    "dashboard": "Dashboard",
+    "management": "Management"
   },
   "routes": {
     "login": "Sign in",
@@ -108,36 +138,32 @@
     "home": "Home",
     "myRentals": "My rentals",
     "adminUsers": "Users",
-    "adminUserNew": "New user",
+    "adminUserNew": "New administrator",
     "adminUserDetail": "User details",
     "status": "System status",
     "forgotPassword": "Forgot password",
-    "resetPassword": "Reset password"
+    "resetPassword": "Reset password",
+    "condominiums": "Condominiums",
+    "condominiumNew": "New condominium",
+    "condominiumDetail": "Condominium details",
+    "condominiumManagers": "Managers",
+    "join": "Join a condominium",
+    "condominiumResidents": "Residents",
+    "history": "History",
+    "auditLogs": "Audit",
+    "myResidencies": "Where I live",
+    "managerDashboard": "Manager dashboard",
+    "adminDashboard": "Platform dashboard",
+    "dashboard": "Dashboard"
   },
   "rentals": {
     "title": "My rentals",
     "loading": "Loading rentals…",
-    "tabs": {
-      "label": "Rental sections",
-      "active": "Active",
-      "requests": "Requests",
-      "history": "History"
-    },
-    "active": {
-      "heading": "Active rentals",
-      "empty": "No active rentals."
-    },
-    "requests": {
-      "heading": "Requests",
-      "empty": "You have no requests."
-    },
-    "history": {
-      "empty": "No rentals found in your history."
-    },
-    "card": {
-      "spot": "Parking spot {{number}}",
-      "imageAlt": "Reference image of a parking spot"
-    },
+    "filter": "Filter rentals by status",
+    "all": "All",
+    "spot": "Parking spot {{number}}",
+    "emptyTitle": "No rentals found",
+    "emptyDescription": "Rentals you request will appear here.",
     "status": {
       "PENDING": "Pending",
       "APPROVED": "Approved",
@@ -145,9 +171,7 @@
       "REFUSED": "Refused",
       "CANCELED": "Canceled",
       "FINISHED": "Finished"
-    },
-    "details": "View details",
-    "detailsUnavailable": "The details page is not available yet."
+    }
   },
   "auth": {
     "login": {
@@ -163,15 +187,18 @@
       "heading": "Create your account",
       "subtitle": "Create your account to start renting parking spots.",
       "namePlaceholder": "Enter your full name",
-      "roleAdminPending": "Property manager (requires approval)",
       "submit": "Create account",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in"
     },
     "confirmEmail": {
-      "heading": "Confirm email",
+      "heading": {
+        "confirming": "Confirming email",
+        "confirmed": "Email confirmed",
+        "failed": "Could not confirm"
+      },
       "confirming": "Confirming your email…",
-      "success": "Email confirmed! You can now sign in.",
+      "success": "Your account is active. Sign in with your email and password to get started.",
       "invalid": "This link is invalid or has expired. Sign in to request a new one."
     },
     "verifyEmail": {
@@ -206,20 +233,46 @@
     "greeting": "Hello, {{name}}",
     "welcome": "Welcome to GaragemJá.",
     "emptyTitle": "Your spots and rentals will appear here",
-    "emptyDescription": "Searching and renting spots arrive in the next releases."
+    "emptyDescription": "Searching and renting spots arrive in the next releases.",
+    "title": "Home",
+    "featuredTitle": "Spots in my condominium",
+    "availableVagas": "available spots",
+    "priceFrom": "From R$",
+    "perHour": "per hour",
+    "viewCondominium": "View condominium",
+    "loading": "Loading condominiums...",
+    "loadError": "The condominiums could not be loaded.",
+    "emptyCondominiumsTitle": "No spots available",
+    "emptyCondominiumsDescription": "There are no registered spots in the condominiums where you live.",
+    "search": {
+      "condominium": "Condominium",
+      "condominiumPlaceholder": "Ex.: Residential Alpha",
+      "period": "Period",
+      "start": "Start",
+      "end": "End",
+      "submit": "Search"
+    },
+    "joinTitle": "Join your condominium",
+    "joinDescription": "Use your manager's code or register the condominium.",
+    "joinAction": "I have a code",
+    "myCondominiumAction": "My condominium",
+    "manageAction": "Register condominium",
+    "usersSection": "Users",
+    "condominiumsSection": "Condominiums",
+    "noResidencyTitle": "You do not live in a condominium yet",
+    "noResidencyDescription": "Join with your manager's code and wait for approval to see the spots."
   },
   "admin": {
     "users": {
       "title": "Users",
       "subtitle": "Manage the platform accounts.",
-      "new": "New user",
+      "new": "New administrator",
       "loading": "Loading users...",
       "emptyTitle": "No users found",
       "emptyDescription": "Adjust the filters and try again.",
       "caption": "User list",
       "actions": "Actions",
       "details": "Details",
-      "approve": "Approve",
       "all": "All",
       "tabs": "Filter by status",
       "filters": "Filters",
@@ -231,30 +284,21 @@
       "title": "User details",
       "loading": "Loading user...",
       "saved": "Changes saved.",
-      "approveManager": "Approve manager",
       "sendPasswordReset": "Send password reset link",
       "passwordResetSent": "Password reset link sent to the user.",
       "moreActions": "More actions",
       "editTitle": "Account details",
-      "selfNote": "This is your account. Status and roles can only be changed by another admin.",
-      "accessTitle": "Access",
-      "rolesRequired": "Select at least one role.",
+      "selfNote": "This is your account. Status can only be changed by another admin.",
       "deactivate": "Deactivate",
       "block": "Block access",
       "unblock": "Unblock access",
-      "reactivate": "Reactivate account"
+      "reactivate": "Reactivate account",
+      "history": "Action history"
     },
     "form": {
-      "title": "New user",
-      "submit": "Create user",
-      "personal": "Personal details",
-      "access": "Access"
-    },
-    "approveDialog": {
-      "title": "Approve user",
-      "message": "Approve {{name}} as property manager?",
-      "messageSelf": "Approve this user as property manager?",
-      "confirm": "Approve"
+      "title": "New administrator",
+      "submit": "Create administrator",
+      "adminOnly": "Creates a platform administrator account. Residents and managers sign up on their own."
     },
     "dashboard": {
       "loading": "Loading dashboard...",
@@ -263,13 +307,24 @@
         "total": "Users",
         "active": "Active",
         "pending": "Pending",
-        "blocked": "Blocked"
+        "blocked": "Blocked",
+        "other": "Other"
       },
-      "pendingTitle": "Pending approvals",
       "pendingEmpty": "No pending approvals",
       "recentTitle": "Recent sign-ups",
       "recentEmpty": "No sign-ups yet",
-      "seeAll": "See all"
+      "seeAll": "See all",
+      "title": "Platform dashboard",
+      "subtitle": "User and condominium numbers.",
+      "usersTitle": "Users",
+      "condominiumsTitle": "Condominiums",
+      "usersChart": "Users by status",
+      "condominiumsChart": "Condominiums by status",
+      "monthlyChart": "New sign-ups per month",
+      "monthly": {
+        "users": "Users",
+        "condominiums": "Condominiums"
+      }
     },
     "passwordResetDialog": {
       "title": "Send password reset link",
@@ -334,6 +389,470 @@
       "degraded": "Unstable",
       "down": "Down",
       "noData": "No data"
+    }
+  },
+  "condominiums": {
+    "status": {
+      "PENDING": "Awaiting approval",
+      "ACTIVE": "Active",
+      "REJECTED": "Rejected",
+      "BLOCKED": "Blocked",
+      "CLOSED": "Closed"
+    },
+    "list": {
+      "title": "Condominiums",
+      "subtitle": "Condominiums registered on the platform.",
+      "new": "Register condominium",
+      "all": "All",
+      "tabs": "Filter by status",
+      "filters": "Filters",
+      "details": "Details",
+      "loading": "Loading condominiums...",
+      "emptyTitle": "No condominiums found",
+      "emptyDescription": "If your condominium is already on GaragemJá, ask the current manager for an invite. Otherwise, register it.",
+      "caption": "Condominium list",
+      "resides": "I live here",
+      "join": "Join with a code",
+      "pending": "{{count}} resident(s) awaiting approval"
+    },
+    "form": {
+      "newTitle": "Register condominium",
+      "editTitle": "Condominium details",
+      "data": "Condominium details",
+      "submit": "Register condominium",
+      "saved": "Changes saved.",
+      "loading": "Loading condominium...",
+      "delete": "Delete condominium",
+      "review": "Registration review",
+      "statusTitle": "Status",
+      "newNote": "By registering, you declare to be the manager of this condominium. The platform administrator will review it before it is activated.",
+      "notResident": "I don't live in this condominium",
+      "exists": "This CNPJ is already registered as {{name}}. Choose how to continue.",
+      "requestManagement": "I am the new manager",
+      "requestSent": "Request sent. A current manager must approve it.",
+      "joinAsResident": "Join as resident"
+    },
+    "fields": {
+      "name": "Condominium name",
+      "cnpj": "CNPJ",
+      "zipCode": "ZIP code",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "statusReason": "Reason",
+      "district": "District",
+      "number": "Number"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "block": "Block",
+      "unblock": "Unblock",
+      "reopen": "Reopen review",
+      "close": "Close"
+    },
+    "dialog": {
+      "approve": {
+        "title": "Approve condominium",
+        "message": "Approve {{name}}? The requester will become its manager.",
+        "confirm": "Approve"
+      },
+      "reject": {
+        "title": "Reject condominium",
+        "message": "Reject the registration of {{name}}?",
+        "confirm": "Reject"
+      },
+      "block": {
+        "title": "Block condominium",
+        "message": "Block {{name}}? It will no longer be visible to residents.",
+        "confirm": "Block"
+      },
+      "unblock": {
+        "title": "Unblock condominium",
+        "message": "Unblock {{name}}?",
+        "confirm": "Unblock"
+      },
+      "reopen": {
+        "title": "Reopen review",
+        "message": "Reopen the review of {{name}}?",
+        "confirm": "Reopen"
+      },
+      "delete": {
+        "title": "Delete condominium",
+        "message": "Delete {{name}}? This cannot be undone.",
+        "confirm": "Delete"
+      },
+      "close": {
+        "title": "Close condominium",
+        "message": "Close {{name}}? Managers lose their link and this cannot be undone.",
+        "confirm": "Close"
+      }
+    },
+    "image": {
+      "alt": "Condominium image"
+    },
+    "timeline": {
+      "received": "Request received",
+      "review": "Under review by the administrator",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "closed": "Closed",
+      "reason": "Reason: {{reason}}",
+      "state": {
+        "done": "done",
+        "current": "in progress",
+        "failed": "failed",
+        "todo": "pending"
+      },
+      "label": "Request progress",
+      "hint": "You will become the manager once approved."
+    },
+    "managers": {
+      "showEmail": "Show my e-mail to residents",
+      "showEmailHint": "Your name is always shown; the e-mail only with this option on.",
+      "title": "Managers",
+      "loading": "Loading managers...",
+      "empty": "No managers linked.",
+      "remove": "Remove",
+      "leave": "Leave",
+      "inviteTitle": "Invite manager",
+      "inviteHint": "The invitee needs an account and must accept. Useful to hand over to a successor.",
+      "invite": "Invite",
+      "inviteSent": "If an account exists for this e-mail, the invite was sent.",
+      "cancelInvite": "Cancel invite",
+      "expiresAt": "Expires on {{date}}",
+      "dialog": {
+        "remove": {
+          "title": "Remove manager",
+          "message": "Remove {{manager}} from {{name}}?",
+          "confirm": "Remove"
+        },
+        "leave": {
+          "title": "Leave condominium",
+          "message": "Stop managing {{name}}? You lose management access.",
+          "confirm": "Leave"
+        }
+      },
+      "transfer": {
+        "action": "Transfer",
+        "title": "Transfer {{manager}}'s role",
+        "hint": "The new manager needs an active account. The current one loses management access.",
+        "reason": "Reason for the transfer",
+        "confirm": "Transfer"
+      },
+      "removeReason": "Reason for removal",
+      "pending": "Invite pending",
+      "current": "Current managers",
+      "requests": "Requests to become manager",
+      "sentInvites": "Sent invites",
+      "approve": "Approve request",
+      "rejectRequest": "Reject request"
+    },
+    "invites": {
+      "title": "Manager invites",
+      "message": "You were invited to manage {{name}}.",
+      "accept": "Accept",
+      "decline": "Decline",
+      "notResident": "I don't live in this condominium"
+    },
+    "residents": {
+      "title": "Residents",
+      "loading": "Loading residents...",
+      "inviteTitle": "Invite residents",
+      "inviteHint": "Send this link to residents. Each request needs your approval.",
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "awaitingEmail": "Awaiting e-mail confirmation",
+      "awaitingEmailHint": "The request can only be approved after the resident confirms their e-mail.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rotate": {
+        "title": "Generate new code",
+        "message": "The current link will stop working. Continue?",
+        "confirm": "Generate new code"
+      },
+      "block": "Block",
+      "reactivate": "Reactivate",
+      "tabs": {
+        "label": "Filter by status",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "BLOCKED": "Blocked",
+        "all": "All"
+      },
+      "emptyTitle": "No residents with this status",
+      "emptyDescription": "Pick another status or share the invite link.",
+      "filter": {
+        "search": "Search by name or e-mail",
+        "label": "Filters"
+      }
+    },
+    "join": {
+      "title": "Join a condominium",
+      "subtitle": "Use the code sent by your manager.",
+      "code": "Condominium code",
+      "continue": "Continue",
+      "loading": "Looking up condominium...",
+      "block": "Block (optional)",
+      "unit": "Unit",
+      "submit": "Request to join",
+      "sent": "Request sent. Wait for the manager's approval.",
+      "cnpjTitle": "Find my condominium",
+      "cnpjSubtitle": "Enter the CNPJ to request entry.",
+      "cnpjNotFound": "No active condominium has this CNPJ."
+    },
+    "dashboard": {
+      "loading": "Loading condominiums...",
+      "kpis": "Condominiums summary",
+      "kpi": {
+        "total": "Condominiums",
+        "active": "Active",
+        "pending": "Pending",
+        "blocked": "Unavailable"
+      },
+      "pendingTitle": "Awaiting approval",
+      "pendingEmpty": "No pending condominiums",
+      "seeAll": "See all",
+      "recentTitle": "Recent registrations",
+      "recentEmpty": "No condominiums yet"
+    },
+    "lookup": {
+      "inactive": "This CNPJ is not listed as active at the Federal Revenue. Check the number."
+    },
+    "counts": {
+      "residents": "Residents",
+      "parkingSpots": "Spots",
+      "activeRentals": "Rentals"
+    },
+    "history": {
+      "open": "History"
+    },
+    "residencies": {
+      "title": "Where I live",
+      "subtitle": "Join with a code and follow your requests.",
+      "loading": "Loading memberships...",
+      "emptyTitle": "No condominiums yet",
+      "emptyDescription": "Enter the code your manager sent above.",
+      "status": {
+        "PENDING": "Awaiting approval",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "BLOCKED": "Blocked"
+      },
+      "hint": {
+        "PENDING": "Waiting for the manager to approve.",
+        "APPROVED": "You can now rent and list spots.",
+        "REJECTED": "Request declined. Enter the code above to ask again.",
+        "BLOCKED": "Access blocked. Talk to the manager."
+      },
+      "managerCta": "Are you a manager and your condominium isn't here yet?",
+      "managerCtaLink": "Register condominium",
+      "leave": {
+        "label": "Leave this condominium",
+        "title": "Leave the condominium?",
+        "message": "You lose access to the spots and rentals of {{name}}. To come back you must request again with the code.",
+        "confirm": "Leave"
+      }
+    },
+    "managerDashboard": {
+      "loading": "Loading your condominiums...",
+      "kpis": "Your condominiums summary",
+      "kpi": {
+        "pendingResidents": "Residents waiting",
+        "residents": "Residents",
+        "parkingSpots": "Parking spots",
+        "activeRentals": "Active rentals"
+      },
+      "reviewResidents": "Review {{count}} request(s)",
+      "emptyTitle": "You don't manage any condominium yet",
+      "emptyDescription": "Once a condominium is approved, it shows up here.",
+      "becomeResident": "I live here now",
+      "title": "Manager dashboard",
+      "subtitle": "Overview of the condominiums you manage.",
+      "statusChart": "Your condominiums by status",
+      "comparisonChart": "Comparison by active condominium",
+      "noneActive": "None of your condominiums is active. The numbers appear after approval.",
+      "notResiding": "You are not linked as a resident of {{name}}.",
+      "monthlyChart": "Requests and rentals per month",
+      "monthly": {
+        "requests": "Resident requests",
+        "rentals": "Rentals"
+      }
+    },
+    "tabs": {
+      "label": "Condominium sections",
+      "details": "Details",
+      "residents": "Residents",
+      "managers": "Managers",
+      "history": "History"
+    },
+    "info": {
+      "blocked": "Condominium blocked: new join requests and rentals are suspended.",
+      "region": "Location",
+      "photos": "Condominium photos",
+      "rules": "Rental rules",
+      "contacts": "Manager contacts",
+      "myLink": "My link",
+      "unit": "Block / unit",
+      "status": "Status",
+      "ruleLabels": {
+        "maxRentalDays": "Maximum days per rental",
+        "minAdvanceHours": "Minimum advance (hours)",
+        "cancellationDeadlineHours": "Cancellation deadline (hours)",
+        "maxPricePerDay": "Maximum price per day"
+      }
+    },
+    "membership": {
+      "title": "My membership",
+      "becomeResident": "Live in this condominium",
+      "leaveResidency": "Stop living here",
+      "leaveManagement": "Stop managing",
+      "leaveResidencyDialog": {
+        "title": "Stop living here?",
+        "message": "You stop being a resident of {{name}} and stay as manager. Open rentals block leaving.",
+        "confirm": "Stop living here"
+      },
+      "leaveManagementDialog": {
+        "title": "Stop managing?",
+        "message": "You lose manager access to {{name}}. The last manager cannot leave.",
+        "confirm": "Stop managing"
+      }
+    },
+    "code": {
+      "title": "Entry code",
+      "hint": "Share the code or the link with residents. Each request needs your approval.",
+      "copyCode": "Copy code",
+      "copyLink": "Copy link",
+      "copied": "Copied",
+      "share": "Share",
+      "qrAlt": "Entry link QR code"
+    },
+    "welcome": {
+      "title": "Welcome! Let's link you to a condominium",
+      "subtitle": "Choose how you want to start.",
+      "code": {
+        "title": "I have a code",
+        "description": "Use the code or link sent by the manager."
+      },
+      "cnpj": {
+        "title": "Find my condominium",
+        "description": "Search by CNPJ and ask to join."
+      },
+      "register": {
+        "title": "Register my condominium",
+        "description": "I am a manager and want to register the condominium."
+      }
+    }
+  },
+  "audit": {
+    "title": "Audit",
+    "subtitle": "Who changed what, and when.",
+    "loading": "Loading history...",
+    "caption": "Audit records",
+    "emptyTitle": "No records",
+    "emptyDescription": "Nothing changed with these filters.",
+    "export": "Export CSV",
+    "noChanges": "No changed fields.",
+    "filters": {
+      "title": "Filters",
+      "all": "All",
+      "entity": "Filter by type",
+      "entityLabel": "What changed",
+      "action": "Filter by action",
+      "author": "Done by",
+      "authorPlaceholder": "User's full email",
+      "authorHint": "Type the full email to search.",
+      "condominium": "Condominium",
+      "condominiumPlaceholder": "Condominium name",
+      "from": "From",
+      "to": "To",
+      "timeZone": "Dates use your browser time zone: {{zone}}",
+      "actionLabel": "What was done"
+    },
+    "entity": {
+      "CONDOMINIUM": "Condominium",
+      "CONDOMINIUM_RULE": "Rules",
+      "USER": "User",
+      "RESIDENT": "Resident",
+      "MANAGER": "Manager",
+      "MANAGER_INVITE": "Manager invite",
+      "JOIN_CODE": "Join code",
+      "PARKING_SPOT": "Parking spot",
+      "SPOT_AVAILABILITY": "Availability",
+      "VEHICLE": "Vehicle",
+      "RENTAL": "Rental"
+    },
+    "action": {
+      "CREATE": "Created",
+      "UPDATE": "Updated",
+      "DELETE": "Deleted",
+      "STATUS_CHANGE": "Changed status",
+      "TRANSFER": "Transferred"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Your summary based on the roles you have.",
+    "sections": {
+      "platform": "Platform",
+      "manager": "Condominiums I manage",
+      "owner": "My spots",
+      "rented": "Spots I rented"
+    },
+    "owner": {
+      "title": "My spots summary",
+      "loading": "Loading your spots...",
+      "emptyTitle": "You don't have spots yet",
+      "emptyDescription": "Once a manager assigns a spot to you, rental requests and earnings show up here.",
+      "kpi": {
+        "pending": "Requests to decide",
+        "active": "In progress",
+        "upcoming": "Approved, not started",
+        "spots": "Spots",
+        "monthEarnings": "Earnings this month"
+      }
+    },
+    "rentals": {
+      "loading": "Loading rentals...",
+      "column": {
+        "spot": "Spot",
+        "period": "Period",
+        "price": "Price",
+        "status": "Status"
+      },
+      "status": {
+        "PENDING": "Awaiting decision",
+        "APPROVED": "Approved",
+        "ACTIVE": "In progress",
+        "REFUSED": "Refused",
+        "CANCELED": "Canceled",
+        "FINISHED": "Finished"
+      },
+      "filter": "Filter by status",
+      "all": "All",
+      "ownedEmptyTitle": "No rentals found",
+      "ownedEmptyDescription": "Rental requests for your spots show up here.",
+      "rentedEmptyTitle": "No rentals found",
+      "rentedEmptyDescription": "Spots you rent show up here."
+    }
+  },
+  "dateField": {
+    "open": "Open calendar",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "previousYear": "Previous year",
+    "nextYear": "Next year",
+    "today": "Today",
+    "invalid": "Invalid date",
+    "outOfRange": "Date outside the allowed range",
+    "incomplete": "Incomplete date"
+  },
+  "charts": {
+    "axis": {
+      "month": "Month",
+      "count": "Count",
+      "condominium": "Condominium"
     }
   }
 }

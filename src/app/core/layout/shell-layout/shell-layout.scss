@@ -23,15 +23,6 @@
   }
 }
 
-:host([data-topbar='hidden']) {
-  grid-template-rows: minmax(0, 1fr);
-  grid-template-areas: 'main';
-
-  @include from($bp-xl) {
-    grid-template-areas: 'sidebar main';
-  }
-}
-
 .skip-link {
   position: absolute;
   left: var(--space-3);
@@ -57,9 +48,50 @@
   color: var(--color-secondary);
 }
 
+.topbar-search {
+  display: flex;
+  align-items: center;
+  width: min(28rem, 42vw);
+  height: var(--control-height);
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: #f1f4f8;
+  color: var(--color-text-muted);
+
+  app-icon {
+    flex: none;
+    width: 1.25rem;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0 var(--space-2);
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+  }
+}
+
 .language {
-  margin-left: auto;
   margin-right: var(--space-2);
+}
+
+@media (max-width: 960px) {
+  .topbar-search {
+    width: min(20rem, 38vw);
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar-search {
+    flex: 1;
+    width: auto;
+  }
 }
 
 .icon-button {
@@ -71,22 +103,6 @@
   border-radius: var(--radius-md);
   background: transparent;
   color: inherit;
-  cursor: pointer;
-}
-
-.rentals-menu-button {
-  position: fixed;
-  top: var(--space-3);
-  right: var(--space-3);
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  width: var(--control-height);
-  height: var(--control-height);
-  border: 1px solid var(--color-divider);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-secondary);
   cursor: pointer;
 }
 
@@ -143,6 +159,21 @@
   a.active {
     background: var(--color-primary);
     color: #fff;
+  }
+
+  .count {
+    margin-left: auto;
+  }
+
+  .group-title {
+    margin: var(--space-4) 0 var(--space-2);
+    padding: var(--space-3) var(--space-3) 0;
+    border-top: 1px solid rgb(255 255 255 / 15%);
+    color: var(--color-tertiary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .brand {
@@ -221,9 +252,7 @@ main {
   min-width: 0;
   padding: var(--space-4);
   outline: none;
-  --page-height: calc(
-    100dvh - var(--shell-topbar-height, var(--topbar-height)) - 2 * var(--space-4)
-  );
+  --page-height: calc(100dvh - var(--topbar-height) - 2 * var(--space-4));
 
   @media (min-width: $bp-md) and (min-height: 40rem) {
     min-height: 0;
@@ -233,12 +262,6 @@ main {
 
   @include from($bp-md) {
     padding: var(--space-5);
-    --page-height: calc(
-      100dvh - var(--shell-topbar-height, var(--topbar-height)) - 2 * var(--space-5)
-    );
+    --page-height: calc(100dvh - var(--topbar-height) - 2 * var(--space-5));
   }
-}
-
-:host([data-topbar='hidden']) main {
-  --shell-topbar-height: 0px;
 }

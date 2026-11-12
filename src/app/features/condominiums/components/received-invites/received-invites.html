@@ -1,0 +1,48 @@
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
+@if (invites().length > 0) {
+  <ul class="cards" [attr.aria-label]="'condominiums.invites.title' | transloco">
+    @for (invite of invites(); track invite.id) {
+      <li>
+        <app-card>
+          <p>{{ 'condominiums.invites.message' | transloco: { name: invite.condominiumName } }}</p>
+          <small>{{
+            'condominiums.managers.expiresAt'
+              | transloco: { date: (invite.expiresAt | date: 'shortDate') }
+          }}</small>
+          <app-checkbox
+            [label]="'condominiums.invites.notResident' | transloco"
+            [control]="notResident(invite.id)"
+          />
+          <div class="actions">
+            <button
+              appButton
+              type="button"
+              variant="secondary"
+              [disabled]="busy()"
+              [attr.aria-label]="
+                ('condominiums.invites.decline' | transloco) + ': ' + invite.condominiumName
+              "
+              (click)="decline(invite)"
+            >
+              {{ 'condominiums.invites.decline' | transloco }}
+            </button>
+            <button
+              appButton
+              type="button"
+              [loading]="activeId() === invite.id"
+              [disabled]="busy()"
+              [attr.aria-label]="
+                ('condominiums.invites.accept' | transloco) + ': ' + invite.condominiumName
+              "
+              (click)="accept(invite)"
+            >
+              {{ 'condominiums.invites.accept' | transloco }}
+            </button>
+          </div>
+        </app-card>
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,75 @@
+<app-card>
+  <header class="status">
+    <h2>{{ 'condominiums.form.statusTitle' | transloco }}</h2>
+    <app-condominium-status-badge [status]="condominium().status" />
+  </header>
+  @if (
+    condominium().status === 'PENDING' ||
+    condominium().status === 'REJECTED' ||
+    condominium().status === 'CLOSED'
+  ) {
+    <app-condominium-request-timeline
+      [status]="condominium().status"
+      [reason]="condominium().statusReason"
+    />
+  }
+  @if (membershipOpen()) {
+    <app-action-list class="review" [label]="'condominiums.membership.title' | transloco">
+      @if (condominium().resides || condominium().status === 'ACTIVE') {
+        <button
+          appActionItem
+          [icon]="condominium().resides ? 'logout' : 'plus'"
+          [disabled]="busy()"
+          (click)="toggleResidency.emit()"
+        >
+          {{
+            (condominium().resides
+              ? 'condominiums.membership.leaveResidency'
+              : 'condominiums.membership.becomeResident'
+            ) | transloco
+          }}
+        </button>
+      }
+      <button
+        appActionItem
+        icon="logout"
+        variant="danger"
+        [disabled]="busy()"
+        (click)="leaveManagement.emit()"
+      >
+        {{ 'condominiums.membership.leaveManagement' | transloco }}
+      </button>
+    </app-action-list>
+  }
+  @if (statusActions().length > 0) {
+    <app-action-list class="review" [label]="'condominiums.form.review' | transloco">
+      @for (item of statusActions(); track item.key) {
+        <button
+          appActionItem
+          [icon]="item.icon"
+          [variant]="item.primary ? 'default' : 'danger'"
+          [disabled]="busy()"
+          (click)="changeStatus.emit(item)"
+        >
+          {{ 'condominiums.actions.' + item.key | transloco }}
+        </button>
+      }
+    </app-action-list>
+  }
+  @if (counts(); as totals) {
+    <dl class="counts">
+      <div>
+        <dt>{{ 'condominiums.counts.residents' | transloco }}</dt>
+        <dd>{{ totals.residents }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'condominiums.counts.parkingSpots' | transloco }}</dt>
+        <dd>{{ totals.parkingSpots }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'condominiums.counts.activeRentals' | transloco }}</dt>
+        <dd>{{ totals.activeRentals }}</dd>
+      </div>
+    </dl>
+  }
+</app-card>

@@ -1,0 +1,60 @@
+:host {
+  display: block;
+}
+
+.invite {
+  display: block;
+  flex: none;
+}
+
+app-chip-group {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+.invite-toggle {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  h2 {
+    margin: 0;
+  }
+
+  .chevron {
+    transform: rotate(90deg);
+    transition: transform 0.15s;
+  }
+
+  &[aria-expanded='true'] .chevron {
+    transform: rotate(-90deg);
+  }
+}
+
+#invite-body {
+  margin-top: var(--space-2);
+}
+
+h2 {
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+app-list-state {
+  flex: 1 1 auto;
+}
+
+.email-hint {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}

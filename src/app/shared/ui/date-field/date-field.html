@@ -1,0 +1,100 @@
+<div class="field">
+  <input
+    appDateInput
+    [attr.aria-label]="label()"
+    [(isoValue)]="isoValue"
+    [isoMin]="isoMin()"
+    [isoMax]="isoMax()"
+    [attr.aria-describedby]="errorKey() ? errorId : null"
+  />
+  <button
+    type="button"
+    class="toggle"
+    aria-haspopup="dialog"
+    [attr.aria-expanded]="open()"
+    [attr.aria-label]="'dateField.open' | transloco"
+    [attr.title]="'dateField.open' | transloco"
+    (click)="toggle()"
+  >
+    <app-icon name="calendar" />
+  </button>
+</div>
+
+@if (errorKey(); as key) {
+  <p class="error" role="alert" [id]="errorId">{{ key | transloco }}</p>
+}
+
+@if (open()) {
+  <div class="popup" role="dialog" [attr.aria-label]="label()">
+    <header>
+      <span class="stepper">
+        <button
+          type="button"
+          [attr.aria-label]="'dateField.previousMonth' | transloco"
+          [attr.title]="'dateField.previousMonth' | transloco"
+          (click)="shiftMonth(-1)"
+        >
+          <app-icon name="chevron-left" />
+        </button>
+        <strong class="title">{{ monthTitle() }}</strong>
+        <button
+          type="button"
+          [attr.aria-label]="'dateField.nextMonth' | transloco"
+          [attr.title]="'dateField.nextMonth' | transloco"
+          (click)="shiftMonth(1)"
+        >
+          <app-icon name="chevron-right" />
+        </button>
+      </span>
+      <span class="stepper">
+        <button
+          type="button"
+          [disabled]="!canGoPreviousYear()"
+          [attr.aria-label]="'dateField.previousYear' | transloco"
+          [attr.title]="'dateField.previousYear' | transloco"
+          (click)="shiftYear(-1)"
+        >
+          <app-icon name="chevron-left" />
+        </button>
+        <strong class="title">{{ view().year }}</strong>
+        <button
+          type="button"
+          [disabled]="!canGoNextYear()"
+          [attr.aria-label]="'dateField.nextYear' | transloco"
+          [attr.title]="'dateField.nextYear' | transloco"
+          (click)="shiftYear(1)"
+        >
+          <app-icon name="chevron-right" />
+        </button>
+      </span>
+    </header>
+    <div class="grid weekdays" aria-hidden="true">
+      @for (name of weekdays(); track $index) {
+        <span>{{ name }}</span>
+      }
+    </div>
+    <div class="grid days">
+      @for (blank of blanks(); track $index) {
+        <span></span>
+      }
+      @for (item of days(); track item.iso) {
+        <button
+          type="button"
+          [class.selected]="item.iso === isoValue()"
+          [class.today]="item.iso === today"
+          [disabled]="item.disabled"
+          [attr.aria-pressed]="item.iso === isoValue()"
+          [attr.data-focus]="item.iso === isoValue() || (!isoValue() && item.iso === today)"
+          (click)="pick(item.iso)"
+        >
+          {{ item.day }}
+        </button>
+      }
+    </div>
+    <footer>
+      <button type="button" class="today-button" (click)="pickToday()">
+        {{ 'dateField.today' | transloco }}
+      </button>
+    </footer>
+  </div>
+}

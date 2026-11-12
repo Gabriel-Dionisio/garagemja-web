@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { RegisterPage } from './register-page';
@@ -8,10 +8,24 @@ import { PendingVerificationStore } from '../../pending-verification';
 describe('RegisterPage', () => {
   const register = vi.fn();
 
-  async function setup() {
+  async function setup(returnUrl?: string, email?: string) {
     register.mockReset();
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: AuthService, useValue: { register } }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: { register } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              queryParamMap: convertToParamMap({
+                ...(returnUrl && { returnUrl }),
+                ...(email && { email }),
+              }),
+            },
+          },
+        },
+      ],
     });
     const fixture = TestBed.createComponent(RegisterPage);
     await fixture.whenStable();
@@ -28,7 +42,10 @@ describe('RegisterPage', () => {
       await fixture.whenStable();
     };
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
-    return { element, fill, submit, navigate };
+    const emailValue = () =>
+      (element.querySelector('input[type=email], input[autocomplete=email]') as HTMLInputElement)
+        ?.value;
+    return { element, fill, submit, navigate, emailValue };
   }
 
   it('exige confirmação de senha igual e CPF válido', async () => {
@@ -68,5 +85,32 @@ describe('RegisterPage', () => {
       email: 'ana@x.com',
       password: 'Abcdef1!',
     });
+  });
+
+  it('guarda a rota de retorno recebida para depois da verificação de e-mail', async () => {
+    const { fill, submit } = await setup('/join/ABCDEFGHJK');
+    register.mockReturnValue(of(undefined));
+    fill('Nome completo', 'Ana Souza');
+    fill('E-mail', 'ana@x.com');
+    fill('Telefone', '11987654321');
+    fill('CPF', '52998224725');
+    fill('Senha', 'Abcdef1!');
+    fill('Confirmar senha', 'Abcdef1!');
+    await submit();
+    expect(TestBed.inject(PendingVerificationStore).take()).toEqual({
+      email: 'ana@x.com',
+      password: 'Abcdef1!',
+      returnUrl: '/join/ABCDEFGHJK',
+    });
+  });
+
+  it('preenche o e-mail vindo do convite', async () => {
+    const { emailValue } = await setup(undefined, 'Ana@X.com');
+    expect(emailValue()).toBe('ana@x.com');
+  });
+
+  it('ignora o e-mail do link quando inválido', async () => {
+    const { emailValue } = await setup(undefined, 'nao é e-mail');
+    expect(emailValue()).toBe('');
   });
 });

@@ -45,6 +45,12 @@
     border-radius: 0;
     text-align: left;
     background: url('/images/login-bg.jpeg') center / cover no-repeat var(--color-bg);
+    background: image-set(
+        url('/images/login-bg.avif') type('image/avif'),
+        url('/images/login-bg.webp') type('image/webp'),
+        url('/images/login-bg.jpeg') type('image/jpeg')
+      )
+      center / cover no-repeat var(--color-bg);
   }
 }
 

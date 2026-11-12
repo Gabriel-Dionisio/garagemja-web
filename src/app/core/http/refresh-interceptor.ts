@@ -37,7 +37,7 @@ export const refreshInterceptor: HttpInterceptorFn = (request, next) => {
           const sessionExpired =
             refreshError instanceof HttpErrorResponse && refreshError.status === 401;
           if (sessionExpired && !request.url.endsWith(SESSION_PROBE_PATH)) {
-            void router.navigate(['/login'], { queryParams: { returnUrl: router.url } });
+            void router.navigate(['/login']);
           }
           return throwError(() =>
             refreshError instanceof HttpErrorResponse ? error : refreshError,

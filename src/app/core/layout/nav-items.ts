@@ -6,12 +6,36 @@ export interface NavItem {
   path: string;
   icon: IconName;
   roles?: Role[];
+  exact?: boolean;
+  group?: 'management';
+  badge?: 'condominiums';
 }
 
 export const NAV_ITEMS: readonly NavItem[] = [
-  { labelKey: 'nav.home', path: '/home', icon: 'home' },
+  { labelKey: 'nav.dashboard', path: '/dashboard', icon: 'shield', roles: ['ADMIN'] },
+  {
+    labelKey: 'nav.home',
+    path: '/home',
+    icon: 'home',
+    roles: ['RESIDENT', 'CONDOMINIUM_ADMIN'],
+  },
+  { labelKey: 'nav.condominiums', path: '/condominiums', icon: 'building', badge: 'condominiums' },
   { labelKey: 'nav.myRentals', path: '/rentals', icon: 'car', roles: ['RESIDENT'] },
-  { labelKey: 'nav.users', path: '/admin/users', icon: 'users', roles: ['ADMIN'] },
+  { labelKey: 'nav.dashboard', path: '/dashboard', icon: 'shield', roles: ['CONDOMINIUM_ADMIN'] },
+  {
+    labelKey: 'nav.users',
+    path: '/admin/users',
+    icon: 'users',
+    roles: ['ADMIN'],
+    group: 'management',
+  },
+  {
+    labelKey: 'nav.audit',
+    path: '/admin/audit-logs',
+    icon: 'eye',
+    roles: ['ADMIN'],
+    group: 'management',
+  },
 ];
 
 export function navItemsFor(roles: readonly Role[]): NavItem[] {

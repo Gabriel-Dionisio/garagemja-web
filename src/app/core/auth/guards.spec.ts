@@ -9,6 +9,7 @@ import {
 import { AuthService } from './auth-service';
 import { authGuard } from './auth-guard';
 import { guestGuard } from './guest-guard';
+import { homeGuard } from './home-guard';
 import { Role } from './auth.model';
 import { roleGuard } from './role-guard';
 
@@ -36,9 +37,12 @@ describe('guards', () => {
       guard({} as ActivatedRouteSnapshot, { url } as RouterStateSnapshot),
     );
 
-  it('authGuard envia anônimos ao login guardando a rota', () => {
-    const result = run(authGuard) as UrlTree;
-    expect(result.toString()).toBe('/login?returnUrl=%2Fadmin%2Fusers');
+  it('authGuard envia anônimos ao login guardando a rota pedida', () => {
+    expect((run(authGuard) as UrlTree).toString()).toBe('/login?returnUrl=%2Fadmin%2Fusers');
+    expect((run(authGuard, '/condominiums/c1') as UrlTree).toString()).toBe(
+      '/login?returnUrl=%2Fcondominiums%2Fc1',
+    );
+    expect((run(authGuard, '/home') as UrlTree).toString()).toBe('/login');
     roles.set(['RESIDENT']);
     expect(run(authGuard)).toBe(true);
   });
@@ -54,5 +58,19 @@ describe('guards', () => {
     expect((run(roleGuard('ADMIN')) as UrlTree).toString()).toBe('/home');
     roles.set(['ADMIN']);
     expect(run(roleGuard('ADMIN'))).toBe(true);
+  });
+
+  it('roleGuard aceita qualquer um dos papéis e recusa os demais', () => {
+    roles.set(['CONDOMINIUM_ADMIN']);
+    expect(run(roleGuard('RESIDENT', 'CONDOMINIUM_ADMIN'))).toBe(true);
+    roles.set(['ADMIN']);
+    expect((run(roleGuard('RESIDENT', 'CONDOMINIUM_ADMIN')) as UrlTree).toString()).toBe('/home');
+  });
+
+  it('homeGuard leva o ADMIN ao painel e libera os demais', () => {
+    roles.set(['ADMIN']);
+    expect((run(homeGuard) as UrlTree).toString()).toBe('/dashboard');
+    roles.set(['RESIDENT']);
+    expect(run(homeGuard)).toBe(true);
   });
 });

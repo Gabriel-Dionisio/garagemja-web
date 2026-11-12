@@ -1,76 +1,110 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { LocaleService } from '../../../../core/i18n/locale-service';
+import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
-import { AuthService } from '../../../../core/auth/auth-service';
-import { Alert } from '../../../../shared/ui/alert/alert';
-import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
-import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
+import { Page as ResultPage } from '../../../../shared/models/page';
+import { Badge, BadgeTone } from '../../../../shared/ui/badge/badge';
+import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { Icon } from '../../../../shared/ui/icon/icon';
+import { ListItem } from '../../../../shared/ui/list-item/list-item';
+import { ListState } from '../../../../shared/ui/list-state/list-state';
+import { Page } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
-import { RentalItemCard } from '../../components/rental-item-card/rental-item-card';
 import {
-  isActiveRental,
-  isHistoricalRental,
-  isRentalRequest,
-  RentalCard,
-  RentalTab,
-} from '../../rental.model';
+  DEFAULT_PAGE_SIZE,
+  PAGE_SIZES,
+  Paginator,
+} from '../../../../shared/ui/paginator/paginator';
 import { RentalsApi } from '../../data/rentals-api';
+import { RENTAL_STATUSES, Rental, RentalStatus } from '../../rental.model';
 
-const TABS: readonly RentalTab[] = ['active', 'requests', 'history'];
+const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
+  PENDING: 'warning',
+  APPROVED: 'info',
+  ACTIVE: 'success',
+  REFUSED: 'danger',
+  CANCELED: 'danger',
+  FINISHED: 'neutral',
+};
 
 @Component({
   selector: 'app-my-rentals-page',
-  imports: [TranslocoPipe, Alert, EmptyState, LoadingBlock, PageHeader, RentalItemCard],
+  imports: [
+    DecimalPipe,
+    TranslocoPipe,
+    Badge,
+    ChipGroup,
+    Icon,
+    ListItem,
+    ListState,
+    Page,
+    PageHeader,
+    Paginator,
+  ],
   templateUrl: './my-rentals-page.html',
   styleUrl: './my-rentals-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyRentalsPage {
   private readonly api = inject(RentalsApi);
-  private readonly auth = inject(AuthService);
-  private readonly errorText = inject(ErrorText);
 
-  protected readonly tabs = TABS;
-  protected readonly selectedTab = signal<RentalTab>('active');
-  protected readonly rentals = signal<RentalCard[] | null>(null);
-  protected readonly loading = signal(false);
-  protected readonly error = this.errorText.state();
-  protected readonly activeRentals = computed(() =>
-    (this.rentals() ?? []).filter((rental) => isActiveRental(rental.status)),
-  );
-  protected readonly requests = computed(() =>
-    (this.rentals() ?? []).filter((rental) => isRentalRequest(rental.status)),
-  );
-  protected readonly history = computed(() =>
-    (this.rentals() ?? []).filter((rental) => isHistoricalRental(rental.status)),
-  );
+  protected readonly tones = STATUS_TONES;
+  protected readonly pageSizes = PAGE_SIZES;
+  protected readonly filters: readonly ChipOption<RentalStatus>[] = [
+    { value: null, labelKey: 'rentals.all' },
+    ...RENTAL_STATUSES.map((value) => ({ value, labelKey: `rentals.status.${value}` })),
+  ];
+  protected readonly error = inject(ErrorText).state();
+  protected readonly status = signal<RentalStatus | null>(null);
+  protected readonly page = signal(0);
+  protected readonly size = signal(DEFAULT_PAGE_SIZE);
+  protected readonly loading = signal(true);
+  protected readonly result = signal<ResultPage<Rental> | null>(null);
+  protected readonly empty = computed(() => this.result()?.items.length === 0);
+  private readonly request = computed(() => ({
+    page: this.page(),
+    size: this.size(),
+    status: this.status(),
+  }));
 
   constructor() {
-    const userId = this.auth.user()?.id;
-    if (!userId) {
-      this.error.setFrom(new Error('Authenticated user is required'));
-      return;
-    }
-
-    this.loading.set(true);
-    this.api
-      .loadForUser(userId)
-      .pipe(takeUntilDestroyed())
-      .subscribe({
-        next: (rentals) => {
-          this.rentals.set(rentals);
-          this.loading.set(false);
-        },
-        error: (error: unknown) => {
-          this.error.setFrom(error);
-          this.loading.set(false);
-        },
+    toObservable(this.request)
+      .pipe(
+        tap(() => {
+          this.loading.set(true);
+          this.error.clear();
+        }),
+        switchMap(({ page, size, status }) =>
+          this.api.list(page, size, status).pipe(
+            catchError((error: unknown) => {
+              this.error.setFrom(error);
+              this.result.set(null);
+              this.loading.set(false);
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((result) => {
+        this.result.set(result);
+        this.loading.set(false);
       });
   }
 
-  protected selectTab(tab: RentalTab): void {
-    this.selectedTab.set(tab);
+  protected filter(status: RentalStatus | null): void {
+    this.status.set(status);
+    this.page.set(0);
+  }
+
+  protected changeSize(size: number): void {
+    this.size.set(size);
+    this.page.set(0);
+  }
+
+  protected goTo(page: number): void {
+    this.page.set(page);
   }
 }

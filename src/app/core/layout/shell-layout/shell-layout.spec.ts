@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../auth/auth-service';
 import { UserProfile } from '../../auth/auth.model';
+import { NavBadges } from '../nav-badges';
 import { ViewportService } from '../viewport-service';
 import { ShellLayout } from './shell-layout';
 
@@ -14,9 +15,6 @@ const USER: UserProfile = {
   roles: ['ADMIN'],
 };
 
-@Component({ template: '' })
-class RoutePage {}
-
 describe('ShellLayout', () => {
   const logout = vi.fn(() => of(undefined));
   const mobile = signal(false);
@@ -25,11 +23,16 @@ describe('ShellLayout', () => {
     mobile.set(usesDrawer);
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([
-          { path: 'home', component: RoutePage },
-          { path: 'rentals', component: RoutePage, data: { hideTopbar: true } },
-        ]),
-        { provide: AuthService, useValue: { user: signal(user), logout } },
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            user: signal(user),
+            logout,
+            hasRole: (r: string) => user.roles.includes(r as never),
+          },
+        },
+        { provide: NavBadges, useValue: { condominiums: signal(3), refresh: vi.fn() } },
         {
           provide: ViewportService,
           useValue: { usesDrawer: () => mobile(), isDesktop: () => !mobile() },
@@ -44,7 +47,7 @@ describe('ShellLayout', () => {
   it('mostra a navegação por papel e destaca nome e iniciais no desktop', async () => {
     const { element } = await setup(false);
     const links = Array.from(element.querySelectorAll('nav a')).map((a) => a.textContent?.trim());
-    expect(links).toEqual(['Início', 'Usuários']);
+    expect(links).toEqual(['Painel', 'Condomínios3', 'Usuários', 'Auditoria']);
     expect(element.querySelector('app-avatar')?.textContent?.trim()).toBe('AS');
     expect(element.querySelector('button[aria-label="Abrir menu"]')).toBeNull();
   });
@@ -57,48 +60,17 @@ describe('ShellLayout', () => {
   });
 
   it('mostra badge só para admin', async () => {
-    expect((await setup(false)).element.querySelector('app-badge')).not.toBeNull();
+    expect((await setup(false)).element.querySelector('app-badge:not(.count)')).not.toBeNull();
   });
 
   it('não mostra badge para morador', async () => {
     const { element } = await setup(false, { ...USER, roles: ['RESIDENT'] });
-    expect(element.querySelector('app-badge')).toBeNull();
-  });
-
-  it('oculta a barra somente na rota marcada e a restaura ao voltar para Home', async () => {
-    const { fixture, element } = await setup(false);
-    const router = TestBed.inject(Router);
-
-    await router.navigateByUrl('/rentals');
-    await fixture.whenStable();
-    expect(element.querySelector('header.topbar')).toBeNull();
-    expect(element.getAttribute('data-topbar')).toBe('hidden');
-
-    await router.navigateByUrl('/home');
-    await fixture.whenStable();
-    expect(element.querySelector('header.topbar')).not.toBeNull();
-    expect(element.querySelector('app-language-switcher')).not.toBeNull();
-    expect(element.getAttribute('data-topbar')).toBe('visible');
-  });
-
-  it('mantém acesso à sidebar drawer quando a barra está oculta', async () => {
-    const { fixture, element } = await setup(true);
-    await TestBed.inject(Router).navigateByUrl('/rentals');
-    await fixture.whenStable();
-
-    expect(element.querySelector('header.topbar')).toBeNull();
-    const open = element.querySelector(
-      'button.rentals-menu-button[aria-label="Abrir menu"]',
-    ) as HTMLButtonElement;
-    expect(open).not.toBeNull();
-    open.click();
-    await fixture.whenStable();
-    expect(element.querySelector('aside')).not.toBeNull();
+    expect(element.querySelector('app-badge:not(.count)')).toBeNull();
   });
 
   it('mostra badge para síndico', async () => {
     const { element } = await setup(false, { ...USER, roles: ['CONDOMINIUM_ADMIN'] });
-    expect(element.querySelector('app-badge')?.textContent?.trim()).toBe('Síndico');
+    expect(element.querySelector('app-badge:not(.count)')?.textContent?.trim()).toBe('Síndico');
   });
 
   it('no celular abre e fecha o menu em gaveta', async () => {

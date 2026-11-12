@@ -276,8 +276,7 @@
     "name": "Nome completo",
     "email": "E-mail",
     "phone": "Telefone",
-    "save": "Salvar alterações",
-    "updateError": "Não foi possível atualizar o perfil. Verifique os dados e tente novamente."
+    "save": "Salvar alterações"
   },
   "admin": {
     "users": {

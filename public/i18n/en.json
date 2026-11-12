@@ -276,8 +276,7 @@
     "name": "Full name",
     "email": "Email",
     "phone": "Phone",
-    "save": "Save changes",
-    "updateError": "Unable to update profile. Check the details and try again."
+    "save": "Save changes"
   },
   "admin": {
     "users": {

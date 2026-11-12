@@ -119,6 +119,8 @@
     "home": "Home",
     "myRentals": "My rentals",
     "users": "Users",
+    "settings": "Settings",
+    "profile": "Profile",
     "skipToContent": "Skip to content",
     "openMenu": "Open menu",
     "menu": "Menu",
@@ -154,7 +156,9 @@
     "myResidencies": "Where I live",
     "managerDashboard": "Manager dashboard",
     "adminDashboard": "Platform dashboard",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "profile": "Profile"
   },
   "rentals": {
     "title": "My rentals",
@@ -261,6 +265,30 @@
     "condominiumsSection": "Condominiums",
     "noResidencyTitle": "You do not live in a condominium yet",
     "noResidencyDescription": "Join with your manager's code and wait for approval to see the spots."
+  },
+  "settings": {
+    "title": "Settings",
+    "security": {
+      "title": "Security",
+      "changePassword": "Change password",
+      "resetSent": "We sent you a link to reset your password.",
+      "sendResetLink": "Send link"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "language": "Language",
+      "theme": "Theme",
+      "darkTheme": "Dark theme"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "loading": "Loading profile...",
+    "saved": "Profile updated successfully.",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "save": "Save changes"
   },
   "admin": {
     "users": {

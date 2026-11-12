@@ -119,6 +119,8 @@
     "home": "Início",
     "myRentals": "Meus aluguéis",
     "users": "Usuários",
+    "settings": "Configurações",
+    "profile": "Perfil",
     "skipToContent": "Pular para o conteúdo",
     "openMenu": "Abrir menu",
     "menu": "Menu",
@@ -154,7 +156,9 @@
     "myResidencies": "Onde moro",
     "managerDashboard": "Painel do síndico",
     "adminDashboard": "Painel da plataforma",
-    "dashboard": "Painel"
+    "dashboard": "Painel",
+    "settings": "Configurações",
+    "profile": "Perfil"
   },
   "rentals": {
     "title": "Meus aluguéis",
@@ -261,6 +265,30 @@
     "condominiumsSection": "Condomínios",
     "noResidencyTitle": "Você ainda não mora em um condomínio",
     "noResidencyDescription": "Entre com o código do síndico e aguarde a aprovação para ver as vagas."
+  },
+  "settings": {
+    "title": "Configurações",
+    "security": {
+      "title": "Segurança",
+      "changePassword": "Alterar senha",
+      "resetSent": "Enviamos um link para redefinir sua senha.",
+      "sendResetLink": "Enviar link"
+    },
+    "preferences": {
+      "title": "Preferências",
+      "language": "Idioma",
+      "theme": "Tema",
+      "darkTheme": "Tema escuro"
+    }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "loading": "Carregando perfil...",
+    "saved": "Perfil atualizado com sucesso.",
+    "name": "Nome completo",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "save": "Salvar alterações"
   },
   "admin": {
     "users": {

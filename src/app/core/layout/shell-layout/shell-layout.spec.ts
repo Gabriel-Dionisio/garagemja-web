@@ -47,7 +47,14 @@ describe('ShellLayout', () => {
   it('mostra a navegação por papel e destaca nome e iniciais no desktop', async () => {
     const { element } = await setup(false);
     const links = Array.from(element.querySelectorAll('nav a')).map((a) => a.textContent?.trim());
-    expect(links).toEqual(['Painel', 'Condomínios3', 'Usuários', 'Auditoria']);
+    expect(links).toEqual([
+      'Painel',
+      'Condomínios3',
+      'Configurações',
+      'Perfil',
+      'Usuários',
+      'Auditoria',
+    ]);
     expect(element.querySelector('app-avatar')?.textContent?.trim()).toBe('AS');
     expect(element.querySelector('button[aria-label="Abrir menu"]')).toBeNull();
   });

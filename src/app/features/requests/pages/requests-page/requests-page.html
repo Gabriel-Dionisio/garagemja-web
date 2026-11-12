@@ -1,0 +1,88 @@
+<app-page>
+  <app-page-header
+    [title]="'requests.title' | transloco"
+    [subtitle]="'requests.subtitle' | transloco"
+  />
+
+  <app-tab-nav [tabs]="tabs()" [label]="'requests.tabs.label' | transloco" />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">
+      {{ message }}
+      @if (failed()) {
+        <button appButton type="button" variant="secondary" (click)="reload()">
+          {{ 'requests.retry' | transloco }}
+        </button>
+      }
+    </app-alert>
+  }
+
+  @if (!failed()) {
+    <app-list-state
+      [attr.aria-busy]="loading()"
+      [loading]="loading() && !result()"
+      [refreshing]="loading()"
+      [empty]="empty()"
+      [loadingLabel]="'requests.loading' | transloco"
+      emptyIcon="mail"
+      [emptyTitle]="'requests.empty.' + status() | transloco"
+      [emptyDescription]="'requests.emptyDescription.' + status() | transloco"
+      [listLabel]="'requests.title' | transloco"
+    >
+      @if (result(); as current) {
+        @for (rental of current.items; track rental.id) {
+          <li appListItem>
+            <span leading class="thumb"><app-icon name="mail" /></span>
+            <strong>{{ 'requests.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
+            <span class="meta">{{ rental.condominiumName }}</span>
+            <span class="meta">
+              {{ rental.startDate }} → {{ rental.endDate }} ·
+              <span class="price">R$ {{ rental.price | number: '1.2-2' }}</span>
+            </span>
+            <span status>
+              <app-badge [tone]="tones[status()]">{{
+                'requests.status.' + status() | transloco
+              }}</app-badge>
+            </span>
+            @if (status() === 'PENDING') {
+              <span actions class="decisions">
+                <button
+                  appButton
+                  type="button"
+                  variant="secondary"
+                  [disabled]="deciding() !== null"
+                  [loading]="deciding() === rental.id"
+                  (click)="decide(rental, 'REFUSED')"
+                >
+                  {{ 'requests.refuse' | transloco }}
+                </button>
+                <button
+                  appButton
+                  type="button"
+                  [disabled]="deciding() !== null"
+                  [loading]="deciding() === rental.id"
+                  (click)="decide(rental, 'APPROVED')"
+                >
+                  {{ 'requests.approve' | transloco }}
+                </button>
+              </span>
+            }
+          </li>
+        }
+      }
+      @if (result(); as current) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      }
+    </app-list-state>
+  }
+</app-page>

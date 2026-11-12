@@ -117,6 +117,7 @@
   },
   "nav": {
     "home": "Home",
+    "myRentals": "My rentals",
     "users": "Users",
     "settings": "Settings",
     "profile": "Profile",
@@ -137,6 +138,7 @@
     "confirmEmail": "Confirm email",
     "verifyEmail": "Verify email",
     "home": "Home",
+    "myRentals": "My rentals",
     "adminUsers": "Users",
     "adminUserNew": "New administrator",
     "adminUserDetail": "User details",
@@ -157,6 +159,23 @@
     "dashboard": "Dashboard",
     "settings": "Settings",
     "profile": "Profile"
+  },
+  "rentals": {
+    "title": "My rentals",
+    "loading": "Loading rentals…",
+    "filter": "Filter rentals by status",
+    "all": "All",
+    "spot": "Parking spot {{number}}",
+    "emptyTitle": "No rentals found",
+    "emptyDescription": "Rentals you request will appear here.",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "ACTIVE": "Active",
+      "REFUSED": "Refused",
+      "CANCELED": "Canceled",
+      "FINISHED": "Finished"
+    }
   },
   "auth": {
     "login": {

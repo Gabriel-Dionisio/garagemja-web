@@ -1,0 +1,11 @@
+app-chip-group {
+  display: flex;
+  margin-bottom: var(--space-4);
+}
+
+strong,
+.meta {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}

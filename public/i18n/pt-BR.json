@@ -249,24 +249,17 @@
   },
   "settings": {
     "title": "Configurações",
-    "unavailable": "Recurso indisponível no backend atual.",
-    "notifications": {
-      "title": "Notificações",
-      "requests": "Novas Solicitações",
-      "rentals": "Aluguéis e Pagamentos",
-      "system": "Novidades do Sistema"
-    },
     "security": {
       "title": "Segurança",
       "changePassword": "Alterar senha",
-      "twoFactor": "Autenticação em duas etapas",
       "resetSent": "Enviamos um link para redefinir sua senha.",
-      "resetFailed": "Não foi possível enviar o link de redefinição."
+      "sendResetLink": "Enviar link"
     },
     "preferences": {
       "title": "Preferências",
       "language": "Idioma",
-      "theme": "Tema"
+      "theme": "Tema",
+      "darkTheme": "Tema escuro"
     }
   },
   "profile": {

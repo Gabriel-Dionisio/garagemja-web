@@ -1,8 +1,10 @@
 (function () {
-  var theme = 'light';
+  var theme =
+    window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
   try {
-    theme = localStorage.getItem('garagemja-theme') === 'dark' ? 'dark' : 'light';
+    var stored = localStorage.getItem('garagemja-theme');
+    if (stored === 'dark' || stored === 'light') theme = stored;
   } catch (_) {}
 
   document.documentElement.dataset.theme = theme;

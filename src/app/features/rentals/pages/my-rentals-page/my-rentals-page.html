@@ -1,0 +1,53 @@
+<app-page size="wide">
+  <app-page-header [title]="'rentals.title' | transloco" />
+
+  <app-chip-group
+    [label]="'rentals.filter' | transloco"
+    [options]="filters"
+    [value]="status()"
+    (valueChange)="filter($event)"
+  />
+
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [error]="error.text()"
+    [empty]="empty()"
+    [loadingLabel]="'rentals.loading' | transloco"
+    emptyIcon="car"
+    [emptyTitle]="'rentals.emptyTitle' | transloco"
+    [emptyDescription]="'rentals.emptyDescription' | transloco"
+    [listLabel]="'rentals.title' | transloco"
+  >
+    @if (result(); as current) {
+      @for (rental of current.items; track rental.id) {
+        <li appListItem>
+          <app-icon leading name="car" />
+          <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
+          <span class="meta">{{ rental.condominiumName }}</span>
+          <span class="meta">
+            {{ rental.startDate }} → {{ rental.endDate }} · R$ {{ rental.price | number: '1.2-2' }}
+          </span>
+          <span status>
+            <app-badge [tone]="tones[rental.status]">{{
+              'rentals.status.' + rental.status | transloco
+            }}</app-badge>
+          </span>
+        </li>
+      }
+      @if (current.items.length > 0) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      }
+    }
+  </app-list-state>
+</app-page>

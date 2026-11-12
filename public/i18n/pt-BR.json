@@ -117,6 +117,7 @@
   },
   "nav": {
     "home": "Início",
+    "myRentals": "Meus aluguéis",
     "users": "Usuários",
     "settings": "Configurações",
     "profile": "Perfil",
@@ -137,6 +138,7 @@
     "confirmEmail": "Confirmar e-mail",
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
+    "myRentals": "Meus aluguéis",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo administrador",
     "adminUserDetail": "Detalhes do usuário",
@@ -157,6 +159,23 @@
     "dashboard": "Painel",
     "settings": "Configurações",
     "profile": "Perfil"
+  },
+  "rentals": {
+    "title": "Meus aluguéis",
+    "loading": "Carregando aluguéis…",
+    "filter": "Filtrar aluguéis por status",
+    "all": "Todos",
+    "spot": "Vaga {{number}}",
+    "emptyTitle": "Nenhum aluguel encontrado",
+    "emptyDescription": "Os aluguéis que você solicitar aparecerão aqui.",
+    "status": {
+      "PENDING": "Pendente",
+      "APPROVED": "Aprovado",
+      "ACTIVE": "Ativo",
+      "REFUSED": "Recusado",
+      "CANCELED": "Cancelado",
+      "FINISHED": "Concluído"
+    }
   },
   "auth": {
     "login": {

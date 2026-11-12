@@ -57,6 +57,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
+        path: 'rentals',
+        loadChildren: () =>
+          import('./features/rentals/rentals.routes').then((m) => m.RENTALS_ROUTES),
+      },
+      {
         path: 'condominiums/:id/history',
         title: 'routes.history',
         canActivate: [roleGuard('ADMIN', 'CONDOMINIUM_ADMIN')],

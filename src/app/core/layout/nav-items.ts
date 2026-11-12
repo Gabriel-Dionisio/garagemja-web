@@ -20,6 +20,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     roles: ['RESIDENT', 'CONDOMINIUM_ADMIN'],
   },
   { labelKey: 'nav.condominiums', path: '/condominiums', icon: 'building', badge: 'condominiums' },
+  { labelKey: 'nav.myRentals', path: '/rentals', icon: 'car', roles: ['RESIDENT'] },
   { labelKey: 'nav.dashboard', path: '/dashboard', icon: 'shield', roles: ['CONDOMINIUM_ADMIN'] },
   {
     labelKey: 'nav.users',

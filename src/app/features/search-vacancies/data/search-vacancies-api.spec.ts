@@ -102,13 +102,37 @@ describe('SearchVacanciesApi', () => {
     const spots = http.expectOne((r) => r.url === '/api/v1/parking-spots');
     expect(spots.request.params.get('status')).toBe('ACTIVE');
     spots.flush([spot('s1')]);
-    http.expectOne('/api/v1/condominiums').flush([condominium]);
+    http.expectOne((r) => r.url === '/api/v1/condominiums').flush([condominium]);
     const availabilities = http.expectOne((r) => r.url === '/api/v1/spot-availabilities');
     expect(availabilities.request.params.get('active')).toBe('true');
     availabilities.flush([availability('s1', '8.00', '2000-01-01', '2999-12-31')]);
 
     expect(result).toHaveLength(1);
     expect(result?.[0].price).toBe(8);
+  });
+
+  it('carrega todas as páginas de condomínios para não descartar vagas', () => {
+    let result: Vacancy[] | undefined;
+    api.loadAll().subscribe((value) => (result = value));
+
+    http
+      .expectOne((r) => r.url === '/api/v1/parking-spots')
+      .flush([spot('s1'), { ...spot('s2'), condominiumId: 'c2' }]);
+    http.expectOne((r) => r.url === '/api/v1/spot-availabilities').flush([]);
+
+    const first = http.expectOne(
+      (r) => r.url === '/api/v1/condominiums' && r.params.get('page') === '0',
+    );
+    expect(first.request.params.get('size')).toBe('100');
+    first.flush([condominium], { headers: { 'X-Total-Count': '101' } });
+    http
+      .expectOne((r) => r.url === '/api/v1/condominiums' && r.params.get('page') === '1')
+      .flush([{ ...condominium, id: 'c2', name: 'Residencial Boa Vista' }]);
+
+    expect(result?.map((vacancy) => vacancy.condominiumName)).toEqual([
+      condominium.name,
+      'Residencial Boa Vista',
+    ]);
   });
 
   it('propaga erro de qualquer das consultas', () => {
@@ -126,7 +150,7 @@ describe('SearchVacanciesApi', () => {
     let failed = false;
     api.loadAll().subscribe({ error: () => (failed = true) });
     http.expectOne((r) => r.url === '/api/v1/parking-spots').flush({ items: [] });
-    http.expectOne('/api/v1/condominiums').flush([]);
+    http.expectOne((r) => r.url === '/api/v1/condominiums').flush([]);
     http.expectOne((r) => r.url === '/api/v1/spot-availabilities').flush([]);
     expect(failed).toBe(true);
   });

@@ -64,7 +64,7 @@ describe('SearchVacanciesPage', () => {
   async function load(spots: unknown[] = SPOTS, availabilities: unknown[] = AVAILABILITIES) {
     await settle();
     http.expectOne((r) => r.url === '/api/v1/parking-spots').flush(spots);
-    http.expectOne('/api/v1/condominiums').flush(CONDOMINIUMS);
+    http.expectOne((r) => r.url === '/api/v1/condominiums').flush(CONDOMINIUMS);
     http.expectOne((r) => r.url === '/api/v1/spot-availabilities').flush(availabilities);
     await settle();
   }
@@ -178,7 +178,7 @@ describe('SearchVacanciesPage', () => {
     await settle();
     expect(element.querySelector('app-loading-block')).not.toBeNull();
     http.expectOne((r) => r.url === '/api/v1/parking-spots').flush(SPOTS);
-    http.expectOne('/api/v1/condominiums').flush(CONDOMINIUMS);
+    http.expectOne((r) => r.url === '/api/v1/condominiums').flush(CONDOMINIUMS);
     http.expectOne((r) => r.url === '/api/v1/spot-availabilities').flush(AVAILABILITIES);
     await settle();
     expect(titles()).toHaveLength(3);

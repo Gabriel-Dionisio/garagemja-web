@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { Vacancy, VacancySize } from '../search-vacancies.model';
 
 export interface ParkingSpotResponse {
@@ -26,6 +26,10 @@ export interface AvailabilityResponse {
   endDate: string;
   active: boolean;
 }
+
+/** A listagem de condomínios é paginada (padrão 20, máximo 100 por página). */
+const CONDOMINIUMS_URL = '/api/v1/condominiums';
+const CONDOMINIUMS_PAGE_SIZE = 100;
 
 function asList<T>(body: unknown): T[] {
   if (!Array.isArray(body)) throw new Error('Invalid list response');
@@ -103,10 +107,36 @@ export function toVacancies(
 export class SearchVacanciesApi {
   private readonly http = inject(HttpClient);
 
+  /**
+   * Percorre todas as páginas de condomínios (total em `X-Total-Count`); sem isso, as vagas de
+   * condomínios fora da primeira página seriam descartadas em `toVacancies`.
+   */
+  private loadCondominiums(): Observable<CondominiumResponse[]> {
+    const page = (index: number) =>
+      this.http
+        .get<unknown>(CONDOMINIUMS_URL, {
+          params: { page: index, size: CONDOMINIUMS_PAGE_SIZE },
+          observe: 'response',
+        })
+        .pipe(map((response) => ({ items: asList<CondominiumResponse>(response.body), response })));
+
+    return page(0).pipe(
+      switchMap(({ items, response }) => {
+        const total = Number(response.headers.get('X-Total-Count'));
+        const pages = Number.isInteger(total) ? Math.ceil(total / CONDOMINIUMS_PAGE_SIZE) : 1;
+        if (pages <= 1) return of(items);
+        const rest = Array.from({ length: pages - 1 }, (_, index) =>
+          page(index + 1).pipe(map((next) => next.items)),
+        );
+        return forkJoin(rest).pipe(map((others) => [items, ...others].flat()));
+      }),
+    );
+  }
+
   loadAll(): Observable<Vacancy[]> {
     return forkJoin({
       spots: this.http.get<unknown>('/api/v1/parking-spots', { params: { status: 'ACTIVE' } }),
-      condominiums: this.http.get<unknown>('/api/v1/condominiums'),
+      condominiums: this.loadCondominiums(),
       availabilities: this.http.get<unknown>('/api/v1/spot-availabilities', {
         params: { active: true },
       }),

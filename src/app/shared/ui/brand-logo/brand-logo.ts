@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Icon } from '../icon/icon';
 
 @Component({
   selector: 'app-brand-logo',
-  imports: [Icon],
   templateUrl: './brand-logo.html',
   styleUrl: './brand-logo.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

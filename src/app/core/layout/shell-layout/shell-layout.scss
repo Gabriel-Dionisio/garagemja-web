@@ -175,11 +175,6 @@ app-user-menu {
     text-transform: uppercase;
   }
 
-  .brand {
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-  }
-
   app-icon {
     flex: none;
   }
@@ -200,25 +195,26 @@ app-user-menu {
       height: 100vh;
       height: 100dvh;
       overflow: hidden auto;
+      --label-opacity: 0;
       transition:
         width 0.2s ease,
         box-shadow 0.2s ease;
     }
 
     .label {
-      opacity: 0;
+      opacity: var(--label-opacity);
       transition: opacity 0.12s ease;
     }
 
     &:hover .panel,
     &:focus-within .panel {
+      --label-opacity: 1;
       width: var(--sidebar-width);
       box-shadow: var(--shadow-overlay);
     }
 
     &:hover .label,
     &:focus-within .label {
-      opacity: 1;
       transition-delay: 0.08s;
     }
   }

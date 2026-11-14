@@ -32,7 +32,7 @@ describe('CondominiumTabs', () => {
     await fixture.whenStable();
     const root = fixture.nativeElement as HTMLElement;
     expect(root.querySelector('app-skeleton-block')).toBeNull();
-    expect(root.querySelectorAll('nav a').length).toBe(4);
+    expect(root.querySelectorAll('nav a').length).toBe(6);
   });
 
   it('esconde as abas de quem não gerencia o condomínio', async () => {

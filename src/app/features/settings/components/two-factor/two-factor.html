@@ -1,8 +1,10 @@
 @if (error.text(); as message) {
   <app-alert kind="error">{{ message }}</app-alert>
-  <button appButton type="button" variant="secondary" (click)="load()">
-    {{ 'common.actions.retry' | transloco }}
-  </button>
+  <app-form-actions>
+    <button appButton type="button" variant="secondary" (click)="load()">
+      {{ 'common.actions.retry' | transloco }}
+    </button>
+  </app-form-actions>
 } @else if (status(); as current) {
   <app-setting-row
     [label]="'settings.twoFactor.title' | transloco"

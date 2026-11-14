@@ -21,6 +21,7 @@ export class ImageField {
   readonly busy = input(false);
   readonly disabled = input(false);
   readonly multiple = input(true);
+  readonly reorderable = input(true);
   readonly max = input(Number.POSITIVE_INFINITY);
   readonly maxBytes = input(5 * 1024 * 1024);
 

@@ -10,6 +10,8 @@ export interface TabbedCondominium {
 export interface TabAccess {
   visible: boolean;
   residents: boolean;
+  parkingSpots: boolean;
+  rules: boolean;
   managers: boolean;
   history: boolean;
 }
@@ -41,6 +43,8 @@ export function tabAccess(condominium: TabbedCondominium, admin: boolean): TabAc
   return {
     visible: manage,
     residents: open && !admin && condominium.canManage,
+    parkingSpots: open && !admin && condominium.canManage,
+    rules: open && !admin && condominium.canManage,
     managers: open && manage,
     history: condominium.status !== 'PENDING',
   };

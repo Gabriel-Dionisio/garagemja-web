@@ -1,7 +1,11 @@
+@if (showLabel()) {
+  <label class="label" [attr.for]="inputId">{{ label() }}</label>
+}
 <div class="field">
   <input
     appDateInput
-    [attr.aria-label]="label()"
+    [attr.id]="inputId"
+    [attr.aria-label]="showLabel() ? null : label()"
     [(isoValue)]="isoValue"
     [isoMin]="isoMin()"
     [isoMax]="isoMax()"

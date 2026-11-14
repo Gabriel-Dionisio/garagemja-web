@@ -22,7 +22,7 @@
       >
         <app-icon name="close" />
       </button>
-      @if (images().length > 1) {
+      @if (reorderable() && images().length > 1) {
         <button
           class="round move-back"
           type="button"

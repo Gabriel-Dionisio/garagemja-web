@@ -6,30 +6,19 @@
   @if (viewport.usesDrawer()) {
     <button
       #menuButton
-      class="icon-button"
+      appIconButton
       type="button"
-      [attr.aria-label]="'nav.openMenu' | transloco"
-      [attr.title]="'nav.openMenu' | transloco"
+      [label]="'nav.openMenu' | transloco"
       aria-controls="app-nav"
-      [attr.aria-expanded]="drawerOpen()"
-      (click)="openDrawer()"
+      [attr.aria-expanded]="navOpen()"
+      (click)="openNav()"
     >
       <app-icon name="menu" />
     </button>
     <app-brand-logo [compact]="true" />
   }
   @if (showSearch()) {
-    <form class="topbar-search" (submit)="$event.preventDefault()">
-      <label class="sr-only" for="global-search">{{ 'nav.searchPlaceholder' | transloco }}</label>
-      <input id="global-search" type="search" [placeholder]="'nav.searchPlaceholder' | transloco" />
-      <button
-        class="icon-button"
-        type="submit"
-        [attr.aria-label]="'nav.searchPlaceholder' | transloco"
-      >
-        <app-icon name="search" />
-      </button>
-    </form>
+    <app-topbar-search />
   }
   @if (user(); as current) {
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
@@ -37,8 +26,8 @@
 </header>
 
 @if (showSidebar()) {
-  @if (viewport.usesDrawer()) {
-    <div class="backdrop" (click)="closeDrawer()"></div>
+  @if (navOpen()) {
+    <div class="backdrop" (click)="closeNav()"></div>
   }
   <aside
     id="app-nav"
@@ -49,7 +38,7 @@
     [attr.role]="viewport.usesDrawer() ? 'dialog' : null"
     [attr.aria-modal]="viewport.usesDrawer() ? 'true' : null"
     [attr.aria-label]="viewport.usesDrawer() ? ('nav.menu' | transloco) : null"
-    (keydown.escape)="dismissSidebar()"
+    (keydown.escape)="closeNav()"
   >
     <div class="panel">
       <a class="brand" [routerLink]="homeLink()" aria-label="GaragemJá.com" title="GaragemJá.com">
@@ -66,7 +55,7 @@
                 [routerLinkActiveOptions]="{ exact: !!item.exact }"
                 ariaCurrentWhenActive="page"
                 [attr.title]="viewport.usesDrawer() ? null : (item.labelKey | transloco)"
-                (click)="closeDrawer()"
+                (click)="closeNav()"
               >
                 <app-icon [name]="item.icon" />
                 <span class="label">{{ item.labelKey | transloco }}</span>
@@ -90,7 +79,7 @@
                   [routerLinkActiveOptions]="{ exact: !!item.exact }"
                   ariaCurrentWhenActive="page"
                   [attr.title]="viewport.usesDrawer() ? null : (item.labelKey | transloco)"
-                  (click)="closeDrawer()"
+                  (click)="closeNav()"
                 >
                   <app-icon [name]="item.icon" />
                   <span class="label">{{ item.labelKey | transloco }}</span>
@@ -106,7 +95,7 @@
           routerLinkActive="active"
           ariaCurrentWhenActive="page"
           [attr.title]="viewport.usesDrawer() ? null : ('nav.settings' | transloco)"
-          (click)="closeDrawer()"
+          (click)="closeNav()"
         >
           <app-icon name="settings" />
           <span class="label">{{ 'nav.settings' | transloco }}</span>

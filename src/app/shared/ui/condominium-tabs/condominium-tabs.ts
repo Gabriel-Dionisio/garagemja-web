@@ -37,6 +37,8 @@ export class CondominiumTabs {
   readonly id = input.required<string>();
   readonly loading = input(false);
   readonly residents = input(true);
+  readonly parkingSpots = input(true);
+  readonly rules = input(true);
   readonly managers = input(true);
   readonly history = input(true);
 
@@ -51,18 +53,20 @@ export class CondominiumTabs {
   protected readonly tabs = computed<TabLink[]>(() => {
     const access = this.access();
     const base = ['/condominiums', this.id()];
-    const tab = (section: string, enabled: boolean): TabLink[] =>
+    const tab = (section: string, enabled: boolean, label = section): TabLink[] =>
       enabled
         ? [
             {
               link: [...base, section],
-              label: this.transloco.translate(`condominiums.tabs.${section}`),
+              label: this.transloco.translate(`condominiums.tabs.${label}`),
             },
           ]
         : [];
     return [
       { link: base, label: this.transloco.translate('condominiums.tabs.details'), exact: true },
       ...tab('residents', access?.residents ?? this.residents()),
+      ...tab('parking-spots', access?.parkingSpots ?? this.parkingSpots(), 'parkingSpots'),
+      ...tab('rules', access?.rules ?? this.rules()),
       ...tab('managers', access?.managers ?? this.managers()),
       ...tab('history', access?.history ?? this.history()),
     ];

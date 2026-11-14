@@ -1,0 +1,14 @@
+<div #viewport class="viewport" (scroll)="update()" (wheel)="onWheel($event)">
+  <ng-content />
+</div>
+<span class="shadow" aria-hidden="true"></span>
+@if (edges().left) {
+  <button type="button" class="arrow left" tabindex="-1" aria-hidden="true" (click)="step(-1)">
+    <app-icon name="chevron-left" />
+  </button>
+}
+@if (edges().right) {
+  <button type="button" class="arrow right" tabindex="-1" aria-hidden="true" (click)="step(1)">
+    <app-icon name="chevron-right" />
+  </button>
+}

@@ -4,6 +4,13 @@
   min-width: 0;
 }
 
+.label {
+  display: block;
+  margin-bottom: 0.125rem;
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
 .field {
   position: relative;
 }

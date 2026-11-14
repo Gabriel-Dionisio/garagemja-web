@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angu
 import { Alert } from '../alert/alert';
 import { EmptyState } from '../empty-state/empty-state';
 import { IconName } from '../icon/icon';
+import { ScrollArea } from '../scroll-area/scroll-area';
 import { Skeleton } from '../skeleton/skeleton';
 
 const REFRESH_SKELETON_DELAY_MS = 300;
 
 @Component({
   selector: 'app-list-state',
-  imports: [Alert, EmptyState, Skeleton],
+  imports: [Alert, EmptyState, ScrollArea, Skeleton],
   templateUrl: './list-state.html',
   styleUrl: './list-state.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

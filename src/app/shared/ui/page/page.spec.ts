@@ -27,7 +27,16 @@ class ListHost {
 })
 class TwoListsHost {}
 
+@Component({ imports: [Page], template: `<app-page [fill]="true"><p>x</p></app-page>` })
+class ExplicitFillHost {}
+
 describe('Page', () => {
+  it('fills the viewport when fill is set explicitly', async () => {
+    const fixture = TestBed.createComponent(ExplicitFillHost);
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('app-page').classList.contains('fill')).toBe(true);
+  });
+
   it('projects the content and exposes size without filling', async () => {
     const fixture = TestBed.createComponent(PlainHost);
     await fixture.whenStable();

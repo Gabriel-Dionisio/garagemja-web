@@ -20,14 +20,17 @@ describe('NavBadges', () => {
     return { badges: TestBed.inject(NavBadges), http: TestBed.inject(HttpTestingController) };
   }
 
-  it('soma moradores pendentes e convites do síndico', () => {
+  it('soma moradores e vagas pendentes e convites do síndico', () => {
     const { badges, http } = setup(['CONDOMINIUM_ADMIN']);
     badges.refresh();
     http
       .expectOne((r) => r.url === '/api/v1/me/managed-condominiums')
-      .flush([{ pendingResidents: 2 }, { pendingResidents: 1 }]);
+      .flush([
+        { pendingResidents: 2, pendingParkingSpots: 1 },
+        { pendingResidents: 1, pendingParkingSpots: 0 },
+      ]);
     http.expectOne('/api/v1/me/manager-invites').flush([{}]);
-    expect(badges.condominiums()).toBe(4);
+    expect(badges.condominiums()).toBe(5);
   });
 
   it('morador só conta convites e ADMIN não consulta nada', () => {

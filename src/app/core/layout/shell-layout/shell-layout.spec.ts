@@ -36,7 +36,7 @@ describe('ShellLayout', () => {
         { provide: NavBadges, useValue: { condominiums: signal(3), refresh: vi.fn() } },
         {
           provide: ViewportService,
-          useValue: { usesDrawer: () => mobile(), isDesktop: () => !mobile() },
+          useValue: { usesDrawer: () => mobile() },
         },
       ],
     });

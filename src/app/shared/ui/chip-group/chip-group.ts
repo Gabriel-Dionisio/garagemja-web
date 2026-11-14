@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { ScrollArea } from '../scroll-area/scroll-area';
 
 export interface ChipOption<T extends string = string> {
   value: T | null;
-  labelKey: string;
+  labelKey?: string;
+  label?: string;
 }
 
 @Component({
   selector: 'app-chip-group',
-  imports: [TranslocoPipe],
+  imports: [ScrollArea, TranslocoPipe],
   templateUrl: './chip-group.html',
   styleUrl: './chip-group.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

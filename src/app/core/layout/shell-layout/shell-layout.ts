@@ -29,8 +29,10 @@ import { Badge } from '../../../shared/ui/badge/badge';
 import { BrandLogo } from '../../../shared/ui/brand-logo/brand-logo';
 import { CondominiumTabsState } from '../../../shared/ui/condominium-tabs/condominium-tabs-state';
 import { Icon } from '../../../shared/ui/icon/icon';
+import { IconButton } from '../../../shared/ui/icon-button/icon-button';
 import { AuthService } from '../../auth/auth-service';
 import { NavBadges } from '../nav-badges';
+import { TopbarSearch } from '../topbar-search/topbar-search';
 import { navItemsFor } from '../nav-items';
 import { UserMenu } from '../user-menu/user-menu';
 import { ViewportService } from '../viewport-service';
@@ -48,6 +50,8 @@ import { ViewportService } from '../viewport-service';
     BrandLogo,
     Icon,
     UserMenu,
+    IconButton,
+    TopbarSearch,
   ],
   templateUrl: './shell-layout.html',
   styleUrl: './shell-layout.scss',
@@ -59,7 +63,9 @@ export class ShellLayout {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly mainElement = viewChild.required<ElementRef<HTMLElement>>('main');
-  private readonly menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
+  private readonly menuButton = viewChild<string, ElementRef<HTMLButtonElement>>('menuButton', {
+    read: ElementRef,
+  });
 
   private readonly navBadges = inject(NavBadges);
 
@@ -81,10 +87,10 @@ export class ShellLayout {
     ),
     { initialValue: false },
   );
-  protected readonly drawerOpen = signal(false);
+  protected readonly navOpen = signal(false);
   protected readonly logoutError = this.errorText.state();
   protected readonly loggingOut = signal(false);
-  protected readonly showSidebar = computed(() => !this.viewport.usesDrawer() || this.drawerOpen());
+  protected readonly showSidebar = computed(() => !this.viewport.usesDrawer() || this.navOpen());
 
   constructor() {
     const tabsState = inject(CondominiumTabsState);
@@ -101,21 +107,18 @@ export class ShellLayout {
     });
 
     effect(() => {
-      if (!this.viewport.usesDrawer()) this.drawerOpen.set(false);
+      this.viewport.usesDrawer();
+      untracked(() => this.navOpen.set(false));
     });
   }
 
-  protected openDrawer(): void {
-    this.drawerOpen.set(true);
+  protected openNav(): void {
+    this.navOpen.set(true);
   }
 
-  protected dismissSidebar(): void {
-    if (this.viewport.usesDrawer()) this.closeDrawer();
-  }
-
-  protected closeDrawer(): void {
-    if (!this.drawerOpen()) return;
-    this.drawerOpen.set(false);
+  protected closeNav(): void {
+    if (!this.navOpen()) return;
+    this.navOpen.set(false);
     this.menuButton()?.nativeElement.focus();
   }
 

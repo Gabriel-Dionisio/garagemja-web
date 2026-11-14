@@ -22,8 +22,16 @@
         <app-stat-card
           [value]="totals()[name]"
           [label]="'condominiums.managerDashboard.kpi.' + name | transloco"
-          [highlight]="name === 'pendingResidents' && totals()[name] > 0"
-          [link]="name === 'pendingResidents' ? pendingLink() : null"
+          [highlight]="
+            (name === 'pendingResidents' || name === 'pendingParkingSpots') && totals()[name] > 0
+          "
+          [link]="
+            name === 'pendingResidents'
+              ? pendingLink()
+              : name === 'pendingParkingSpots'
+                ? spotsLink()
+                : null
+          "
         />
       }
     </section>
@@ -46,34 +54,8 @@
     </app-alert>
   }
 
-  <div class="charts">
-    @if (monthlyChart(); as chart) {
-      <app-card class="wide">
-        <h2>{{ chart.title }}</h2>
-        <app-chart
-          kind="bar"
-          [xLabel]="'charts.axis.month' | transloco"
-          [yLabel]="'charts.axis.count' | transloco"
-          [labels]="chart.labels"
-          [series]="chart.series"
-          [description]="chart.title"
-        />
-      </app-card>
-    }
-    @if (active().length > 0) {
-      <app-card class="wide">
-        <h2>{{ comparisonChart().title }}</h2>
-        <app-chart
-          kind="bar"
-          [xLabel]="'charts.axis.condominium' | transloco"
-          [yLabel]="'charts.axis.count' | transloco"
-          [labels]="comparisonChart().labels"
-          [series]="comparisonChart().series"
-          [description]="comparisonChart().title"
-        />
-      </app-card>
-    }
-    <app-card class="wide">
+  <app-split-layout>
+    <app-card summary>
       <h2>{{ statusChart().title }}</h2>
       <app-chart
         kind="share"
@@ -82,5 +64,34 @@
         [description]="statusChart().title"
       />
     </app-card>
-  </div>
+    @if (chartOptions().length > 0) {
+      <app-card content>
+        <app-chip-group
+          [label]="'condominiums.managerDashboard.tabs.label' | transloco"
+          [options]="chartOptions()"
+          [value]="shownView()"
+          (valueChange)="chooseView($event)"
+        />
+        @if (shownView() === 'monthly' && monthlyChart(); as chart) {
+          <app-chart
+            kind="bar"
+            [xLabel]="'charts.axis.month' | transloco"
+            [yLabel]="'charts.axis.count' | transloco"
+            [labels]="chart.labels"
+            [series]="chart.series"
+            [description]="chart.title"
+          />
+        } @else {
+          <app-chart
+            kind="bar"
+            [xLabel]="'charts.axis.condominium' | transloco"
+            [yLabel]="'charts.axis.count' | transloco"
+            [labels]="comparisonChart().labels"
+            [series]="comparisonChart().series"
+            [description]="comparisonChart().title"
+          />
+        }
+      </app-card>
+    }
+  </app-split-layout>
 }

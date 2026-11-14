@@ -11,6 +11,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { finalize } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Alert } from '../../../../shared/ui/alert/alert';
+import { SplitLayout } from '../../../../shared/ui/split-layout/split-layout';
+import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { Button } from '../../../../shared/ui/button/button';
 import { Card } from '../../../../shared/ui/card/card';
 import { monthLabels } from '../../data/month-labels';
@@ -28,14 +30,17 @@ import {
 
 const PAGE_SIZE = 100;
 
-type TotalName = 'pendingResidents' | 'residents' | 'parkingSpots' | 'activeRentals';
+type TotalName =
+  'pendingResidents' | 'pendingParkingSpots' | 'residents' | 'parkingSpots' | 'activeRentals';
 
 const KPIS: readonly TotalName[] = [
   'pendingResidents',
+  'pendingParkingSpots',
   'residents',
-  'parkingSpots',
   'activeRentals',
 ];
+
+type ChartView = 'monthly' | 'comparison';
 
 const STATUS_TONES: Record<ManagedStatus, ChartTone> = {
   ACTIVE: 'success',
@@ -47,7 +52,18 @@ const STATUS_TONES: Record<ManagedStatus, ChartTone> = {
 
 @Component({
   selector: 'app-manager-dashboard',
-  imports: [TranslocoPipe, Alert, Button, Card, Chart, EmptyState, LoadingBlock, StatCard],
+  imports: [
+    TranslocoPipe,
+    Alert,
+    Button,
+    Card,
+    Chart,
+    ChipGroup,
+    EmptyState,
+    LoadingBlock,
+    SplitLayout,
+    StatCard,
+  ],
   templateUrl: './manager-dashboard.html',
   styleUrl: './manager-dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,11 +95,20 @@ export class ManagerDashboard {
       : '/condominiums/managed';
   });
 
+  protected readonly spotsLink = computed(() => {
+    const withPending = this.active().filter((item) => item.pendingParkingSpots > 0);
+    if (withPending.length === 0) return null;
+    return withPending.length === 1
+      ? `/condominiums/${withPending[0].id}/parking-spots?status=PENDING`
+      : '/condominiums/managed';
+  });
+
   protected readonly totals = computed<Record<TotalName, number>>(() => {
     const items = this.active();
     const sum = (name: TotalName) => items.reduce((total, item) => total + item[name], 0);
     return {
       pendingResidents: sum('pendingResidents'),
+      pendingParkingSpots: sum('pendingParkingSpots'),
       residents: sum('residents'),
       parkingSpots: sum('parkingSpots'),
       activeRentals: sum('activeRentals'),
@@ -157,8 +182,30 @@ export class ManagerDashboard {
     };
   });
 
+  private readonly view = signal<ChartView>('monthly');
+  protected readonly chartOptions = computed<readonly ChipOption<ChartView>[]>(() => [
+    ...(this.monthlyChart()
+      ? [{ value: 'monthly' as const, labelKey: 'condominiums.managerDashboard.tabs.monthly' }]
+      : []),
+    ...(this.active().length > 0
+      ? [
+          {
+            value: 'comparison' as const,
+            labelKey: 'condominiums.managerDashboard.tabs.comparison',
+          },
+        ]
+      : []),
+  ]);
+  protected readonly shownView = computed(() =>
+    this.view() === 'monthly' && !this.monthlyChart() ? 'comparison' : this.view(),
+  );
+
   constructor() {
     this.load();
+  }
+
+  protected chooseView(view: ChartView | null): void {
+    if (view) this.view.set(view);
   }
 
   protected becomeResident(item: ManagedCondominium): void {

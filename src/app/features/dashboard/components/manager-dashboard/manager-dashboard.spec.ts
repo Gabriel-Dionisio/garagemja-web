@@ -25,6 +25,7 @@ const item = (id: string, overrides: Partial<ManagedCondominium> = {}) =>
     status: 'ACTIVE',
     residents: 10,
     pendingResidents: 1,
+    pendingParkingSpots: 0,
     parkingSpots: 4,
     activeRentals: 1,
     resides: true,
@@ -53,11 +54,11 @@ describe('ManagerDashboard', () => {
   it('soma só os condomínios ativos nos totais', async () => {
     const { element, managed } = await render([
       item('a'),
-      item('b', { pendingResidents: 2 }),
+      item('b', { pendingResidents: 2, pendingParkingSpots: 2 }),
       item('c', { status: 'PENDING', residents: 99 }),
     ]);
     const values = Array.from(element.querySelectorAll('.kpi .value')).map((v) => v.textContent);
-    expect(values).toEqual(['3', '20', '8', '2']);
+    expect(values).toEqual(['3', '2', '20', '2']);
     expect(element.querySelectorAll('app-chart')).toHaveLength(2);
     expect(managed).toHaveBeenCalledWith(100);
   });
@@ -66,6 +67,7 @@ describe('ManagerDashboard', () => {
     const { element } = await render([item('a', { status: 'PENDING' })]);
     expect(element.querySelector('app-stat-card')).toBeNull();
     expect(element.querySelectorAll('app-chart')).toHaveLength(1);
+    expect(element.querySelector('app-chip-group')).toBeNull();
   });
 
   it('oferece vincular como morador nos ativos sem vínculo', async () => {

@@ -6,7 +6,7 @@ import { Page, toPage } from '../../../shared/models/page';
 import { OwnedRental, OwnedRentalSummary, RentalStatus } from '../owned-rental.model';
 
 const OWNED_RENTALS_URL = '/api/v1/me/owned-rentals';
-const RENTED_URL = '/api/v1/me/rentals';
+const RENTALS_URL = '/api/v1/rentals';
 export const RENTAL_STATUSES: readonly string[] = [
   'PENDING',
   'APPROVED',
@@ -14,11 +14,13 @@ export const RENTAL_STATUSES: readonly string[] = [
   'REFUSED',
   'CANCELED',
   'FINISHED',
+  'EXPIRED',
 ];
 
 function toOwnedRental(value: unknown): OwnedRental {
   const row = fields(value);
   const price = Number(row['price']);
+  const total = Number(row['total']);
   const { id, condominiumId, condominiumName, parkingSpotId, parkingSpotNumber } = row;
   const { startDate, endDate, status } = row;
   if (
@@ -31,7 +33,8 @@ function toOwnedRental(value: unknown): OwnedRental {
     typeof endDate !== 'string' ||
     typeof status !== 'string' ||
     !RENTAL_STATUSES.includes(status) ||
-    !Number.isFinite(price)
+    !Number.isFinite(price) ||
+    !Number.isFinite(total)
   ) {
     throw new Error('Invalid rental');
   }
@@ -43,7 +46,10 @@ function toOwnedRental(value: unknown): OwnedRental {
     parkingSpotNumber,
     startDate,
     endDate,
+    startHour: typeof row['startHour'] === 'number' ? row['startHour'] : null,
+    endHour: typeof row['endHour'] === 'number' ? row['endHour'] : null,
     price,
+    total,
     status: status as RentalStatus,
   };
 }
@@ -72,22 +78,9 @@ export class OwnedRentalsApi {
   }
 
   list(page: number, size: number, status: RentalStatus | null): Observable<Page<OwnedRental>> {
-    return this.page(OWNED_RENTALS_URL, page, size, status);
-  }
-
-  rented(page: number, size: number, status: RentalStatus | null): Observable<Page<OwnedRental>> {
-    return this.page(RENTED_URL, page, size, status);
-  }
-
-  private page(
-    url: string,
-    page: number,
-    size: number,
-    status: RentalStatus | null,
-  ): Observable<Page<OwnedRental>> {
     let params = new HttpParams().set('page', page).set('size', size);
     if (status) params = params.set('status', status);
-    return this.http.get<unknown>(url, { params, observe: 'response' }).pipe(
+    return this.http.get<unknown>(OWNED_RENTALS_URL, { params, observe: 'response' }).pipe(
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid rental list');
@@ -100,5 +93,17 @@ export class OwnedRentalsApi {
         );
       }),
     );
+  }
+
+  approve(id: string): Observable<void> {
+    return this.http
+      .patch<unknown>(`${RENTALS_URL}/${id}`, { status: 'APPROVED' })
+      .pipe(map(() => undefined));
+  }
+
+  refuse(id: string, reason: string): Observable<void> {
+    return this.http
+      .patch<unknown>(`${RENTALS_URL}/${id}`, { status: 'REFUSED', cancelReason: reason })
+      .pipe(map(() => undefined));
   }
 }

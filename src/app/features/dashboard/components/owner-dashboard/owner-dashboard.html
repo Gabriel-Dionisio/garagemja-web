@@ -1,55 +1,133 @@
-@if (!hidden()) {
-  <section class="owner">
-    <h2>{{ 'dashboard.sections.owner' | transloco }}</h2>
-    @if (error.text(); as message) {
-      <app-alert kind="error">{{ message }}</app-alert>
-    }
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
 
-    @if (summary(); as current) {
-      @if (current.spots === 0) {
-        <app-card>
-          <app-empty-state
-            icon="car"
-            [title]="'dashboard.owner.emptyTitle' | transloco"
-            [description]="'dashboard.owner.emptyDescription' | transloco"
-          />
-        </app-card>
-      } @else {
-        <section class="kpis" [attr.aria-label]="'dashboard.owner.title' | transloco">
-          <app-stat-card
-            [value]="current.pending"
-            [label]="'dashboard.owner.kpi.pending' | transloco"
-            [highlight]="current.pending > 0"
-          />
-          <app-stat-card
-            [value]="current.active"
-            [label]="'dashboard.owner.kpi.active' | transloco"
-          />
-          <app-stat-card
-            [value]="current.upcoming"
-            [label]="'dashboard.owner.kpi.upcoming' | transloco"
-          />
-          <app-stat-card
-            [value]="current.spots"
-            [label]="'dashboard.owner.kpi.spots' | transloco"
-          />
-        </section>
-
-        <app-card class="earnings">
-          <small>{{ 'dashboard.owner.kpi.monthEarnings' | transloco }}</small>
-          <strong>R$ {{ current.monthEarnings | number: '1.2-2' }}</strong>
-        </app-card>
-
-        <app-rentals-list mode="owned" />
+@if (summary(); as current) {
+  @if (current.spots === 0) {
+    <app-card>
+      <app-empty-state
+        icon="car"
+        [title]="'dashboard.owner.emptyTitle' | transloco"
+        [description]="'dashboard.owner.emptyDescription' | transloco"
+      />
+    </app-card>
+  } @else {
+    <section class="kpis" [attr.aria-label]="'dashboard.owner.title' | transloco">
+      <app-stat-card
+        [value]="current.pending"
+        [label]="'dashboard.owner.kpi.pending' | transloco"
+        [highlight]="current.pending > 0"
+        [selectable]="true"
+        (selected)="filter('PENDING')"
+      />
+      <app-stat-card [value]="current.active" [label]="'dashboard.owner.kpi.active' | transloco" />
+      <app-stat-card
+        [value]="current.upcoming"
+        [label]="'dashboard.owner.kpi.upcoming' | transloco"
+      />
+      <app-stat-card
+        [value]="money()(current.monthEarnings)"
+        [label]="'dashboard.owner.kpi.monthEarnings' | transloco"
+      />
+    </section>
+  }
+} @else if (!error.text()) {
+  <app-skeleton [label]="'dashboard.owner.loading' | transloco">
+    <div class="kpis">
+      @for (item of placeholders; track item) {
+        <app-skeleton-block height="5rem" />
       }
-    } @else if (!error.text()) {
-      <app-skeleton [label]="'dashboard.owner.loading' | transloco">
-        <div class="kpis">
-          @for (item of placeholders; track item) {
-            <app-skeleton-block height="4.5rem" />
-          }
-        </div>
-      </app-skeleton>
+    </div>
+  </app-skeleton>
+}
+
+@if (summary()?.spots !== 0) {
+  <app-chip-group
+    [label]="'dashboard.rentals.filter' | transloco"
+    [options]="statusOptions"
+    [value]="status()"
+    (valueChange)="filter($event)"
+  />
+
+  <app-list-state
+    [attr.aria-busy]="listLoading()"
+    [loading]="listLoading() && !result()"
+    [refreshing]="listLoading()"
+    [error]="listError.text()"
+    [empty]="result()?.items?.length === 0"
+    [loadingLabel]="'dashboard.rentals.loading' | transloco"
+    emptyIcon="key"
+    [emptyTitle]="'dashboard.rentals.emptyTitle' | transloco"
+    [emptyDescription]="'dashboard.rentals.emptyDescription' | transloco"
+    [listLabel]="'dashboard.sections.owner' | transloco"
+  >
+    @if (result(); as current) {
+      @for (rental of current.items; track rental.id) {
+        <li appListItem>
+          <span leading class="leading"><app-icon name="calendar" /></span>
+          <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
+          <small>{{ rental.condominiumName }}</small>
+          @let when = period(rental);
+          <small>{{ when.key | transloco: when.params }} · {{ money()(rental.total) }}</small>
+          <span status
+            ><app-badge [tone]="tones[rental.status]">{{
+              'dashboard.rentals.status.' + rental.status | transloco
+            }}</app-badge></span
+          >
+          <span actions>
+            @if (rental.status === 'PENDING') {
+              <button
+                appIconButton
+                type="button"
+                variant="primary"
+                [label]="
+                  ('dashboard.rentals.actions.approve' | transloco) +
+                  ': ' +
+                  rental.parkingSpotNumber
+                "
+                [loading]="busyId() === rental.id"
+                [disabled]="busyId() !== null"
+                (click)="approve(rental)"
+              >
+                <app-icon name="check" />
+              </button>
+              <button
+                appIconButton
+                type="button"
+                [label]="
+                  ('dashboard.rentals.actions.refuse' | transloco) + ': ' + rental.parkingSpotNumber
+                "
+                [disabled]="busyId() !== null"
+                (click)="refuse(rental)"
+              >
+                <app-icon name="close" />
+              </button>
+            }
+            <a
+              appIconButton
+              [label]="
+                ('dashboard.rentals.actions.viewSpot' | transloco) + ': ' + rental.parkingSpotNumber
+              "
+              [routerLink]="['/parking-spots', rental.parkingSpotId]"
+            >
+              <app-icon name="parking" />
+            </a>
+          </span>
+        </li>
+      }
     }
-  </section>
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </app-list-state>
 }

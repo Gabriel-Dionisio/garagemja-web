@@ -35,7 +35,7 @@ describe('AdminDashboard', () => {
     return TestBed.createComponent(AdminDashboard);
   }
 
-  it('mostra totais de usuários e condomínios e dois gráficos', async () => {
+  it('mostra totais de usuários e condomínios e o gráfico da seleção', async () => {
     summary.mockReturnValue(of({ total: 9, active: 5, blocked: 1 }));
     condominiums.mockReturnValue(of({ total: 4, active: 2, pending: 1, blocked: 1 }));
     const fixture = create();
@@ -43,7 +43,7 @@ describe('AdminDashboard', () => {
     const root = fixture.nativeElement as HTMLElement;
     expect(root.querySelectorAll('app-stat-card')).toHaveLength(7);
     expect(root.querySelectorAll('.kpi.highlight')).toHaveLength(1);
-    expect(root.querySelectorAll('app-chart')).toHaveLength(2);
+    expect(root.querySelectorAll('app-chart')).toHaveLength(1);
   });
 
   it('mostra erro quando o carregamento falha', async () => {

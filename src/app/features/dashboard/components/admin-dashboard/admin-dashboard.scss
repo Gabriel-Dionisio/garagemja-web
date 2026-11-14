@@ -1,11 +1,9 @@
 @use 'styles/mixins' as *;
 
 :host {
-  display: block;
-}
-
-.group {
-  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 h2 {
@@ -25,16 +23,6 @@ h2 {
   }
 }
 
-.charts {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-4);
-
-  @include from($bp-lg) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    .wide {
-      grid-column: 1 / -1;
-    }
-  }
+app-split-layout {
+  max-width: none;
 }

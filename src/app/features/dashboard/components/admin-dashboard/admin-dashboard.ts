@@ -11,6 +11,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Alert } from '../../../../shared/ui/alert/alert';
+import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { SplitLayout } from '../../../../shared/ui/split-layout/split-layout';
 import { Card } from '../../../../shared/ui/card/card';
 import { monthLabels } from '../../data/month-labels';
 import { AdminMonthlyStats, StatsApi } from '../../data/stats-api';
@@ -44,9 +46,16 @@ const CONDOMINIUM_KPIS: readonly (keyof CondominiumsTotals)[] = [
   'blocked',
 ];
 
+type Subject = 'users' | 'condominiums';
+
+const SUBJECT_OPTIONS: readonly ChipOption<Subject>[] = [
+  { value: 'users', labelKey: 'admin.dashboard.usersTitle' },
+  { value: 'condominiums', labelKey: 'admin.dashboard.condominiumsTitle' },
+];
+
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [TranslocoPipe, Alert, Card, Chart, LoadingBlock, StatCard],
+  imports: [TranslocoPipe, Alert, Card, Chart, ChipGroup, LoadingBlock, SplitLayout, StatCard],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,24 +79,23 @@ export class AdminDashboard {
     () => this.monthly()?.users.at(-1)?.count ?? null,
   );
 
+  protected readonly subjectOptions = SUBJECT_OPTIONS;
+  protected readonly subject = signal<Subject>('users');
+
   protected readonly monthlyChart = computed(() => {
     const stats = this.monthly();
     const language = this.language();
     if (!stats || !language) return null;
+    const subject = this.subject();
     const title = this.transloco.translate('admin.dashboard.monthlyChart');
     return {
       title,
       labels: monthLabels(stats.users, language),
       series: [
         {
-          label: this.transloco.translate('admin.dashboard.monthly.users'),
-          data: stats.users.map((point) => point.count),
-          tone: 'primary',
-        },
-        {
-          label: this.transloco.translate('admin.dashboard.monthly.condominiums'),
-          data: stats.condominiums.map((point) => point.count),
-          tone: 'secondary',
+          label: this.transloco.translate(`admin.dashboard.monthly.${subject}`),
+          data: stats[subject].map((point) => point.count),
+          tone: subject === 'users' ? 'primary' : 'secondary',
         },
       ] satisfies ChartSeries[],
     };
@@ -128,6 +136,10 @@ export class AdminDashboard {
         },
         error: (error: unknown) => this.error.setFrom(error),
       });
+  }
+
+  protected chooseSubject(subject: Subject | null): void {
+    if (subject) this.subject.set(subject);
   }
 
   private donut(titleKey: string, parts: readonly Part[]) {

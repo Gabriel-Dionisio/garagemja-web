@@ -3,44 +3,55 @@
 } @else if (!usersSummary() || !condominiumsSummary()) {
   <app-loading-block [label]="'admin.dashboard.loading' | transloco" />
 } @else {
-  <section class="group" [attr.aria-label]="'admin.dashboard.kpis' | transloco">
-    <h2>{{ 'admin.dashboard.usersTitle' | transloco }}</h2>
-    <div class="kpis">
-      @for (kpi of userKpis; track kpi.key) {
-        <app-stat-card
-          [value]="usersSummary()![kpi.key]"
-          [label]="'admin.dashboard.kpi.' + kpi.key | transloco"
-          [highlight]="!!kpi.highlight && usersSummary()![kpi.key] > 0"
-          link="/admin/users"
-          [queryParams]="kpi.status ? { status: kpi.status } : null"
-        />
-      }
-      @if (newUsersThisMonth() !== null) {
-        <app-stat-card
-          [value]="newUsersThisMonth()!"
-          [label]="'admin.dashboard.kpi.newThisMonth' | transloco"
-        />
-      }
-    </div>
+  <section class="kpis" [attr.aria-label]="'admin.dashboard.usersTitle' | transloco">
+    @for (kpi of userKpis; track kpi.key) {
+      <app-stat-card
+        [value]="usersSummary()![kpi.key]"
+        [label]="'admin.dashboard.kpi.' + kpi.key | transloco"
+        link="/admin/users"
+        [queryParams]="kpi.status ? { status: kpi.status } : null"
+      />
+    }
+    @if (newUsersThisMonth() !== null) {
+      <app-stat-card
+        [value]="newUsersThisMonth()!"
+        [label]="'admin.dashboard.kpi.newThisMonth' | transloco"
+      />
+    }
   </section>
 
-  <section class="group" [attr.aria-label]="'condominiums.dashboard.kpis' | transloco">
-    <h2>{{ 'admin.dashboard.condominiumsTitle' | transloco }}</h2>
-    <div class="kpis">
-      @for (kpi of condominiumKpis; track kpi) {
-        <app-stat-card
-          [value]="condominiumsSummary()![kpi]"
-          [label]="'condominiums.dashboard.kpi.' + kpi | transloco"
-          [highlight]="kpi === 'pending' && condominiumsSummary()!.pending > 0"
-          link="/condominiums/managed"
-        />
-      }
-    </div>
+  <section class="kpis" [attr.aria-label]="'admin.dashboard.condominiumsTitle' | transloco">
+    @for (kpi of condominiumKpis; track kpi) {
+      <app-stat-card
+        [value]="condominiumsSummary()![kpi]"
+        [label]="'condominiums.dashboard.kpi.' + kpi | transloco"
+        [highlight]="kpi === 'pending' && condominiumsSummary()!.pending > 0"
+        link="/condominiums/managed"
+      />
+    }
   </section>
 
-  <div class="charts">
+  <app-chip-group
+    [label]="'admin.dashboard.subjectLabel' | transloco"
+    [options]="subjectOptions"
+    [value]="subject()"
+    (valueChange)="chooseSubject($event)"
+  />
+
+  <app-split-layout>
+    @if (subject() === 'users' ? userChart() : condominiumChart(); as chart) {
+      <app-card summary>
+        <h2>{{ chart.title }}</h2>
+        <app-chart
+          kind="share"
+          [labels]="chart.labels"
+          [series]="chart.series"
+          [description]="chart.title"
+        />
+      </app-card>
+    }
     @if (monthlyChart(); as chart) {
-      <app-card class="wide">
+      <app-card content>
         <h2>{{ chart.title }}</h2>
         <app-chart
           kind="bar"
@@ -52,27 +63,5 @@
         />
       </app-card>
     }
-    @if (userChart(); as chart) {
-      <app-card>
-        <h2>{{ chart.title }}</h2>
-        <app-chart
-          kind="share"
-          [labels]="chart.labels"
-          [series]="chart.series"
-          [description]="chart.title"
-        />
-      </app-card>
-    }
-    @if (condominiumChart(); as chart) {
-      <app-card>
-        <h2>{{ chart.title }}</h2>
-        <app-chart
-          kind="share"
-          [labels]="chart.labels"
-          [series]="chart.series"
-          [description]="chart.title"
-        />
-      </app-card>
-    }
-  </div>
+  </app-split-layout>
 }

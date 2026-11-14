@@ -24,13 +24,23 @@ export class ManagedCondominiumsApi {
 
 function toManagedCondominium(value: unknown): ManagedCondominium {
   if (typeof value !== 'object' || value === null) throw new Error('Invalid managed condominium');
-  const { id, name, status, pendingResidents, residents, parkingSpots, activeRentals, resides } =
-    Object.fromEntries(Object.entries(value));
+  const {
+    id,
+    name,
+    status,
+    pendingResidents,
+    pendingParkingSpots,
+    residents,
+    parkingSpots,
+    activeRentals,
+    resides,
+  } = Object.fromEntries(Object.entries(value));
   if (
     typeof id !== 'string' ||
     typeof name !== 'string' ||
     !isManagedStatus(status) ||
     typeof pendingResidents !== 'number' ||
+    typeof pendingParkingSpots !== 'number' ||
     typeof residents !== 'number' ||
     typeof parkingSpots !== 'number' ||
     typeof activeRentals !== 'number' ||
@@ -38,5 +48,15 @@ function toManagedCondominium(value: unknown): ManagedCondominium {
   ) {
     throw new Error('Invalid managed condominium');
   }
-  return { id, name, status, pendingResidents, residents, parkingSpots, activeRentals, resides };
+  return {
+    id,
+    name,
+    status,
+    pendingResidents,
+    pendingParkingSpots,
+    residents,
+    parkingSpots,
+    activeRentals,
+    resides,
+  };
 }

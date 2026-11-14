@@ -5,6 +5,7 @@ export const RENTAL_STATUSES = [
   'REFUSED',
   'CANCELED',
   'FINISHED',
+  'EXPIRED',
 ] as const;
 
 export type RentalStatus = (typeof RENTAL_STATUSES)[number];
@@ -15,7 +16,10 @@ export interface Rental {
   parkingSpotNumber: string;
   startDate: string;
   endDate: string;
+  startHour: number | null;
+  endHour: number | null;
   price: number;
+  total: number;
   status: RentalStatus;
 }
 

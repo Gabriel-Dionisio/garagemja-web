@@ -6,10 +6,12 @@ import { Page, toPage } from '../../../shared/models/page';
 import { Rental, RentalStatus, isRentalStatus } from '../rental.model';
 
 const MY_RENTALS_URL = '/api/v1/me/rentals';
+const RENTALS_URL = '/api/v1/rentals';
 
 export function toRental(value: unknown): Rental {
   const row = fields(value);
   const price = Number(row['price']);
+  const total = Number(row['total']);
   const { id, condominiumName, parkingSpotNumber, startDate, endDate, status } = row;
   if (
     typeof id !== 'string' ||
@@ -18,16 +20,34 @@ export function toRental(value: unknown): Rental {
     typeof startDate !== 'string' ||
     typeof endDate !== 'string' ||
     !isRentalStatus(status) ||
-    !Number.isFinite(price)
+    !Number.isFinite(price) ||
+    !Number.isFinite(total)
   ) {
     throw new Error('Invalid rental');
   }
-  return { id, condominiumName, parkingSpotNumber, startDate, endDate, price, status };
+  return {
+    id,
+    condominiumName,
+    parkingSpotNumber,
+    startDate,
+    endDate,
+    startHour: typeof row['startHour'] === 'number' ? row['startHour'] : null,
+    endHour: typeof row['endHour'] === 'number' ? row['endHour'] : null,
+    price,
+    total,
+    status,
+  };
 }
 
 @Injectable({ providedIn: 'root' })
 export class RentalsApi {
   private readonly http = inject(HttpClient);
+
+  cancel(id: string): Observable<void> {
+    return this.http
+      .patch<unknown>(`${RENTALS_URL}/${id}`, { status: 'CANCELED' })
+      .pipe(map(() => undefined));
+  }
 
   list(page: number, size: number, status: RentalStatus | null): Observable<Page<Rental>> {
     let params = new HttpParams().set('page', page).set('size', size);

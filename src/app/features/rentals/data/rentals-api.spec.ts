@@ -9,7 +9,10 @@ const row = {
   parkingSpotNumber: 'A-01',
   startDate: '2026-12-01',
   endDate: '2026-12-03',
+  startHour: null,
+  endHour: null,
   price: 8,
+  total: 24,
   status: 'PENDING',
 };
 

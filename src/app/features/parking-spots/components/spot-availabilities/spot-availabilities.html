@@ -1,0 +1,91 @@
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
+<app-card>
+  <div class="section-head">
+    <h2>{{ 'parkingSpots.availability.title' | transloco }}</h2>
+    @if (editable()) {
+      <button appButton type="button" [disabled]="!loaded()" (click)="openDialog(null)">
+        <app-icon name="plus" />
+        {{ 'parkingSpots.availability.new' | transloco }}
+      </button>
+    }
+  </div>
+  <small>{{
+    (editable() ? 'parkingSpots.availability.note' : 'parkingSpots.availability.ownerOnly')
+      | transloco
+  }}</small>
+
+  @if (availabilities().length === 0) {
+    <p class="muted">{{ 'parkingSpots.availability.empty' | transloco }}</p>
+  } @else {
+    <app-scroll-area class="periods-scroll">
+      <ul class="list" [attr.aria-label]="'parkingSpots.availability.title' | transloco">
+        @for (item of availabilities(); track item.id) {
+          <li appListItem>
+            <span class="text">
+              <strong>
+                {{
+                  'parkingSpots.period'
+                    | transloco: { start: date()(item.startDate), end: date()(item.endDate) }
+                }}
+              </strong>
+              <small>
+                @if (item.dailyPrice !== null) {
+                  {{ 'parkingSpots.price.daily' | transloco: { value: money()(item.dailyPrice) } }}
+                }
+                @if (item.hourlyPrice !== null) {
+                  {{ item.dailyPrice !== null ? '·' : '' }}
+                  {{
+                    'parkingSpots.price.hourly' | transloco: { value: money()(item.hourlyPrice) }
+                  }}
+                  ·
+                  {{
+                    'parkingSpots.availability.window'
+                      | transloco: { from: item.hourlyFrom, to: item.hourlyTo }
+                  }}
+                }
+              </small>
+              @if (aboveCap(item, rules())) {
+                <app-badge tone="warning">{{
+                  'parkingSpots.availability.aboveCap' | transloco
+                }}</app-badge>
+              }
+            </span>
+            @if (editable()) {
+              <span actions>
+                <app-switch
+                  [label]="'parkingSpots.availability.active' | transloco"
+                  [checked]="item.active"
+                  [disabled]="busy()"
+                  (toggled)="toggle(item, $event)"
+                />
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="
+                    ('parkingSpots.actions.edit' | transloco) + ': ' + date()(item.startDate)
+                  "
+                  [disabled]="!loaded()"
+                  (click)="openDialog(item)"
+                >
+                  <app-icon name="edit" />
+                </button>
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="
+                    ('parkingSpots.availability.remove' | transloco) + ': ' + date()(item.startDate)
+                  "
+                  (click)="remove(item)"
+                >
+                  <app-icon name="trash" />
+                </button>
+              </span>
+            }
+          </li>
+        }
+      </ul>
+    </app-scroll-area>
+  }
+</app-card>

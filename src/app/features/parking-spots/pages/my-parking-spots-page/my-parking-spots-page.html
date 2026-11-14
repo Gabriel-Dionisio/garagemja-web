@@ -1,0 +1,113 @@
+<app-page>
+  <app-page-header
+    [title]="'parkingSpots.mine.title' | transloco"
+    [subtitle]="
+      result() ? ('parkingSpots.mine.count' | transloco: { count: result()?.total ?? 0 }) : ''
+    "
+  />
+
+  <app-filter-panel
+    [label]="'parkingSpots.filter.label' | transloco"
+    [activeCount]="activeFilters()"
+    [(open)]="filtersOpen"
+  >
+    <div filterActions class="header-action">
+      <a appButton routerLink="/parking-spots/new">
+        <app-icon name="plus" />
+        {{ 'parkingSpots.mine.new' | transloco }}
+      </a>
+    </div>
+    <app-chip-group
+      [label]="'parkingSpots.tabs.label' | transloco"
+      [options]="statusTabs"
+      [value]="status()"
+      (valueChange)="selectStatus($event)"
+    />
+    <app-chip-group
+      [label]="'parkingSpots.filter.size' | transloco"
+      [options]="sizeTabs"
+      [value]="spotSize()"
+      (valueChange)="selectSpotSize($event)"
+    />
+    <app-parking-spot-filter (searchChange)="applySearch($event)" />
+  </app-filter-panel>
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [refreshing]="loading()"
+    [empty]="result()?.items?.length === 0"
+    [loadingLabel]="'parkingSpots.loading' | transloco"
+    emptyIcon="parking"
+    [emptyTitle]="'parkingSpots.mine.emptyTitle' | transloco"
+    [emptyDescription]="'parkingSpots.mine.emptyDescription' | transloco"
+    [listLabel]="'parkingSpots.mine.title' | transloco"
+  >
+    @if (result(); as current) {
+      @for (spot of current.items; track spot.id) {
+        <li appListItem [link]="['/parking-spots', spot.id]">
+          <span leading>
+            @if (spot.thumbnailUrl; as url) {
+              <img class="thumb" [src]="url" alt="" />
+            } @else {
+              <span class="thumb placeholder"><app-icon name="parking" /></span>
+            }
+          </span>
+          @let head = heading(spot);
+          <strong>{{ head.label | transloco: head.params }}</strong>
+          <small
+            >{{ spot.condominiumName }}{{ spot.condominiumName && spot.size ? ' · ' : ''
+            }}{{ spot.size ? (sizeLabels[spot.size] | transloco) : '' }}</small
+          >
+          @if (spot.availability; as availability) {
+            <small>
+              @if (availability.dailyPrice !== null) {
+                {{
+                  'parkingSpots.price.daily'
+                    | transloco: { value: money()(availability.dailyPrice) }
+                }}
+              }
+              @if (availability.hourlyPrice !== null) {
+                {{ availability.dailyPrice !== null ? '·' : '' }}
+                {{
+                  'parkingSpots.price.hourly'
+                    | transloco: { value: money()(availability.hourlyPrice) }
+                }}
+              }
+            </small>
+          }
+          @if (spot.statusReason) {
+            <small>{{ 'parkingSpots.reason' | transloco: { reason: spot.statusReason } }}</small>
+          }
+          @let tag = badge(spot);
+          <span status
+            ><app-badge [tone]="tag.tone">{{ tag.labelKey | transloco }}</app-badge></span
+          >
+        </li>
+      }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </app-list-state>
+
+  <app-fab [label]="'parkingSpots.mine.new' | transloco">
+    <a appActionItem icon="plus" routerLink="/parking-spots/new">
+      {{ 'parkingSpots.mine.new' | transloco }}
+    </a>
+  </app-fab>
+</app-page>

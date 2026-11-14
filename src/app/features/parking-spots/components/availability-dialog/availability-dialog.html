@@ -1,0 +1,86 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <h2 id="availability-title">
+    {{ (editing ? 'parkingSpots.availability.edit' : 'parkingSpots.availability.new') | transloco }}
+  </h2>
+  <app-form-section [heading]="'parkingSpots.availability.periodSection' | transloco">
+    <app-date-field
+      [showLabel]="true"
+      [label]="'parkingSpots.availability.start' | transloco"
+      [isoValue]="startDate()"
+      [isoMin]="today"
+      (isoValueChange)="setStart($event)"
+    />
+    <app-date-field
+      [showLabel]="true"
+      [label]="'parkingSpots.availability.end' | transloco"
+      [isoValue]="endDate()"
+      [isoMin]="startDate() || today"
+      (isoValueChange)="setEnd($event)"
+    />
+  </app-form-section>
+  @if (datesInvalid()) {
+    <app-alert kind="error">{{ 'parkingSpots.availability.datesInvalid' | transloco }}</app-alert>
+  }
+
+  <app-form-section [heading]="'parkingSpots.availability.priceSection' | transloco">
+    <app-text-field
+      [class.wide]="!hourly"
+      [label]="'parkingSpots.availability.dailyPrice' | transloco"
+      [hint]="
+        data.rules.maxPricePerDay !== null
+          ? ('parkingSpots.availability.maxHint'
+            | transloco: { value: money()(data.rules.maxPricePerDay) })
+          : hourly
+            ? ('parkingSpots.availability.hourlyOptional' | transloco)
+            : ''
+      "
+      [format]="formatMoney"
+      [control]="form.controls.dailyPrice"
+    />
+    @if (hourly) {
+      <app-text-field
+        [label]="'parkingSpots.availability.hourlyPrice' | transloco"
+        [hint]="
+          data.rules.maxPricePerHour !== null
+            ? ('parkingSpots.availability.maxHint'
+              | transloco: { value: money()(data.rules.maxPricePerHour) })
+            : ('parkingSpots.availability.hourlyOptional' | transloco)
+        "
+        [format]="formatMoney"
+        [control]="form.controls.hourlyPrice"
+      />
+    }
+  </app-form-section>
+  @if (priceMissing()) {
+    <app-alert kind="error">{{ 'parkingSpots.availability.priceMissing' | transloco }}</app-alert>
+  }
+
+  @if (hourly) {
+    <app-form-section [heading]="'parkingSpots.availability.windowSection' | transloco">
+      <app-select-field
+        [label]="'parkingSpots.availability.windowFrom' | transloco"
+        [options]="fromOptions"
+        [control]="form.controls.hourlyFrom"
+      />
+      <app-select-field
+        [label]="'parkingSpots.availability.windowTo' | transloco"
+        [options]="toOptions"
+        [control]="form.controls.hourlyTo"
+      />
+    </app-form-section>
+    @if (windowInvalid()) {
+      <app-alert kind="error">{{
+        'parkingSpots.availability.windowInvalid' | transloco
+      }}</app-alert>
+    }
+  }
+
+  <app-form-actions>
+    <button appButton type="button" variant="secondary" (click)="cancel()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="submit">
+      {{ (editing ? 'common.actions.save' : 'parkingSpots.availability.add') | transloco }}
+    </button>
+  </app-form-actions>
+</form>

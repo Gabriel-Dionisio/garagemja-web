@@ -31,14 +31,22 @@ export class Session {
         'x-xsrf-token': decodeURIComponent(this.cookies.get('XSRF-TOKEN') ?? ''),
       },
     });
-    for (const header of response.headersArray().filter((h) => h.name.toLowerCase() === 'set-cookie')) {
+    for (const header of response
+      .headersArray()
+      .filter((h) => h.name.toLowerCase() === 'set-cookie')) {
       const [name, ...rest] = header.value.split(';')[0].split('=');
       this.cookies.set(name.trim(), rest.join('='));
     }
     return { status: response.status(), text: await response.text() };
   }
 
-  async call(step: string, method: Method, path: string, body: unknown, expected: number[]): Promise<any> {
+  async call(
+    step: string,
+    method: Method,
+    path: string,
+    body: unknown,
+    expected: number[],
+  ): Promise<any> {
     const { status, text } = await this.raw(method, path, body);
     if (!expected.includes(status)) {
       throw new SeedError(
@@ -56,7 +64,9 @@ export class Session {
       result = await this.raw('POST', '/api/v1/auth/login', credentials);
     }
     if (result.status !== 200) {
-      throw new SeedError(`API contract changed or step failed: login ${this.email}\n  POST /api/v1/auth/login -> ${result.status}\n  body: ${result.text.slice(0, 300)}`);
+      throw new SeedError(
+        `API contract changed or step failed: login ${this.email}\n  POST /api/v1/auth/login -> ${result.status}\n  body: ${result.text.slice(0, 300)}`,
+      );
     }
     await this.call('csrf', 'GET', '/api/v1/auth/csrf', undefined, [204]);
   }
@@ -76,4 +86,5 @@ export async function verifyEmail(email: string): Promise<void> {
   }
 }
 
-export const userExists = (email: string): boolean => psql(`select 1 from users where email = ${sqlString(email)}`) === '1';
+export const userExists = (email: string): boolean =>
+  psql(`select 1 from users where email = ${sqlString(email)}`) === '1';

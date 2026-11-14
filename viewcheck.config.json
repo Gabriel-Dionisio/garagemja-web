@@ -1,0 +1,103 @@
+{
+  "baseUrl": "https://localhost:4200",
+  "locale": "pt-BR",
+  "login": {
+    "path": "/login",
+    "usernameTemplate": "seed.{account}@email.com.br",
+    "username": {
+      "label": "E-mail"
+    },
+    "passwordField": {
+      "label": "Senha",
+      "exact": true
+    },
+    "password": "@Teste123",
+    "submit": {
+      "name": "Entrar"
+    },
+    "checkPath": "/home"
+  },
+  "innerScrollSelector": "app-scroll-area",
+  "pageScrollSelector": "app-page > app-scroll-area .viewport",
+  "ignoreImages": "app-home-page",
+  "steps": [
+    {
+      "as": "manager.1",
+      "path": "/home"
+    },
+    {
+      "as": "manager.1",
+      "path": "/dashboard"
+    },
+    {
+      "as": "manager.1",
+      "path": "/condominiums"
+    },
+    {
+      "as": "manager.1",
+      "path": "/condominiums",
+      "open": [
+        "li a.link"
+      ]
+    },
+    {
+      "as": "manager.1",
+      "path": "/condominiums",
+      "open": [
+        "li a.link",
+        "a[href$=\"/parking-spots\"][href^=\"/condominiums/\"]"
+      ]
+    },
+    {
+      "as": "manager.1",
+      "path": "/condominiums",
+      "open": [
+        "li a.link",
+        "a[href$=\"/rules\"]"
+      ]
+    },
+    {
+      "as": "resident.2",
+      "path": "/home"
+    },
+    {
+      "as": "resident.2",
+      "path": "/condominiums"
+    },
+    {
+      "as": "resident.2",
+      "path": "/condominiums",
+      "open": [
+        "li a.link"
+      ]
+    },
+    {
+      "as": "resident.2",
+      "path": "/parking-spots"
+    },
+    {
+      "as": "resident.2",
+      "path": "/parking-spots",
+      "open": [
+        "li a.link"
+      ]
+    },
+    {
+      "as": "resident.2",
+      "path": "/parking-spots/new"
+    },
+    {
+      "as": "resident.5",
+      "path": "/rentals"
+    },
+    {
+      "as": "admin.1",
+      "path": "/dashboard"
+    },
+    {
+      "as": "admin.1",
+      "path": "/condominiums"
+    }
+  ],
+  "ignoreWrap": "aside.sidebar"
+}

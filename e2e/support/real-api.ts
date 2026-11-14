@@ -1,4 +1,4 @@
-import { expect, type APIRequestContext, type Page } from '@playwright/test';
+import { expect, type APIRequestContext } from '@playwright/test';
 
 const MAILPIT = 'http://localhost:8025/api/v1';
 export const PASSWORD = '@Teste123';
@@ -20,23 +20,35 @@ export function cpfFromBase(base: number[]): string {
 }
 
 export function randomCpf(): string {
-  return cpfFromBase(Array.from({ length: 9 }, () => Math.floor(Math.random() * 10)));
+  const base = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+  return cpfFromBase(base.every((d) => d === base[0]) ? [1, ...base.slice(1)] : base);
 }
 
-export async function registerResident(page: Page, email: string): Promise<void> {
-  await page.goto('/register');
-  await page.getByLabel('Nome completo').fill('Teste Playwright Silva');
-  await page.getByLabel('E-mail').fill(email);
-  await page.getByLabel('Telefone').fill('11987654321');
-  await page.getByLabel('CPF').fill(randomCpf());
-  await page.getByLabel('Senha', { exact: true }).fill(PASSWORD);
-  await page.getByLabel('Confirmar senha').fill(PASSWORD);
-  const response = page.waitForResponse((r) => r.url().endsWith('/api/v1/auth/register'));
-  await page.getByRole('button', { name: 'Criar conta' }).click();
-  expect((await response).status()).toBe(202);
+const CNPJ_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export function randomCnpj(): string {
+  const base = Array.from(
+    { length: 12 },
+    () => CNPJ_ALPHABET[Math.floor(Math.random() * CNPJ_ALPHABET.length)],
+  );
+  if (base.every((c) => c === base[0])) base[0] = base[0] === '1' ? '2' : '1';
+  const digit = (chars: string[]) => {
+    const sum = chars
+      .map((c) => c.charCodeAt(0) - 48)
+      .reduceRight((acc, value, i) => acc + value * (((chars.length - 1 - i) % 8) + 2), 0);
+    const rest = sum % 11;
+    return String(rest < 2 ? 0 : 11 - rest);
+  };
+  base.push(digit(base));
+  base.push(digit(base));
+  return base.join('');
 }
 
-export async function oobCodeFor(request: APIRequestContext, email: string): Promise<string> {
+export async function oobCodeFor(
+  request: APIRequestContext,
+  email: string,
+  timeout = 30_000,
+): Promise<string> {
   let code: string | undefined;
   await expect
     .poll(
@@ -48,29 +60,8 @@ export async function oobCodeFor(request: APIRequestContext, email: string): Pro
         code = /oobCode=([^&"'\s]+)/.exec(detail.HTML ?? detail.Text)?.[1];
         return code;
       },
-      { timeout: 30_000, message: `verification e-mail for ${email}` },
+      { timeout, message: `verification e-mail for ${email}` },
     )
     .toBeTruthy();
   return decodeURIComponent(code!);
-}
-
-export async function confirmEmail(page: Page, code: string): Promise<void> {
-  const response = page.waitForResponse((r) => r.url().endsWith('/api/v1/auth/verify-email'));
-  await page.goto(`/confirm-email?oobCode=${encodeURIComponent(code)}`);
-  expect((await response).status()).toBe(204);
-}
-
-export async function goToLoginFromConfirmation(page: Page): Promise<void> {
-  await page.getByRole('link', { name: 'Ir para o login' }).click();
-  await expect(page).toHaveURL(/\/login/);
-}
-
-export async function login(page: Page, email: string): Promise<void> {
-  await page.goto('/login');
-  await page.getByLabel('E-mail').fill(email);
-  await page.getByLabel('Senha', { exact: true }).fill(PASSWORD);
-  const response = page.waitForResponse((r) => r.url().endsWith('/api/v1/auth/login'));
-  await page.getByRole('button', { name: 'Entrar' }).click();
-  expect((await response).status()).toBe(200);
-  await expect(page).not.toHaveURL(/\/login/);
 }

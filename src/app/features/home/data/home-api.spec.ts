@@ -28,15 +28,15 @@ describe('HomeApi', () => {
     expect(count.request.params.get('size')).toBe('1');
     count.flush([{}], { headers: { 'X-Total-Count': '3' } });
     http.expectOne(featured).flush([
-      { id: 'c1', name: 'Alpha', availableVagas: 4, pricePerHour: 7.5, imageUrl: null },
+      { id: 'c1', name: 'Alpha', availableVagas: 4, pricePerDay: 7.5, imageUrl: null },
       { id: 'c2', name: 'Beta', availableVagas: 1 },
     ]);
 
     expect(result).toHaveBeenCalledWith({
       residencies: 3,
       condominiums: [
-        { id: 'c1', name: 'Alpha', availableVagas: 4, pricePerHour: 7.5, imageUrl: null },
-        { id: 'c2', name: 'Beta', availableVagas: 1, pricePerHour: null, imageUrl: null },
+        { id: 'c1', name: 'Alpha', availableVagas: 4, pricePerDay: 7.5, imageUrl: null },
+        { id: 'c2', name: 'Beta', availableVagas: 1, pricePerDay: null, imageUrl: null },
       ],
     });
   });

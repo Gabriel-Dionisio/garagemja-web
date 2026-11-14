@@ -6,13 +6,15 @@ import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
 import { Card } from '../../../../shared/ui/card/card';
+import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { Icon } from '../../../../shared/ui/icon/icon';
+import { ScrollArea } from '../../../../shared/ui/scroll-area/scroll-area';
 import { Condominium, CondominiumImage, CondominiumRules } from '../../condominium.model';
 import { RESIDENT_STATUS_LABELS, RESIDENT_STATUS_TONES } from '../../resident-status';
 
 @Component({
   selector: 'app-condominium-info',
-  imports: [TranslocoPipe, CurrencyPipe, Alert, Badge, Button, Card, Icon],
+  imports: [TranslocoPipe, CurrencyPipe, Alert, Badge, Button, Card, FormActions, Icon, ScrollArea],
   templateUrl: './condominium-info.html',
   styleUrl: './condominium-info.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

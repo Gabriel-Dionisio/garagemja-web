@@ -96,11 +96,11 @@
               <p class="availability">
                 {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
               </p>
-              @if (condominium.pricePerHour != null) {
+              @if (condominium.pricePerDay != null) {
                 <p class="price">
                   {{ 'home.priceFrom' | transloco }}
-                  <strong>{{ condominium.pricePerHour | number: '1.2-2' }}</strong>
-                  {{ 'home.perHour' | transloco }}
+                  <strong>{{ condominium.pricePerDay | number: '1.2-2' }}</strong>
+                  {{ 'home.perDay' | transloco }}
                 </p>
               }
             </div>

@@ -65,6 +65,7 @@ describe('JoinPanel', () => {
     element.querySelector('form')?.dispatchEvent(new Event('submit'));
     await fixture.whenStable();
     expect(join).not.toHaveBeenCalled();
+    expect(element.textContent).toContain('Campo obrigatório.');
   });
 
   it('looks the condominium up by CNPJ and joins with unit and block', async () => {

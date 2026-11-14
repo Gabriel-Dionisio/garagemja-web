@@ -160,5 +160,9 @@ export function toCondominiumRules(value: unknown): CondominiumRules {
     minAdvanceHours: toNumberOrNull(row['minAdvanceHours']),
     cancellationDeadlineHours: toNumberOrNull(row['cancellationDeadlineHours']),
     maxPricePerDay: toNumberOrNull(row['maxPricePerDay']),
+    maxPricePerHour: toNumberOrNull(row['maxPricePerHour']),
+    minRentalHours: toNumberOrNull(row['minRentalHours']) ?? 1,
+    hourlyRentalsEnabled: row['hourlyRentalsEnabled'] === true,
+    notes: typeof row['notes'] === 'string' ? row['notes'] : null,
   };
 }

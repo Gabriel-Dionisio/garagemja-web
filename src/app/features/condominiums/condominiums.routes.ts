@@ -30,6 +30,15 @@ export const CONDOMINIUM_ROUTES: Routes = [
       ),
   },
   {
+    path: ':id/rules',
+    canActivate: [roleGuard('CONDOMINIUM_ADMIN')],
+    title: 'routes.condominiumRules',
+    loadComponent: () =>
+      import('./pages/condominium-rules-page/condominium-rules-page').then(
+        (m) => m.CondominiumRulesPage,
+      ),
+  },
+  {
     path: ':id/managers',
     canActivate: [roleGuard('ADMIN', 'CONDOMINIUM_ADMIN')],
     title: 'routes.condominiumManagers',

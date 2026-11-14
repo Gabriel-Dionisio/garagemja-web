@@ -1,28 +1,47 @@
+@use 'styles/mixins' as *;
+
 :host {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  app-alert {
+    grid-column: 1 / -1;
+  }
+}
+
+.main,
+.side {
   display: grid;
   gap: var(--space-4);
   min-width: 0;
 }
 
+.gallery-scroll {
+  --scroll-snap: x mandatory;
+}
+
 .gallery {
   display: flex;
   gap: var(--space-2);
-  margin: 0 0 var(--space-4);
+  margin: 0;
   padding: 0;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
   list-style: none;
-  scroll-snap-type: x mandatory;
 
   li {
-    flex: 0 0 min(100%, 20rem);
+    flex: 0 0 100%;
     scroll-snap-align: start;
   }
 
   img {
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1;
     border-radius: var(--radius-md);
     object-fit: cover;
   }
@@ -31,8 +50,8 @@
 .cover.placeholder {
   display: grid;
   place-items: center;
-  aspect-ratio: 4 / 3;
-  margin-bottom: var(--space-4);
+  width: 100%;
+  aspect-ratio: 1;
   border-radius: var(--radius-md);
   background: var(--color-info-bg);
   color: var(--color-primary-text);
@@ -47,6 +66,7 @@ dl {
   display: grid;
   gap: var(--space-3);
   margin: 0 0 var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
 }
 
 dt {
@@ -67,5 +87,28 @@ dd {
 
   li {
     display: grid;
+  }
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-4);
+
+  @include from($bp-md) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.photos {
+  order: -1;
+  width: 100%;
+  max-width: 16rem;
+  min-width: 0;
+  margin-inline: auto;
+
+  @include from($bp-md) {
+    order: 0;
+    max-width: none;
   }
 }

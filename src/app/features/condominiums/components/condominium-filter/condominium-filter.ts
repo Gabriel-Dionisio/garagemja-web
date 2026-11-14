@@ -2,6 +2,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { formatUf } from '../../../../shared/forms/masks';
+import { applyWhileTyping } from '../../../../shared/forms/apply-while-typing';
 import { Button } from '../../../../shared/ui/button/button';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { CondominiumFilter } from '../../condominium.model';
@@ -22,6 +23,10 @@ export class CondominiumFilterForm {
     city: [''],
     state: [''],
   });
+
+  constructor() {
+    applyWhileTyping(this.form, () => this.apply());
+  }
 
   protected apply(): void {
     const { name, city, state } = this.form.getRawValue();

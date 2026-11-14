@@ -5,7 +5,7 @@ import { FeaturedCondominium, HomeSpots } from '../home.model';
 
 function toFeatured(value: unknown): FeaturedCondominium {
   if (typeof value !== 'object' || value === null) throw new Error('Invalid featured condominium');
-  const { id, name, availableVagas, pricePerHour, imageUrl } = Object.fromEntries(
+  const { id, name, availableVagas, pricePerDay, imageUrl } = Object.fromEntries(
     Object.entries(value),
   );
   if (
@@ -13,7 +13,7 @@ function toFeatured(value: unknown): FeaturedCondominium {
     typeof name !== 'string' ||
     typeof availableVagas !== 'number' ||
     !Number.isInteger(availableVagas) ||
-    (pricePerHour != null && typeof pricePerHour !== 'number') ||
+    (pricePerDay != null && typeof pricePerDay !== 'number') ||
     (imageUrl != null && typeof imageUrl !== 'string')
   ) {
     throw new Error('Invalid featured condominium');
@@ -22,7 +22,7 @@ function toFeatured(value: unknown): FeaturedCondominium {
     id,
     name,
     availableVagas,
-    pricePerHour: pricePerHour ?? null,
+    pricePerDay: pricePerDay ?? null,
     imageUrl: imageUrl ?? null,
   };
 }

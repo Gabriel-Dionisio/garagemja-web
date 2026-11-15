@@ -9,6 +9,7 @@ export interface ParkingSpotOwner {
   name: string;
   unit: string | null;
   block: string | null;
+  photoUrl: string | null;
 }
 
 export interface ParkingSpotAvailabilitySummary {

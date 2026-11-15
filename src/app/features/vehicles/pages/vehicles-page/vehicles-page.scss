@@ -1,24 +1,18 @@
+@use 'styles/mixins' as *;
+
 .thumb {
   display: grid;
   flex: none;
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   place-items: center;
   border-radius: var(--radius-md);
   background: var(--color-info-bg);
   color: var(--color-primary-text);
 }
 
-strong,
-.meta {
-  display: block;
+small {
   color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-strong {
-  color: var(--color-text);
-  font-size: var(--font-size-md, 1rem);
 }
 
 .plate {
@@ -26,6 +20,20 @@ strong {
   letter-spacing: 0.02em;
 }
 
-app-alert button {
-  margin-top: var(--space-2);
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.header-action[filterActions] {
+  @include until($bp-md) {
+    display: none;
+  }
+}
+
+app-list-state {
+  @include until($bp-md) {
+    --list-pad-bottom: 4.5rem;
+  }
 }

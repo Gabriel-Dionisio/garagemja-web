@@ -17,9 +17,6 @@
     </button>
     <app-brand-logo [compact]="true" />
   }
-  @if (showSearch()) {
-    <app-topbar-search />
-  }
   @if (user(); as current) {
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
   }

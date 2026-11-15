@@ -5,6 +5,7 @@ import { LoginPage, RegisterPage } from '../pages/auth.page';
 import { CondominiumDetailPage, CondominiumsPage } from '../pages/condominium.page';
 import { ConfirmDialog } from '../pages/confirm-dialog';
 import { MyRentalsPage } from '../pages/my-rentals.page';
+import { RequestsPage } from '../pages/requests.page';
 import {
   CondominiumSpotsPage,
   MyParkingSpotsPage,
@@ -29,6 +30,7 @@ export class Journey {
   readonly spotForm: ParkingSpotFormPage;
   readonly availability: SpotAvailabilityPanel;
   readonly myRentals: MyRentalsPage;
+  readonly requests: RequestsPage;
   readonly confirm: ConfirmDialog;
   readonly gallery: ImageGallery;
   private readonly context: BrowserContext;
@@ -51,6 +53,7 @@ export class Journey {
     this.spotForm = new ParkingSpotFormPage(page);
     this.availability = new SpotAvailabilityPanel(page);
     this.myRentals = new MyRentalsPage(page);
+    this.requests = new RequestsPage(page);
     this.confirm = new ConfirmDialog(page);
     this.gallery = new ImageGallery(page);
   }

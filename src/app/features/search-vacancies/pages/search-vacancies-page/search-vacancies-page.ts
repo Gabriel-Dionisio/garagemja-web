@@ -1,106 +1,127 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { catchError, debounce, map, of, startWith, switchMap, timer } from 'rxjs';
-import { TopbarSearch } from '../../../../core/layout/topbar-search';
-import { Button } from '../../../../shared/ui/button/button';
-import { Alert } from '../../../../shared/ui/alert/alert';
-import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
-import { LoadingBlock } from '../../../../shared/ui/loading-block/loading-block';
-import { IllustrativeMap } from '../../components/illustrative-map/illustrative-map';
-import { VacancyCard } from '../../components/vacancy-card/vacancy-card';
-import { VacancyToolbar } from '../../components/vacancy-toolbar/vacancy-toolbar';
-import { SearchVacanciesApi } from '../../data/search-vacancies-api';
-import { filterAndSortVacancies, hasActiveFilters } from '../../search-vacancies.filters';
-import { DEFAULT_CRITERIA, Vacancy, VacancyCriteria } from '../../search-vacancies.model';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY, catchError, finalize, map, switchMap } from 'rxjs';
+import { ErrorText } from '../../../../core/i18n/error-text';
+import { Page } from '../../../../shared/models/page';
+import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
+import { Page as PageLayout } from '../../../../shared/ui/page/page';
+import { PageHeader } from '../../../../shared/ui/page-header/page-header';
+import { PARKING_SPOT_SIZE_LABELS } from '../../../parking-spots/parking-spot-status';
+import {
+  PARKING_SPOT_SIZES,
+  ParkingSpot,
+  ParkingSpotSize,
+} from '../../../parking-spots/parking-spot.model';
+import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
+import { VacancyResults } from '../../components/vacancy-results/vacancy-results';
+import { VacancyFilter, VacancyFilterValue } from '../../components/vacancy-filter/vacancy-filter';
+import {
+  VACANCY_SORTS,
+  VacancyCriteria,
+  VacancySort,
+  activeCriteriaCount,
+  criteriaFromParams,
+  criteriaToParams,
+} from '../../search-vacancies.model';
 
-type SearchState =
-  | { kind: 'loading' }
-  | { kind: 'error' }
-  | { kind: 'ready'; vacancies: Vacancy[] };
-
-/** Tempo de espera após a digitação antes de aplicar a pesquisa. */
-const SEARCH_DEBOUNCE_MS = 300;
+const PAGE_SIZE = 12;
 
 @Component({
   selector: 'app-search-vacancies-page',
   imports: [
     TranslocoPipe,
-    Alert,
-    Button,
-    EmptyState,
-    LoadingBlock,
-    IllustrativeMap,
-    VacancyCard,
-    VacancyToolbar,
+    ChipGroup,
+    FilterPanel,
+    PageHeader,
+    PageLayout,
+    VacancyResults,
+    VacancyFilter,
   ],
   templateUrl: './search-vacancies-page.html',
-  styleUrl: './search-vacancies-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchVacanciesPage {
-  private readonly api = inject(SearchVacanciesApi);
-  private readonly topbarSearch = inject(TopbarSearch);
-  private readonly reloadTrigger = signal(0);
+  private readonly api = inject(ParkingSpotsApi);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  protected readonly criteria = signal<VacancyCriteria>(DEFAULT_CRITERIA);
+  protected readonly sizeTabs: readonly ChipOption<ParkingSpotSize>[] = [
+    { value: null, labelKey: 'parkingSpots.tabs.anySize' },
+    ...PARKING_SPOT_SIZES.map((size) => ({
+      value: size,
+      labelKey: PARKING_SPOT_SIZE_LABELS[size],
+    })),
+  ];
+  protected readonly modeTabs: readonly ChipOption<'DAILY' | 'HOURLY'>[] = [
+    { value: 'DAILY', labelKey: 'searchVacancies.mode.daily' },
+    { value: 'HOURLY', labelKey: 'searchVacancies.mode.hourly' },
+  ];
+  protected readonly sortTabs: readonly ChipOption<VacancySort>[] = VACANCY_SORTS.map((sort) => ({
+    value: sort,
+    labelKey: `searchVacancies.sort.${sort}`,
+  }));
 
-  /** Pesquisa aplicada: o campo da barra superior com debounce (limpar aplica na hora). */
-  private readonly query = signal('');
-
-  /** `switchMap` descarta respostas de carregamentos antigos (ex.: ao tentar novamente). */
-  protected readonly state = toSignal(
-    toObservable(this.reloadTrigger).pipe(
-      switchMap(() =>
-        this.api.loadAll().pipe(
-          map((vacancies): SearchState => ({ kind: 'ready', vacancies })),
-          catchError(() => of<SearchState>({ kind: 'error' })),
-          startWith<SearchState>({ kind: 'loading' }),
-        ),
-      ),
-    ),
-    { initialValue: { kind: 'loading' } as SearchState },
-  );
-
-  protected readonly allVacancies = computed(() => {
-    const state = this.state();
-    return state.kind === 'ready' ? state.vacancies : [];
+  private readonly state = toSignal(this.route.queryParamMap.pipe(map(criteriaFromParams)), {
+    initialValue: criteriaFromParams(this.route.snapshot.queryParamMap),
   });
-
-  /** Resultados atuais: pesquisa, filtros e ordenação aplicados juntos. */
-  protected readonly vacancies = computed(() =>
-    filterAndSortVacancies(this.allVacancies(), this.query(), this.criteria()),
-  );
-
-  protected readonly hasConstraints = computed(
-    () => this.query().trim() !== '' || hasActiveFilters(this.criteria()),
-  );
+  protected readonly criteria = computed(() => this.state().criteria);
+  protected readonly page = computed(() => this.state().page);
+  protected readonly pageSize = signal(PAGE_SIZE);
+  protected readonly activeFilters = computed(() => activeCriteriaCount(this.criteria()));
+  protected readonly cardParams = computed(() => {
+    const { from, to } = this.criteria();
+    return { from: from || null, to: to || null };
+  });
+  protected readonly filtersOpen = signal(false);
+  protected readonly result = signal<Page<ParkingSpot> | null>(null);
+  protected readonly loading = signal(true);
+  protected readonly error = inject(ErrorText).state();
 
   constructor() {
-    toObservable(this.topbarSearch.term)
+    toObservable(
+      computed(() => ({ criteria: this.criteria(), page: this.page(), size: this.pageSize() })),
+    )
       .pipe(
-        debounce((term) => (term === '' ? of(0) : timer(SEARCH_DEBOUNCE_MS))),
-        takeUntilDestroyed(inject(DestroyRef)),
+        switchMap(({ criteria, page, size }) => {
+          this.loading.set(true);
+          this.error.clear();
+          return this.api.search(criteria, page, size).pipe(
+            catchError((error: unknown) => {
+              this.error.setFrom(error);
+              this.result.set(null);
+              return EMPTY;
+            }),
+            finalize(() => this.loading.set(false)),
+          );
+        }),
+        takeUntilDestroyed(),
       )
-      .subscribe((term) => this.query.set(term));
-
-    inject(DestroyRef).onDestroy(() => this.topbarSearch.term.set(''));
+      .subscribe((result) => this.result.set(result));
   }
 
-  protected reload(): void {
-    this.reloadTrigger.update((value) => value + 1);
+  protected patch(change: Partial<VacancyCriteria>): void {
+    void this.router.navigate([], {
+      queryParams: criteriaToParams({ ...this.criteria(), ...change }),
+      replaceUrl: true,
+    });
   }
 
-  /** Volta a "Todas"/"Tamanho" e limpa a pesquisa; a ordenação escolhida é mantida. */
-  protected clearFilters(): void {
-    this.criteria.update((current) => ({ ...DEFAULT_CRITERIA, sort: current.sort }));
-    this.topbarSearch.term.set('');
+  protected apply(value: VacancyFilterValue): void {
+    this.patch(value);
+  }
+
+  protected changeSize(size: number): void {
+    this.pageSize.set(size);
+    this.goTo(0);
+  }
+
+  protected goTo(page: number): void {
+    void this.router.navigate([], {
+      queryParams: criteriaToParams(this.criteria(), page),
+      replaceUrl: true,
+    });
   }
 }

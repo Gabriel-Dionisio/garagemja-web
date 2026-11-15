@@ -8,6 +8,7 @@ import { VehicleFormPage } from './vehicle-form-page';
 
 const aurora: Residency = {
   id: 'r1',
+  condominiumId: 'c1',
   condominiumName: 'Residencial Aurora',
   unit: '101',
   block: 'A',

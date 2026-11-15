@@ -53,12 +53,12 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
-        data: { showSearch: true },
         canActivate: [homeGuard],
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
         path: 'search-vacancies',
+        canActivate: [roleGuard('RESIDENT')],
         loadChildren: () =>
           import('./features/search-vacancies/search-vacancies.routes').then(
             (m) => m.SEARCH_VACANCIES_ROUTES,

@@ -1,0 +1,40 @@
+<form [formGroup]="form" (ngSubmit)="apply()" novalidate>
+  <app-text-field
+    class="wide"
+    [label]="'searchVacancies.filters.search' | transloco"
+    [maxLength]="100"
+    [control]="form.controls.search"
+  />
+  <app-date-field
+    [showLabel]="true"
+    [label]="'searchVacancies.filters.from' | transloco"
+    [isoValue]="from()"
+    [isoMin]="today"
+    (isoValueChange)="setFrom($event)"
+  />
+  <app-date-field
+    [showLabel]="true"
+    [label]="'searchVacancies.filters.to' | transloco"
+    [isoValue]="to()"
+    [isoMin]="from() || today"
+    (isoValueChange)="to.set($event)"
+  />
+  <app-text-field
+    [label]="'searchVacancies.filters.minPrice' | transloco"
+    inputMode="numeric"
+    [format]="formatMoney"
+    [control]="form.controls.minPrice"
+  />
+  <app-text-field
+    [label]="'searchVacancies.filters.maxPrice' | transloco"
+    inputMode="numeric"
+    [format]="formatMoney"
+    [control]="form.controls.maxPrice"
+  />
+  <div class="actions">
+    <button appButton variant="secondary" type="button" (click)="clear()">
+      {{ 'common.actions.clear' | transloco }}
+    </button>
+    <button appButton type="submit">{{ 'common.actions.filter' | transloco }}</button>
+  </div>
+</form>

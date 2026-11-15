@@ -25,7 +25,7 @@ export class MyRentalsPage extends FilteredList {
 
   async cancel(number: string): Promise<void> {
     await this.rental(number)
-      .getByRole('button', { name: `Cancelar pedido: ${number}` })
+      .getByRole('button', { name: `Cancelar pedido da vaga ${number}` })
       .click();
     await this.confirmDialog.confirm('Cancelar pedido');
   }

@@ -36,12 +36,27 @@ export function toRental(value: unknown): Rental {
     price,
     total,
     status,
+    cancelReason: typeof row['cancelReason'] === 'string' ? row['cancelReason'] : null,
   };
+}
+
+export interface RentalRequest {
+  parkingSpotId: string;
+  renterResidentId: string;
+  vehicleId: string;
+  startDate: string;
+  endDate: string;
+  startHour: number | null;
+  endHour: number | null;
 }
 
 @Injectable({ providedIn: 'root' })
 export class RentalsApi {
   private readonly http = inject(HttpClient);
+
+  create(request: RentalRequest): Observable<void> {
+    return this.http.post<unknown>(RENTALS_URL, request).pipe(map(() => undefined));
+  }
 
   cancel(id: string): Observable<void> {
     return this.http
@@ -49,9 +64,15 @@ export class RentalsApi {
       .pipe(map(() => undefined));
   }
 
-  list(page: number, size: number, status: RentalStatus | null): Observable<Page<Rental>> {
+  list(
+    page: number,
+    size: number,
+    status: RentalStatus | null,
+    search = '',
+  ): Observable<Page<Rental>> {
     let params = new HttpParams().set('page', page).set('size', size);
     if (status) params = params.set('status', status);
+    if (search) params = params.set('q', search);
     return this.http.get<unknown>(MY_RENTALS_URL, { params, observe: 'response' }).pipe(
       map((response) => {
         const body = response.body;

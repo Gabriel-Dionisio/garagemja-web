@@ -7,10 +7,22 @@ describe('parking spot mapper', () => {
     const spot = toParkingSpot({
       ...base,
       size: 'HUGE',
-      owner: { residentId: 'r1', name: 'Ana', unit: '12', block: null },
+      owner: {
+        residentId: 'r1',
+        name: 'Ana',
+        unit: '12',
+        block: null,
+        photoUrl: 'https://x/a.png',
+      },
     });
     expect(spot.size).toBeNull();
-    expect(spot.owner).toEqual({ residentId: 'r1', name: 'Ana', unit: '12', block: null });
+    expect(spot.owner).toEqual({
+      residentId: 'r1',
+      name: 'Ana',
+      unit: '12',
+      block: null,
+      photoUrl: 'https://x/a.png',
+    });
   });
 
   it('rejeita status inválido', () => {

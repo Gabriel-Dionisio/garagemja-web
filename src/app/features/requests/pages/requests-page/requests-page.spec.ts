@@ -1,150 +1,100 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { RouterTestingHarness } from '@angular/router/testing';
-import { Observable, Subject, of, throwError } from 'rxjs';
-import { Page } from '../../../../shared/models/page';
+import { provideRouter } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { toPage } from '../../../../shared/models/page';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { OwnedRental } from '../../../dashboard/owned-rental.model';
-import { RequestsApi } from '../../data/requests-api';
-import { REQUESTS_ROUTES } from '../../requests.routes';
+import { OwnedRentalsApi } from '../../data/owned-rentals-api';
+import { OwnedRental } from '../../owned-rental.model';
+import { RequestsPage } from './requests-page';
 
-const rental: OwnedRental = {
+const rental = (overrides: Partial<OwnedRental> = {}): OwnedRental => ({
   id: 'r1',
   condominiumId: 'c1',
-  condominiumName: 'Residencial Aurora',
+  condominiumName: 'Edifício A',
   parkingSpotId: 's1',
-  parkingSpotNumber: 'A-01',
-  startDate: '2026-12-01',
-  endDate: '2026-12-03',
-  price: 8,
+  parkingSpotNumber: '12',
+  startDate: '2026-11-10',
+  endDate: '2026-11-12',
+  startHour: null,
+  endHour: null,
+  price: 80,
+  total: 240,
   status: 'PENDING',
-};
-const pageOf = (items: OwnedRental[]): Page<OwnedRental> => ({
-  items,
-  page: 0,
-  size: 25,
-  total: items.length,
-  hasNext: false,
+  cancelReason: null,
+  renterName: 'Maria Souza',
+  renterPhotoUrl: null,
+  vehiclePlate: 'ABC1D23',
+  vehicleBrand: 'Fiat',
+  vehicleModel: 'Uno',
+  ...overrides,
 });
 
 describe('RequestsPage', () => {
-  async function setup(
-    url: string,
-    list: Observable<Page<OwnedRental>> = of(pageOf([rental])),
-    confirmed = true,
-  ) {
-    const api = {
-      list: vi.fn().mockReturnValue(list),
-      decide: vi.fn().mockReturnValue(of(undefined)),
-    };
+  const list = vi.fn();
+  const approve = vi.fn();
+  const refuse = vi.fn();
+  const confirm = vi.fn();
+  const askReason = vi.fn();
+
+  async function setup(items: OwnedRental[] = [rental()]) {
+    list.mockReset().mockReturnValue(of(toPage(items, 0, 25, items.length)));
+    approve.mockReset().mockReturnValue(of(undefined));
+    refuse.mockReset().mockReturnValue(of(undefined));
+    confirm.mockReset().mockReturnValue(of(true));
+    askReason.mockReset().mockReturnValue(of('sem data'));
     TestBed.configureTestingModule({
       providers: [
-        provideRouter(
-          [{ path: 'requests', children: REQUESTS_ROUTES }],
-          withComponentInputBinding(),
-        ),
-        { provide: RequestsApi, useValue: api },
-        { provide: ConfirmService, useValue: { confirm: vi.fn().mockReturnValue(of(confirmed)) } },
+        provideRouter([]),
+        { provide: OwnedRentalsApi, useValue: { list, approve, refuse } },
+        { provide: ConfirmService, useValue: { confirm, askReason } },
       ],
     });
-    const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl(url);
-    await harness.fixture.whenStable();
-    return { api, harness, root: harness.routeNativeElement as HTMLElement };
+    const fixture = TestBed.createComponent(RequestsPage);
+    await fixture.whenStable();
+    return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  const buttons = (root: HTMLElement) =>
-    Array.from(root.querySelectorAll<HTMLButtonElement>('li button'));
-
-  it('defaults to the pending tab', async () => {
-    const { api, harness } = await setup('/requests');
-    expect(api.list).toHaveBeenCalledWith(0, 25, 'PENDING');
-    expect(harness.routeNativeElement?.querySelectorAll('app-tab-nav a')).toHaveLength(3);
+  it('lists pending requests with renter and vehicle', async () => {
+    const { element } = await setup();
+    expect(list).toHaveBeenCalledWith(0, expect.any(Number), 'PENDING', '');
+    expect(element.textContent).toContain('Maria Souza');
+    expect(element.textContent).toContain('Fiat Uno');
+    expect(element.textContent).toContain('ABC');
+    expect(element.textContent).toContain('Edifício A');
   });
 
-  it.each([
-    ['approved', 'APPROVED'],
-    ['refused', 'REFUSED'],
-  ])('queries the %s tab with its own status', async (path, status) => {
-    const { api } = await setup(`/requests/${path}`);
-    expect(api.list).toHaveBeenCalledWith(0, 25, status);
+  it('approves after confirmation and reloads', async () => {
+    const { fixture, element } = await setup();
+    const buttons = element.querySelectorAll<HTMLButtonElement>('li button');
+    buttons[1].click();
+    await fixture.whenStable();
+    expect(approve).toHaveBeenCalledWith('r1');
+    expect(list).toHaveBeenCalledTimes(2);
   });
 
-  it('offers approve and refuse on pending requests', async () => {
-    const pending = await setup('/requests/pending');
-    expect(buttons(pending.root)).toHaveLength(2);
+  it('refuses with the reason and does nothing when dismissed', async () => {
+    const { fixture, element } = await setup();
+    const refuseButton = element.querySelectorAll<HTMLButtonElement>('li button')[0];
+    refuseButton.click();
+    await fixture.whenStable();
+    expect(refuse).toHaveBeenCalledWith('r1', 'sem data');
+    askReason.mockReturnValue(of(null));
+    refuseButton.click();
+    await fixture.whenStable();
+    expect(refuse).toHaveBeenCalledTimes(1);
   });
 
-  it('offers no decision on approved requests', async () => {
-    const approved = await setup(
-      '/requests/approved',
-      of(pageOf([{ ...rental, status: 'APPROVED' }])),
-    );
-    expect(approved.root.querySelectorAll('li')).toHaveLength(1);
-    expect(buttons(approved.root)).toHaveLength(0);
+  it('shows the error when the decision fails', async () => {
+    const { fixture, element } = await setup();
+    approve.mockReturnValue(throwError(() => new Error('falha')));
+    element.querySelectorAll<HTMLButtonElement>('li button')[1].click();
+    await fixture.whenStable();
+    expect(element.querySelector('app-alert')).not.toBeNull();
   });
 
-  it('approves after confirmation and reloads the list from the api', async () => {
-    const { api, harness, root } = await setup('/requests/pending');
-    const [, approve] = buttons(root);
-    approve.click();
-    await harness.fixture.whenStable();
-    expect(api.decide).toHaveBeenCalledWith('r1', 'APPROVED');
-    expect(api.list).toHaveBeenCalledTimes(2);
-  });
-
-  it('refuses after confirmation', async () => {
-    const { api, harness, root } = await setup('/requests/pending');
-    const [refuse] = buttons(root);
-    refuse.click();
-    await harness.fixture.whenStable();
-    expect(api.decide).toHaveBeenCalledWith('r1', 'REFUSED');
-  });
-
-  it('does nothing when the confirmation is dismissed', async () => {
-    const { api, harness, root } = await setup('/requests/pending', of(pageOf([rental])), false);
-    buttons(root)[1].click();
-    await harness.fixture.whenStable();
-    expect(api.decide).not.toHaveBeenCalled();
-    expect(api.list).toHaveBeenCalledTimes(1);
-  });
-
-  it('shows the api error and keeps the list when a decision fails', async () => {
-    const { api, harness, root } = await setup('/requests/pending');
-    api.decide.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 409 })));
-    buttons(root)[1].click();
-    await harness.fixture.whenStable();
-    expect(root.querySelector('app-alert')).not.toBeNull();
-    expect(root.querySelectorAll('li')).toHaveLength(1);
-    expect(api.list).toHaveBeenCalledTimes(1);
-  });
-
-  it('blocks repeated decisions while one is in flight', async () => {
-    const { api, harness, root } = await setup('/requests/pending');
-    api.decide.mockReturnValue(new Subject<void>());
-    buttons(root)[1].click();
-    await harness.fixture.whenStable();
-    expect(buttons(root).every((button) => button.disabled)).toBe(true);
-    buttons(root)[1].click();
-    expect(api.decide).toHaveBeenCalledTimes(1);
-  });
-
-  it('shows the empty state for a tab without requests', async () => {
-    const { root } = await setup('/requests/refused', of(pageOf([])));
-    expect(root.querySelector('app-empty-state')).not.toBeNull();
-  });
-
-  it('shows an error with retry when loading fails', async () => {
-    const { api, harness, root } = await setup(
-      '/requests/pending',
-      throwError(() => new HttpErrorResponse({ status: 500 })),
-    );
-    expect(root.querySelector('app-alert')).not.toBeNull();
-    api.list.mockReturnValue(of(pageOf([rental])));
-    root.querySelector<HTMLButtonElement>('app-alert button')?.click();
-    await harness.fixture.whenStable();
-    expect(root.querySelector('app-alert')).toBeNull();
-    expect(root.querySelectorAll('li')).toHaveLength(1);
+  it('offers no decision for requests already decided and shows the reason', async () => {
+    const { element } = await setup([rental({ status: 'REFUSED', cancelReason: 'sem data' })]);
+    expect(element.querySelectorAll('li button')).toHaveLength(0);
+    expect(element.textContent).toContain('sem data');
   });
 });

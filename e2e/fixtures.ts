@@ -3,6 +3,7 @@ import { LoginPage, RegisterPage } from './pages/auth.page';
 import { CondominiumDetailPage, CondominiumsPage } from './pages/condominium.page';
 import { DashboardPage } from './pages/dashboard.page';
 import { MyRentalsPage } from './pages/my-rentals.page';
+import { RequestsPage } from './pages/requests.page';
 import {
   CondominiumSpotsPage,
   MyParkingSpotsPage,
@@ -30,6 +31,7 @@ interface Fixtures {
   spotForm: ParkingSpotFormPage;
   availability: SpotAvailabilityPanel;
   myRentals: MyRentalsPage;
+  requests: RequestsPage;
   loginAs: (email: string) => Promise<void>;
   apiAs: (email: string) => Promise<Api>;
 }
@@ -91,6 +93,7 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
   spotForm: async ({ page }, use) => use(new ParkingSpotFormPage(page)),
   availability: async ({ page }, use) => use(new SpotAvailabilityPanel(page)),
   myRentals: async ({ page }, use) => use(new MyRentalsPage(page)),
+  requests: async ({ page }, use) => use(new RequestsPage(page)),
   loginAs: async ({ page, baseURL }, use) => {
     await use(async (email) => {
       await page.context().addCookies((await sessionFor(email, baseURL)).cookies);

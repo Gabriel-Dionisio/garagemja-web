@@ -33,6 +33,9 @@
       "forbidden": "You do not have permission to view or change parking spots in this condominium.",
       "notFound": "Parking spot not found or unavailable.",
       "conflict": "The spot changed or the number is already in use. Reload and try again."
+    },
+    "vehicles": {
+      "inUse": "The vehicle has a pending or ongoing rental and cannot be deleted."
     }
   },
   "common": {
@@ -178,37 +181,35 @@
     "myVehicles": "My vehicles",
     "vehicleNew": "Add vehicle",
     "vehicleEdit": "Edit vehicle",
-    "searchVacancies": "Find Spots"
+    "searchVacancies": "Find Spots",
+    "vacancyDetails": "Spot details"
   },
   "requests": {
     "title": "Requests",
-    "subtitle": "Rental requests received for your parking spots.",
+    "count": "{{count}} requests",
+    "filters": "Filter requests",
+    "search": "Search by renter, plate, spot or condominium",
     "loading": "Loading requests…",
-    "retry": "Try again",
     "spot": "Spot {{number}}",
     "approve": "Approve",
     "refuse": "Refuse",
+    "reason": "Reason: {{reason}}",
+    "conflict": "Could not approve: the request expired, already started or the condominium is not active.",
     "tabs": {
       "label": "Request status",
-      "pending": "Pending",
-      "approved": "Approved",
-      "refused": "Refused"
+      "all": "All"
     },
     "status": {
       "PENDING": "Pending",
       "APPROVED": "Approved",
-      "REFUSED": "Refused"
+      "ACTIVE": "Ongoing",
+      "REFUSED": "Refused",
+      "CANCELED": "Canceled",
+      "FINISHED": "Finished",
+      "EXPIRED": "Expired"
     },
-    "empty": {
-      "PENDING": "No pending requests",
-      "APPROVED": "No approved requests",
-      "REFUSED": "No refused requests"
-    },
-    "emptyDescription": {
-      "PENDING": "Rental requests for your spots that await a decision will appear here.",
-      "APPROVED": "Requests you approve will appear here.",
-      "REFUSED": "Requests you refuse will appear here."
-    },
+    "emptyTitle": "No requests found",
+    "emptyDescription": "Rental requests for your spots will appear here.",
     "dialog": {
       "approve": {
         "title": "Approve request",
@@ -218,7 +219,8 @@
       "refuse": {
         "title": "Refuse request",
         "message": "Refuse the rental request for spot {{spot}}?",
-        "confirm": "Refuse"
+        "confirm": "Refuse",
+        "reason": "Reason for refusal"
       }
     }
   },
@@ -247,10 +249,13 @@
     },
     "cancel": {
       "action": "Cancel request",
+      "aria": "Cancel request for spot {{number}}",
       "title": "Cancel request",
       "message": "Cancel the request for spot {{number}}? This cannot be undone.",
       "confirm": "Cancel request"
-    }
+    },
+    "search": "Search by spot or condominium",
+    "reason": "Reason: {{reason}}"
   },
   "auth": {
     "login": {
@@ -316,26 +321,16 @@
   },
   "home": {
     "greeting": "Hello, {{name}}",
-    "welcome": "Welcome to GaragemJá.",
-    "emptyTitle": "Your spots and rentals will appear here",
-    "emptyDescription": "Searching and renting spots arrive in the next releases.",
     "title": "Home",
-    "featuredTitle": "Spots in my condominium",
-    "availableVagas": "available spots",
-    "priceFrom": "From R$",
-    "perDay": "per day",
-    "viewCondominium": "View condominium",
+    "featuredTitle": "Available spots",
     "loading": "Loading condominiums...",
     "loadError": "The condominiums could not be loaded.",
-    "emptyCondominiumsTitle": "No spots available",
-    "emptyCondominiumsDescription": "There are no registered spots in the condominiums where you live.",
     "search": {
-      "condominium": "Condominium",
-      "condominiumPlaceholder": "Ex.: Residential Alpha",
-      "period": "Period",
       "start": "Start",
       "end": "End",
-      "submit": "Search"
+      "submit": "Search",
+      "text": "Spot, location or condominium",
+      "placeholder": "Ex.: Residential Alpha"
     },
     "joinTitle": "Join your condominium",
     "joinDescription": "Use your manager's code or register the condominium.",
@@ -1009,40 +1004,6 @@
         "upcoming": "Approved, not started",
         "monthEarnings": "Earnings this month"
       }
-    },
-    "rentals": {
-      "loading": "Loading rentals...",
-      "status": {
-        "PENDING": "Awaiting decision",
-        "APPROVED": "Approved",
-        "ACTIVE": "In progress",
-        "REFUSED": "Refused",
-        "CANCELED": "Canceled",
-        "FINISHED": "Finished",
-        "EXPIRED": "Expired"
-      },
-      "filter": "Filter by status",
-      "all": "All",
-      "emptyTitle": "No rentals found",
-      "emptyDescription": "Rental requests for your spots show up here.",
-      "actions": {
-        "approve": "Approve",
-        "refuse": "Refuse",
-        "viewSpot": "View spot"
-      },
-      "confirm": {
-        "reason": "Reason",
-        "approve": {
-          "title": "Approve rental",
-          "message": "Approve the request for spot {{number}}? Overlapping pending requests are refused.",
-          "confirm": "Approve"
-        },
-        "refuse": {
-          "title": "Refuse rental",
-          "message": "Say why you are refusing the request for spot {{number}}. The renter will see this text.",
-          "confirm": "Refuse"
-        }
-      }
     }
   },
   "dateField": {
@@ -1163,7 +1124,8 @@
       "count": "{{count}} parking spot(s) registered",
       "emptyTitle": "You haven't registered any parking spots",
       "emptyDescription": "Register your spot for the manager to approve, then offer it for rent.",
-      "spotBlock": "Spot {{number}} - Block {{block}}"
+      "spotBlock": "Spot {{number}} - Block {{block}}",
+      "details": "View details"
     },
     "badge": {
       "available": "Available",
@@ -1214,14 +1176,16 @@
   "vehicles": {
     "list": {
       "title": "My vehicles",
-      "subtitle": "Vehicles registered in the condominiums where you live.",
       "new": "Add vehicle",
       "edit": "Edit",
-      "retry": "Try again",
       "loading": "Loading vehicles…",
       "caption": "Vehicle list",
       "emptyTitle": "No vehicles registered",
-      "emptyDescription": "Register a vehicle to use it in your rentals."
+      "emptyDescription": "Register a vehicle to use it in your rentals.",
+      "filter": "Filter vehicles",
+      "count": "{{count}} vehicles",
+      "search": "Search by plate, make or model",
+      "delete": "Delete"
     },
     "form": {
       "newTitle": "Add vehicle",
@@ -1245,60 +1209,73 @@
     "errors": {
       "forbidden": "You do not have permission for this action on this vehicle.",
       "notFound": "Vehicle not found or unavailable."
+    },
+    "delete": {
+      "title": "Delete vehicle",
+      "message": "Delete vehicle {{plate}}? You can register the same plate again.",
+      "confirm": "Delete"
+    },
+    "placeholders": {
+      "brand": "Honda",
+      "model": "Civic",
+      "plate": "ABC1D23",
+      "color": "Silver"
     }
   },
   "searchVacancies": {
     "title": "Find parking spots",
-    "empty": "No spots found",
-    "spot": "Spot {{number}}",
-    "spotBlock": "Spot {{number}} - {{block}}",
-    "available": "Available",
-    "unavailable": "Unavailable",
-    "priceFrom": "R$ {{price}}",
-    "unit": {
-      "HOUR": "/hour",
-      "DAY": "/day",
-      "MONTH": "/month"
+    "count": "{{count}} spots found",
+    "loading": "Loading spots…",
+    "emptyTitle": "No spots found",
+    "emptyDescription": "No available spot matches your search. Adjust the filters or the period.",
+    "mode": {
+      "label": "Pricing",
+      "daily": "Per day",
+      "hourly": "Per hour"
     },
-    "size": {
-      "SMALL": "Small",
-      "MEDIUM": "Medium",
-      "LARGE": "Large"
-    },
-    "map": {
-      "label": "Illustrative map",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out",
-      "fit": "Fit to view"
-    },
-    "loading": "Loading spots...",
-    "loadError": "Could not load the spots.",
-    "retry": "Try again",
-    "noVacanciesDescription": "There are no spots available to you yet.",
-    "noResultsDescription": "No spot matches your search or filters.",
-    "clearFilters": "Clear filters",
-    "countOne": "{{count}} spot found",
-    "countOther": "{{count}} spots found",
     "sort": {
       "label": "Sort by",
+      "NUMBER": "Number",
       "PRICE_ASC": "Lowest price",
       "PRICE_DESC": "Highest price"
     },
     "filters": {
       "label": "Filters",
-      "availability": {
-        "label": "Availability",
-        "ALL": "All",
-        "AVAILABLE": "Available",
-        "UNAVAILABLE": "Unavailable"
-      },
-      "size": {
-        "label": "Size",
-        "ALL": "All sizes",
-        "SMALL": "Small",
-        "MEDIUM": "Medium",
-        "LARGE": "Large"
-      }
+      "search": "Search by spot, location or condominium",
+      "from": "From",
+      "to": "Until",
+      "minPrice": "Minimum price",
+      "maxPrice": "Maximum price"
+    },
+    "details": {
+      "title": "Spot details",
+      "loading": "Loading spot…",
+      "photo": "Spot photo",
+      "showPhoto": "Show photo {{number}}",
+      "size": "Size",
+      "location": "Location",
+      "owner": "Owner",
+      "availability": "Availability",
+      "noAvailability": "This spot has no available periods.",
+      "request": "Request rental",
+      "edit": "Edit"
+    },
+    "request": {
+      "title": "Request rental",
+      "vehicleSection": "Vehicle",
+      "vehicle": "Vehicle",
+      "periodSection": "Period",
+      "modeDay": "Per day",
+      "modeHour": "Per hour",
+      "date": "Day",
+      "quoteDays": "{{units}} day(s) of {{price}} = {{total}}",
+      "quoteHours": "{{units}} hour(s) of {{price}} = {{total}}",
+      "unavailable": "Pick a period within the spot's availability.",
+      "noVehicle": "You have no vehicle registered in this condominium.",
+      "addVehicle": "Register vehicle",
+      "submit": "Send request",
+      "invalid": "Check the chosen period and vehicle.",
+      "conflict": "This period is no longer available. Pick another."
     }
   }
 }

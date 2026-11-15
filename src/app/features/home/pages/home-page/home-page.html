@@ -24,37 +24,37 @@
     </picture>
   </div>
 
-  <form class="search-panel" (submit)="$event.preventDefault()">
-    <span class="search-label condominium-label">{{ 'home.search.condominium' | transloco }}</span>
-    <span class="search-label period-label">{{ 'home.search.period' | transloco }}</span>
-    <input
-      class="condominium-input"
-      type="search"
-      [attr.aria-label]="'home.search.condominium' | transloco"
-      [placeholder]="'home.search.condominiumPlaceholder' | transloco"
-    />
-    <app-date-field class="date-input start-date" [label]="'home.search.start' | transloco" />
-    <app-date-field class="date-input end-date" [label]="'home.search.end' | transloco" />
-    <button type="submit">{{ 'home.search.submit' | transloco }}</button>
-  </form>
+  @if (hasResidency()) {
+    <form class="search-panel" [formGroup]="form" (ngSubmit)="search()" novalidate>
+      <app-text-field
+        class="search-text"
+        [label]="'home.search.text' | transloco"
+        [placeholder]="'home.search.placeholder' | transloco"
+        [maxLength]="100"
+        [control]="form.controls.search"
+      />
+      <app-date-field
+        [showLabel]="true"
+        [label]="'home.search.start' | transloco"
+        [isoValue]="from()"
+        [isoMin]="today"
+        (isoValueChange)="setFrom($event)"
+      />
+      <app-date-field
+        [showLabel]="true"
+        [label]="'home.search.end' | transloco"
+        [isoValue]="to()"
+        [isoMin]="from() || today"
+        (isoValueChange)="to.set($event)"
+      />
+      <button appButton type="submit">{{ 'home.search.submit' | transloco }}</button>
+    </form>
+  }
 
   <section class="featured" aria-labelledby="featured-heading">
     <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
     @if (loading()) {
-      <app-skeleton [label]="'home.loading' | transloco">
-        <div class="condominium-grid">
-          @for (item of placeholders; track item) {
-            <div class="condominium-card">
-              <app-skeleton-block height="auto" />
-              <div class="card-content">
-                <app-skeleton-block width="60%" height="1.25rem" />
-                <app-skeleton-block class="availability" width="40%" />
-                <app-skeleton-block class="availability" width="50%" />
-              </div>
-            </div>
-          }
-        </div>
-      </app-skeleton>
+      <app-skeleton [label]="'home.loading' | transloco" [rows]="3" />
     } @else if (loadFailed()) {
       <app-alert kind="error">{{ 'home.loadError' | transloco }}</app-alert>
     } @else if (!hasResidency()) {
@@ -65,48 +65,14 @@
       >
         <a appButton routerLink="/condominiums">{{ 'home.joinAction' | transloco }}</a>
       </app-empty-state>
-    } @else if (featuredCondominiums().length === 0) {
-      <app-empty-state
-        icon="car"
-        [title]="'home.emptyCondominiumsTitle' | transloco"
-        [description]="'home.emptyCondominiumsDescription' | transloco"
-      />
     } @else {
-      <div class="condominium-grid">
-        @for (condominium of featuredCondominiums(); track condominium.id) {
-          <article class="condominium-card">
-            <img
-              [src]="condominium.imageUrl || fallbackImage"
-              loading="lazy"
-              decoding="async"
-              alt=""
-              (error)="useFallback($event)"
-            />
-            <div class="card-content">
-              <div class="card-heading">
-                <h3>{{ condominium.name }}</h3>
-                <button
-                  type="button"
-                  aria-label="{{ 'home.viewCondominium' | transloco }}"
-                  title="{{ 'home.viewCondominium' | transloco }}"
-                >
-                  <span aria-hidden="true">›</span>
-                </button>
-              </div>
-              <p class="availability">
-                {{ condominium.availableVagas }} {{ 'home.availableVagas' | transloco }}
-              </p>
-              @if (condominium.pricePerDay != null) {
-                <p class="price">
-                  {{ 'home.priceFrom' | transloco }}
-                  <strong>{{ condominium.pricePerDay | number: '1.2-2' }}</strong>
-                  {{ 'home.perDay' | transloco }}
-                </p>
-              }
-            </div>
-          </article>
-        }
-      </div>
+      <app-vacancy-results
+        [result]="result()"
+        [loading]="spotsLoading()"
+        [error]="spotsError.text()"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
     }
   </section>
 </section>

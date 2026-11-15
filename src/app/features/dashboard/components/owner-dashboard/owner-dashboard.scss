@@ -2,10 +2,8 @@
 
 :host {
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
   gap: var(--space-4);
-  min-height: 0;
 }
 
 .kpis {
@@ -17,9 +15,4 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-4);
   }
-}
-
-.leading {
-  display: inline-flex;
-  color: var(--color-primary-text);
 }

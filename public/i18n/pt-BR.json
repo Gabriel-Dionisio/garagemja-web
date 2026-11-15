@@ -33,6 +33,9 @@
       "forbidden": "Você não tem permissão para ver ou alterar vagas deste condomínio.",
       "notFound": "Vaga não encontrada ou indisponível.",
       "conflict": "A vaga mudou ou o número já está em uso. Recarregue e tente de novo."
+    },
+    "vehicles": {
+      "inUse": "O veículo tem aluguel em andamento ou pendente e não pode ser excluído."
     }
   },
   "common": {
@@ -178,37 +181,35 @@
     "myVehicles": "Meus veículos",
     "vehicleNew": "Cadastrar veículo",
     "vehicleEdit": "Editar veículo",
-    "searchVacancies": "Buscar Vagas"
+    "searchVacancies": "Buscar Vagas",
+    "vacancyDetails": "Detalhes da vaga"
   },
   "requests": {
     "title": "Solicitações",
-    "subtitle": "Pedidos de aluguel recebidos para as suas vagas.",
+    "count": "{{count}} solicitações",
+    "filters": "Filtrar solicitações",
+    "search": "Buscar por locatário, placa, vaga ou condomínio",
     "loading": "Carregando solicitações…",
-    "retry": "Tentar novamente",
     "spot": "Vaga {{number}}",
     "approve": "Aprovar",
     "refuse": "Recusar",
+    "reason": "Motivo: {{reason}}",
+    "conflict": "Não foi possível aprovar: o pedido expirou, já começou ou o condomínio não está ativo.",
     "tabs": {
       "label": "Situação das solicitações",
-      "pending": "Pendentes",
-      "approved": "Aprovados",
-      "refused": "Recusados"
+      "all": "Todas"
     },
     "status": {
       "PENDING": "Pendente",
       "APPROVED": "Aprovada",
-      "REFUSED": "Recusada"
+      "ACTIVE": "Em andamento",
+      "REFUSED": "Recusada",
+      "CANCELED": "Cancelada",
+      "FINISHED": "Concluída",
+      "EXPIRED": "Expirada"
     },
-    "empty": {
-      "PENDING": "Nenhuma solicitação pendente",
-      "APPROVED": "Nenhuma solicitação aprovada",
-      "REFUSED": "Nenhuma solicitação recusada"
-    },
-    "emptyDescription": {
-      "PENDING": "Os pedidos de aluguel das suas vagas que aguardam decisão aparecerão aqui.",
-      "APPROVED": "Os pedidos que você aprovar aparecerão aqui.",
-      "REFUSED": "Os pedidos que você recusar aparecerão aqui."
-    },
+    "emptyTitle": "Nenhuma solicitação encontrada",
+    "emptyDescription": "Os pedidos de aluguel das suas vagas aparecerão aqui.",
     "dialog": {
       "approve": {
         "title": "Aprovar solicitação",
@@ -218,7 +219,8 @@
       "refuse": {
         "title": "Recusar solicitação",
         "message": "Recusar o pedido de aluguel da vaga {{spot}}?",
-        "confirm": "Recusar"
+        "confirm": "Recusar",
+        "reason": "Motivo da recusa"
       }
     }
   },
@@ -247,10 +249,13 @@
     },
     "cancel": {
       "action": "Cancelar pedido",
+      "aria": "Cancelar pedido da vaga {{number}}",
       "title": "Cancelar pedido",
       "message": "Cancelar o pedido da vaga {{number}}? Esta ação não pode ser desfeita.",
       "confirm": "Cancelar pedido"
-    }
+    },
+    "search": "Buscar por vaga ou condomínio",
+    "reason": "Motivo: {{reason}}"
   },
   "auth": {
     "login": {
@@ -316,26 +321,16 @@
   },
   "home": {
     "greeting": "Olá, {{name}}",
-    "welcome": "Bem-vindo ao GaragemJá.",
-    "emptyTitle": "Suas vagas e aluguéis aparecerão aqui",
-    "emptyDescription": "A busca e o aluguel de vagas chegam nas próximas entregas.",
     "title": "Início",
-    "featuredTitle": "Vagas do meu condomínio",
-    "availableVagas": "vagas disponíveis",
-    "priceFrom": "A partir de R$",
-    "perDay": "por dia",
-    "viewCondominium": "Ver condomínio",
+    "featuredTitle": "Vagas disponíveis",
     "loading": "Carregando condomínios...",
     "loadError": "Não foi possível carregar os condomínios.",
-    "emptyCondominiumsTitle": "Nenhuma vaga disponível",
-    "emptyCondominiumsDescription": "Não há vagas cadastradas nos condomínios onde você mora.",
     "search": {
-      "condominium": "Condomínio",
-      "condominiumPlaceholder": "Ex.: Residencial Alpha",
-      "period": "Período",
       "start": "Início",
       "end": "Fim",
-      "submit": "Buscar"
+      "submit": "Buscar",
+      "text": "Vaga, local ou condomínio",
+      "placeholder": "Ex.: Residencial Alpha"
     },
     "joinTitle": "Entre no seu condomínio",
     "joinDescription": "Use o código do seu síndico ou cadastre o condomínio.",
@@ -1009,40 +1004,6 @@
         "upcoming": "Aprovados a iniciar",
         "monthEarnings": "Ganhos do mês"
       }
-    },
-    "rentals": {
-      "loading": "Carregando aluguéis...",
-      "status": {
-        "PENDING": "Aguardando decisão",
-        "APPROVED": "Aprovado",
-        "ACTIVE": "Em andamento",
-        "REFUSED": "Recusado",
-        "CANCELED": "Cancelado",
-        "FINISHED": "Finalizado",
-        "EXPIRED": "Expirado"
-      },
-      "filter": "Filtrar por situação",
-      "all": "Todos",
-      "emptyTitle": "Nenhum aluguel encontrado",
-      "emptyDescription": "Os pedidos de aluguel das suas vagas aparecem aqui.",
-      "actions": {
-        "approve": "Aprovar",
-        "refuse": "Recusar",
-        "viewSpot": "Ver vaga"
-      },
-      "confirm": {
-        "reason": "Motivo",
-        "approve": {
-          "title": "Aprovar aluguel",
-          "message": "Aprovar o pedido da vaga {{number}}? Pedidos pendentes que se sobrepõem são recusados.",
-          "confirm": "Aprovar"
-        },
-        "refuse": {
-          "title": "Recusar aluguel",
-          "message": "Informe o motivo da recusa do pedido da vaga {{number}}. O solicitante verá esse texto.",
-          "confirm": "Recusar"
-        }
-      }
     }
   },
   "dateField": {
@@ -1163,7 +1124,8 @@
       "count": "{{count}} vaga(s) cadastrada(s)",
       "emptyTitle": "Você ainda não cadastrou vagas",
       "emptyDescription": "Cadastre sua vaga para o síndico aprovar e depois ofereça-a para aluguel.",
-      "spotBlock": "Vaga {{number}} - Bloco {{block}}"
+      "spotBlock": "Vaga {{number}} - Bloco {{block}}",
+      "details": "Ver detalhes"
     },
     "badge": {
       "available": "Disponível",
@@ -1214,14 +1176,16 @@
   "vehicles": {
     "list": {
       "title": "Meus veículos",
-      "subtitle": "Veículos cadastrados nos condomínios onde você mora.",
       "new": "Cadastrar veículo",
       "edit": "Editar",
-      "retry": "Tentar novamente",
       "loading": "Carregando veículos…",
       "caption": "Lista de veículos",
       "emptyTitle": "Nenhum veículo cadastrado",
-      "emptyDescription": "Cadastre um veículo para usá-lo nos seus aluguéis."
+      "emptyDescription": "Cadastre um veículo para usá-lo nos seus aluguéis.",
+      "filter": "Filtrar veículos",
+      "count": "{{count}} veículos",
+      "search": "Buscar por placa, marca ou modelo",
+      "delete": "Excluir"
     },
     "form": {
       "newTitle": "Cadastrar veículo",
@@ -1245,60 +1209,73 @@
     "errors": {
       "forbidden": "Você não tem permissão para esta ação neste veículo.",
       "notFound": "Veículo não encontrado ou indisponível."
+    },
+    "delete": {
+      "title": "Excluir veículo",
+      "message": "Excluir o veículo {{plate}}? Você poderá cadastrar a mesma placa de novo.",
+      "confirm": "Excluir"
+    },
+    "placeholders": {
+      "brand": "Honda",
+      "model": "Civic",
+      "plate": "ABC1D23",
+      "color": "Prata"
     }
   },
   "searchVacancies": {
     "title": "Buscar vagas",
-    "empty": "Nenhuma vaga encontrada",
-    "spot": "Vaga {{number}}",
-    "spotBlock": "Vaga {{number}} - {{block}}",
-    "available": "Disponível",
-    "unavailable": "Indisponível",
-    "priceFrom": "R$ {{price}}",
-    "unit": {
-      "HOUR": "/hora",
-      "DAY": "/dia",
-      "MONTH": "/mês"
+    "count": "{{count}} vagas encontradas",
+    "loading": "Carregando vagas…",
+    "emptyTitle": "Nenhuma vaga encontrada",
+    "emptyDescription": "Nenhuma vaga disponível corresponde à busca. Ajuste os filtros ou o período.",
+    "mode": {
+      "label": "Cobrança",
+      "daily": "Por dia",
+      "hourly": "Por hora"
     },
-    "size": {
-      "SMALL": "Pequena",
-      "MEDIUM": "Média",
-      "LARGE": "Grande"
-    },
-    "map": {
-      "label": "Mapa ilustrativo",
-      "zoomIn": "Aumentar zoom",
-      "zoomOut": "Diminuir zoom",
-      "fit": "Ajustar à tela"
-    },
-    "loading": "Carregando vagas...",
-    "loadError": "Não foi possível carregar as vagas.",
-    "retry": "Tentar novamente",
-    "noVacanciesDescription": "Ainda não há vagas disponíveis para você.",
-    "noResultsDescription": "Nenhuma vaga corresponde à pesquisa ou aos filtros.",
-    "clearFilters": "Limpar filtros",
-    "countOne": "{{count}} vaga encontrada",
-    "countOther": "{{count}} vagas encontradas",
     "sort": {
       "label": "Ordenar por",
+      "NUMBER": "Número",
       "PRICE_ASC": "Menor preço",
       "PRICE_DESC": "Maior preço"
     },
     "filters": {
       "label": "Filtros",
-      "availability": {
-        "label": "Disponibilidade",
-        "ALL": "Todas",
-        "AVAILABLE": "Disponíveis",
-        "UNAVAILABLE": "Indisponíveis"
-      },
-      "size": {
-        "label": "Tamanho",
-        "ALL": "Todos os tamanhos",
-        "SMALL": "Pequena",
-        "MEDIUM": "Média",
-        "LARGE": "Grande"
-      }
+      "search": "Buscar por vaga, local ou condomínio",
+      "from": "A partir de",
+      "to": "Até",
+      "minPrice": "Preço mínimo",
+      "maxPrice": "Preço máximo"
+    },
+    "details": {
+      "title": "Detalhes da vaga",
+      "loading": "Carregando vaga…",
+      "photo": "Foto da vaga",
+      "showPhoto": "Mostrar foto {{number}}",
+      "size": "Tamanho",
+      "location": "Local",
+      "owner": "Proprietário",
+      "availability": "Disponibilidade",
+      "noAvailability": "Esta vaga não tem períodos disponíveis.",
+      "request": "Solicitar aluguel",
+      "edit": "Editar"
+    },
+    "request": {
+      "title": "Solicitar aluguel",
+      "vehicleSection": "Veículo",
+      "vehicle": "Veículo",
+      "periodSection": "Período",
+      "modeDay": "Por dia",
+      "modeHour": "Por hora",
+      "date": "Dia",
+      "quoteDays": "{{units}} diária(s) de {{price}} = {{total}}",
+      "quoteHours": "{{units}} hora(s) de {{price}} = {{total}}",
+      "unavailable": "Escolha um período dentro da disponibilidade da vaga.",
+      "noVehicle": "Você não tem veículo cadastrado neste condomínio.",
+      "addVehicle": "Cadastrar veículo",
+      "submit": "Enviar solicitação",
+      "invalid": "Confira o período e o veículo escolhidos.",
+      "conflict": "Esse período não está mais disponível. Escolha outro."
     }
   }
 }

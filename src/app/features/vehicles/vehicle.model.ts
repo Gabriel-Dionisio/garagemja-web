@@ -9,6 +9,7 @@ export interface Vehicle {
 
 export interface Residency {
   id: string;
+  condominiumId: string;
   condominiumName: string;
   unit: string | null;
   block: string | null;

@@ -47,21 +47,24 @@ describe('VehiclesApi', () => {
 
   afterEach(() => http.verify());
 
-  it('lists the vehicles of every residency with its condominium', () => {
-    let result: unknown;
-    api.listMine().subscribe((items) => (result = items));
+  it('lists my vehicles paginated with the condominium of each residency', () => {
+    let result: { items: unknown[]; total?: number } | undefined;
+    api.list('abc', 1, 10).subscribe((page) => (result = page));
 
     http.expectOne((req) => req.url === '/api/v1/me/residencies').flush([residency]);
-    const request = http.expectOne(
-      (req) => req.url === '/api/v1/vehicles' && req.params.get('residentId') === 'r1',
-    );
-    request.flush([vehicle]);
+    const request = http.expectOne((req) => req.url === '/api/v1/vehicles');
+    expect(request.request.params.get('mine')).toBe('true');
+    expect(request.request.params.get('search')).toBe('abc');
+    expect(request.request.params.get('page')).toBe('1');
+    request.flush([vehicle], { headers: { 'X-Total-Count': '11' } });
 
-    expect(result).toEqual([
+    expect(result?.total).toBe(11);
+    expect(result?.items).toEqual([
       {
         ...vehicle,
         residency: {
           id: 'r1',
+          condominiumId: 'c1',
           condominiumName: 'Residencial Aurora',
           unit: '101',
           block: 'A',
@@ -71,12 +74,19 @@ describe('VehiclesApi', () => {
     ]);
   });
 
-  it('does not query vehicles when there is no residency', () => {
-    let result: unknown;
-    api.listMine().subscribe((items) => (result = items));
-
+  it('omits the search param when empty', () => {
+    api.list('', 0, 10).subscribe();
     http.expectOne((req) => req.url === '/api/v1/me/residencies').flush([]);
-    expect(result).toEqual([]);
+    const request = http.expectOne((req) => req.url === '/api/v1/vehicles');
+    expect(request.request.params.has('search')).toBe(false);
+    request.flush([]);
+  });
+
+  it('removes a vehicle', () => {
+    api.remove('v1').subscribe();
+    const request = http.expectOne('/api/v1/vehicles/v1');
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
   });
 
   it('creates a vehicle omitting empty optional fields', () => {

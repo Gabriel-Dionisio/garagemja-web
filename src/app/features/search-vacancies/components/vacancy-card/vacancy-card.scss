@@ -1,60 +1,57 @@
-@use 'styles/mixins' as *;
-
 :host {
   display: block;
+  min-width: 0;
 }
 
 .card {
-  display: grid;
-  grid-template-columns: minmax(6rem, 10rem) minmax(0, 1fr);
-  gap: var(--space-4);
-  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
+  color: var(--color-text);
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
 .photo {
+  display: block;
   width: 100%;
-  height: 100%;
-  min-height: 6.5rem;
-  border-radius: var(--radius-md);
+  aspect-ratio: 16 / 10;
   background: var(--color-divider);
   object-fit: cover;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
 }
 
 .info {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  padding: var(--space-3);
   min-width: 0;
-  color: var(--color-text);
 
-  h2 {
-    margin: 0;
-    font-size: var(--font-size-md);
-    font-weight: 600;
-  }
-
-  p {
-    margin: 0;
+  small {
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
   }
 }
 
-.footer {
+.price {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) var(--space-3);
-  margin-top: auto;
-}
-
-.info .price {
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
   color: var(--color-primary);
-
-  strong {
-    font-size: var(--font-size-md);
-  }
+  font-weight: 600;
 }

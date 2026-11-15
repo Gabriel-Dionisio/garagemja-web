@@ -4,6 +4,7 @@ import { Observable, map } from 'rxjs';
 import { fields } from '../../../shared/models/fields';
 import { Page, toPage } from '../../../shared/models/page';
 import { LookupOption } from '../../../shared/ui/lookup-field/lookup-field';
+import { VacancyCriteria } from '../../search-vacancies/search-vacancies.model';
 import {
   ParkingSpot,
   ParkingSpotCondominium,
@@ -43,24 +44,45 @@ export class ParkingSpotsApi {
     page: number,
     size: number,
   ): Observable<Page<ParkingSpot>> {
-    let params = new HttpParams().set('page', page).set('size', size);
+    let params = new HttpParams();
     if (condominiumId) params = params.set('condominiumId', condominiumId);
     if (filter.status) params = params.set('status', filter.status);
     if (filter.size) params = params.set('spotSize', filter.size);
     if (filter.search) params = params.set('search', filter.search);
     if (filter.mine) params = params.set('mine', true);
-    return this.http.get<unknown>(SPOTS_URL, { params, observe: 'response' }).pipe(
-      map((response) => {
-        if (!Array.isArray(response.body)) throw new Error('Invalid parking spot list');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          response.body.map(toParkingSpot),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
-      }),
-    );
+    return this.page(params, page, size);
+  }
+
+  search(criteria: VacancyCriteria, page: number, size: number): Observable<Page<ParkingSpot>> {
+    let params = new HttpParams().set('available', true).set('sort', criteria.sort);
+    if (criteria.search) params = params.set('search', criteria.search);
+    if (criteria.size) params = params.set('spotSize', criteria.size);
+    if (criteria.from) params = params.set('from', criteria.from);
+    if (criteria.to) params = params.set('to', criteria.to);
+    if (criteria.hourly) params = params.set('hourly', true);
+    if (criteria.minPrice !== null) params = params.set('minPrice', criteria.minPrice);
+    if (criteria.maxPrice !== null) params = params.set('maxPrice', criteria.maxPrice);
+    return this.page(params, page, size);
+  }
+
+  private page(params: HttpParams, page: number, size: number): Observable<Page<ParkingSpot>> {
+    return this.http
+      .get<unknown>(SPOTS_URL, {
+        params: params.set('page', page).set('size', size),
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          if (!Array.isArray(response.body)) throw new Error('Invalid parking spot list');
+          const total = Number(response.headers.get('X-Total-Count'));
+          return toPage(
+            response.body.map(toParkingSpot),
+            page,
+            size,
+            Number.isInteger(total) ? total : undefined,
+          );
+        }),
+      );
   }
 
   residencies(): Observable<ParkingSpotResidency[]> {

@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { fields, isNullableString } from '../../../shared/models/fields';
+import { Page, toPage } from '../../../shared/models/page';
 import { Residency, Vehicle, VehicleFields, VehicleListItem } from '../vehicle.model';
 
 const VEHICLES_URL = '/api/v1/vehicles';
@@ -31,9 +32,10 @@ export function toVehicle(value: unknown): Vehicle {
 }
 
 export function toResidency(value: unknown): Residency {
-  const { id, condominiumName, unit, block, status } = fields(value, 'residency');
+  const { id, condominiumId, condominiumName, unit, block, status } = fields(value, 'residency');
   if (
     typeof id !== 'string' ||
+    typeof condominiumId !== 'string' ||
     typeof condominiumName !== 'string' ||
     !isNullableString(unit) ||
     !isNullableString(block)
@@ -42,6 +44,7 @@ export function toResidency(value: unknown): Residency {
   }
   return {
     id,
+    condominiumId,
     condominiumName,
     unit: unit ?? null,
     block: block ?? null,
@@ -63,20 +66,28 @@ export class VehiclesApi {
     );
   }
 
-  listMine(): Observable<VehicleListItem[]> {
-    return this.residencies().pipe(
-      switchMap((residencies) =>
-        residencies.length === 0
-          ? of([])
-          : forkJoin(
-              residencies.map((residency) =>
-                this.listByResident(residency.id).pipe(
-                  map((vehicles) => vehicles.map((vehicle) => ({ ...vehicle, residency }))),
-                ),
-              ),
-            ).pipe(map((groups) => groups.flat())),
-      ),
+  list(search: string, page: number, size: number): Observable<Page<VehicleListItem>> {
+    let params = new HttpParams().set('mine', true).set('page', page).set('size', size);
+    if (search) params = params.set('search', search);
+    return forkJoin({
+      residencies: this.residencies(),
+      response: this.http.get<unknown>(VEHICLES_URL, { params, observe: 'response' }),
+    }).pipe(
+      map(({ residencies, response }) => {
+        if (!Array.isArray(response.body)) throw new Error('Invalid vehicle list');
+        const byId = new Map(residencies.map((residency) => [residency.id, residency]));
+        const items = response.body.map(toVehicle).map((vehicle) => ({
+          ...vehicle,
+          residency: byId.get(vehicle.residentId) ?? null,
+        }));
+        const total = Number(response.headers.get('X-Total-Count'));
+        return toPage(items, page, size, Number.isInteger(total) ? total : undefined);
+      }),
     );
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${VEHICLES_URL}/${id}`);
   }
 
   get(id: string): Observable<Vehicle> {
@@ -98,16 +109,6 @@ export class VehiclesApi {
         color: values.color.trim(),
       })
       .pipe(map(toVehicle));
-  }
-
-  private listByResident(residentId: string): Observable<Vehicle[]> {
-    const params = new HttpParams().set('residentId', residentId);
-    return this.http.get<unknown>(VEHICLES_URL, { params }).pipe(
-      map((body) => {
-        if (!Array.isArray(body)) throw new Error('Invalid vehicle list');
-        return body.map(toVehicle);
-      }),
-    );
   }
 }
 

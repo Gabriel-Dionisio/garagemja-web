@@ -21,6 +21,7 @@ export interface Rental {
   price: number;
   total: number;
   status: RentalStatus;
+  cancelReason: string | null;
 }
 
 export function isRentalStatus(value: unknown): value is RentalStatus {

@@ -57,20 +57,6 @@ describe('ShellLayout', () => {
     expect(element.querySelector('button[aria-label="Abrir menu"]')).toBeNull();
   });
 
-  it('esconde a busca fora das rotas que a pedem', async () => {
-    const { element } = await setup(false);
-    expect(element.querySelector('.topbar-search')).toBeNull();
-  });
-
-  it('mostra a busca na rota com showSearch', async () => {
-    const { fixture, element } = await setup(false, USER, [
-      { path: 'home', data: { showSearch: true }, children: [] },
-    ]);
-    await TestBed.inject(Router).navigateByUrl('/home');
-    await fixture.whenStable();
-    expect(element.querySelector('.topbar-search')).not.toBeNull();
-  });
-
   it('mostra só o primeiro nome, ignorando espaços iniciais', async () => {
     const { element } = await setup(false, { ...USER, name: '  Ana Souza' });
     const name = element.querySelector('.user-name');

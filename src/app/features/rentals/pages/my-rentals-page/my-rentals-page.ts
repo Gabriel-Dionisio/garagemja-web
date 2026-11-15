@@ -30,6 +30,7 @@ import {
   PAGE_SIZES,
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
+import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
 import { RentalsApi } from '../../data/rentals-api';
 import { RENTAL_STATUSES, Rental, RentalStatus, isRentalStatus } from '../../rental.model';
 
@@ -58,6 +59,7 @@ const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
     Page,
     PageHeader,
     Paginator,
+    SearchFilter,
   ],
   templateUrl: './my-rentals-page.html',
   styleUrl: './my-rentals-page.scss',
@@ -83,8 +85,11 @@ export class MyRentalsPage {
   protected readonly status = signal<RentalStatus | null>(
     isRentalStatus(this.initialStatus) ? this.initialStatus : null,
   );
+  protected readonly search = signal('');
   protected readonly filtersOpen = signal(this.status() !== null);
-  protected readonly activeFilters = computed(() => (this.status() ? 1 : 0));
+  protected readonly activeFilters = computed(
+    () => (this.status() ? 1 : 0) + (this.search() ? 1 : 0),
+  );
   protected readonly page = signal(0);
   protected readonly size = signal(DEFAULT_PAGE_SIZE);
   protected readonly loading = signal(true);
@@ -97,6 +102,7 @@ export class MyRentalsPage {
     page: this.page(),
     size: this.size(),
     status: this.status(),
+    search: this.search(),
   }));
 
   constructor() {
@@ -106,8 +112,8 @@ export class MyRentalsPage {
           this.loading.set(true);
           this.error.clear();
         }),
-        switchMap(({ page, size, status }) =>
-          this.api.list(page, size, status).pipe(
+        switchMap(({ page, size, status, search }) =>
+          this.api.list(page, size, status, search).pipe(
             catchError((error: unknown) => {
               this.error.setFrom(error);
               this.result.set(null);
@@ -155,6 +161,11 @@ export class MyRentalsPage {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  protected applySearch(search: string): void {
+    this.search.set(search);
+    this.page.set(0);
   }
 
   protected changeSize(size: number): void {

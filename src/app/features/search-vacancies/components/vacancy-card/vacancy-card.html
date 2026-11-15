@@ -1,29 +1,26 @@
-<article class="card">
-  <img class="photo" [src]="imageSrc()" alt="" loading="lazy" (error)="onImageError()" />
-  <div class="info">
-    <h2>
-      @if (vacancy().block) {
-        {{ 'searchVacancies.spotBlock' | transloco: { number: vacancy().number, block: vacancy().block } }}
-      } @else {
-        {{ 'searchVacancies.spot' | transloco: { number: vacancy().number } }}
-      }
-    </h2>
-    <p class="condominium">{{ vacancy().condominiumName }}</p>
-    @if (vacancy().size; as size) {
-      <p class="size">{{ 'searchVacancies.size.' + size | transloco }}</p>
+<a class="card" [routerLink]="['/search-vacancies', spot().id]" [queryParams]="queryParams()">
+  @if (spot().thumbnailUrl; as url) {
+    <img class="photo" [src]="url" alt="" loading="lazy" />
+  } @else {
+    <span class="photo placeholder"><app-icon name="parking" /></span>
+  }
+  <span class="info">
+    <strong>{{ 'parkingSpots.spot' | transloco: { number: spot().number } }}</strong>
+    <small>{{ spot().condominiumName }}</small>
+    @if (spot().size; as size) {
+      <small>{{ sizeLabels[size] | transloco }}</small>
     }
-    <div class="footer">
-      @if (vacancy().price != null) {
-        <p class="price">
-          <strong>{{ 'searchVacancies.priceFrom' | transloco: { price: (vacancy().price | number: '1.2-2' : locale()) } }}</strong>
-          @if (vacancy().priceUnit; as unit) {
-            <span>{{ 'searchVacancies.unit.' + unit | transloco }}</span>
-          }
-        </p>
-      }
-      <app-badge [tone]="vacancy().available ? 'success' : 'neutral'">
-        {{ (vacancy().available ? 'searchVacancies.available' : 'searchVacancies.unavailable') | transloco }}
-      </app-badge>
-    </div>
-  </div>
-</article>
+    @if (spot().availability; as availability) {
+      <span class="price">
+        @if (availability.dailyPrice !== null) {
+          {{ 'parkingSpots.price.daily' | transloco: { value: money()(availability.dailyPrice) } }}
+        }
+        @if (availability.hourlyPrice !== null) {
+          <small>{{
+            'parkingSpots.price.hourly' | transloco: { value: money()(availability.hourlyPrice) }
+          }}</small>
+        }
+      </span>
+    }
+  </span>
+</a>

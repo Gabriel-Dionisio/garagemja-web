@@ -15,6 +15,10 @@
       [value]="status()"
       (valueChange)="filter($event)"
     />
+    <app-search-filter
+      [label]="'rentals.search' | transloco"
+      (searchChange)="applySearch($event)"
+    />
   </app-filter-panel>
 
   @if (error.text(); as message) {
@@ -42,6 +46,9 @@
           <small>{{ rental.condominiumName }}</small>
           @let when = period(rental);
           <small> {{ when.key | transloco: when.params }} · {{ money()(rental.total) }} </small>
+          @if (rental.cancelReason) {
+            <small>{{ 'rentals.reason' | transloco: { reason: rental.cancelReason } }}</small>
+          }
           <span status>
             <app-badge [tone]="tones[rental.status]">{{
               'rentals.status.' + rental.status | transloco
@@ -52,7 +59,7 @@
               <button
                 appIconButton
                 type="button"
-                [label]="('rentals.cancel.action' | transloco) + ': ' + rental.parkingSpotNumber"
+                [label]="'rentals.cancel.aria' | transloco: { number: rental.parkingSpotNumber }"
                 (click)="cancel(rental)"
               >
                 <app-icon name="close" />

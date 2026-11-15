@@ -40,27 +40,27 @@ test('renter sees the three pending requests and cancels one', async ({ world })
 });
 
 test('owner refuses one request with a reason and approves another', async ({ world }) => {
-  const { page } = user;
+  const { requests } = user;
   await user.actAs(world.owner);
-  await user.shell.open('Painel');
-  await expect(page.getByRole('button', { name: `Aprovar: ${canceled}` })).toHaveCount(0);
+  await requests.goto();
+  await expect(requests.request(canceled)).toHaveCount(0);
+  await expect(requests.request(refused)).toContainText('Pendente');
 
-  await page.getByRole('button', { name: `Recusar: ${refused}` }).click();
-  await expect(user.confirm.root).toBeVisible();
-  await user.confirm.root.getByRole('button', { name: 'Recusar', exact: true }).click();
-  await expect(user.confirm.reason).toBeVisible();
-  await user.confirm.confirm('Recusar', 'E2E: vaga em manutencao');
-  await expect(page.getByRole('button', { name: `Recusar: ${refused}` })).toHaveCount(0);
+  await requests.refuse(refused, 'E2E: vaga em manutencao');
+  await expect(requests.request(refused)).toHaveCount(0);
 
-  await page.getByRole('button', { name: `Aprovar: ${approved}` }).click();
-  await user.confirm.confirm('Aprovar');
-  await expect(page.getByRole('button', { name: `Aprovar: ${approved}` })).toHaveCount(0);
+  await requests.approve(approved);
+  await expect(requests.request(approved)).toHaveCount(0);
+
+  await requests.filterStatus('Recusada');
+  await expect(requests.request(refused)).toContainText('E2E: vaga em manutencao');
 });
 
 test('renter sees the decisions', async ({ world }) => {
   await user.actAs(world.renter);
   await user.myRentals.goto();
   await expect(user.myRentals.rental(refused)).toContainText('Recusado');
+  await expect(user.myRentals.rental(refused)).toContainText('E2E: vaga em manutencao');
   await expect(user.myRentals.rental(approved)).toContainText('Aprovado');
   await expect(
     user.myRentals.rental(refused).getByRole('button', { name: /Cancelar pedido/ }),

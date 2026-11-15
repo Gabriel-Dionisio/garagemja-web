@@ -350,6 +350,10 @@ async function ensureRental(
       : next === 'ACTIVE' || next === 'FINISHED'
         ? condo.requester
         : (spot.owner ?? condo.requester);
+  if (rental.startOffset < 0 && remaining.length) {
+    psql(`update rentals set status = '${remaining[remaining.length - 1]}' where id = '${id}'`);
+    return log(`rental   ${label}: -> ${rental.target} (past period, set by SQL)`);
+  }
   for (const next of remaining) {
     await (
       await sessionFor(actorFor(next))

@@ -1,45 +1,25 @@
-import { DecimalPipe, registerLocaleData } from '@angular/common';
-import localePt from '@angular/common/locales/pt';
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Badge } from '../../../../shared/ui/badge/badge';
-import {
-  DEFAULT_PARKING_SPACE_IMAGE,
-  Vacancy,
-  hasUsableImageUrl,
-} from '../../search-vacancies.model';
-
-registerLocaleData(localePt, 'pt');
+import { TranslocoPipe } from '@jsverse/transloco';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { moneyFormatter } from '../../../../shared/forms/format';
+import { Icon } from '../../../../shared/ui/icon/icon';
+import { PARKING_SPOT_SIZE_LABELS } from '../../../parking-spots/parking-spot-status';
+import { ParkingSpot } from '../../../parking-spots/parking-spot.model';
 
 @Component({
   selector: 'app-vacancy-card',
-  imports: [DecimalPipe, TranslocoPipe, Badge],
+  imports: [TranslocoPipe, RouterLink, Icon],
   templateUrl: './vacancy-card.html',
   styleUrl: './vacancy-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VacancyCard {
-  private readonly transloco = inject(TranslocoService);
+  private readonly locale = inject(LocaleService);
 
-  readonly vacancy = input.required<Vacancy>();
-  protected readonly locale = toSignal(this.transloco.langChanges$, {
-    initialValue: this.transloco.getActiveLang(),
-  });
+  readonly spot = input.required<ParkingSpot>();
+  readonly queryParams = input<Record<string, string | null>>({});
 
-  /** Volta a false sempre que o card passa a representar outra vaga. */
-  protected readonly imageFailed = linkedSignal<Vacancy, boolean>({
-    source: this.vacancy,
-    computation: () => false,
-  });
-
-  protected readonly imageSrc = computed(() => {
-    const url = this.vacancy().imageUrl;
-    return !this.imageFailed() && hasUsableImageUrl(url) ? url.trim() : DEFAULT_PARKING_SPACE_IMAGE;
-  });
-
-  /** Se a própria imagem padrão falhar, não troca o src de novo (evita loop de erro). */
-  protected onImageError(): void {
-    if (this.imageSrc() !== DEFAULT_PARKING_SPACE_IMAGE) this.imageFailed.set(true);
-  }
+  protected readonly sizeLabels = PARKING_SPOT_SIZE_LABELS;
+  protected readonly money = computed(() => moneyFormatter(this.locale.language()));
 }

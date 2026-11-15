@@ -32,12 +32,23 @@ describe('MyRentalsPage', () => {
 
   it('starts filtered when the status comes from the query string', async () => {
     const { list, root } = await setup('/rentals?status=ACTIVE');
-    expect(list).toHaveBeenCalledWith(0, 25, 'ACTIVE');
+    expect(list).toHaveBeenCalledWith(0, 25, 'ACTIVE', '');
     expect(root.querySelector('.count')?.textContent?.trim()).toBe('1');
+  });
+
+  it('sends the search term and goes back to the first page', async () => {
+    const { list, root } = await setup();
+    const input = root.querySelector<HTMLInputElement>('app-search-filter input');
+    input!.value = 'ABC';
+    input!.dispatchEvent(new Event('input'));
+    root
+      .querySelector<HTMLFormElement>('app-search-filter form')!
+      .dispatchEvent(new Event('submit'));
+    await vi.waitFor(() => expect(list).toHaveBeenLastCalledWith(0, 25, null, 'ABC'));
   });
 
   it('ignores an unknown status in the query string', async () => {
     const { list } = await setup('/rentals?status=NOPE');
-    expect(list).toHaveBeenCalledWith(0, 25, null);
+    expect(list).toHaveBeenCalledWith(0, 25, null, '');
   });
 });

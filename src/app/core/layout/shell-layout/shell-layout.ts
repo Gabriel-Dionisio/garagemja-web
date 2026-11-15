@@ -13,17 +13,9 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  NavigationEnd,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
-import { filter, map, startWith } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { Alert } from '../../../shared/ui/alert/alert';
 import { Badge } from '../../../shared/ui/badge/badge';
 import { BrandLogo } from '../../../shared/ui/brand-logo/brand-logo';
@@ -32,7 +24,6 @@ import { Icon } from '../../../shared/ui/icon/icon';
 import { IconButton } from '../../../shared/ui/icon-button/icon-button';
 import { AuthService } from '../../auth/auth-service';
 import { NavBadges } from '../nav-badges';
-import { TopbarSearch } from '../topbar-search/topbar-search';
 import { navItemsFor } from '../nav-items';
 import { UserMenu } from '../user-menu/user-menu';
 import { ViewportService } from '../viewport-service';
@@ -51,7 +42,6 @@ import { ViewportService } from '../viewport-service';
     Icon,
     UserMenu,
     IconButton,
-    TopbarSearch,
   ],
   templateUrl: './shell-layout.html',
   styleUrl: './shell-layout.scss',
@@ -61,7 +51,6 @@ export class ShellLayout {
   private readonly auth = inject(AuthService);
   private readonly errorText = inject(ErrorText);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
   private readonly mainElement = viewChild.required<ElementRef<HTMLElement>>('main');
   private readonly menuButton = viewChild<string, ElementRef<HTMLButtonElement>>('menuButton', {
     read: ElementRef,
@@ -79,14 +68,6 @@ export class ShellLayout {
   protected readonly items = computed(() => navItemsFor(this.user()?.roles ?? []));
   protected readonly mainItems = computed(() => this.items().filter((item) => !item.group));
   protected readonly managementItems = computed(() => this.items().filter((item) => item.group));
-  protected readonly showSearch = toSignal(
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      startWith(null),
-      map(() => this.routeFlag('showSearch')),
-    ),
-    { initialValue: false },
-  );
   protected readonly navOpen = signal(false);
   protected readonly logoutError = this.errorText.state();
   protected readonly loggingOut = signal(false);
@@ -132,14 +113,5 @@ export class ShellLayout {
         this.logoutError.setFrom(error);
       },
     });
-  }
-
-  private routeFlag(key: string): boolean {
-    let current: ActivatedRouteSnapshot | null = this.route.snapshot;
-    while (current) {
-      if (current.data[key] === true) return true;
-      current = current.firstChild;
-    }
-    return false;
   }
 }

@@ -31,7 +31,7 @@ import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { VehiclesApi } from '../../data/vehicles-api';
 import { Residency } from '../../vehicle.model';
-import { formatPlate, plateValidator } from '../../vehicle-plate';
+import { formatPlate, plateValidator } from '../../../../shared/forms/plate';
 
 const LIST_URL = '/vehicles';
 const MAX_TEXT = 50;

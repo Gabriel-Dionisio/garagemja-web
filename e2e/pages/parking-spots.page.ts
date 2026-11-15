@@ -53,7 +53,7 @@ export class MyParkingSpotsPage extends SpotList {
   }
 
   open(number: string) {
-    return this.spot(number).getByRole('link').click();
+    return this.spot(number).locator('a.main').click();
   }
 }
 

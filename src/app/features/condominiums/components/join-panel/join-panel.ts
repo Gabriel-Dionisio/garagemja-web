@@ -112,7 +112,9 @@ export class JoinPanel {
   protected submit(): void {
     if (this.busy() || !this.preview()) return;
     if (this.unit.invalid || this.block.invalid) {
+      this.unit.markAsDirty();
       this.unit.markAsTouched();
+      this.block.markAsDirty();
       this.block.markAsTouched();
       return;
     }

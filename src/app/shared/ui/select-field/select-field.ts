@@ -7,6 +7,7 @@ import { uniqueId } from '../../forms/unique-id';
 export interface SelectOption {
   value: string;
   label: string;
+  literal?: boolean;
 }
 
 @Component({

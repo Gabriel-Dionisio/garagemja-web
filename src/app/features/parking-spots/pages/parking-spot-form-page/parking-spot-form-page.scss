@@ -1,0 +1,82 @@
+@use 'styles/mixins' as *;
+
+app-page-header,
+app-alert {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+h2 {
+  margin-bottom: var(--space-4);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+app-chip-group,
+app-lookup-field {
+  display: block;
+  margin-top: var(--space-4);
+}
+
+form > app-chip-group {
+  margin: 0 0 var(--space-4);
+}
+
+.page {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+
+  &.has-aside {
+    @include from($bp-lg) {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    }
+  }
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+
+  @include from($bp-md) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+
+.image {
+  order: -1;
+  width: 100%;
+  max-width: min(12rem, 35dvh);
+  margin-inline: auto;
+
+  @include from($bp-md) {
+    order: 0;
+    justify-self: end;
+    margin-inline: 0;
+    max-width: min(16rem, 40dvh);
+    margin-top: calc(1lh + 0.125rem);
+  }
+}
+
+app-form-section {
+  --form-section-columns: 1;
+}
+
+aside {
+  @include from($bp-lg) {
+    position: sticky;
+    top: 0;
+  }
+}
+
+form app-form-actions {
+  @include from($bp-md) {
+    position: sticky;
+    bottom: 0;
+    padding-block: var(--space-3);
+    background: var(--color-surface);
+  }
+}

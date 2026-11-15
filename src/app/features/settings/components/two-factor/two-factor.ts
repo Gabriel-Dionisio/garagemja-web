@@ -5,6 +5,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Button } from '../../../../shared/ui/button/button';
+import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { SettingRow } from '../../../../shared/ui/setting-row/setting-row';
 import { SecurityApi } from '../../data/security-api';
 import { TotpStatus } from '../../security.model';
@@ -12,7 +13,7 @@ import { TwoFactorDialog, TwoFactorMode } from '../two-factor-dialog/two-factor-
 
 @Component({
   selector: 'app-two-factor',
-  imports: [TranslocoPipe, Alert, Button, SettingRow],
+  imports: [TranslocoPipe, Alert, Button, FormActions, SettingRow],
   templateUrl: './two-factor.html',
   styleUrl: './two-factor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

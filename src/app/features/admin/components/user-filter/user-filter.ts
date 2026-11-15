@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, output } from '@angular/cor
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { formatCpf, formatEmailInput, onlyDigits } from '../../../../shared/forms/masks';
 import { cpfValidator } from '../../../../shared/forms/cpf';
+import { applyWhileTyping } from '../../../../shared/forms/apply-while-typing';
 import { Button } from '../../../../shared/ui/button/button';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { UserFilter } from '../../user.model';
@@ -23,6 +24,10 @@ export class UserFilterForm {
     email: ['', [Validators.email]],
     cpf: ['', [cpfValidator]],
   });
+
+  constructor() {
+    applyWhileTyping(this.form, () => this.apply());
+  }
 
   protected apply(): void {
     if (this.form.invalid) {

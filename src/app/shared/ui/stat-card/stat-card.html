@@ -3,6 +3,11 @@
     <span class="value">{{ value() }}</span>
     <span class="label">{{ label() }}</span>
   </a>
+} @else if (selectable()) {
+  <button type="button" class="kpi" [class.highlight]="highlight()" (click)="selected.emit()">
+    <span class="value">{{ value() }}</span>
+    <span class="label">{{ label() }}</span>
+  </button>
 } @else {
   <div class="kpi" [class.highlight]="highlight()">
     <span class="value">{{ value() }}</span>

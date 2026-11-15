@@ -81,6 +81,22 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'condominiums/:id/parking-spots',
+        canActivate: [roleGuard('CONDOMINIUM_ADMIN')],
+        loadChildren: () =>
+          import('./features/parking-spots/parking-spots.routes').then(
+            (m) => m.PARKING_SPOT_ROUTES,
+          ),
+      },
+      {
+        path: 'parking-spots',
+        canActivate: [roleGuard('RESIDENT')],
+        loadChildren: () =>
+          import('./features/parking-spots/parking-spots.routes').then(
+            (m) => m.MY_PARKING_SPOT_ROUTES,
+          ),
+      },
+      {
         path: 'condominiums',
         loadChildren: () =>
           import('./features/condominiums/condominiums.routes').then((m) => m.CONDOMINIUM_ROUTES),

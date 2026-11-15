@@ -212,6 +212,12 @@ export class CondominiumsApi {
     );
   }
 
+  updateRules(id: string, rules: CondominiumRules): Observable<CondominiumRules> {
+    return this.http
+      .put<unknown>(`${CONDOMINIUMS_URL}/${id}/rules`, rules)
+      .pipe(map(toCondominiumRules));
+  }
+
   rules(id: string): Observable<CondominiumRules> {
     return this.http.get<unknown>(`${CONDOMINIUMS_URL}/${id}/rules`).pipe(map(toCondominiumRules));
   }

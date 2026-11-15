@@ -39,6 +39,10 @@ export interface CondominiumRules {
   minAdvanceHours: number | null;
   cancellationDeadlineHours: number | null;
   maxPricePerDay: number | null;
+  maxPricePerHour: number | null;
+  minRentalHours: number;
+  hourlyRentalsEnabled: boolean;
+  notes: string | null;
 }
 
 export interface CondominiumLookup {

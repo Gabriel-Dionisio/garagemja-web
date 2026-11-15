@@ -1,0 +1,143 @@
+<app-page size="wide">
+  <app-page-header
+    [title]="(editing() ? 'parkingSpots.form.editTitle' : 'parkingSpots.form.newTitle') | transloco"
+    [subtitle]="subtitle()"
+    [backLink]="backLink()"
+  />
+
+  @if (id(); as condominiumId) {
+    <app-condominium-tabs [id]="condominiumId" [loading]="loading()" />
+  }
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-skeleton [label]="'parkingSpots.form.loading' | transloco">
+      <app-card>
+        <app-form-section>
+          <app-skeleton-block height="3rem" />
+          <app-skeleton-block height="3rem" />
+        </app-form-section>
+      </app-card>
+    </app-skeleton>
+  } @else if (ready()) {
+    @if (!canManage() && !editing()) {
+      <app-alert kind="info">{{ 'parkingSpots.form.requestNote' | transloco }}</app-alert>
+    }
+    @if (noResidency()) {
+      <app-alert kind="warning">{{ 'parkingSpots.form.noResidency' | transloco }}</app-alert>
+    }
+    @if (locked()) {
+      <app-alert kind="warning">{{ 'parkingSpots.form.locked' | transloco }}</app-alert>
+    }
+    @if (spot()?.statusReason; as reason) {
+      <app-alert kind="warning">{{ 'parkingSpots.reason' | transloco: { reason } }}</app-alert>
+    }
+    @if (pending()) {
+      <app-alert kind="info">{{ 'parkingSpots.detail.awaiting' | transloco }}</app-alert>
+    }
+
+    <div class="page" [class.has-aside]="activeSpot()">
+      <app-card>
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <h2>{{ 'parkingSpots.form.data' | transloco }}</h2>
+          @if (residencies().length > 1 && !editing()) {
+            <app-chip-group
+              [label]="'parkingSpots.fields.condominium' | transloco"
+              [options]="choiceOptions()"
+              [value]="choice()"
+              (valueChange)="selectCondominium($event)"
+            />
+          }
+          <div class="fields">
+            <div>
+              <app-form-section>
+                <app-text-field
+                  [label]="'parkingSpots.fields.number' | transloco"
+                  [maxLength]="20"
+                  [format]="formatText"
+                  [control]="form.controls.number"
+                />
+                <app-text-field
+                  [label]="'parkingSpots.fields.location' | transloco"
+                  [hint]="'parkingSpots.fields.locationHint' | transloco"
+                  [maxLength]="100"
+                  [format]="formatText"
+                  [control]="form.controls.location"
+                />
+              </app-form-section>
+
+              <app-chip-group
+                [label]="'parkingSpots.fields.size' | transloco"
+                [options]="sizeOptions"
+                [value]="size()"
+                (valueChange)="selectSize($event)"
+              />
+              @if (canManage()) {
+                <app-lookup-field
+                  [label]="'parkingSpots.fields.owner' | transloco"
+                  [hint]="'parkingSpots.fields.ownerHint' | transloco"
+                  [search]="searchOwners"
+                  [selected]="owner()"
+                  [clearLabel]="'common.actions.clear' | transloco"
+                  (picked)="pickOwner($event)"
+                  (cleared)="clearOwner()"
+                />
+              }
+            </div>
+            <app-image-field
+              class="image"
+              [images]="images()"
+              [max]="maxImages"
+              [reorderable]="false"
+              [alt]="'parkingSpots.image.alt' | transloco"
+              [busy]="busy()"
+              [disabled]="locked()"
+              (selected)="addImage($event)"
+              (removed)="removeImage($event)"
+            />
+          </div>
+
+          <app-form-actions>
+            @if (pending()) {
+              <button appButton type="button" variant="secondary" (click)="cancelRequest()">
+                {{ 'parkingSpots.actions.cancel' | transloco }}
+              </button>
+            }
+            <a appButton variant="secondary" [routerLink]="backLink()">
+              {{
+                (locked() || (editing() && !dirty())
+                  ? 'common.actions.back'
+                  : 'common.actions.cancel'
+                ) | transloco
+              }}
+            </a>
+            @if (!locked() && !noResidency() && (!editing() || dirty())) {
+              <button appButton type="submit" [loading]="busy()">
+                {{
+                  (editing()
+                    ? 'common.actions.save'
+                    : canManage()
+                      ? 'parkingSpots.form.submit'
+                      : 'parkingSpots.form.request'
+                  ) | transloco
+                }}
+              </button>
+            }
+          </app-form-actions>
+        </form>
+      </app-card>
+      @if (activeSpot(); as active) {
+        <aside>
+          <app-spot-availabilities
+            [spotId]="active.id"
+            [condominiumId]="active.condominiumId"
+            [editable]="!canManage() || active.ownerResidentId === null"
+          />
+        </aside>
+      }
+    </div>
+  }
+</app-page>

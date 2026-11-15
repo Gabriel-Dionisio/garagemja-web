@@ -2,7 +2,7 @@ export interface FeaturedCondominium {
   id: string;
   name: string;
   availableVagas: number;
-  pricePerHour: number | null;
+  pricePerDay: number | null;
   imageUrl: string | null;
 }
 

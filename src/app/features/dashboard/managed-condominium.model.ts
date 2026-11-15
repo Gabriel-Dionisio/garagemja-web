@@ -8,6 +8,7 @@ export interface ManagedCondominium {
   status: ManagedStatus;
   residents: number;
   pendingResidents: number;
+  pendingParkingSpots: number;
   parkingSpots: number;
   activeRentals: number;
   resides: boolean;

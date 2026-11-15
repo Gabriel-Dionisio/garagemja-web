@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Params, RouterLink } from '@angular/router';
 
 @Component({
@@ -9,9 +9,11 @@ import { Params, RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatCard {
-  readonly value = input.required<number>();
+  readonly value = input.required<number | string>();
   readonly label = input.required<string>();
   readonly highlight = input(false);
   readonly link = input<string | null>(null);
   readonly queryParams = input<Params | null>(null);
+  readonly selectable = input(false);
+  readonly selected = output<void>();
 }

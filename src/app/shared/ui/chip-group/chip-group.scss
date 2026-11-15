@@ -1,23 +1,24 @@
 @use 'styles/mixins' as *;
 
 :host {
+  display: block;
+}
+
+app-scroll-area {
+  --scroll-snap: x proximity;
+  margin: calc(-1 * var(--space-2));
+}
+
+.chips {
   display: flex;
   gap: var(--space-2);
-  padding: 2px var(--space-2) 2px 2px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  overflow-y: hidden;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  width: max-content;
+  min-width: 100%;
+  padding: var(--space-2);
 
   @include from($bp-md) {
     flex-wrap: wrap;
-    padding: 0;
-    overflow: visible;
+    width: auto;
   }
 }
 

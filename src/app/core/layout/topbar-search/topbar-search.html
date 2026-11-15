@@ -1,0 +1,7 @@
+<form (submit)="$event.preventDefault()">
+  <label class="sr-only" for="global-search">{{ 'nav.searchPlaceholder' | transloco }}</label>
+  <input id="global-search" type="search" [placeholder]="'nav.searchPlaceholder' | transloco" />
+  <button appIconButton type="submit" [label]="'nav.searchPlaceholder' | transloco">
+    <app-icon name="search" />
+  </button>
+</form>

@@ -1,0 +1,96 @@
+<app-page size="wide">
+  <app-page-header
+    [title]="'condominiums.rules.title' | transloco"
+    [subtitle]="condominium()?.name ?? knownName()"
+    backLink="/condominiums"
+  />
+
+  <app-condominium-tabs [id]="id()" [loading]="loading()" />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  @if (saved()) {
+    <app-alert kind="success">{{ 'condominiums.rules.saved' | transloco }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-skeleton [label]="'condominiums.rules.loading' | transloco">
+      <app-card>
+        <app-skeleton-block height="4rem" />
+        <app-skeleton-block height="4rem" />
+      </app-card>
+    </app-skeleton>
+  } @else if (condominium()) {
+    <app-card>
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <h2>{{ 'condominiums.rules.title' | transloco }}</h2>
+        <app-form-section [heading]="'condominiums.rules.daily' | transloco">
+          <app-text-field
+            [label]="'condominiums.rules.maxPricePerDay' | transloco"
+            [hint]="'condominiums.rules.emptyHint' | transloco"
+            [format]="money"
+            inputMode="numeric"
+            [control]="form.controls.maxPricePerDay"
+          />
+          <app-text-field
+            [label]="'condominiums.rules.maxRentalDays' | transloco"
+            [hint]="'condominiums.rules.emptyHint' | transloco"
+            [format]="digits"
+            inputMode="numeric"
+            [control]="form.controls.maxRentalDays"
+          />
+          <app-text-field
+            [label]="'condominiums.rules.minAdvanceHours' | transloco"
+            [hint]="'condominiums.rules.emptyHint' | transloco"
+            [format]="digits"
+            inputMode="numeric"
+            [control]="form.controls.minAdvanceHours"
+          />
+          <app-text-field
+            [label]="'condominiums.rules.cancellationDeadlineHours' | transloco"
+            [hint]="'condominiums.rules.emptyHint' | transloco"
+            [format]="digits"
+            inputMode="numeric"
+            [control]="form.controls.cancellationDeadlineHours"
+          />
+        </app-form-section>
+
+        <app-form-section [heading]="'condominiums.rules.hourly' | transloco">
+          <app-switch
+            class="wide"
+            [label]="'condominiums.rules.hourlyEnabled' | transloco"
+            [checked]="hourly()"
+            (toggled)="setHourly($event)"
+          />
+          @if (hourly()) {
+            <app-text-field
+              [label]="'condominiums.rules.maxPricePerHour' | transloco"
+              [hint]="'condominiums.rules.emptyHint' | transloco"
+              [format]="money"
+              inputMode="numeric"
+              [control]="form.controls.maxPricePerHour"
+            />
+            <app-text-field
+              [label]="'condominiums.rules.minRentalHours' | transloco"
+              [format]="digits"
+              inputMode="numeric"
+              [control]="form.controls.minRentalHours"
+            />
+          }
+        </app-form-section>
+
+        <app-form-actions>
+          @if (dirty()) {
+            <button appButton type="button" variant="secondary" (click)="cancel()">
+              {{ 'common.actions.cancel' | transloco }}
+            </button>
+          }
+          <button appButton type="submit" [loading]="busy()">
+            {{ 'common.actions.save' | transloco }}
+          </button>
+        </app-form-actions>
+      </form>
+    </app-card>
+  }
+</app-page>

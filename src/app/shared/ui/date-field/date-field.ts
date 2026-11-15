@@ -53,6 +53,7 @@ export class DateField {
   readonly isoMin = input<string | null>(null);
   readonly isoMax = input<string | null>(null);
   readonly label = input.required<string>();
+  readonly showLabel = input(false);
 
   private readonly input = viewChild.required(DateInput);
 
@@ -62,6 +63,7 @@ export class DateField {
     if (state() === 'out-of-range') return 'dateField.outOfRange';
     return state() === 'partial' && touched() ? 'dateField.incomplete' : null;
   });
+  protected readonly inputId = `date-input-${nextId}`;
   protected readonly errorId = `date-error-${nextId++}`;
   protected readonly open = signal(false);
   protected readonly view = signal<Pick<DateParts, 'year' | 'month'>>({ year: 2000, month: 1 });

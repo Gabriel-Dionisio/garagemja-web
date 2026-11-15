@@ -21,11 +21,17 @@
       "mismatch": "As senhas não coincidem.",
       "invalid": "Valor inválido.",
       "cnpj": "CNPJ inválido.",
-      "pattern": "Formato inválido."
+      "pattern": "Formato inválido.",
+      "money": "Informe um valor maior que zero."
     },
     "condominium": {
       "forbidden": "Você não tem permissão para esta ação neste condomínio.",
       "notFound": "Condomínio não encontrado ou indisponível."
+    },
+    "parkingSpots": {
+      "forbidden": "Você não tem permissão para ver ou alterar vagas deste condomínio.",
+      "notFound": "Vaga não encontrada ou indisponível.",
+      "conflict": "A vaga mudou ou o número já está em uso. Recarregue e tente de novo."
     }
   },
   "common": {
@@ -130,7 +136,8 @@
     "condominiums": "Condomínios",
     "audit": "Auditoria",
     "dashboard": "Painel",
-    "management": "Gestão"
+    "management": "Gestão",
+    "myParkingSpots": "Minhas vagas"
   },
   "routes": {
     "login": "Entrar",
@@ -149,6 +156,7 @@
     "condominiumNew": "Novo condomínio",
     "condominiumDetail": "Detalhes do condomínio",
     "condominiumManagers": "Síndicos",
+    "condominiumRules": "Regras do condomínio",
     "join": "Entrar em condomínio",
     "condominiumResidents": "Moradores",
     "history": "Histórico",
@@ -157,7 +165,11 @@
     "managerDashboard": "Painel do síndico",
     "adminDashboard": "Painel da plataforma",
     "dashboard": "Painel",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "parkingSpots": "Vagas",
+    "parkingSpotNew": "Cadastrar vaga",
+    "parkingSpotEdit": "Editar vaga",
+    "myParkingSpots": "Minhas vagas"
   },
   "rentals": {
     "title": "Meus aluguéis",
@@ -175,7 +187,18 @@
       "ACTIVE": "Ativo",
       "REFUSED": "Recusado",
       "CANCELED": "Cancelado",
-      "FINISHED": "Concluído"
+      "FINISHED": "Concluído",
+      "EXPIRED": "Expirado"
+    },
+    "period": {
+      "hours": "{{date}} · {{start}}h–{{end}}h",
+      "days": "{{start}} – {{end}} · {{count}} diária(s)"
+    },
+    "cancel": {
+      "action": "Cancelar pedido",
+      "title": "Cancelar pedido",
+      "message": "Cancelar o pedido da vaga {{number}}? Esta ação não pode ser desfeita.",
+      "confirm": "Cancelar pedido"
     }
   },
   "auth": {
@@ -249,7 +272,7 @@
     "featuredTitle": "Vagas do meu condomínio",
     "availableVagas": "vagas disponíveis",
     "priceFrom": "A partir de R$",
-    "perHour": "por hora",
+    "perDay": "por dia",
     "viewCondominium": "Ver condomínio",
     "loading": "Carregando condomínios...",
     "loadError": "Não foi possível carregar os condomínios.",
@@ -416,6 +439,7 @@
       "usersChart": "Usuários por situação",
       "condominiumsChart": "Condomínios por situação",
       "monthlyChart": "Novos cadastros por mês",
+      "subjectLabel": "Exibir",
       "monthly": {
         "users": "Usuários",
         "condominiums": "Condomínios"
@@ -756,6 +780,7 @@
       "kpis": "Resumo dos seus condomínios",
       "kpi": {
         "pendingResidents": "Moradores aguardando",
+        "pendingParkingSpots": "Vagas aguardando",
         "residents": "Moradores",
         "parkingSpots": "Vagas",
         "activeRentals": "Aluguéis ativos"
@@ -771,15 +796,37 @@
       "noneActive": "Nenhum dos seus condomínios está ativo. Os números aparecem após a aprovação.",
       "notResiding": "Você não está vinculado como morador de {{name}}.",
       "monthlyChart": "Pedidos e aluguéis por mês",
+      "tabs": {
+        "label": "Gráfico",
+        "monthly": "Mensal",
+        "comparison": "Comparativo"
+      },
       "monthly": {
         "requests": "Pedidos de moradores",
         "rentals": "Aluguéis"
       }
     },
+    "rules": {
+      "title": "Regras do condomínio",
+      "loading": "Carregando regras...",
+      "saved": "Regras salvas.",
+      "emptyHint": "Vazio = sem limite",
+      "daily": "Aluguel por dia",
+      "hourly": "Aluguel por hora",
+      "hourlyEnabled": "Permitir aluguel por hora",
+      "maxPricePerDay": "Preço máximo por dia (R$)",
+      "maxPricePerHour": "Preço máximo por hora (R$)",
+      "maxRentalDays": "Máximo de dias por aluguel",
+      "minAdvanceHours": "Antecedência mínima (horas)",
+      "cancellationDeadlineHours": "Prazo para cancelar (horas antes)",
+      "minRentalHours": "Mínimo de horas por aluguel"
+    },
     "tabs": {
       "label": "Seções do condomínio",
       "details": "Detalhes",
       "residents": "Moradores",
+      "parkingSpots": "Vagas",
+      "rules": "Regras",
       "managers": "Síndicos",
       "history": "Histórico"
     },
@@ -796,7 +843,9 @@
         "maxRentalDays": "Máximo de dias por aluguel",
         "minAdvanceHours": "Antecedência mínima (horas)",
         "cancellationDeadlineHours": "Prazo para cancelar (horas)",
-        "maxPricePerDay": "Preço máximo por dia"
+        "maxPricePerDay": "Preço máximo por dia",
+        "maxPricePerHour": "Preço máximo por hora",
+        "minRentalHours": "Mínimo de horas por aluguel"
       }
     },
     "membership": {
@@ -889,12 +938,14 @@
   },
   "dashboard": {
     "title": "Painel",
-    "subtitle": "Seu resumo conforme os papéis que você tem.",
+    "subtitle": "Seu resumo.",
+    "ownerSubtitle": "{{count}} vaga(s)",
+    "myRentals": "Meus aluguéis",
+    "viewLabel": "Visão do painel",
     "sections": {
       "platform": "Plataforma",
-      "manager": "Condomínios que administro",
-      "owner": "Minhas vagas",
-      "rented": "Vagas que aluguei"
+      "manager": "Condomínios",
+      "owner": "Minhas vagas"
     },
     "owner": {
       "title": "Resumo das minhas vagas",
@@ -905,32 +956,42 @@
         "pending": "Pedidos para decidir",
         "active": "Em andamento",
         "upcoming": "Aprovados a iniciar",
-        "spots": "Vagas",
         "monthEarnings": "Ganhos do mês"
       }
     },
     "rentals": {
       "loading": "Carregando aluguéis...",
-      "column": {
-        "spot": "Vaga",
-        "period": "Período",
-        "price": "Valor",
-        "status": "Situação"
-      },
       "status": {
         "PENDING": "Aguardando decisão",
         "APPROVED": "Aprovado",
         "ACTIVE": "Em andamento",
         "REFUSED": "Recusado",
         "CANCELED": "Cancelado",
-        "FINISHED": "Finalizado"
+        "FINISHED": "Finalizado",
+        "EXPIRED": "Expirado"
       },
       "filter": "Filtrar por situação",
       "all": "Todos",
-      "ownedEmptyTitle": "Nenhum aluguel encontrado",
-      "ownedEmptyDescription": "Os pedidos de aluguel das suas vagas aparecem aqui.",
-      "rentedEmptyTitle": "Nenhuma locação encontrada",
-      "rentedEmptyDescription": "As vagas que você alugar aparecem aqui."
+      "emptyTitle": "Nenhum aluguel encontrado",
+      "emptyDescription": "Os pedidos de aluguel das suas vagas aparecem aqui.",
+      "actions": {
+        "approve": "Aprovar",
+        "refuse": "Recusar",
+        "viewSpot": "Ver vaga"
+      },
+      "confirm": {
+        "reason": "Motivo",
+        "approve": {
+          "title": "Aprovar aluguel",
+          "message": "Aprovar o pedido da vaga {{number}}? Pedidos pendentes que se sobrepõem são recusados.",
+          "confirm": "Aprovar"
+        },
+        "refuse": {
+          "title": "Recusar aluguel",
+          "message": "Informe o motivo da recusa do pedido da vaga {{number}}. O solicitante verá esse texto.",
+          "confirm": "Recusar"
+        }
+      }
     }
   },
   "dateField": {
@@ -949,6 +1010,154 @@
       "month": "Mês",
       "count": "Quantidade",
       "condominium": "Condomínio"
+    }
+  },
+  "parkingSpots": {
+    "title": "Vagas",
+    "spot": "Vaga {{number}}",
+    "reason": "Motivo: {{reason}}",
+    "loading": "Carregando vagas...",
+    "emptyTitle": "Nenhuma vaga encontrada",
+    "emptyDescriptionManager": "Cadastre uma vaga ou aguarde os pedidos dos moradores.",
+    "status": {
+      "PENDING": "Pendente",
+      "ACTIVE": "Ativa",
+      "REJECTED": "Rejeitada",
+      "BLOCKED": "Bloqueada"
+    },
+    "size": {
+      "SMALL": "Pequena",
+      "MEDIUM": "Média",
+      "LARGE": "Grande",
+      "NONE": "Não informado"
+    },
+    "tabs": {
+      "label": "Filtrar por situação",
+      "all": "Todas",
+      "anySize": "Qualquer tamanho",
+      "PENDING": "Pendentes",
+      "ACTIVE": "Ativas",
+      "REJECTED": "Rejeitadas",
+      "BLOCKED": "Bloqueadas"
+    },
+    "filter": {
+      "label": "Filtros",
+      "search": "Buscar por número, local, condomínio ou dono",
+      "size": "Filtrar por tamanho"
+    },
+    "actions": {
+      "new": "Cadastrar vaga",
+      "edit": "Editar",
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "block": "Bloquear",
+      "reactivate": "Liberar",
+      "cancel": "Cancelar pedido",
+      "details": "Ver detalhes"
+    },
+    "confirm": {
+      "approve": {
+        "title": "Aprovar vaga",
+        "message": "A vaga {{number}} ficará ativa no condomínio.",
+        "confirm": "Aprovar"
+      },
+      "reject": {
+        "title": "Rejeitar vaga",
+        "message": "Informe o motivo da rejeição da vaga {{number}}. O morador verá esse texto.",
+        "confirm": "Rejeitar"
+      },
+      "block": {
+        "title": "Bloquear vaga",
+        "message": "A vaga {{number}} deixa de aceitar novos aluguéis e os pedidos pendentes são recusados. Os aluguéis já aprovados continuam valendo.",
+        "confirm": "Bloquear"
+      },
+      "reactivate": {
+        "title": "Liberar vaga",
+        "message": "A vaga {{number}} volta a ficar ativa.",
+        "confirm": "Liberar"
+      },
+      "cancel": {
+        "title": "Cancelar pedido",
+        "message": "O pedido da vaga {{number}} será cancelado.",
+        "confirm": "Cancelar pedido"
+      }
+    },
+    "fields": {
+      "number": "Número da vaga",
+      "location": "Localização",
+      "locationHint": "Ex.: Subsolo 1, bloco B",
+      "size": "Tamanho",
+      "owner": "Proprietário",
+      "ownerHint": "Opcional. Busque pelo nome ou e-mail de um morador aprovado.",
+      "statusReason": "Motivo",
+      "condominium": "Condomínio"
+    },
+    "image": {
+      "alt": "Foto da vaga"
+    },
+    "form": {
+      "newTitle": "Cadastrar vaga",
+      "editTitle": "Editar vaga",
+      "loading": "Carregando vaga...",
+      "data": "Dados da vaga",
+      "submit": "Cadastrar",
+      "request": "Enviar pedido",
+      "requestNote": "O pedido é enviado ao síndico, que aprova ou rejeita a vaga.",
+      "locked": "Só vagas pendentes podem ser alteradas por você.",
+      "noResidency": "Você precisa morar em um condomínio aprovado para cadastrar uma vaga."
+    },
+    "mine": {
+      "title": "Minhas vagas",
+      "new": "Cadastrar vaga",
+      "count": "{{count}} vaga(s) cadastrada(s)",
+      "emptyTitle": "Você ainda não cadastrou vagas",
+      "emptyDescription": "Cadastre sua vaga para o síndico aprovar e depois ofereça-a para aluguel.",
+      "spotBlock": "Vaga {{number}} - Bloco {{block}}"
+    },
+    "badge": {
+      "available": "Disponível",
+      "unavailable": "Sem disponibilidade"
+    },
+    "price": {
+      "daily": "{{value}}/dia",
+      "hourly": "{{value}}/hora"
+    },
+    "period": "{{start}} - {{end}}",
+    "detail": {
+      "loading": "Carregando vaga...",
+      "awaiting": "O síndico ainda vai analisar esta vaga. A disponibilidade é liberada após a aprovação."
+    },
+    "availability": {
+      "title": "Disponibilidade",
+      "note": "Aluguéis já pedidos mantêm o preço combinado.",
+      "empty": "Nenhum período cadastrado.",
+      "active": "Período ativo",
+      "remove": "Remover período",
+      "edit": "Editar período",
+      "new": "Novo período",
+      "start": "Início",
+      "end": "Fim",
+      "datesInvalid": "Informe o período; o fim não pode ser antes do início.",
+      "dailyPrice": "Preço por dia",
+      "hourlyPrice": "Preço por hora",
+      "hourlyOptional": "Opcional",
+      "windowFrom": "A partir das",
+      "windowTo": "Até as",
+      "windowInvalid": "O horário final deve ser depois do inicial.",
+      "window": "{{from}}h às {{to}}h",
+      "aboveCap": "Acima do teto atual",
+      "maxHint": "Máximo: {{value}}",
+      "add": "Adicionar período",
+      "confirmRemove": {
+        "title": "Remover período",
+        "message": "O período deixa de aparecer para aluguel. Pedidos pendentes nele são recusados; se houver aluguel aprovado, a remoção é bloqueada.",
+        "confirm": "Remover"
+      },
+      "periodSection": "Período",
+      "priceSection": "Preço",
+      "windowSection": "Horário do aluguel por hora",
+      "priceMissing": "Informe o preço por dia, por hora ou os dois.",
+      "ownerOnly": "Só o dono gerencia a disponibilidade desta vaga."
     }
   }
 }

@@ -17,7 +17,14 @@
   text-decoration: none;
   transition: border-color 0.15s;
 
-  &:is(a):hover {
+  &:is(button) {
+    width: 100%;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  &:is(a, button):hover {
     border-color: var(--color-primary);
   }
 

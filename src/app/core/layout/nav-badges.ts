@@ -6,15 +6,23 @@ import { AuthService } from '../auth/auth-service';
 const MANAGED_URL = '/api/v1/me/managed-condominiums';
 const INVITES_URL = '/api/v1/me/manager-invites';
 
-export function sumPendingResidents(body: unknown): number {
+export function sumPending(body: unknown, field: string): number {
   if (!Array.isArray(body)) return 0;
   return body.reduce<number>((total, item) => {
     const pending: unknown =
       typeof item === 'object' && item !== null
-        ? Object.fromEntries(Object.entries(item))['pendingResidents']
+        ? Object.fromEntries(Object.entries(item))[field]
         : 0;
     return total + (typeof pending === 'number' ? pending : 0);
   }, 0);
+}
+
+export function sumPendingResidents(body: unknown): number {
+  return sumPending(body, 'pendingResidents');
+}
+
+export function sumPendingApprovals(body: unknown): number {
+  return sumPending(body, 'pendingResidents') + sumPending(body, 'pendingParkingSpots');
 }
 
 @Injectable({ providedIn: 'root' })
@@ -34,7 +42,7 @@ export class NavBadges {
     forkJoin({
       pending: this.auth.hasRole('CONDOMINIUM_ADMIN')
         ? this.http.get<unknown>(MANAGED_URL, { params }).pipe(
-            map(sumPendingResidents),
+            map(sumPendingApprovals),
             catchError(() => of(0)),
           )
         : of(0),

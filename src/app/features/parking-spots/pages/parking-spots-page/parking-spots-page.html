@@ -1,0 +1,134 @@
+<app-page size="wide">
+  <app-page-header
+    [title]="'parkingSpots.title' | transloco"
+    [subtitle]="condominium()?.name ?? knownName()"
+    [backLink]="'/condominiums/' + id()"
+  />
+
+  <app-condominium-tabs [id]="id()" [loading]="loading()" />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  @if (loading()) {
+    <app-skeleton [label]="'parkingSpots.loading' | transloco">
+      <app-skeleton-block height="2.75rem" />
+      @for (row of skeletonRows; track row) {
+        <app-skeleton-block height="4.5rem" />
+      }
+    </app-skeleton>
+  } @else if (condominium()) {
+    <app-filter-panel
+      [label]="'parkingSpots.filter.label' | transloco"
+      [activeCount]="activeFilters()"
+      [(open)]="filtersOpen"
+    >
+      @if (canRegister()) {
+        <div filterActions class="header-action">
+          <a appButton [routerLink]="['/condominiums', id(), 'parking-spots', 'new']">
+            <app-icon name="plus" />
+            {{ 'parkingSpots.actions.new' | transloco }}
+          </a>
+        </div>
+      }
+      <app-chip-group
+        [label]="'parkingSpots.tabs.label' | transloco"
+        [options]="statusTabs"
+        [value]="status()"
+        (valueChange)="selectStatus($event)"
+      />
+      <app-chip-group
+        [label]="'parkingSpots.filter.size' | transloco"
+        [options]="sizeTabs"
+        [value]="size()"
+        (valueChange)="selectSize($event)"
+      />
+      <app-parking-spot-filter (searchChange)="applySearch($event)" />
+    </app-filter-panel>
+
+    <app-list-state
+      [attr.aria-busy]="listLoading()"
+      [loading]="listLoading() && !result()"
+      [refreshing]="listLoading()"
+      [empty]="result()?.items?.length === 0"
+      [loadingLabel]="'parkingSpots.loading' | transloco"
+      emptyIcon="parking"
+      [emptyTitle]="'parkingSpots.emptyTitle' | transloco"
+      [emptyDescription]="'parkingSpots.emptyDescriptionManager' | transloco"
+      [listLabel]="'parkingSpots.title' | transloco"
+    >
+      @if (result(); as current) {
+        @for (spot of current.items; track spot.id) {
+          <li appListItem>
+            <span leading>
+              @if (spot.thumbnailUrl; as url) {
+                <img class="thumb" [src]="url" alt="" />
+              } @else {
+                <span class="thumb placeholder"><app-icon name="parking" /></span>
+              }
+            </span>
+            <strong>{{ 'parkingSpots.spot' | transloco: { number: spot.number } }}</strong>
+            <small
+              >{{ spot.location }}{{ spot.location && spot.size ? ' · ' : ''
+              }}{{ spot.size ? (sizeLabels[spot.size] | transloco) : '' }}</small
+            >
+            @if (ownerLine(spot); as line) {
+              <small>{{ line }}</small>
+            }
+            @if (spot.statusReason) {
+              <small>{{ 'parkingSpots.reason' | transloco: { reason: spot.statusReason } }}</small>
+            }
+            <span status
+              ><app-badge [tone]="tones[spot.status]">{{
+                statusLabels[spot.status] | transloco
+              }}</app-badge></span
+            >
+            <span actions>
+              <a
+                appIconButton
+                [label]="('parkingSpots.actions.edit' | transloco) + ': ' + spot.number"
+                [routerLink]="['/condominiums', id(), 'parking-spots', spot.id]"
+              >
+                <app-icon name="edit" />
+              </a>
+              @for (action of actionsFor(spot); track action.id) {
+                <button
+                  appIconButton
+                  type="button"
+                  [variant]="action.primary ? 'primary' : 'neutral'"
+                  [label]="('parkingSpots.actions.' + action.id | transloco) + ': ' + spot.number"
+                  [loading]="busy()"
+                  (click)="decide(spot, action)"
+                >
+                  <app-icon [name]="action.icon" />
+                </button>
+              }
+            </span>
+          </li>
+        }
+      }
+      @if (result(); as current) {
+        <app-paginator
+          paginator
+          [page]="current.page"
+          [size]="current.size"
+          [total]="current.total"
+          [itemCount]="current.items.length"
+          [hasNext]="current.hasNext"
+          [sizeOptions]="pageSizes"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      }
+    </app-list-state>
+
+    @if (canRegister()) {
+      <app-fab [label]="'parkingSpots.actions.new' | transloco">
+        <a appActionItem icon="plus" [routerLink]="['/condominiums', id(), 'parking-spots', 'new']">
+          {{ 'parkingSpots.actions.new' | transloco }}
+        </a>
+      </app-fab>
+    }
+  }
+</app-page>

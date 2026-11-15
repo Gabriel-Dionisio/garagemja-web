@@ -1,15 +1,25 @@
-import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { moneyFormatter, periodText } from '../../../../shared/forms/format';
 import { Page as ResultPage } from '../../../../shared/models/page';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge, BadgeTone } from '../../../../shared/ui/badge/badge';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
+import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
+import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
 import { Icon } from '../../../../shared/ui/icon/icon';
 import { ListItem } from '../../../../shared/ui/list-item/list-item';
 import { ListState } from '../../../../shared/ui/list-state/list-state';
@@ -30,18 +40,19 @@ const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
   REFUSED: 'danger',
   CANCELED: 'danger',
   FINISHED: 'neutral',
+  EXPIRED: 'neutral',
 };
 
 @Component({
   selector: 'app-my-rentals-page',
   imports: [
-    DecimalPipe,
     TranslocoPipe,
     Alert,
     Badge,
     ChipGroup,
     FilterPanel,
     Icon,
+    IconButton,
     ListItem,
     ListState,
     Page,
@@ -55,9 +66,14 @@ const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
 export class MyRentalsPage {
   private readonly api = inject(RentalsApi);
   private readonly router = inject(Router);
+  private readonly confirm = inject(ConfirmService);
+  private readonly locale = inject(LocaleService);
   private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
   protected readonly tones = STATUS_TONES;
+  protected readonly money = computed(() => moneyFormatter(this.locale.language()));
+  protected readonly cancelable = (rental: Rental) =>
+    rental.status === 'PENDING' || rental.status === 'APPROVED';
   protected readonly pageSizes = PAGE_SIZES;
   protected readonly filters: readonly ChipOption<RentalStatus>[] = [
     { value: null, labelKey: 'rentals.all' },
@@ -74,7 +90,10 @@ export class MyRentalsPage {
   protected readonly loading = signal(true);
   protected readonly result = signal<ResultPage<Rental> | null>(null);
   protected readonly empty = computed(() => this.result()?.items.length === 0);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly reload = signal(0);
   private readonly request = computed(() => ({
+    reload: this.reload(),
     page: this.page(),
     size: this.size(),
     status: this.status(),
@@ -102,6 +121,29 @@ export class MyRentalsPage {
       .subscribe((result) => {
         this.result.set(result);
         this.loading.set(false);
+      });
+  }
+
+  protected period(rental: Rental) {
+    return periodText(rental, this.locale.language());
+  }
+
+  protected cancel(rental: Rental): void {
+    this.confirm
+      .confirm({
+        title: 'rentals.cancel.title',
+        message: 'rentals.cancel.message',
+        confirmLabel: 'rentals.cancel.confirm',
+        params: { number: rental.parkingSpotNumber },
+        danger: true,
+      })
+      .pipe(
+        switchMap((confirmed) => (confirmed ? this.api.cancel(rental.id) : EMPTY)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => this.reload.update((value) => value + 1),
+        error: (error: unknown) => this.error.setFrom(error),
       });
   }
 

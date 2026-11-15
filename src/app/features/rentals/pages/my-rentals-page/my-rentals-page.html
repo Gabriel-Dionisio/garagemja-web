@@ -27,7 +27,7 @@
     [refreshing]="loading()"
     [empty]="empty()"
     [loadingLabel]="'rentals.loading' | transloco"
-    emptyIcon="car"
+    emptyIcon="calendar"
     [emptyTitle]="'rentals.emptyTitle' | transloco"
     [emptyDescription]="'rentals.emptyDescription' | transloco"
     [listLabel]="'rentals.title' | transloco"
@@ -35,17 +35,30 @@
     @if (result(); as current) {
       @for (rental of current.items; track rental.id) {
         <li appListItem>
-          <app-icon leading name="car" />
+          <span leading
+            ><span class="thumb placeholder"><app-icon name="calendar" /></span
+          ></span>
           <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
-          <span class="meta">{{ rental.condominiumName }}</span>
-          <span class="meta">
-            {{ rental.startDate }} → {{ rental.endDate }} · R$ {{ rental.price | number: '1.2-2' }}
-          </span>
+          <small>{{ rental.condominiumName }}</small>
+          @let when = period(rental);
+          <small> {{ when.key | transloco: when.params }} · {{ money()(rental.total) }} </small>
           <span status>
             <app-badge [tone]="tones[rental.status]">{{
               'rentals.status.' + rental.status | transloco
             }}</app-badge>
           </span>
+          @if (cancelable(rental)) {
+            <span actions>
+              <button
+                appIconButton
+                type="button"
+                [label]="('rentals.cancel.action' | transloco) + ': ' + rental.parkingSpotNumber"
+                (click)="cancel(rental)"
+              >
+                <app-icon name="close" />
+              </button>
+            </span>
+          }
         </li>
       }
     }

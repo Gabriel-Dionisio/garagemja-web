@@ -37,6 +37,10 @@ export async function mockApi(page: Page, role: Role, options: MockOptions = {})
         }),
       );
     }
+    if (path.endsWith('/me/notifications/unread-count')) return route.fulfill(json({ count: 0 }));
+    if (path.endsWith('/me/notifications/stream')) {
+      return route.fulfill({ contentType: 'text/event-stream', body: ': ok\n\n' });
+    }
     if (path.endsWith('/summary'))
       return route.fulfill(json({ total: 0, active: 0, blocked: 0, pending: 0 }));
     if (path.endsWith('/stats/admin/monthly')) {

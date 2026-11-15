@@ -1,0 +1,44 @@
+<header>
+  <h2 id="notifications-title">{{ 'notifications.title' | transloco }}</h2>
+  <button appIconButton type="button" [label]="'notifications.close' | transloco" (click)="close()">
+    <app-icon name="close" />
+  </button>
+</header>
+
+<app-list-state
+  aria-live="polite"
+  [attr.aria-busy]="store.loading()"
+  [loading]="store.loading() && store.items().length === 0"
+  [error]="store.error.text()"
+  [empty]="!store.loading() && store.items().length === 0"
+  [loadingLabel]="'notifications.loading' | transloco"
+  emptyIcon="bell"
+  [emptyTitle]="'notifications.emptyTitle' | transloco"
+  [emptyDescription]="'notifications.emptyDescription' | transloco"
+  [listLabel]="'notifications.title' | transloco"
+>
+  @for (item of store.items(); track item.id) {
+    <li appListItem [class.unread]="!item.read">
+      <strong>{{
+        'notifications.kind.' + item.kind | transloco: { condominium: item.condominiumName }
+      }}</strong>
+      @if (item.reason) {
+        <small>{{ 'notifications.reason' | transloco: { reason: item.reason } }}</small>
+      }
+      <small>{{ dateTime()(item.createdAt) }}</small>
+    </li>
+  }
+  @if (store.hasNext()) {
+    <div paginator class="more">
+      <button
+        appButton
+        type="button"
+        variant="secondary"
+        [loading]="store.loading()"
+        (click)="store.loadMore()"
+      >
+        {{ 'notifications.loadMore' | transloco }}
+      </button>
+    </div>
+  }
+</app-list-state>

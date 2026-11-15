@@ -1277,5 +1277,38 @@
       "invalid": "Check the chosen period and vehicle.",
       "conflict": "This period is no longer available. Pick another."
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "open": "Notifications",
+    "openUnread": "Notifications, {{count}} unread",
+    "close": "Close notifications",
+    "loading": "Loading notifications",
+    "emptyTitle": "No notifications",
+    "emptyDescription": "Updates about requests, spots and condominiums show up here.",
+    "loadMore": "Load more",
+    "reason": "Reason: {{reason}}",
+    "kind": {
+      "CONDOMINIUM_APPROVED": "Condominium {{condominium}} was approved.",
+      "CONDOMINIUM_REJECTED": "The registration of {{condominium}} was rejected.",
+      "CONDOMINIUM_BLOCKED": "Condominium {{condominium}} was blocked.",
+      "CONDOMINIUM_CLOSED": "Condominium {{condominium}} was closed and open rentals were cancelled.",
+      "RESIDENT_APPROVED": "Your request to join {{condominium}} was approved.",
+      "RESIDENT_REJECTED": "Your request to join {{condominium}} was rejected.",
+      "RESIDENCY_ENDED": "Your residency in {{condominium}} ended because the condominium was closed.",
+      "MANAGER_INVITED": "You were invited to manage {{condominium}}.",
+      "MANAGER_REMOVED": "You are no longer a manager of {{condominium}}.",
+      "RENTAL_REQUESTED": "New rental request in {{condominium}}.",
+      "RENTAL_APPROVED": "Your rental request in {{condominium}} was approved.",
+      "RENTAL_REFUSED": "Your rental request in {{condominium}} was declined.",
+      "RENTAL_CANCELED": "A rental in {{condominium}} was canceled.",
+      "RENTAL_EXPIRED": "Your rental request in {{condominium}} expired.",
+      "RENTAL_AUTO_REFUSED": "Your request in {{condominium}} was refused because the owner changed the spot availability.",
+      "RENTAL_SPOT_UNAVAILABLE": "Your request in {{condominium}} was refused because the spot became unavailable.",
+      "PARKING_SPOT_APPROVED": "Your spot in {{condominium}} was approved.",
+      "PARKING_SPOT_REJECTED": "Your spot in {{condominium}} was rejected.",
+      "PARKING_SPOT_BLOCKED": "Your spot in {{condominium}} was blocked.",
+      "PARKING_SPOT_UNBLOCKED": "Your spot in {{condominium}} was unblocked."
+    }
   }
 }

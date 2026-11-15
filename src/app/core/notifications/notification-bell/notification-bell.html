@@ -1,0 +1,17 @@
+<button
+  appIconButton
+  type="button"
+  aria-haspopup="dialog"
+  [label]="
+    (store.unread() > 0 ? 'notifications.openUnread' : 'notifications.open')
+      | transloco: { count: store.unread() }
+  "
+  (click)="open()"
+>
+  <app-icon name="bell" />
+  @if (store.unread() > 0) {
+    <app-badge class="count" tone="danger">{{
+      store.unread() > 99 ? '99+' : store.unread()
+    }}</app-badge>
+  }
+</button>

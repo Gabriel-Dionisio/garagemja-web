@@ -18,6 +18,7 @@
     <app-brand-logo [compact]="true" />
   }
   @if (user(); as current) {
+    <app-notification-bell />
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
   }
 </header>

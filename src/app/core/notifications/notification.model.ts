@@ -1,0 +1,33 @@
+export const NOTIFICATION_KINDS = [
+  'CONDOMINIUM_APPROVED',
+  'CONDOMINIUM_REJECTED',
+  'CONDOMINIUM_BLOCKED',
+  'CONDOMINIUM_CLOSED',
+  'RESIDENT_APPROVED',
+  'RESIDENT_REJECTED',
+  'RESIDENCY_ENDED',
+  'MANAGER_INVITED',
+  'MANAGER_REMOVED',
+  'RENTAL_REQUESTED',
+  'RENTAL_APPROVED',
+  'RENTAL_REFUSED',
+  'RENTAL_CANCELED',
+  'RENTAL_EXPIRED',
+  'RENTAL_AUTO_REFUSED',
+  'RENTAL_SPOT_UNAVAILABLE',
+  'PARKING_SPOT_APPROVED',
+  'PARKING_SPOT_REJECTED',
+  'PARKING_SPOT_BLOCKED',
+  'PARKING_SPOT_UNBLOCKED',
+] as const;
+
+export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];
+
+export interface AppNotification {
+  id: string;
+  kind: NotificationKind;
+  condominiumName: string;
+  reason: string | null;
+  createdAt: string;
+  read: boolean;
+}

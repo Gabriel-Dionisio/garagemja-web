@@ -3,7 +3,7 @@ import { navItemsFor } from './nav-items';
 describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
-  it('morador: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
+  it('morador: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, carteira, meus veículos e painel', () => {
     expect(paths(navItemsFor(['RESIDENT']))).toEqual([
       '/home',
       '/search-vacancies',
@@ -11,12 +11,13 @@ describe('navItemsFor', () => {
       '/parking-spots',
       '/rentals',
       '/requests',
+      '/wallet',
       '/vehicles',
       '/dashboard',
     ]);
   });
 
-  it('síndico: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
+  it('síndico: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, carteira, meus veículos e painel', () => {
     expect(paths(navItemsFor(['CONDOMINIUM_ADMIN', 'RESIDENT']))).toEqual([
       '/home',
       '/search-vacancies',
@@ -24,15 +25,17 @@ describe('navItemsFor', () => {
       '/parking-spots',
       '/rentals',
       '/requests',
+      '/wallet',
       '/vehicles',
       '/dashboard',
     ]);
   });
 
-  it('ADMIN: painel, condomínios, usuários e auditoria, sem início', () => {
+  it('ADMIN: painel, condomínios, carteira, usuários e auditoria, sem início', () => {
     expect(paths(navItemsFor(['ADMIN']))).toEqual([
       '/dashboard',
       '/condominiums',
+      '/wallet',
       '/admin/users',
       '/admin/audit-logs',
     ]);

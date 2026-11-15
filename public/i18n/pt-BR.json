@@ -144,7 +144,8 @@
     "management": "Gestão",
     "myParkingSpots": "Minhas vagas",
     "myVehicles": "Meus veículos",
-    "searchVacancies": "Buscar Vagas"
+    "searchVacancies": "Buscar Vagas",
+    "wallet": "Carteira"
   },
   "routes": {
     "login": "Entrar",
@@ -182,7 +183,8 @@
     "vehicleNew": "Cadastrar veículo",
     "vehicleEdit": "Editar veículo",
     "searchVacancies": "Buscar Vagas",
-    "vacancyDetails": "Detalhes da vaga"
+    "vacancyDetails": "Detalhes da vaga",
+    "wallet": "Carteira"
   },
   "requests": {
     "title": "Solicitações",
@@ -1344,6 +1346,42 @@
       "RENTAL_UNPAID_CANCELED": "O aluguel em {{condominium}} foi cancelado por falta de pagamento.",
       "PAYMENT_CONFIRMED": "Pagamento do aluguel em {{condominium}} confirmado.",
       "PAYMENT_RECEIVED": "Pagamento recebido por um aluguel em {{condominium}}."
+    }
+  },
+  "wallet": {
+    "title": "Carteira",
+    "subtitle": "Saldo e extrato dos seus ganhos",
+    "choose": "Carteira",
+    "balances": "Saldos",
+    "available": "Disponível",
+    "pending": "A receber",
+    "loading": "Carregando extrato",
+    "statement": "Extrato",
+    "emptyTitle": "Nenhuma movimentação ainda",
+    "emptyDescription": "Os ganhos de aluguéis pagos aparecem aqui.",
+    "released": "Disponível",
+    "pendingBadge": "A receber",
+    "releasedAt": "Disponível a partir de {{date}}",
+    "kind": {
+      "RENTAL_CREDIT": "Ganho de aluguel",
+      "RENTAL_REVERSAL": "Estorno de aluguel",
+      "PENALTY_CREDIT": "Multa de cancelamento",
+      "WITHDRAWAL": "Saque"
+    },
+    "withdraw": {
+      "open": "Sacar",
+      "title": "Sacar via PIX",
+      "available": "{{name}}: {{amount}} disponível",
+      "amount": "Valor",
+      "pixKey": "Chave PIX",
+      "pixKeyHint": "CPF, CNPJ, e-mail, telefone ou chave aleatória",
+      "submit": "Sacar",
+      "invalid": "Confira o valor e a chave PIX.",
+      "insufficient": "Saldo disponível insuficiente."
+    },
+    "type": {
+      "OWNER": "Minha carteira",
+      "PLATFORM": "Plataforma"
     }
   }
 }

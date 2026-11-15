@@ -144,7 +144,8 @@
     "management": "Management",
     "myParkingSpots": "My parking spots",
     "myVehicles": "My vehicles",
-    "searchVacancies": "Find Spots"
+    "searchVacancies": "Find Spots",
+    "wallet": "Wallet"
   },
   "routes": {
     "login": "Sign in",
@@ -182,7 +183,8 @@
     "vehicleNew": "Add vehicle",
     "vehicleEdit": "Edit vehicle",
     "searchVacancies": "Find Spots",
-    "vacancyDetails": "Spot details"
+    "vacancyDetails": "Spot details",
+    "wallet": "Wallet"
   },
   "requests": {
     "title": "Requests",
@@ -1344,6 +1346,42 @@
       "RENTAL_UNPAID_CANCELED": "The rental in {{condominium}} was canceled for lack of payment.",
       "PAYMENT_CONFIRMED": "Payment for your rental in {{condominium}} was confirmed.",
       "PAYMENT_RECEIVED": "A payment was received for a rental in {{condominium}}."
+    }
+  },
+  "wallet": {
+    "title": "Wallet",
+    "subtitle": "Balance and statement of your earnings",
+    "choose": "Wallet",
+    "balances": "Balances",
+    "available": "Available",
+    "pending": "Pending",
+    "loading": "Loading statement",
+    "statement": "Statement",
+    "emptyTitle": "No movements yet",
+    "emptyDescription": "Earnings from paid rentals show up here.",
+    "released": "Available",
+    "pendingBadge": "Pending",
+    "releasedAt": "Available from {{date}}",
+    "kind": {
+      "RENTAL_CREDIT": "Rental earnings",
+      "RENTAL_REVERSAL": "Rental refund",
+      "PENALTY_CREDIT": "Cancellation penalty",
+      "WITHDRAWAL": "Withdrawal"
+    },
+    "withdraw": {
+      "open": "Withdraw",
+      "title": "Withdraw via PIX",
+      "available": "{{name}}: {{amount}} available",
+      "amount": "Amount",
+      "pixKey": "PIX key",
+      "pixKeyHint": "CPF, CNPJ, email, phone or random key",
+      "submit": "Withdraw",
+      "invalid": "Check the amount and the PIX key.",
+      "insufficient": "Insufficient available balance."
+    },
+    "type": {
+      "OWNER": "My wallet",
+      "PLATFORM": "Platform"
     }
   }
 }

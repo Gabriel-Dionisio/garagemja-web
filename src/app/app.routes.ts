@@ -76,6 +76,10 @@ export const routes: Routes = [
           import('./features/requests/requests.routes').then((m) => m.REQUESTS_ROUTES),
       },
       {
+        path: 'wallet',
+        loadChildren: () => import('./features/wallet/wallet.routes').then((m) => m.WALLET_ROUTES),
+      },
+      {
         path: 'vehicles',
         canActivate: [roleGuard('RESIDENT')],
         loadChildren: () =>

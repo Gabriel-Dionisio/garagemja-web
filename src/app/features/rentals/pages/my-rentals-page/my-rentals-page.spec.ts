@@ -9,8 +9,26 @@ import { MyRentalsPage } from './my-rentals-page';
 const empty: Page<Rental> = { items: [], page: 0, size: 25, total: 0, hasNext: false };
 
 describe('MyRentalsPage', () => {
-  async function setup(url = '/rentals') {
-    const list = vi.fn().mockReturnValue(of(empty));
+  const item = (overrides: Partial<Rental> = {}): Rental => ({
+    id: 'r1',
+    condominiumName: 'Edifício A',
+    parkingSpotNumber: '12',
+    startDate: '2026-11-20',
+    endDate: '2026-11-21',
+    startHour: null,
+    endHour: null,
+    price: 80,
+    total: 240,
+    payable: 264,
+    status: 'APPROVED',
+    cancelReason: null,
+    paid: false,
+    paymentPending: false,
+    ...overrides,
+  });
+
+  async function setup(url = '/rentals', items: Rental[] = []) {
+    const list = vi.fn().mockReturnValue(of({ ...empty, items, total: items.length }));
     TestBed.configureTestingModule({
       providers: [
         provideRouter([{ path: 'rentals', component: MyRentalsPage }]),
@@ -50,5 +68,13 @@ describe('MyRentalsPage', () => {
   it('ignores an unknown status in the query string', async () => {
     const { list } = await setup('/rentals?status=NOPE');
     expect(list).toHaveBeenCalledWith(0, 25, null, '');
+  });
+
+  it('offers payment only for approved unpaid rentals and shows the payable amount', async () => {
+    const { root } = await setup('/rentals', [item(), item({ id: 'r2', paid: true })]);
+    const rows = root.querySelectorAll('li');
+    expect(rows[0].textContent).toContain('264,00');
+    expect(rows[0].textContent).toContain('Pagar');
+    expect(rows[1].textContent).not.toContain('Pagar');
   });
 });

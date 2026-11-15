@@ -252,10 +252,39 @@
       "aria": "Cancelar pedido da vaga {{number}}",
       "title": "Cancelar pedido",
       "message": "Cancelar o pedido da vaga {{number}}? Esta ação não pode ser desfeita.",
-      "confirm": "Cancelar pedido"
+      "confirm": "Cancelar pedido",
+      "messageRefund": "Cancelar o aluguel da vaga {{number}}? Você receberá o reembolso de {{refund}}.",
+      "messageLate": "Cancelar o aluguel da vaga {{number}}? O prazo de cancelamento passou: serão reembolsados {{refund}} e a multa é de {{penalty}}."
     },
     "search": "Buscar por vaga ou condomínio",
-    "reason": "Motivo: {{reason}}"
+    "reason": "Motivo: {{reason}}",
+    "pay": "Pagar",
+    "paymentPending": "Pagamento em andamento",
+    "reasonCode": {
+      "unpaid": "não pago",
+      "condominium_closed": "condomínio encerrado"
+    },
+    "payment": {
+      "title": "Pagamento",
+      "amount": "Vaga {{number}} · total {{amount}}",
+      "breakdown": "Valor {{total}} + taxa de serviço {{fee}}",
+      "method": "Forma de pagamento",
+      "pix": "PIX",
+      "card": "Cartão",
+      "cardLast4": "Final do cartão",
+      "cardHint": "Informe os 4 últimos dígitos (0000 simula recusa).",
+      "pixHelp": "Copie o código PIX e pague no app do seu banco.",
+      "pixCode": "Código PIX copia e cola",
+      "copy": "Copiar código",
+      "copied": "Copiado",
+      "waiting": "Aguardando a confirmação do pagamento…",
+      "submit": "Pagar",
+      "cancelPix": "Cancelar PIX",
+      "close": "Fechar",
+      "declined": "Pagamento recusado. Tente outro cartão ou use PIX.",
+      "invalid": "Dados de pagamento inválidos.",
+      "conflict": "Este aluguel não pode ser pago agora."
+    }
   },
   "auth": {
     "login": {
@@ -865,7 +894,9 @@
       "maxRentalDays": "Máximo de dias por aluguel",
       "minAdvanceHours": "Antecedência mínima (horas)",
       "cancellationDeadlineHours": "Prazo para cancelar (horas antes)",
-      "minRentalHours": "Mínimo de horas por aluguel"
+      "minRentalHours": "Mínimo de horas por aluguel",
+      "condominiumFeePercent": "Taxa do condomínio (%)",
+      "condominiumFeeHint": "Percentual do valor retido pelo condomínio (0–20)."
     },
     "tabs": {
       "label": "Seções do condomínio",
@@ -891,7 +922,8 @@
         "cancellationDeadlineHours": "Prazo para cancelar (horas)",
         "maxPricePerDay": "Preço máximo por dia",
         "maxPricePerHour": "Preço máximo por hora",
-        "minRentalHours": "Mínimo de horas por aluguel"
+        "minRentalHours": "Mínimo de horas por aluguel",
+        "condominiumFeePercent": "Taxa do condomínio (%)"
       }
     },
     "membership": {
@@ -1308,7 +1340,10 @@
       "PARKING_SPOT_APPROVED": "Sua vaga em {{condominium}} foi aprovada.",
       "PARKING_SPOT_REJECTED": "Sua vaga em {{condominium}} foi recusada.",
       "PARKING_SPOT_BLOCKED": "Sua vaga em {{condominium}} foi bloqueada.",
-      "PARKING_SPOT_UNBLOCKED": "Sua vaga em {{condominium}} foi desbloqueada."
+      "PARKING_SPOT_UNBLOCKED": "Sua vaga em {{condominium}} foi desbloqueada.",
+      "RENTAL_UNPAID_CANCELED": "O aluguel em {{condominium}} foi cancelado por falta de pagamento.",
+      "PAYMENT_CONFIRMED": "Pagamento do aluguel em {{condominium}} confirmado.",
+      "PAYMENT_RECEIVED": "Pagamento recebido por um aluguel em {{condominium}}."
     }
   }
 }

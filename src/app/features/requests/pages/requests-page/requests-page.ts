@@ -36,6 +36,8 @@ import { OwnedRental, RentalStatus } from '../../owned-rental.model';
 import { displayPlate } from '../../../../shared/forms/plate';
 import { REQUEST_STATUSES, REQUEST_TONES, isRequestStatus } from '../../request-status';
 
+const REASON_CODES = ['unpaid', 'condominium_closed'];
+
 @Component({
   selector: 'app-requests-page',
   imports: [
@@ -114,6 +116,12 @@ export class RequestsPage {
         takeUntilDestroyed(),
       )
       .subscribe((result) => this.result.set(result));
+  }
+
+  protected reasonKey(rental: OwnedRental): string | null {
+    return rental.cancelReason && REASON_CODES.includes(rental.cancelReason)
+      ? `rentals.reasonCode.${rental.cancelReason}`
+      : null;
   }
 
   protected period(rental: OwnedRental) {

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { fields } from '../../../shared/models/fields';
 import { Page, toPage } from '../../../shared/models/page';
-import { Rental, RentalStatus, isRentalStatus } from '../rental.model';
+import { CancellationPreview, Rental, RentalStatus, isRentalStatus } from '../rental.model';
 
 const MY_RENTALS_URL = '/api/v1/me/rentals';
 const RENTALS_URL = '/api/v1/rentals';
@@ -12,6 +12,7 @@ export function toRental(value: unknown): Rental {
   const row = fields(value);
   const price = Number(row['price']);
   const total = Number(row['total']);
+  const payable = Number(row['payable']);
   const { id, condominiumName, parkingSpotNumber, startDate, endDate, status } = row;
   if (
     typeof id !== 'string' ||
@@ -21,7 +22,8 @@ export function toRental(value: unknown): Rental {
     typeof endDate !== 'string' ||
     !isRentalStatus(status) ||
     !Number.isFinite(price) ||
-    !Number.isFinite(total)
+    !Number.isFinite(total) ||
+    !Number.isFinite(payable)
   ) {
     throw new Error('Invalid rental');
   }
@@ -35,6 +37,9 @@ export function toRental(value: unknown): Rental {
     endHour: typeof row['endHour'] === 'number' ? row['endHour'] : null,
     price,
     total,
+    payable,
+    paid: row['paid'] === true,
+    paymentPending: row['paymentPending'] === true,
     status,
     cancelReason: typeof row['cancelReason'] === 'string' ? row['cancelReason'] : null,
   };
@@ -62,6 +67,20 @@ export class RentalsApi {
     return this.http
       .patch<unknown>(`${RENTALS_URL}/${id}`, { status: 'CANCELED' })
       .pipe(map(() => undefined));
+  }
+
+  cancellationPreview(id: string): Observable<CancellationPreview> {
+    return this.http.get<unknown>(`${RENTALS_URL}/${id}/cancellation-preview`).pipe(
+      map((value) => {
+        const row = fields(value);
+        const refundAmount = Number(row['refundAmount']);
+        const penalty = Number(row['penalty']);
+        if (!Number.isFinite(refundAmount) || !Number.isFinite(penalty)) {
+          throw new Error('Invalid cancellation preview');
+        }
+        return { refundAmount, penalty, late: row['late'] === true };
+      }),
+    );
   }
 
   list(

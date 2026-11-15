@@ -20,10 +20,19 @@ export interface Rental {
   endHour: number | null;
   price: number;
   total: number;
+  payable: number;
+  paid: boolean;
+  paymentPending: boolean;
   status: RentalStatus;
   cancelReason: string | null;
 }
 
 export function isRentalStatus(value: unknown): value is RentalStatus {
   return RENTAL_STATUSES.some((status) => status === value);
+}
+
+export interface CancellationPreview {
+  refundAmount: number;
+  penalty: number;
+  late: boolean;
 }

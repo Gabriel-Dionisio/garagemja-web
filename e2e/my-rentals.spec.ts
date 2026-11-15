@@ -14,6 +14,7 @@ async function spotWithRental(world: World, number: string, start: number, finis
     start,
     start + 2,
   );
+  if (finish === 'APPROVED') await manager.setRentalStatus(id, 'APPROVED');
   if (finish === 'REFUSED') await manager.setRentalStatus(id, 'REFUSED', 'E2E: indisponivel');
   if (finish === 'CANCELED') await renter.setRentalStatus(id, 'CANCELED', 'E2E: mudei de planos');
 }
@@ -55,4 +56,19 @@ test('renter cancels a pending request', async ({ world, loginAs, myRentals }) =
   await expect(myRentals.rental(number)).toHaveCount(0);
   await myRentals.filterStatus('Cancelado');
   await expect(myRentals.rental(number)).toContainText('Cancelado');
+});
+
+test('renter pays an approved rental with PIX and the confirmation arrives', async ({
+  world,
+  loginAs,
+  myRentals,
+}) => {
+  const number = uniqueSpotNumber('RX');
+  await spotWithRental(world, number, 90, 'APPROVED');
+
+  await loginAs(world.renter.email);
+  await myRentals.goto();
+  await myRentals.payWithPix(number);
+  await expect(myRentals.paymentDialog).toBeHidden({ timeout: 30_000 });
+  await expect(myRentals.rental(number).getByRole('button', { name: 'Pagar' })).toHaveCount(0);
 });

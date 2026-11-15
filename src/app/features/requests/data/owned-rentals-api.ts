@@ -21,6 +21,7 @@ function toOwnedRental(value: unknown): OwnedRental {
   const row = fields(value);
   const price = Number(row['price']);
   const total = Number(row['total']);
+  const ownerAmount = Number(row['ownerAmount']);
   const { id, condominiumId, condominiumName, parkingSpotId, parkingSpotNumber } = row;
   const { startDate, endDate, status, renterName, vehiclePlate } = row;
   if (
@@ -36,7 +37,8 @@ function toOwnedRental(value: unknown): OwnedRental {
     typeof vehiclePlate !== 'string' ||
     !RENTAL_STATUSES.includes(status) ||
     !Number.isFinite(price) ||
-    !Number.isFinite(total)
+    !Number.isFinite(total) ||
+    !Number.isFinite(ownerAmount)
   ) {
     throw new Error('Invalid rental');
   }
@@ -52,6 +54,7 @@ function toOwnedRental(value: unknown): OwnedRental {
     endHour: typeof row['endHour'] === 'number' ? row['endHour'] : null,
     price,
     total,
+    ownerAmount,
     status: status as RentalStatus,
     cancelReason: textOrNull(row['cancelReason']),
     renterName,

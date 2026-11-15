@@ -19,6 +19,7 @@ const rental = (overrides: Partial<OwnedRental> = {}): OwnedRental => ({
   endHour: null,
   price: 80,
   total: 240,
+  ownerAmount: 240,
   status: 'PENDING',
   cancelReason: null,
   renterName: 'Maria Souza',

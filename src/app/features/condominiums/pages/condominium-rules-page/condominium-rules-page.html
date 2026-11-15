@@ -54,6 +54,13 @@
             inputMode="numeric"
             [control]="form.controls.cancellationDeadlineHours"
           />
+          <app-text-field
+            [label]="'condominiums.rules.condominiumFeePercent' | transloco"
+            [hint]="'condominiums.rules.condominiumFeeHint' | transloco"
+            [format]="percent"
+            inputMode="numeric"
+            [control]="form.controls.condominiumFeePercent"
+          />
         </app-form-section>
 
         <app-form-section [heading]="'condominiums.rules.hourly' | transloco">

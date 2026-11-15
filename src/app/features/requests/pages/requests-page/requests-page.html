@@ -49,9 +49,13 @@
             {{ rental.condominiumName }}
           </small>
           @let when = period(rental);
-          <small>{{ when.key | transloco: when.params }} · {{ money()(rental.total) }}</small>
+          <small>{{ when.key | transloco: when.params }} · {{ money()(rental.ownerAmount) }}</small>
           @if (rental.cancelReason) {
-            <small>{{ 'requests.reason' | transloco: { reason: rental.cancelReason } }}</small>
+            @let key = reasonKey(rental);
+            <small>{{
+              'requests.reason'
+                | transloco: { reason: key ? (key | transloco) : rental.cancelReason }
+            }}</small>
           }
           <span status>
             <app-badge [tone]="tones[rental.status]">{{

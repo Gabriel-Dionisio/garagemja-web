@@ -13,6 +13,7 @@ export interface OwnedRental {
   endHour: number | null;
   price: number;
   total: number;
+  ownerAmount: number;
   status: RentalStatus;
   cancelReason: string | null;
   renterName: string;

@@ -45,6 +45,7 @@ export class CondominiumInfo {
       { key: 'maxRentalDays', value: rules.maxRentalDays },
       { key: 'minAdvanceHours', value: rules.minAdvanceHours },
       { key: 'cancellationDeadlineHours', value: rules.cancellationDeadlineHours },
+      { key: 'condominiumFeePercent', value: rules.condominiumFeePercent || null },
     ].filter((item) => item.value !== null);
   });
 

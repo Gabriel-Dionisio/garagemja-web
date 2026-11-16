@@ -57,6 +57,7 @@ function toOwnedRental(value: unknown): OwnedRental {
     ownerAmount,
     status: status as RentalStatus,
     cancelReason: textOrNull(row['cancelReason']),
+    renterUserId: textOrNull(row['renterUserId']),
     renterName,
     renterPhotoUrl: textOrNull(row['renterPhotoUrl']),
     vehiclePlate,

@@ -61,6 +61,13 @@
               'rentals.status.' + rental.status | transloco
             }}</app-badge>
           </span>
+          @if (rental.status === 'FINISHED') {
+            <span actions>
+              <button appButton type="button" variant="secondary" (click)="rate(rental)">
+                {{ 'reviews.rate' | transloco }}
+              </button>
+            </span>
+          }
           @if (cancelable(rental)) {
             <span actions>
               @if (payable(rental)) {

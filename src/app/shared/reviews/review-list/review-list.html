@@ -1,0 +1,46 @@
+@if (error.text(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+}
+<app-list-state
+  [attr.aria-busy]="loading()"
+  [loading]="loading() && !result()"
+  [refreshing]="loading()"
+  [empty]="empty()"
+  [loadingLabel]="'reviews.list.loading' | transloco"
+  emptyIcon="star"
+  [emptyTitle]="'reviews.list.emptyTitle' | transloco"
+  [emptyDescription]="'reviews.list.emptyDescription' | transloco"
+  [listLabel]="'reviews.list.title' | transloco"
+>
+  @if (result(); as current) {
+    @for (review of current.items; track review.id) {
+      <li appListItem>
+        <strong>{{ review.rating }} ★</strong>
+        @if (review.comment) {
+          <small>{{ review.comment }}</small>
+        }
+        <small>{{ date()(review.createdAt) }}</small>
+        @if (canReport() && !isReported(review)) {
+          <span actions>
+            <button appButton type="button" variant="secondary" (click)="report(review)">
+              {{ 'reviews.report.action' | transloco }}
+            </button>
+          </span>
+        }
+      </li>
+    }
+  }
+  @if (result(); as current) {
+    <app-paginator
+      paginator
+      [page]="current.page"
+      [size]="current.size"
+      [total]="current.total"
+      [itemCount]="current.items.length"
+      [hasNext]="current.hasNext"
+      [sizeOptions]="pageSizes"
+      (sizeChange)="changeSize($event)"
+      (pageChange)="goTo($event)"
+    />
+  }
+</app-list-state>

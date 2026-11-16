@@ -16,11 +16,18 @@ const numberOrNull = (value: unknown): number | null => (typeof value === 'numbe
 
 function toOwner(value: unknown): ParkingSpotOwner | null {
   if (value === null || value === undefined) return null;
-  const { residentId, name, unit, block, photoUrl } = fields(value, 'parking spot owner');
+  const { residentId, userId, name, unit, block, photoUrl } = fields(value, 'parking spot owner');
   if (typeof residentId !== 'string' || typeof name !== 'string') {
     throw new Error('Invalid parking spot owner');
   }
-  return { residentId, name, unit: text(unit), block: text(block), photoUrl: text(photoUrl) };
+  return {
+    residentId,
+    userId: text(userId),
+    name,
+    unit: text(unit),
+    block: text(block),
+    photoUrl: text(photoUrl),
+  };
 }
 
 function toAvailabilitySummary(value: unknown): ParkingSpotAvailabilitySummary | null {

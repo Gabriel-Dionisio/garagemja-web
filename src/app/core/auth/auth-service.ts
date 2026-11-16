@@ -57,9 +57,9 @@ export class AuthService {
 
   private startSession(body: unknown): Observable<LoginOutcome> {
     const user = toUserProfile(body);
-    this.currentUser.set(user);
     return this.csrf().pipe(
       catchError(() => of(undefined)),
+      tap(() => this.currentUser.set(user)),
       map((): LoginOutcome => ({ kind: 'authenticated', user })),
     );
   }

@@ -16,7 +16,8 @@ dd {
 
 .gallery,
 .info,
-.periods {
+.periods,
+.reviews {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);

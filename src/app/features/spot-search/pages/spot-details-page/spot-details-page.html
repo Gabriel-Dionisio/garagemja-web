@@ -60,10 +60,22 @@
           <app-avatar [name]="owner.name" [src]="owner.photoUrl" />
           <span>
             <small>{{ 'spotSearch.details.owner' | transloco }}</small>
-            <strong>{{ owner.name }}</strong>
+            @if (owner.userId) {
+              <a [routerLink]="['/users', owner.userId, 'profile']"
+                ><strong>{{ owner.name }}</strong></a
+              >
+            } @else {
+              <strong>{{ owner.name }}</strong>
+            }
           </span>
         </p>
       }
+    </app-card>
+
+    <app-card class="reviews">
+      <h2>{{ 'reviews.list.title' | transloco }}</h2>
+      <app-rating [average]="summary()?.average ?? null" [total]="summary()?.total ?? 0" />
+      <app-review-list [source]="reviews" [canReport]="current.owned" />
     </app-card>
 
     <app-card class="periods">

@@ -16,7 +16,13 @@
       [attr.aria-label]="'spotSearch.title' | transloco"
     >
       @for (spot of current.items; track spot.id) {
-        <li><app-spot-card [spot]="spot" [queryParams]="queryParams()" /></li>
+        <li>
+          <app-spot-card
+            [spot]="spot"
+            [rating]="ratings().get(spot.id) ?? null"
+            [queryParams]="queryParams()"
+          />
+        </li>
       }
     </ul>
     <app-paginator

@@ -21,6 +21,10 @@ import { Button } from '../../../../shared/ui/button/button';
 import { Card } from '../../../../shared/ui/card/card';
 import { Page } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
+import { ReviewList, ReviewSource } from '../../../../shared/reviews/review-list/review-list';
+import { RatingSummary } from '../../../../shared/reviews/review.model';
+import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
+import { Rating } from '../../../../shared/ui/rating/rating';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
@@ -46,7 +50,19 @@ interface SpotDetails {
 
 @Component({
   selector: 'app-spot-details-page',
-  imports: [TranslocoPipe, RouterLink, Alert, Avatar, Button, Card, Page, PageHeader, Skeleton],
+  imports: [
+    TranslocoPipe,
+    RouterLink,
+    Alert,
+    Avatar,
+    Button,
+    Card,
+    Page,
+    PageHeader,
+    Rating,
+    ReviewList,
+    Skeleton,
+  ],
   templateUrl: './spot-details-page.html',
   styleUrl: './spot-details-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +72,7 @@ export class SpotDetailsPage {
   private readonly router = inject(Router);
   private readonly spots = inject(ParkingSpotsApi);
   private readonly vehicles = inject(VehiclesApi);
+  private readonly reviewsApi = inject(ReviewsApi);
   private readonly dialog = inject(Dialog);
   private readonly locale = inject(LocaleService);
   private readonly destroyRef = inject(DestroyRef);
@@ -67,10 +84,20 @@ export class SpotDetailsPage {
   protected readonly selectedImage = signal(0);
   protected readonly details = signal<SpotDetails | null>(null);
   protected readonly loading = signal(true);
+  protected readonly summary = signal<RatingSummary | null>(null);
+  protected readonly reviews: ReviewSource = (page, size) =>
+    this.reviewsApi.bySpot(this.route.snapshot.paramMap.get('spotId') ?? '', page, size);
   protected readonly images = computed(() => this.details()?.images ?? []);
 
   constructor() {
     const spotId = this.route.snapshot.paramMap.get('spotId') ?? '';
+    this.reviewsApi
+      .spotRatings([spotId])
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: (ratings) => this.summary.set(ratings.get(spotId) ?? null),
+        error: () => undefined,
+      });
     forkJoin({
       spot: this.spots.get(spotId),
       images: this.spots.images(spotId).pipe(catchError(() => of([]))),

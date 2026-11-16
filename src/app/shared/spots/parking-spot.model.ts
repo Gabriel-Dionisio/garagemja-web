@@ -6,6 +6,7 @@ export type ParkingSpotSize = (typeof PARKING_SPOT_SIZES)[number];
 
 export interface ParkingSpotOwner {
   residentId: string;
+  userId: string | null;
   name: string;
   unit: string | null;
   block: string | null;

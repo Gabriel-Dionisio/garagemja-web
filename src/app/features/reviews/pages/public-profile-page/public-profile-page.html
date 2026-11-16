@@ -1,0 +1,57 @@
+<app-page size="form">
+  <app-page-header
+    [title]="profile()?.displayName ?? ('reviews.profile.title' | transloco)"
+    [subtitle]="'reviews.profile.subtitle' | transloco"
+  />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  } @else if (loading()) {
+    <app-skeleton [label]="'reviews.list.loading' | transloco" [rows]="3" />
+  } @else if (profile(); as current) {
+    <app-card class="summary">
+      <app-avatar [name]="current.displayName" [src]="current.photoUrl" />
+      <p>{{ 'reviews.profile.memberSince' | transloco: { date: since() } }}</p>
+      <dl>
+        <div>
+          <dt>{{ 'reviews.profile.asHost' | transloco }}</dt>
+          <dd><app-rating [average]="current.asHost.average" [total]="current.asHost.total" /></dd>
+        </div>
+        <div>
+          <dt>{{ 'reviews.profile.asRenter' | transloco }}</dt>
+          <dd>
+            <app-rating [average]="current.asRenter.average" [total]="current.asRenter.total" />
+          </dd>
+        </div>
+      </dl>
+    </app-card>
+
+    <app-card>
+      <h2>{{ 'reviews.profile.spots' | transloco }}</h2>
+      @if (current.spots.length === 0) {
+        <p>{{ 'reviews.profile.noSpots' | transloco }}</p>
+      } @else {
+        <ul>
+          @for (spot of current.spots; track spot.id) {
+            <li>
+              <strong>{{ 'reviews.profile.spot' | transloco: { number: spot.number } }}</strong>
+              @if (spot.condominiumName) {
+                <span>{{ spot.condominiumName }}</span>
+              }
+              @if (spot.dailyPrice !== null) {
+                <span>{{
+                  'parkingSpots.price.daily' | transloco: { value: money()(spot.dailyPrice) }
+                }}</span>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </app-card>
+
+    <section>
+      <h2>{{ 'reviews.profile.reviews' | transloco }}</h2>
+      <app-review-list [source]="reviews" [canReport]="own" />
+    </section>
+  }
+</app-page>

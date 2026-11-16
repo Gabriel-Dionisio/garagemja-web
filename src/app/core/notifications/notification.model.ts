@@ -22,6 +22,9 @@ export const NOTIFICATION_KINDS = [
   'PARKING_SPOT_REJECTED',
   'PARKING_SPOT_BLOCKED',
   'PARKING_SPOT_UNBLOCKED',
+  'REVIEW_INVITE',
+  'REVIEW_REPORT_KEPT',
+  'REVIEW_REPORT_HIDDEN',
 ] as const;
 
 export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];

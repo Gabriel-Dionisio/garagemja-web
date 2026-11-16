@@ -18,6 +18,7 @@ describe('parking spot mapper', () => {
     expect(spot.size).toBeNull();
     expect(spot.owner).toEqual({
       residentId: 'r1',
+      userId: null,
       name: 'Ana',
       unit: '12',
       block: null,

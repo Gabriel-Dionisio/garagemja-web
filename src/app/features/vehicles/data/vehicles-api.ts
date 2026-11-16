@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
 import { fields, isNullableString } from '../../../shared/models/fields';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import { Residency, Vehicle, VehicleFields, VehicleListItem } from '../vehicle.model';
 
 const VEHICLES_URL = '/api/v1/vehicles';
@@ -80,8 +80,7 @@ export class VehiclesApi {
           ...vehicle,
           residency: byId.get(vehicle.residentId) ?? null,
         }));
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(items, page, size, Number.isInteger(total) ? total : undefined);
+        return toResponsePage(response, items, page, size);
       }),
     );
   }

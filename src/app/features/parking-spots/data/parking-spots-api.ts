@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { fields } from '../../../shared/models/fields';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import { LookupOption } from '../../../shared/ui/lookup-field/lookup-field';
 import { SpotCriteria } from '../../spot-search/spot-search.model';
 import {
@@ -87,13 +87,7 @@ export class ParkingSpotsApi {
       .pipe(
         map((response) => {
           if (!Array.isArray(response.body)) throw new Error('Invalid parking spot list');
-          const total = Number(response.headers.get('X-Total-Count'));
-          return toPage(
-            response.body.map(toParkingSpot),
-            page,
-            size,
-            Number.isInteger(total) ? total : undefined,
-          );
+          return toResponsePage(response, response.body.map(toParkingSpot), page, size);
         }),
       );
   }

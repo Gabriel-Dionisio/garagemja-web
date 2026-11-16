@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import { AuditLog, AuditLogFilter } from '../audit-log.model';
 import { toAuditLog } from './audit-log.mapper';
 
@@ -22,13 +22,7 @@ export class AuditLogsApi {
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid audit log list');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          body.map(toAuditLog),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
+        return toResponsePage(response, body.map(toAuditLog), page, size);
       }),
     );
   }

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { fields, textOrNull } from '../../../shared/models/fields';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import {
   ENTRY_KINDS,
   WALLET_TYPES,
@@ -82,13 +82,7 @@ export class WalletsApi {
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid wallet entries');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          body.map(toWalletEntry),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
+        return toResponsePage(response, body.map(toWalletEntry), page, size);
       }),
     );
   }

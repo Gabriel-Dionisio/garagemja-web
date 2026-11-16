@@ -4,8 +4,8 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { Page, toPage } from '../../../../shared/models/page';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { VehiclesApi } from '../../data/vehicles-api';
-import { VehicleListItem } from '../../vehicle.model';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { VehicleListItem } from '../../../../shared/vehicles/vehicle.model';
 import { VehiclesPage } from './vehicles-page';
 
 const item: VehicleListItem = {

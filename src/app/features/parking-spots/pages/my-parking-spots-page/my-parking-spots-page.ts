@@ -23,16 +23,16 @@ import {
   PAGE_SIZES,
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { dateFormatter, moneyFormatter } from '../../../../shared/forms/format';
-import { PARKING_SPOT_SIZE_LABELS, spotBadge } from '../../parking-spot-status';
+import { PARKING_SPOT_SIZE_LABELS, spotBadge } from '../../../../shared/spots/parking-spot-status';
 import {
   PARKING_SPOT_SIZES,
   PARKING_SPOT_STATUSES,
   ParkingSpot,
   ParkingSpotSize,
   ParkingSpotStatus,
-} from '../../parking-spot.model';
+} from '../../../../shared/spots/parking-spot.model';
 import { ParkingSpotFilterForm } from '../../components/parking-spot-filter/parking-spot-filter';
 
 @Component({

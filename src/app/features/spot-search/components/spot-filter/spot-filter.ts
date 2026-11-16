@@ -14,7 +14,7 @@ import { formatMoneyInput, formatMoneyValue, parseMoney } from '../../../../shar
 import { Button } from '../../../../shared/ui/button/button';
 import { DateField } from '../../../../shared/ui/date-field/date-field';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
-import { SpotCriteria } from '../../spot-search.model';
+import { SpotCriteria } from '../../../../shared/spots/spot-search.model';
 
 export type SpotFilterValue = Pick<
   SpotCriteria,

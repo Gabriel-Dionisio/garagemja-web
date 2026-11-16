@@ -1,4 +1,4 @@
-import { SpotAvailability } from '../parking-spots/parking-spot.model';
+import { SpotAvailability } from '../../shared/spots/parking-spot.model';
 import { quoteRental } from './rental-quote';
 
 const availability: SpotAvailability = {

@@ -3,9 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
-import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
-import { ParkingSpot, SpotAvailability } from '../../../parking-spots/parking-spot.model';
-import { VehiclesApi } from '../../../vehicles/data/vehicles-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { ParkingSpot, SpotAvailability } from '../../../../shared/spots/parking-spot.model';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
 import { SpotDetailsPage } from './spot-details-page';
 
 const spot: ParkingSpot = {

@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
-import { fields, isNullableString } from '../../../shared/models/fields';
-import { Page, toResponsePage } from '../../../shared/models/page';
-import { Residency, Vehicle, VehicleFields, VehicleListItem } from '../vehicle.model';
+import { fields, isNullableString } from '../models/fields';
+import { Page, toResponsePage } from '../models/page';
+import { Residency, Vehicle, VehicleFields, VehicleListItem } from './vehicle.model';
 
 const VEHICLES_URL = '/api/v1/vehicles';
 const RESIDENCIES_URL = '/api/v1/me/residencies';

@@ -1,5 +1,5 @@
-import { fields, textOrNull as text } from '../../../shared/models/fields';
-import { isParkingSpotSize, isParkingSpotStatus } from '../parking-spot-status';
+import { fields, textOrNull as text } from '../models/fields';
+import { isParkingSpotSize, isParkingSpotStatus } from './parking-spot-status';
 import {
   ParkingSpot,
   ParkingSpotAvailabilitySummary,
@@ -10,7 +10,7 @@ import {
   SpotAvailability,
   SpotMapPin,
   SpotRules,
-} from '../parking-spot.model';
+} from './parking-spot.model';
 
 const numberOrNull = (value: unknown): number | null => (typeof value === 'number' ? value : null);
 

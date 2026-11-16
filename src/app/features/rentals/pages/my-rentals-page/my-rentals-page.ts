@@ -35,14 +35,14 @@ import {
 } from '../../../../shared/ui/paginator/paginator';
 import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
 import { PaymentDialog, PaymentDialogData } from '../../components/payment-dialog/payment-dialog';
-import { RentalsApi } from '../../data/rentals-api';
+import { RentalsApi } from '../../../../shared/rentals/rentals-api';
 import {
   CancellationPreview,
   RENTAL_STATUSES,
   Rental,
   RentalStatus,
   isRentalStatus,
-} from '../../rental.model';
+} from '../../../../shared/rentals/rental.model';
 
 const REASON_CODES = ['unpaid', 'condominium_closed'];
 

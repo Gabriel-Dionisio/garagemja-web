@@ -1,11 +1,11 @@
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { Page } from '../../../../shared/models/page';
-import { Alert } from '../../../../shared/ui/alert/alert';
-import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
-import { PAGE_SIZES, Paginator } from '../../../../shared/ui/paginator/paginator';
-import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
-import { ParkingSpot } from '../../../parking-spots/parking-spot.model';
+import { Page } from '../../models/page';
+import { Alert } from '../../ui/alert/alert';
+import { EmptyState } from '../../ui/empty-state/empty-state';
+import { PAGE_SIZES, Paginator } from '../../ui/paginator/paginator';
+import { Skeleton } from '../../ui/skeleton/skeleton';
+import { ParkingSpot } from '../parking-spot.model';
 import { SpotCard } from '../spot-card/spot-card';
 
 @Component({

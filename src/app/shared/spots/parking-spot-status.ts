@@ -1,4 +1,4 @@
-import { BadgeTone } from '../../shared/ui/badge/badge';
+import { BadgeTone } from '../ui/badge/badge';
 import {
   PARKING_SPOT_SIZES,
   ParkingSpot,

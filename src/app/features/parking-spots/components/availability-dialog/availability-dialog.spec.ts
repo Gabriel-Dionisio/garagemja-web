@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { TestBed } from '@angular/core/testing';
-import { SpotAvailability, SpotRules } from '../../parking-spot.model';
+import { SpotAvailability, SpotRules } from '../../../../shared/spots/parking-spot.model';
 import { AvailabilityDialog, AvailabilityDialogData } from './availability-dialog';
 
 describe('AvailabilityDialog', () => {

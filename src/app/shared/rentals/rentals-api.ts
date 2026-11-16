@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { fields } from '../../../shared/models/fields';
-import { Page, toResponsePage } from '../../../shared/models/page';
-import { CancellationPreview, Rental, RentalStatus, isRentalStatus } from '../rental.model';
+import { fields } from '../models/fields';
+import { Page, toResponsePage } from '../models/page';
+import { CancellationPreview, Rental, RentalStatus, isRentalStatus } from './rental.model';
 
 const MY_RENTALS_URL = '/api/v1/me/rentals';
 const RENTALS_URL = '/api/v1/rentals';

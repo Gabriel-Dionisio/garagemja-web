@@ -22,15 +22,15 @@ import { Card } from '../../../../shared/ui/card/card';
 import { Page } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
-import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
-import { PARKING_SPOT_SIZE_LABELS } from '../../../parking-spots/parking-spot-status';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
 import {
   ParkingSpot,
   ParkingSpotImage,
   SpotAvailability,
   SpotRules,
-} from '../../../parking-spots/parking-spot.model';
-import { VehiclesApi } from '../../../vehicles/data/vehicles-api';
+} from '../../../../shared/spots/parking-spot.model';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
 import {
   RequestRentalDialog,
   RequestRentalDialogData,

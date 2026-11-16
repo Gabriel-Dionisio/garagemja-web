@@ -1,6 +1,6 @@
-import { RENTAL_STATUSES, RentalStatus } from '../../shared/models/rental-status';
+import { RENTAL_STATUSES, RentalStatus } from '../models/rental-status';
 
-export { RENTAL_STATUSES, type RentalStatus } from '../../shared/models/rental-status';
+export { RENTAL_STATUSES, type RentalStatus } from '../models/rental-status';
 
 export interface Rental {
   id: string;

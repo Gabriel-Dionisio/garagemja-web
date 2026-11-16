@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { fields } from '../../../shared/models/fields';
-import { Page, toResponsePage } from '../../../shared/models/page';
-import { LookupOption } from '../../../shared/ui/lookup-field/lookup-field';
-import { SpotCriteria } from '../../spot-search/spot-search.model';
+import { fields } from '../models/fields';
+import { Page, toResponsePage } from '../models/page';
+import { LookupOption } from '../ui/lookup-field/lookup-field';
+import { SpotCriteria } from './spot-search.model';
 import {
   ParkingSpot,
   ParkingSpotCondominium,
@@ -17,7 +17,7 @@ import {
   SpotAvailabilityInput,
   SpotMapPin,
   SpotRules,
-} from '../parking-spot.model';
+} from './parking-spot.model';
 import {
   toParkingSpot,
   toParkingSpotCondominium,

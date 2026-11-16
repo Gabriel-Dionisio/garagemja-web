@@ -2,8 +2,12 @@ import { Dialog } from '@angular/cdk/dialog';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
-import { SpotAvailability, SpotAvailabilityInput, SpotRules } from '../../parking-spot.model';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import {
+  SpotAvailability,
+  SpotAvailabilityInput,
+  SpotRules,
+} from '../../../../shared/spots/parking-spot.model';
 import { SpotAvailabilities } from './spot-availabilities';
 
 const period = (overrides: Partial<SpotAvailability> = {}): SpotAvailability => ({

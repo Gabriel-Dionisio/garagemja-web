@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
-import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { SpotSearchPage } from './spot-search-page';
 
 describe('SpotSearchPage', () => {

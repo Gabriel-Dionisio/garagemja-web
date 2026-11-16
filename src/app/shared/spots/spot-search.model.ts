@@ -1,5 +1,5 @@
 import { ParamMap, Params } from '@angular/router';
-import { PARKING_SPOT_SIZES, ParkingSpotSize } from '../parking-spots/parking-spot.model';
+import { PARKING_SPOT_SIZES, ParkingSpotSize } from './parking-spot.model';
 
 export const SPOT_SORTS = ['NUMBER', 'PRICE_ASC', 'PRICE_DESC'] as const;
 export type SpotSort = (typeof SPOT_SORTS)[number];

@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { DEFAULT_CRITERIA } from '../../spot-search/spot-search.model';
+import { DEFAULT_CRITERIA } from './spot-search.model';
 import { ParkingSpotsApi } from './parking-spots-api';
 
 describe('ParkingSpotsApi', () => {

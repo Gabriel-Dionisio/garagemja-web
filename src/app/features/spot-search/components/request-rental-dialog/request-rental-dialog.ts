@@ -26,10 +26,10 @@ import {
   ParkingSpot,
   SpotAvailability,
   SpotRules,
-} from '../../../parking-spots/parking-spot.model';
-import { RentalsApi } from '../../../rentals/data/rentals-api';
-import { VehiclesApi } from '../../../vehicles/data/vehicles-api';
-import { VehicleListItem } from '../../../vehicles/vehicle.model';
+} from '../../../../shared/spots/parking-spot.model';
+import { RentalsApi } from '../../../../shared/rentals/rentals-api';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { VehicleListItem } from '../../../../shared/vehicles/vehicle.model';
 import { displayPlate } from '../../../../shared/forms/plate';
 import { RentalMode, quoteRental } from '../../rental-quote';
 

@@ -27,10 +27,14 @@ import {
   AvailabilityDialog,
   AvailabilityDialogData,
 } from '../availability-dialog/availability-dialog';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { dateFormatter, moneyFormatter } from '../../../../shared/forms/format';
-import { aboveCap } from '../../parking-spot-status';
-import { SpotAvailability, SpotAvailabilityInput, SpotRules } from '../../parking-spot.model';
+import { aboveCap } from '../../../../shared/spots/parking-spot-status';
+import {
+  SpotAvailability,
+  SpotAvailabilityInput,
+  SpotRules,
+} from '../../../../shared/spots/parking-spot.model';
 
 const NO_RULES: SpotRules = {
   maxPricePerDay: null,

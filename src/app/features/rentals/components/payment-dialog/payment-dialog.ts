@@ -21,7 +21,7 @@ import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { PaymentsApi } from '../../data/payments-api';
 import { Payment, PaymentMethod } from '../../payment.model';
-import { Rental } from '../../rental.model';
+import { Rental } from '../../../../shared/rentals/rental.model';
 
 export interface PaymentDialogData {
   rental: Rental;

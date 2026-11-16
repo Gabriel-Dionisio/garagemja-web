@@ -3,10 +3,10 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
-import { SpotAvailability } from '../../../parking-spots/parking-spot.model';
-import { RentalsApi } from '../../../rentals/data/rentals-api';
-import { VehiclesApi } from '../../../vehicles/data/vehicles-api';
-import { VehicleListItem } from '../../../vehicles/vehicle.model';
+import { SpotAvailability } from '../../../../shared/spots/parking-spot.model';
+import { RentalsApi } from '../../../../shared/rentals/rentals-api';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { VehicleListItem } from '../../../../shared/vehicles/vehicle.model';
 import { RequestRentalDialog, RequestRentalDialogData } from './request-rental-dialog';
 
 const availability: SpotAvailability = {

@@ -11,14 +11,14 @@ import { AppMap, MapPin } from '../../../../shared/ui/map/map';
 import { ChipToggle } from '../../../../shared/ui/chip-toggle/chip-toggle';
 import { Page as PageLayout } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
-import { PARKING_SPOT_SIZE_LABELS } from '../../../parking-spots/parking-spot-status';
+import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
 import {
   PARKING_SPOT_SIZES,
   ParkingSpot,
   ParkingSpotSize,
-} from '../../../parking-spots/parking-spot.model';
-import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
-import { SpotResults } from '../../components/spot-results/spot-results';
+} from '../../../../shared/spots/parking-spot.model';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { SpotResults } from '../../../../shared/spots/spot-results/spot-results';
 import { SpotFilter, SpotFilterValue } from '../../components/spot-filter/spot-filter';
 import {
   SPOT_SORTS,
@@ -27,7 +27,7 @@ import {
   activeCriteriaCount,
   criteriaFromParams,
   criteriaToParams,
-} from '../../spot-search.model';
+} from '../../../../shared/spots/spot-search.model';
 
 const PAGE_SIZE = 12;
 

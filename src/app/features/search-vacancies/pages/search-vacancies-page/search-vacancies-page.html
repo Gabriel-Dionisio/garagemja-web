@@ -29,8 +29,32 @@
       [value]="criteria().sort"
       (valueChange)="patch({ sort: $event ?? 'NUMBER' })"
     />
+    <app-chip-toggle
+      [label]="'parkingSpots.fields.covered' | transloco"
+      [pressed]="criteria().covered"
+      (toggled)="patch({ covered: !criteria().covered })"
+    />
+    @if (criteria().condominiumId) {
+      <app-chip-toggle
+        [label]="'searchVacancies.condominiumFilter' | transloco"
+        [pressed]="true"
+        (toggled)="patch({ condominiumId: null })"
+      />
+    }
     <app-vacancy-filter [criteria]="criteria()" (applied)="apply($event)" />
   </app-filter-panel>
+
+  @if (pins().length) {
+    <app-map
+      class="map"
+      [label]="'searchVacancies.map' | transloco"
+      [zoomInLabel]="'searchVacancies.zoomIn' | transloco"
+      [zoomOutLabel]="'searchVacancies.zoomOut' | transloco"
+      [pins]="pins()"
+      [selectedId]="criteria().condominiumId"
+      (pinClick)="pickCondominium($event)"
+    />
+  }
 
   <app-vacancy-results
     [result]="result()"

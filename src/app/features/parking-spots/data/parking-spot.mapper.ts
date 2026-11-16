@@ -8,6 +8,7 @@ import {
   ParkingSpotOwner,
   ParkingSpotResidency,
   SpotAvailability,
+  SpotMapPin,
   SpotRules,
 } from '../parking-spot.model';
 
@@ -58,6 +59,7 @@ export function toParkingSpot(value: unknown): ParkingSpot {
     availability: toAvailabilitySummary(raw['availability']),
     location: text(raw['location']),
     size: isParkingSpotSize(raw['size']) ? raw['size'] : null,
+    covered: raw['covered'] === true,
     statusReason: text(raw['statusReason']),
     imageUrl: text(raw['imageUrl']),
     thumbnailUrl: text(raw['thumbnailUrl']),
@@ -129,4 +131,18 @@ export function toParkingSpotResidency(value: unknown): ParkingSpotResidency {
     throw new Error('Invalid residency');
   }
   return { condominiumId, condominiumName, approved: status === 'APPROVED' };
+}
+
+export function toSpotMapPin(value: unknown): SpotMapPin {
+  const { condominiumId, name, latitude, longitude, available } = fields(value, 'map pin');
+  if (
+    typeof condominiumId !== 'string' ||
+    typeof name !== 'string' ||
+    typeof latitude !== 'number' ||
+    typeof longitude !== 'number' ||
+    typeof available !== 'number'
+  ) {
+    throw new Error('Invalid map pin');
+  }
+  return { condominiumId, name, latitude, longitude, available };
 }

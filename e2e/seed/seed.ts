@@ -113,6 +113,12 @@ async function ensureCondo(condo: Condo): Promise<string> {
     id = created.id;
     status = 'PENDING';
   }
+  if (condo.coordinates) {
+    const [latitude, longitude] = condo.coordinates;
+    psql(
+      `update condominiums set latitude = ${latitude}, longitude = ${longitude} where id = '${id}'`,
+    );
+  }
   const path = STATUS_PATH[condo.target];
   const done = path.indexOf(status as never);
   const remaining = status === condo.target ? [] : path.slice(done + 1);
@@ -231,6 +237,7 @@ async function ensureSpot(spot: Spot, condoIds: Map<string, string>): Promise<st
         number: spot.number,
         location: spot.location,
         size: spot.size,
+        covered: spot.covered ?? false,
         ...(spot.owner && !requested ? { ownerResidentId: residentIdOf(spot.owner, condoId) } : {}),
       },
       [201],

@@ -75,6 +75,11 @@
                 [value]="size()"
                 (valueChange)="selectSize($event)"
               />
+              <app-chip-toggle
+                [label]="'parkingSpots.fields.covered' | transloco"
+                [pressed]="covered()"
+                (toggled)="toggleCovered()"
+              />
               @if (canManage()) {
                 <app-lookup-field
                   [label]="'parkingSpots.fields.owner' | transloco"

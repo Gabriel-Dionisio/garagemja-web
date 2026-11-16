@@ -15,6 +15,7 @@ import {
   ParkingSpotStatus,
   SpotAvailability,
   SpotAvailabilityInput,
+  SpotMapPin,
   SpotRules,
 } from '../parking-spot.model';
 import {
@@ -23,6 +24,7 @@ import {
   toParkingSpotImages,
   toParkingSpotResidency,
   toSpotAvailability,
+  toSpotMapPin,
   toSpotRules,
 } from './parking-spot.mapper';
 
@@ -60,9 +62,20 @@ export class ParkingSpotsApi {
     if (criteria.from) params = params.set('from', criteria.from);
     if (criteria.to) params = params.set('to', criteria.to);
     if (criteria.hourly) params = params.set('hourly', true);
+    if (criteria.covered) params = params.set('covered', true);
+    if (criteria.condominiumId) params = params.set('condominiumId', criteria.condominiumId);
     if (criteria.minPrice !== null) params = params.set('minPrice', criteria.minPrice);
     if (criteria.maxPrice !== null) params = params.set('maxPrice', criteria.maxPrice);
     return this.page(params, page, size);
+  }
+
+  mapPins(): Observable<SpotMapPin[]> {
+    return this.http.get<unknown>(`${SPOTS_URL}/map`).pipe(
+      map((body) => {
+        if (!Array.isArray(body)) throw new Error('Invalid map pins');
+        return body.map(toSpotMapPin);
+      }),
+    );
   }
 
   private page(params: HttpParams, page: number, size: number): Observable<Page<ParkingSpot>> {

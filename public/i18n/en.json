@@ -1136,7 +1136,8 @@
       "owner": "Owner",
       "ownerHint": "Optional. Search by the name or email of an approved resident.",
       "statusReason": "Reason",
-      "condominium": "Condominium"
+      "condominium": "Condominium",
+      "covered": "Covered"
     },
     "image": {
       "alt": "Parking spot photo"
@@ -1310,7 +1311,12 @@
       "submit": "Send request",
       "invalid": "Check the chosen period and vehicle.",
       "conflict": "This period is no longer available. Pick another."
-    }
+    },
+    "map": "Map of condominiums with available spots",
+    "pin": "{{name}}: {{count}} available",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "condominiumFilter": "Selected condominium"
   },
   "notifications": {
     "title": "Notifications",

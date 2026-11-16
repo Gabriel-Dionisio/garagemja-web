@@ -29,6 +29,7 @@ export interface ParkingSpot {
   number: string;
   location: string | null;
   size: ParkingSpotSize | null;
+  covered: boolean;
   status: ParkingSpotStatus;
   statusReason: string | null;
   imageUrl: string | null;
@@ -91,6 +92,15 @@ export interface ParkingSpotInput {
   number: string;
   location: string | null;
   size: ParkingSpotSize | null;
+  covered: boolean;
   ownerResidentId: string | null;
   clearOwner?: boolean;
+}
+
+export interface SpotMapPin {
+  condominiumId: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  available: number;
 }

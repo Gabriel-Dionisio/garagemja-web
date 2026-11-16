@@ -1,17 +1,30 @@
+import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
 import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
 import { SearchVacanciesPage } from './search-vacancies-page';
 
 describe('SearchVacanciesPage', () => {
-  async function setup(url: string, search = vi.fn().mockReturnValue(of(toPage([], 0, 12, 0)))) {
+  const pin = {
+    condominiumId: '0198a7c2-1b2c-7d3e-8f40-123456789abc',
+    name: 'Solar',
+    latitude: -23.5,
+    longitude: -46.6,
+    available: 3,
+  };
+
+  async function setup(
+    url: string,
+    search = vi.fn().mockReturnValue(of(toPage([], 0, 12, 0))),
+    pins: Observable<(typeof pin)[]> = of([pin]),
+  ) {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([{ path: 'search-vacancies', component: SearchVacanciesPage }]),
-        { provide: ParkingSpotsApi, useValue: { search } },
+        { provide: ParkingSpotsApi, useValue: { search, mapPins: () => pins } },
       ],
     });
     const harness = await RouterTestingHarness.create();
@@ -37,6 +50,60 @@ describe('SearchVacanciesPage', () => {
       12,
     );
     expect(root.querySelector('app-filter-panel')).not.toBeNull();
+  });
+
+  it('filters by the condominium of the clicked pin and clears on second click', async () => {
+    const { search, root } = await setup('/search-vacancies');
+    const marker = () => root.querySelector<HTMLElement>('.map-pin');
+    expect(marker()?.textContent).toBe('3');
+    marker()?.click();
+    await TestBed.inject(ApplicationRef).whenStable();
+    expect(search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ condominiumId: pin.condominiumId }),
+      0,
+      12,
+    );
+    root.querySelector<HTMLElement>('.map-pin')?.click();
+    await TestBed.inject(ApplicationRef).whenStable();
+    expect(search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ condominiumId: null }),
+      0,
+      12,
+    );
+  });
+
+  it('lets the user clear the condominium filter even when the map is hidden', async () => {
+    const { search, root } = await setup(
+      `/search-vacancies?condominium=${pin.condominiumId}`,
+      undefined,
+      of([]),
+    );
+    expect(root.querySelector('app-map')).toBeNull();
+    const chip = root.querySelector<HTMLButtonElement>(
+      'app-chip-toggle button[aria-pressed="true"]',
+    );
+    chip?.click();
+    await TestBed.inject(ApplicationRef).whenStable();
+    expect(search).toHaveBeenLastCalledWith(
+      expect.objectContaining({ condominiumId: null }),
+      0,
+      12,
+    );
+  });
+
+  it('hides the map when the pins fail to load', async () => {
+    const { root } = await setup(
+      '/search-vacancies',
+      undefined,
+      throwError(() => new Error('boom')),
+    );
+    expect(root.querySelector('app-map')).toBeNull();
+    expect(root.querySelector('app-alert')).toBeNull();
+  });
+
+  it('hides the map when no condominium has coordinates', async () => {
+    const { root } = await setup('/search-vacancies', undefined, of([]));
+    expect(root.querySelector('app-map')).toBeNull();
   });
 
   it('shows an error alert when the search fails', async () => {

@@ -188,7 +188,7 @@
     "wallet": "Carteira"
   },
   "requests": {
-    "title": "Solicitações",
+    "title": "Pedidos recebidos",
     "count": "{{count}} solicitações",
     "filters": "Filtrar solicitações",
     "search": "Buscar por locatário, placa, vaga ou condomínio",

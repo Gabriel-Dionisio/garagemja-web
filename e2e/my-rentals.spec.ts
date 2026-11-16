@@ -5,7 +5,7 @@ import type { World } from './support/world';
 async function spotWithRental(world: World, number: string, start: number, finish?: string) {
   const manager = await world.as(world.manager);
   const { id: spotId } = await manager.createSpot(world.condominium.id, number);
-  await manager.addAvailability(spotId, 9, 1, 90);
+  await manager.addAvailability(spotId, 9, 1, start + 10);
   const renter = await world.as(world.renter);
   const { id } = await renter.requestRental(
     spotId,

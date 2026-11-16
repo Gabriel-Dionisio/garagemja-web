@@ -127,9 +127,10 @@
     }
   },
   "nav": {
+    "groups": { "rent": "Alugar", "announce": "Anunciar" },
     "home": "Início",
     "myRentals": "Meus aluguéis",
-    "requests": "Solicitações",
+    "requests": "Pedidos recebidos",
     "users": "Usuários",
     "settings": "Configurações",
     "skipToContent": "Pular para o conteúdo",
@@ -144,7 +145,7 @@
     "management": "Gestão",
     "myParkingSpots": "Minhas vagas",
     "myVehicles": "Meus veículos",
-    "spotSearch": "Buscar Vagas",
+    "spotSearch": "Buscar vagas",
     "wallet": "Carteira"
   },
   "routes": {
@@ -154,7 +155,7 @@
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
     "myRentals": "Meus aluguéis",
-    "requests": "Solicitações",
+    "requests": "Pedidos recebidos",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo administrador",
     "adminUserDetail": "Detalhes do usuário",

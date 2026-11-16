@@ -3,31 +3,31 @@ import { navItemsFor } from './nav-items';
 describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
-  it('morador: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, carteira, meus veículos e painel', () => {
+  it('morador: início, painel e condomínios, depois Alugar e Anunciar', () => {
     expect(paths(navItemsFor(['RESIDENT']))).toEqual([
       '/home',
-      '/search',
+      '/dashboard',
       '/condominiums',
-      '/parking-spots',
+      '/search',
       '/rentals',
+      '/vehicles',
+      '/parking-spots',
       '/requests',
       '/wallet',
-      '/vehicles',
-      '/dashboard',
     ]);
   });
 
-  it('síndico: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, carteira, meus veículos e painel', () => {
+  it('síndico: mesmo menu do morador', () => {
     expect(paths(navItemsFor(['CONDOMINIUM_ADMIN', 'RESIDENT']))).toEqual([
       '/home',
-      '/search',
+      '/dashboard',
       '/condominiums',
-      '/parking-spots',
+      '/search',
       '/rentals',
+      '/vehicles',
+      '/parking-spots',
       '/requests',
       '/wallet',
-      '/vehicles',
-      '/dashboard',
     ]);
   });
 

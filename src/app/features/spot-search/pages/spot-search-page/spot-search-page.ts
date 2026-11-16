@@ -18,21 +18,21 @@ import {
   ParkingSpotSize,
 } from '../../../parking-spots/parking-spot.model';
 import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
-import { VacancyResults } from '../../components/vacancy-results/vacancy-results';
-import { VacancyFilter, VacancyFilterValue } from '../../components/vacancy-filter/vacancy-filter';
+import { SpotResults } from '../../components/spot-results/spot-results';
+import { SpotFilter, SpotFilterValue } from '../../components/spot-filter/spot-filter';
 import {
-  VACANCY_SORTS,
-  VacancyCriteria,
-  VacancySort,
+  SPOT_SORTS,
+  SpotCriteria,
+  SpotSort,
   activeCriteriaCount,
   criteriaFromParams,
   criteriaToParams,
-} from '../../search-vacancies.model';
+} from '../../spot-search.model';
 
 const PAGE_SIZE = 12;
 
 @Component({
-  selector: 'app-search-vacancies-page',
+  selector: 'app-spot-search-page',
   imports: [
     TranslocoPipe,
     AppMap,
@@ -41,14 +41,14 @@ const PAGE_SIZE = 12;
     FilterPanel,
     PageHeader,
     PageLayout,
-    VacancyResults,
-    VacancyFilter,
+    SpotResults,
+    SpotFilter,
   ],
-  templateUrl: './search-vacancies-page.html',
-  styleUrl: './search-vacancies-page.scss',
+  templateUrl: './spot-search-page.html',
+  styleUrl: './spot-search-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchVacanciesPage {
+export class SpotSearchPage {
   private readonly api = inject(ParkingSpotsApi);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
@@ -62,12 +62,12 @@ export class SearchVacanciesPage {
     })),
   ];
   protected readonly modeTabs: readonly ChipOption<'DAILY' | 'HOURLY'>[] = [
-    { value: 'DAILY', labelKey: 'searchVacancies.mode.daily' },
-    { value: 'HOURLY', labelKey: 'searchVacancies.mode.hourly' },
+    { value: 'DAILY', labelKey: 'spotSearch.mode.daily' },
+    { value: 'HOURLY', labelKey: 'spotSearch.mode.hourly' },
   ];
-  protected readonly sortTabs: readonly ChipOption<VacancySort>[] = VACANCY_SORTS.map((sort) => ({
+  protected readonly sortTabs: readonly ChipOption<SpotSort>[] = SPOT_SORTS.map((sort) => ({
     value: sort,
-    labelKey: `searchVacancies.sort.${sort}`,
+    labelKey: `spotSearch.sort.${sort}`,
   }));
 
   private readonly state = toSignal(this.route.queryParamMap.pipe(map(criteriaFromParams)), {
@@ -123,7 +123,7 @@ export class SearchVacanciesPage {
       .subscribe((result) => this.result.set(result));
   }
 
-  protected patch(change: Partial<VacancyCriteria>): void {
+  protected patch(change: Partial<SpotCriteria>): void {
     void this.router.navigate([], {
       queryParams: criteriaToParams({ ...this.criteria(), ...change }),
       replaceUrl: true,
@@ -134,7 +134,7 @@ export class SearchVacanciesPage {
     this.patch({ condominiumId: this.criteria().condominiumId === id ? null : id });
   }
 
-  protected apply(value: VacancyFilterValue): void {
+  protected apply(value: SpotFilterValue): void {
     this.patch(value);
   }
 

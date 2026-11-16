@@ -80,8 +80,8 @@ export class RequestRentalDialog {
     this.data.rules.hourlyRentalsEnabled &&
     this.data.availabilities.some((item) => item.hourlyPrice !== null);
   protected readonly modeTabs: readonly ChipOption<RentalMode>[] = [
-    { value: 'DAY', labelKey: 'searchVacancies.request.modeDay' },
-    { value: 'HOUR', labelKey: 'searchVacancies.request.modeHour' },
+    { value: 'DAY', labelKey: 'spotSearch.request.modeDay' },
+    { value: 'HOUR', labelKey: 'spotSearch.request.modeHour' },
   ];
   protected readonly mode = signal<RentalMode>('DAY');
   protected readonly startDate = signal(this.data.from);
@@ -89,9 +89,9 @@ export class RequestRentalDialog {
   protected readonly vehicles = signal<VehicleListItem[] | null>(null);
   protected readonly submitting = signal(false);
   protected readonly error = inject(ErrorText).state({
-    400: 'searchVacancies.request.invalid',
+    400: 'spotSearch.request.invalid',
     404: 'errors.parkingSpots.notFound',
-    409: 'searchVacancies.request.conflict',
+    409: 'spotSearch.request.conflict',
   });
 
   protected readonly form = inject(NonNullableFormBuilder).group({

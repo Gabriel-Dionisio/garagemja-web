@@ -14,23 +14,23 @@ import { formatMoneyInput, formatMoneyValue, parseMoney } from '../../../../shar
 import { Button } from '../../../../shared/ui/button/button';
 import { DateField } from '../../../../shared/ui/date-field/date-field';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
-import { VacancyCriteria } from '../../search-vacancies.model';
+import { SpotCriteria } from '../../spot-search.model';
 
-export type VacancyFilterValue = Pick<
-  VacancyCriteria,
+export type SpotFilterValue = Pick<
+  SpotCriteria,
   'search' | 'from' | 'to' | 'minPrice' | 'maxPrice'
 >;
 
 @Component({
-  selector: 'app-vacancy-filter',
+  selector: 'app-spot-filter',
   imports: [TranslocoPipe, ReactiveFormsModule, Button, DateField, TextField],
-  templateUrl: './vacancy-filter.html',
-  styleUrl: './vacancy-filter.scss',
+  templateUrl: './spot-filter.html',
+  styleUrl: './spot-filter.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VacancyFilter {
-  readonly criteria = input.required<VacancyCriteria>();
-  readonly applied = output<VacancyFilterValue>();
+export class SpotFilter {
+  readonly criteria = input.required<SpotCriteria>();
+  readonly applied = output<SpotFilterValue>();
 
   protected readonly today = todayIso();
   protected readonly formatMoney = formatMoneyInput;

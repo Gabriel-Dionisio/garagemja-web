@@ -1,32 +1,32 @@
 <form [formGroup]="form" (ngSubmit)="apply()" novalidate>
   <app-text-field
     class="wide"
-    [label]="'searchVacancies.filters.search' | transloco"
+    [label]="'spotSearch.filters.search' | transloco"
     [maxLength]="100"
     [control]="form.controls.search"
   />
   <app-date-field
     [showLabel]="true"
-    [label]="'searchVacancies.filters.from' | transloco"
+    [label]="'spotSearch.filters.from' | transloco"
     [isoValue]="from()"
     [isoMin]="today"
     (isoValueChange)="setFrom($event)"
   />
   <app-date-field
     [showLabel]="true"
-    [label]="'searchVacancies.filters.to' | transloco"
+    [label]="'spotSearch.filters.to' | transloco"
     [isoValue]="to()"
     [isoMin]="from() || today"
     (isoValueChange)="to.set($event)"
   />
   <app-text-field
-    [label]="'searchVacancies.filters.minPrice' | transloco"
+    [label]="'spotSearch.filters.minPrice' | transloco"
     inputMode="numeric"
     [format]="formatMoney"
     [control]="form.controls.minPrice"
   />
   <app-text-field
-    [label]="'searchVacancies.filters.maxPrice' | transloco"
+    [label]="'spotSearch.filters.maxPrice' | transloco"
     inputMode="numeric"
     [format]="formatMoney"
     [control]="form.controls.maxPrice"

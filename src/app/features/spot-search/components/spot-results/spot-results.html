@@ -1,22 +1,22 @@
 @if (error(); as message) {
   <app-alert kind="error">{{ message }}</app-alert>
 } @else if (loading() && !result()) {
-  <app-skeleton [label]="'searchVacancies.loading' | transloco" [rows]="3" />
+  <app-skeleton [label]="'spotSearch.loading' | transloco" [rows]="3" />
 } @else if (result(); as current) {
   @if (current.items.length === 0) {
     <app-empty-state
       icon="parking"
-      [title]="'searchVacancies.emptyTitle' | transloco"
-      [description]="'searchVacancies.emptyDescription' | transloco"
+      [title]="'spotSearch.emptyTitle' | transloco"
+      [description]="'spotSearch.emptyDescription' | transloco"
     />
   } @else {
     <ul
       class="grid"
       [attr.aria-busy]="loading()"
-      [attr.aria-label]="'searchVacancies.title' | transloco"
+      [attr.aria-label]="'spotSearch.title' | transloco"
     >
       @for (spot of current.items; track spot.id) {
-        <li><app-vacancy-card [spot]="spot" [queryParams]="queryParams()" /></li>
+        <li><app-spot-card [spot]="spot" [queryParams]="queryParams()" /></li>
       }
     </ul>
     <app-paginator

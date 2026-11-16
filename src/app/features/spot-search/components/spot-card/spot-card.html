@@ -1,4 +1,4 @@
-<a class="card" [routerLink]="['/search-vacancies', spot().id]" [queryParams]="queryParams()">
+<a class="card" [routerLink]="['/search', spot().id]" [queryParams]="queryParams()">
   @if (spot().thumbnailUrl; as url) {
     <img class="photo" [src]="url" alt="" loading="lazy" />
   } @else {

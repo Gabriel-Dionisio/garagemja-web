@@ -5,9 +5,9 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
 import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
-import { SearchVacanciesPage } from './search-vacancies-page';
+import { SpotSearchPage } from './spot-search-page';
 
-describe('SearchVacanciesPage', () => {
+describe('SpotSearchPage', () => {
   const pin = {
     condominiumId: '0198a7c2-1b2c-7d3e-8f40-123456789abc',
     name: 'Solar',
@@ -23,7 +23,7 @@ describe('SearchVacanciesPage', () => {
   ) {
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([{ path: 'search-vacancies', component: SearchVacanciesPage }]),
+        provideRouter([{ path: 'search', component: SpotSearchPage }]),
         { provide: ParkingSpotsApi, useValue: { search, mapPins: () => pins } },
       ],
     });
@@ -34,7 +34,7 @@ describe('SearchVacanciesPage', () => {
   }
 
   it('searches with the criteria and page from the URL', async () => {
-    const { search } = await setup('/search-vacancies?q=A12&sort=PRICE_ASC');
+    const { search } = await setup('/search?q=A12&sort=PRICE_ASC');
     expect(search).toHaveBeenCalledWith(
       expect.objectContaining({ search: 'A12', sort: 'PRICE_ASC' }),
       0,
@@ -43,7 +43,7 @@ describe('SearchVacanciesPage', () => {
   });
 
   it('starts with the default criteria and no filter counted', async () => {
-    const { search, root } = await setup('/search-vacancies');
+    const { search, root } = await setup('/search');
     expect(search).toHaveBeenCalledWith(
       expect.objectContaining({ search: '', sort: 'NUMBER', hourly: false }),
       0,
@@ -53,7 +53,7 @@ describe('SearchVacanciesPage', () => {
   });
 
   it('filters by the condominium of the clicked pin and clears on second click', async () => {
-    const { search, root } = await setup('/search-vacancies');
+    const { search, root } = await setup('/search');
     const marker = () => root.querySelector<HTMLElement>('.map-pin');
     expect(marker()?.textContent).toBe('3');
     marker()?.click();
@@ -74,7 +74,7 @@ describe('SearchVacanciesPage', () => {
 
   it('lets the user clear the condominium filter even when the map is hidden', async () => {
     const { search, root } = await setup(
-      `/search-vacancies?condominium=${pin.condominiumId}`,
+      `/search?condominium=${pin.condominiumId}`,
       undefined,
       of([]),
     );
@@ -93,7 +93,7 @@ describe('SearchVacanciesPage', () => {
 
   it('hides the map when the pins fail to load', async () => {
     const { root } = await setup(
-      '/search-vacancies',
+      '/search',
       undefined,
       throwError(() => new Error('boom')),
     );
@@ -102,13 +102,13 @@ describe('SearchVacanciesPage', () => {
   });
 
   it('hides the map when no condominium has coordinates', async () => {
-    const { root } = await setup('/search-vacancies', undefined, of([]));
+    const { root } = await setup('/search', undefined, of([]));
     expect(root.querySelector('app-map')).toBeNull();
   });
 
   it('shows an error alert when the search fails', async () => {
     const { root } = await setup(
-      '/search-vacancies',
+      '/search',
       vi.fn().mockReturnValue(throwError(() => new Error('boom'))),
     );
     expect(root.querySelector('app-alert')).not.toBeNull();

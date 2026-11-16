@@ -8,13 +8,13 @@ import { PARKING_SPOT_SIZE_LABELS } from '../../../parking-spots/parking-spot-st
 import { ParkingSpot } from '../../../parking-spots/parking-spot.model';
 
 @Component({
-  selector: 'app-vacancy-card',
+  selector: 'app-spot-card',
   imports: [TranslocoPipe, RouterLink, Icon],
-  templateUrl: './vacancy-card.html',
-  styleUrl: './vacancy-card.scss',
+  templateUrl: './spot-card.html',
+  styleUrl: './spot-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VacancyCard {
+export class SpotCard {
   private readonly locale = inject(LocaleService);
 
   readonly spot = input.required<ParkingSpot>();

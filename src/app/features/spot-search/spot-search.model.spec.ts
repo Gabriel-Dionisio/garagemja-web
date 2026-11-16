@@ -4,9 +4,9 @@ import {
   activeCriteriaCount,
   criteriaFromParams,
   criteriaToParams,
-} from './search-vacancies.model';
+} from './spot-search.model';
 
-describe('search-vacancies.model', () => {
+describe('spot-search.model', () => {
   it('lê a URL e descarta valores inválidos', () => {
     const { criteria, page } = criteriaFromParams(
       convertToParamMap({

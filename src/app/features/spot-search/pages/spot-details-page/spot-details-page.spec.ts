@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
 import { ParkingSpot, SpotAvailability } from '../../../parking-spots/parking-spot.model';
 import { VehiclesApi } from '../../../vehicles/data/vehicles-api';
-import { VacancyDetailsPage } from './vacancy-details-page';
+import { SpotDetailsPage } from './spot-details-page';
 
 const spot: ParkingSpot = {
   id: 's1',
@@ -37,7 +37,7 @@ const availability: SpotAvailability = {
   active: true,
 };
 
-describe('VacancyDetailsPage', () => {
+describe('SpotDetailsPage', () => {
   const open = vi.fn();
 
   async function setup(residencyId: string, get = vi.fn().mockReturnValue(of(spot))) {
@@ -45,7 +45,7 @@ describe('VacancyDetailsPage', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([
-          { path: 'search-vacancies/:spotId', component: VacancyDetailsPage },
+          { path: 'search/:spotId', component: SpotDetailsPage },
           { path: 'rentals', children: [] },
         ]),
         {
@@ -63,7 +63,7 @@ describe('VacancyDetailsPage', () => {
       ],
     });
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/search-vacancies/s1');
+    await harness.navigateByUrl('/search/s1');
     await harness.fixture.whenStable();
     return { root: harness.routeNativeElement as HTMLElement, harness };
   }

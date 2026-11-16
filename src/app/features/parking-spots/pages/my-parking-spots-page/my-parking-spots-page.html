@@ -89,7 +89,7 @@
           >
           @if (spot.status === 'ACTIVE') {
             <span actions>
-              <a appButton variant="secondary" [routerLink]="['/search-vacancies', spot.id]">
+              <a appButton variant="secondary" [routerLink]="['/search', spot.id]">
                 {{ 'parkingSpots.mine.details' | transloco }}
                 <span class="sr-only">{{ spot.number }}</span>
               </a>

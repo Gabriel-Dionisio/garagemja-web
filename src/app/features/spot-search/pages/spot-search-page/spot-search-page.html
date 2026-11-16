@@ -1,13 +1,11 @@
 <app-page>
   <app-page-header
-    [title]="'searchVacancies.title' | transloco"
-    [subtitle]="
-      result() ? ('searchVacancies.count' | transloco: { count: result()?.total ?? 0 }) : ''
-    "
+    [title]="'spotSearch.title' | transloco"
+    [subtitle]="result() ? ('spotSearch.count' | transloco: { count: result()?.total ?? 0 }) : ''"
   />
 
   <app-filter-panel
-    [label]="'searchVacancies.filters.label' | transloco"
+    [label]="'spotSearch.filters.label' | transloco"
     [activeCount]="activeFilters()"
     [(open)]="filtersOpen"
   >
@@ -18,13 +16,13 @@
       (valueChange)="patch({ size: $event })"
     />
     <app-chip-group
-      [label]="'searchVacancies.mode.label' | transloco"
+      [label]="'spotSearch.mode.label' | transloco"
       [options]="modeTabs"
       [value]="criteria().hourly ? 'HOURLY' : 'DAILY'"
       (valueChange)="patch({ hourly: $event === 'HOURLY' })"
     />
     <app-chip-group
-      [label]="'searchVacancies.sort.label' | transloco"
+      [label]="'spotSearch.sort.label' | transloco"
       [options]="sortTabs"
       [value]="criteria().sort"
       (valueChange)="patch({ sort: $event ?? 'NUMBER' })"
@@ -36,27 +34,27 @@
     />
     @if (criteria().condominiumId) {
       <app-chip-toggle
-        [label]="'searchVacancies.condominiumFilter' | transloco"
+        [label]="'spotSearch.condominiumFilter' | transloco"
         [pressed]="true"
         (toggled)="patch({ condominiumId: null })"
       />
     }
-    <app-vacancy-filter [criteria]="criteria()" (applied)="apply($event)" />
+    <app-spot-filter [criteria]="criteria()" (applied)="apply($event)" />
   </app-filter-panel>
 
   @if (pins().length) {
     <app-map
       class="map"
-      [label]="'searchVacancies.map' | transloco"
-      [zoomInLabel]="'searchVacancies.zoomIn' | transloco"
-      [zoomOutLabel]="'searchVacancies.zoomOut' | transloco"
+      [label]="'spotSearch.map' | transloco"
+      [zoomInLabel]="'spotSearch.zoomIn' | transloco"
+      [zoomOutLabel]="'spotSearch.zoomOut' | transloco"
       [pins]="pins()"
       [selectedId]="criteria().condominiumId"
       (pinClick)="pickCondominium($event)"
     />
   }
 
-  <app-vacancy-results
+  <app-spot-results
     [result]="result()"
     [loading]="loading()"
     [error]="error.text()"

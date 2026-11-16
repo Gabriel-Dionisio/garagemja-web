@@ -20,8 +20,8 @@ export const NAV_ITEMS: readonly NavItem[] = [
     roles: ['RESIDENT', 'CONDOMINIUM_ADMIN'],
   },
   {
-    labelKey: 'nav.searchVacancies',
-    path: '/search-vacancies',
+    labelKey: 'nav.spotSearch',
+    path: '/search',
     icon: 'search',
     roles: ['RESIDENT'],
   },

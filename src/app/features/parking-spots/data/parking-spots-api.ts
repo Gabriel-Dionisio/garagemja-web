@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import { fields } from '../../../shared/models/fields';
 import { Page, toPage } from '../../../shared/models/page';
 import { LookupOption } from '../../../shared/ui/lookup-field/lookup-field';
-import { VacancyCriteria } from '../../search-vacancies/search-vacancies.model';
+import { SpotCriteria } from '../../spot-search/spot-search.model';
 import {
   ParkingSpot,
   ParkingSpotCondominium,
@@ -55,7 +55,7 @@ export class ParkingSpotsApi {
     return this.page(params, page, size);
   }
 
-  search(criteria: VacancyCriteria, page: number, size: number): Observable<Page<ParkingSpot>> {
+  search(criteria: SpotCriteria, page: number, size: number): Observable<Page<ParkingSpot>> {
     let params = new HttpParams().set('available', true).set('sort', criteria.sort);
     if (criteria.search) params = params.set('search', criteria.search);
     if (criteria.size) params = params.set('spotSize', criteria.size);

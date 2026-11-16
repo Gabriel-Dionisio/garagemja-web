@@ -1,10 +1,10 @@
 import { ParamMap, Params } from '@angular/router';
 import { PARKING_SPOT_SIZES, ParkingSpotSize } from '../parking-spots/parking-spot.model';
 
-export const VACANCY_SORTS = ['NUMBER', 'PRICE_ASC', 'PRICE_DESC'] as const;
-export type VacancySort = (typeof VACANCY_SORTS)[number];
+export const SPOT_SORTS = ['NUMBER', 'PRICE_ASC', 'PRICE_DESC'] as const;
+export type SpotSort = (typeof SPOT_SORTS)[number];
 
-export interface VacancyCriteria {
+export interface SpotCriteria {
   search: string;
   from: string;
   to: string;
@@ -14,10 +14,10 @@ export interface VacancyCriteria {
   condominiumId: string | null;
   minPrice: number | null;
   maxPrice: number | null;
-  sort: VacancySort;
+  sort: SpotSort;
 }
 
-export const DEFAULT_CRITERIA: VacancyCriteria = {
+export const DEFAULT_CRITERIA: SpotCriteria = {
   search: '',
   from: '',
   to: '',
@@ -38,7 +38,7 @@ function price(value: string | null): number | null {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
-export function criteriaFromParams(params: ParamMap): { criteria: VacancyCriteria; page: number } {
+export function criteriaFromParams(params: ParamMap): { criteria: SpotCriteria; page: number } {
   const from = params.get('from') ?? '';
   const to = params.get('to') ?? '';
   const size = params.get('size');
@@ -56,13 +56,13 @@ export function criteriaFromParams(params: ParamMap): { criteria: VacancyCriteri
       condominiumId: UUID.test(condominiumId) ? condominiumId : null,
       minPrice: price(params.get('min')),
       maxPrice: price(params.get('max')),
-      sort: VACANCY_SORTS.find((value) => value === sort) ?? DEFAULT_CRITERIA.sort,
+      sort: SPOT_SORTS.find((value) => value === sort) ?? DEFAULT_CRITERIA.sort,
     },
     page: Number.isInteger(page) && page > 0 ? page : 0,
   };
 }
 
-export function criteriaToParams(criteria: VacancyCriteria, page = 0): Params {
+export function criteriaToParams(criteria: SpotCriteria, page = 0): Params {
   return {
     q: criteria.search || null,
     from: criteria.from || null,
@@ -78,7 +78,7 @@ export function criteriaToParams(criteria: VacancyCriteria, page = 0): Params {
   };
 }
 
-export function activeCriteriaCount(criteria: VacancyCriteria): number {
+export function activeCriteriaCount(criteria: SpotCriteria): number {
   return [
     criteria.search,
     criteria.from,

@@ -36,7 +36,7 @@ import {
   RequestRentalDialogData,
 } from '../../components/request-rental-dialog/request-rental-dialog';
 
-interface VacancyDetails {
+interface SpotDetails {
   spot: ParkingSpot;
   images: ParkingSpotImage[];
   availabilities: SpotAvailability[];
@@ -45,13 +45,13 @@ interface VacancyDetails {
 }
 
 @Component({
-  selector: 'app-vacancy-details-page',
+  selector: 'app-spot-details-page',
   imports: [TranslocoPipe, RouterLink, Alert, Avatar, Button, Card, Page, PageHeader, Skeleton],
-  templateUrl: './vacancy-details-page.html',
-  styleUrl: './vacancy-details-page.scss',
+  templateUrl: './spot-details-page.html',
+  styleUrl: './spot-details-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VacancyDetailsPage {
+export class SpotDetailsPage {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly spots = inject(ParkingSpotsApi);
@@ -65,7 +65,7 @@ export class VacancyDetailsPage {
   protected readonly money = computed(() => moneyFormatter(this.locale.language()));
   protected readonly date = computed(() => dateFormatter(this.locale.language()));
   protected readonly selectedImage = signal(0);
-  protected readonly details = signal<VacancyDetails | null>(null);
+  protected readonly details = signal<SpotDetails | null>(null);
   protected readonly loading = signal(true);
   protected readonly images = computed(() => this.details()?.images ?? []);
 
@@ -105,7 +105,7 @@ export class VacancyDetailsPage {
       });
   }
 
-  protected request(details: VacancyDetails): void {
+  protected request(details: SpotDetails): void {
     const query = this.route.snapshot.queryParamMap;
     const data: RequestRentalDialogData = {
       spot: details.spot,

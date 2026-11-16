@@ -144,7 +144,7 @@
     "management": "Management",
     "myParkingSpots": "My parking spots",
     "myVehicles": "My vehicles",
-    "searchVacancies": "Find Spots",
+    "spotSearch": "Find Spots",
     "wallet": "Wallet"
   },
   "routes": {
@@ -182,8 +182,8 @@
     "myVehicles": "My vehicles",
     "vehicleNew": "Add vehicle",
     "vehicleEdit": "Edit vehicle",
-    "searchVacancies": "Find Spots",
-    "vacancyDetails": "Spot details",
+    "spotSearch": "Find Spots",
+    "spotDetails": "Spot details",
     "wallet": "Wallet"
   },
   "requests": {
@@ -1257,7 +1257,7 @@
       "color": "Silver"
     }
   },
-  "searchVacancies": {
+  "spotSearch": {
     "title": "Find parking spots",
     "count": "{{count}} spots found",
     "loading": "Loading spots…",

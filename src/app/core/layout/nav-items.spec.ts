@@ -6,7 +6,7 @@ describe('navItemsFor', () => {
   it('morador: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, carteira, meus veículos e painel', () => {
     expect(paths(navItemsFor(['RESIDENT']))).toEqual([
       '/home',
-      '/search-vacancies',
+      '/search',
       '/condominiums',
       '/parking-spots',
       '/rentals',
@@ -20,7 +20,7 @@ describe('navItemsFor', () => {
   it('síndico: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, carteira, meus veículos e painel', () => {
     expect(paths(navItemsFor(['CONDOMINIUM_ADMIN', 'RESIDENT']))).toEqual([
       '/home',
-      '/search-vacancies',
+      '/search',
       '/condominiums',
       '/parking-spots',
       '/rentals',

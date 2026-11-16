@@ -144,7 +144,7 @@
     "management": "Gestão",
     "myParkingSpots": "Minhas vagas",
     "myVehicles": "Meus veículos",
-    "searchVacancies": "Buscar Vagas",
+    "spotSearch": "Buscar Vagas",
     "wallet": "Carteira"
   },
   "routes": {
@@ -182,8 +182,8 @@
     "myVehicles": "Meus veículos",
     "vehicleNew": "Cadastrar veículo",
     "vehicleEdit": "Editar veículo",
-    "searchVacancies": "Buscar Vagas",
-    "vacancyDetails": "Detalhes da vaga",
+    "spotSearch": "Buscar Vagas",
+    "spotDetails": "Detalhes da vaga",
     "wallet": "Carteira"
   },
   "requests": {
@@ -1257,7 +1257,7 @@
       "color": "Prata"
     }
   },
-  "searchVacancies": {
+  "spotSearch": {
     "title": "Buscar vagas",
     "count": "{{count}} vagas encontradas",
     "loading": "Carregando vagas…",

@@ -46,7 +46,7 @@ describe('HomePage', () => {
     input!.value = ' sol ';
     input!.dispatchEvent(new Event('input'));
     element.querySelector<HTMLFormElement>('form.search-panel')!.dispatchEvent(new Event('submit'));
-    expect(navigate).toHaveBeenCalledWith(['/search-vacancies'], {
+    expect(navigate).toHaveBeenCalledWith(['/search'], {
       queryParams: expect.objectContaining({ q: 'sol', from: null }),
     });
   });

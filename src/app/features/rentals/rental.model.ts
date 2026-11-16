@@ -1,14 +1,6 @@
-export const RENTAL_STATUSES = [
-  'PENDING',
-  'APPROVED',
-  'ACTIVE',
-  'REFUSED',
-  'CANCELED',
-  'FINISHED',
-  'EXPIRED',
-] as const;
+import { RENTAL_STATUSES, RentalStatus } from '../../shared/models/rental-status';
 
-export type RentalStatus = (typeof RENTAL_STATUSES)[number];
+export { RENTAL_STATUSES, type RentalStatus } from '../../shared/models/rental-status';
 
 export interface Rental {
   id: string;

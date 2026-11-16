@@ -16,7 +16,8 @@ import { LocaleService } from '../../../../core/i18n/locale-service';
 import { moneyFormatter, periodText } from '../../../../shared/forms/format';
 import { Page as ResultPage } from '../../../../shared/models/page';
 import { Alert } from '../../../../shared/ui/alert/alert';
-import { Badge, BadgeTone } from '../../../../shared/ui/badge/badge';
+import { Badge } from '../../../../shared/ui/badge/badge';
+import { RENTAL_STATUS_TONES } from '../../../../shared/models/rental-status';
 import { Button } from '../../../../shared/ui/button/button';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
@@ -44,16 +45,6 @@ import {
 } from '../../rental.model';
 
 const REASON_CODES = ['unpaid', 'condominium_closed'];
-
-const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
-  PENDING: 'warning',
-  APPROVED: 'info',
-  ACTIVE: 'success',
-  REFUSED: 'danger',
-  CANCELED: 'danger',
-  FINISHED: 'neutral',
-  EXPIRED: 'neutral',
-};
 
 @Component({
   selector: 'app-my-rentals-page',
@@ -85,7 +76,7 @@ export class MyRentalsPage {
   private readonly locale = inject(LocaleService);
   private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
-  protected readonly tones = STATUS_TONES;
+  protected readonly tones = RENTAL_STATUS_TONES;
   protected readonly money = computed(() => moneyFormatter(this.locale.language()));
   protected readonly cancelable = (rental: Rental) =>
     rental.status === 'PENDING' || rental.status === 'APPROVED';

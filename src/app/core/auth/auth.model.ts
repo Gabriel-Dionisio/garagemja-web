@@ -22,6 +22,7 @@ export interface Registration {
   cpf: string;
   phone: string;
   accountTypes: AccountType[];
+  locale: string;
 }
 
 export type LoginOutcome =

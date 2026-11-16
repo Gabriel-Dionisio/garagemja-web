@@ -56,9 +56,10 @@ describe('WalletsApi', () => {
 
   it('posts the withdrawal', () => {
     const { api, http } = setup();
-    api.withdraw({ type: 'OWNER', refId: 'u1', amount: 5, pixKey: 'a@b.c' }).subscribe();
+    api.withdraw({ type: 'OWNER', refId: 'u1', amount: 5, pixKey: 'a@b.c' }, 'key-1').subscribe();
     const request = http.expectOne('/api/v1/wallets/withdrawals');
     expect(request.request.method).toBe('POST');
+    expect(request.request.headers.get('Idempotency-Key')).toBe('key-1');
     expect(request.request.body).toEqual({
       type: 'OWNER',
       refId: 'u1',

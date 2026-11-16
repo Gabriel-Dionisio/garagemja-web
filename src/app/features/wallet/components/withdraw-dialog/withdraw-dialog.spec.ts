@@ -51,12 +51,10 @@ describe('WithdrawDialog', () => {
     await type(amount, '12,50');
     await type(pixKey, ' a@b.com ');
     await submit();
-    expect(withdraw).toHaveBeenCalledWith({
-      type: 'OWNER',
-      refId: 'u1',
-      amount: 12.5,
-      pixKey: 'a@b.com',
-    });
+    expect(withdraw).toHaveBeenCalledWith(
+      { type: 'OWNER', refId: 'u1', amount: 12.5, pixKey: 'a@b.com' },
+      expect.stringMatching(/^[0-9a-f-]{36}$/),
+    );
     expect(close).toHaveBeenCalledWith(true);
   });
 

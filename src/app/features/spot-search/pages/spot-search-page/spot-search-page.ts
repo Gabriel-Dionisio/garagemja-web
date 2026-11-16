@@ -2,7 +2,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, catchError, finalize, map, of, switchMap } from 'rxjs';
+import { EMPTY, catchError, distinctUntilChanged, finalize, map, of, switchMap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Page } from '../../../../shared/models/page';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
@@ -81,18 +81,24 @@ export class SpotSearchPage {
     const { from, to } = this.criteria();
     return { from: from || null, to: to || null };
   });
+  private readonly pinCriteria = computed(() => ({ ...this.criteria(), condominiumId: null }));
   protected readonly pins = toSignal(
-    this.api.mapPins().pipe(
-      map((items) =>
-        items.map((pin): MapPin => ({
-          id: pin.condominiumId,
-          label: pin.name,
-          latitude: pin.latitude,
-          longitude: pin.longitude,
-          count: pin.available,
-        })),
+    toObservable(this.pinCriteria).pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      switchMap((criteria) =>
+        this.api.mapPins(criteria).pipe(
+          map((items) =>
+            items.map((pin): MapPin => ({
+              id: pin.condominiumId,
+              label: pin.name,
+              latitude: pin.latitude,
+              longitude: pin.longitude,
+              count: pin.available,
+            })),
+          ),
+          catchError(() => of<MapPin[]>([])), // the map is optional: hide it instead of failing the page
+        ),
       ),
-      catchError(() => of<MapPin[]>([])), // the map is optional: hide it instead of failing the page
     ),
     { initialValue: [] },
   );

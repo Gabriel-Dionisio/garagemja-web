@@ -72,4 +72,18 @@ describe('spot-search.model', () => {
       activeCriteriaCount({ ...DEFAULT_CRITERIA, search: 'a', size: 'SMALL', maxPrice: 0 }),
     ).toBe(3);
   });
+
+  it('apara e limita o texto da busca e descarta faixa de preço invertida', () => {
+    const { criteria } = criteriaFromParams(
+      convertToParamMap({ q: `  ${'a'.repeat(150)}  `, min: '80', max: '20' }),
+    );
+    expect(criteria.search).toBe('a'.repeat(100));
+    expect(criteria.minPrice).toBe(80);
+    expect(criteria.maxPrice).toBeNull();
+  });
+
+  it('descarta preço acima do teto', () => {
+    const { criteria } = criteriaFromParams(convertToParamMap({ max: '99999999' }));
+    expect(criteria.maxPrice).toBeNull();
+  });
 });

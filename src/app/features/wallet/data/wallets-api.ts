@@ -87,9 +87,11 @@ export class WalletsApi {
     );
   }
 
-  withdraw(request: WithdrawalRequest): Observable<void> {
+  withdraw(request: WithdrawalRequest, idempotencyKey: string): Observable<void> {
     return this.http
-      .post<unknown>(`${WALLETS_URL}/withdrawals`, request)
+      .post<unknown>(`${WALLETS_URL}/withdrawals`, request, {
+        headers: { 'Idempotency-Key': idempotencyKey },
+      })
       .pipe(map(() => undefined));
   }
 }

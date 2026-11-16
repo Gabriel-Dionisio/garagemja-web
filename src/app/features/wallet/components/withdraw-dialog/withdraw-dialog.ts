@@ -55,6 +55,7 @@ export class WithdrawDialog {
     amount: ['', [Validators.required, positiveMoneyValidator]],
     pixKey: ['', [Validators.required, Validators.maxLength(PIX_KEY_MAX)]],
   });
+  private readonly idempotencyKey = crypto.randomUUID();
   protected readonly error = inject(ErrorText).state({
     400: 'wallet.withdraw.invalid',
     409: 'wallet.withdraw.insufficient',
@@ -71,12 +72,15 @@ export class WithdrawDialog {
     this.submitting.set(true);
     this.error.clear();
     this.api
-      .withdraw({
-        type: this.data.wallet.type,
-        refId: this.data.wallet.refId,
-        amount,
-        pixKey: this.form.controls.pixKey.value.trim(),
-      })
+      .withdraw(
+        {
+          type: this.data.wallet.type,
+          refId: this.data.wallet.refId,
+          amount,
+          pixKey: this.form.controls.pixKey.value.trim(),
+        },
+        this.idempotencyKey,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.ref.close(true),

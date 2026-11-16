@@ -56,7 +56,22 @@ export class ParkingSpotsApi {
   }
 
   search(criteria: SpotCriteria, page: number, size: number): Observable<Page<ParkingSpot>> {
-    let params = new HttpParams().set('available', true).set('sort', criteria.sort);
+    return this.page(this.criteriaParams(criteria).set('sort', criteria.sort), page, size);
+  }
+
+  mapPins(criteria: SpotCriteria): Observable<SpotMapPin[]> {
+    return this.http
+      .get<unknown>(`${SPOTS_URL}/map`, { params: this.criteriaParams(criteria) })
+      .pipe(
+        map((body) => {
+          if (!Array.isArray(body)) throw new Error('Invalid map pins');
+          return body.map(toSpotMapPin);
+        }),
+      );
+  }
+
+  private criteriaParams(criteria: SpotCriteria): HttpParams {
+    let params = new HttpParams().set('available', true);
     if (criteria.search) params = params.set('search', criteria.search);
     if (criteria.size) params = params.set('spotSize', criteria.size);
     if (criteria.from) params = params.set('from', criteria.from);
@@ -66,16 +81,7 @@ export class ParkingSpotsApi {
     if (criteria.condominiumId) params = params.set('condominiumId', criteria.condominiumId);
     if (criteria.minPrice !== null) params = params.set('minPrice', criteria.minPrice);
     if (criteria.maxPrice !== null) params = params.set('maxPrice', criteria.maxPrice);
-    return this.page(params, page, size);
-  }
-
-  mapPins(): Observable<SpotMapPin[]> {
-    return this.http.get<unknown>(`${SPOTS_URL}/map`).pipe(
-      map((body) => {
-        if (!Array.isArray(body)) throw new Error('Invalid map pins');
-        return body.map(toSpotMapPin);
-      }),
-    );
+    return params;
   }
 
   private page(params: HttpParams, page: number, size: number): Observable<Page<ParkingSpot>> {

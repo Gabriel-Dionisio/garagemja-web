@@ -13,6 +13,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { ErrorText } from '../../../../core/i18n/error-text';
+import { LocaleService } from '../../../../core/i18n/locale-service';
 import { formatEmailInput } from '../../../../shared/forms/masks';
 import { setServerErrors } from '../../../../shared/forms/field-errors';
 import { focusFirstInvalid } from '../../../../shared/forms/focus-first-invalid';
@@ -53,6 +54,7 @@ function isValidEmail(value: string): boolean {
 export class RegisterPage {
   private readonly auth = inject(AuthService);
   private readonly errorText = inject(ErrorText);
+  private readonly locale = inject(LocaleService);
   private readonly router = inject(Router);
   private readonly pendingVerification = inject(PendingVerificationStore);
   private readonly destroyRef = inject(DestroyRef);
@@ -81,7 +83,7 @@ export class RegisterPage {
     this.submitting.set(true);
     this.error.clear();
     this.auth
-      .register({ ...account, accountTypes: ['RESIDENT'] })
+      .register({ ...account, accountTypes: ['RESIDENT'], locale: this.locale.language() })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

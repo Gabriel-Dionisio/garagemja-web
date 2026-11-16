@@ -1388,6 +1388,7 @@
     },
     "type": {
       "OWNER": "Minha carteira",
+      "CONDOMINIUM": "Condomínio",
       "PLATFORM": "Plataforma"
     }
   }

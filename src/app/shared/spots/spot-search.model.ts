@@ -30,12 +30,14 @@ export const DEFAULT_CRITERIA: SpotCriteria = {
   sort: 'NUMBER',
 };
 
+const MAX_SEARCH_LENGTH = 100;
+const MAX_PRICE = 1_000_000;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function price(value: string | null): number | null {
   const parsed = value === null || value === '' ? NaN : Number(value);
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= MAX_PRICE ? parsed : null;
 }
 
 export function criteriaFromParams(params: ParamMap): { criteria: SpotCriteria; page: number } {
@@ -45,17 +47,19 @@ export function criteriaFromParams(params: ParamMap): { criteria: SpotCriteria; 
   const sort = params.get('sort');
   const condominiumId = params.get('condominium') ?? '';
   const page = Number(params.get('page'));
+  const minPrice = price(params.get('min'));
+  const maxPrice = price(params.get('max'));
   return {
     criteria: {
-      search: params.get('q') ?? '',
+      search: (params.get('q') ?? '').trim().slice(0, MAX_SEARCH_LENGTH),
       from: ISO_DATE.test(from) ? from : '',
       to: ISO_DATE.test(from) && ISO_DATE.test(to) && to >= from ? to : '',
       size: PARKING_SPOT_SIZES.find((value) => value === size) ?? null,
       hourly: params.get('hourly') === 'true',
       covered: params.get('covered') === 'true',
       condominiumId: UUID.test(condominiumId) ? condominiumId : null,
-      minPrice: price(params.get('min')),
-      maxPrice: price(params.get('max')),
+      minPrice,
+      maxPrice: minPrice !== null && maxPrice !== null && maxPrice < minPrice ? null : maxPrice,
       sort: SPOT_SORTS.find((value) => value === sort) ?? DEFAULT_CRITERIA.sort,
     },
     page: Number.isInteger(page) && page > 0 ? page : 0,

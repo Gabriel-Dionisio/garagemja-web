@@ -25,7 +25,8 @@ import { IconButton } from '../../../shared/ui/icon-button/icon-button';
 import { AuthService } from '../../auth/auth-service';
 import { NotificationBell } from '../../notifications/notification-bell/notification-bell';
 import { NavBadges } from '../nav-badges';
-import { NAV_GROUP_LABEL_KEY, NAV_GROUP_ORDER, navItemsFor } from '../nav-items';
+import { NAV_GROUP_LABEL_KEY, NAV_GROUP_ORDER, bottomNavFor, navItemsFor } from '../nav-items';
+import { BottomNav } from '../bottom-nav/bottom-nav';
 import { UserMenu } from '../user-menu/user-menu';
 import { ViewportService } from '../viewport-service';
 
@@ -39,6 +40,7 @@ import { ViewportService } from '../viewport-service';
     RouterLinkActive,
     Alert,
     Badge,
+    BottomNav,
     BrandLogo,
     Icon,
     UserMenu,
@@ -68,6 +70,7 @@ export class ShellLayout {
     this.auth.hasRole('ADMIN') ? '/dashboard' : '/home',
   );
   protected readonly items = computed(() => navItemsFor(this.user()?.roles ?? []));
+  protected readonly bottomItems = computed(() => bottomNavFor(this.user()?.roles ?? []));
   protected readonly sections = computed(() =>
     NAV_GROUP_ORDER.map((group) => ({
       group,

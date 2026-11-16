@@ -5,6 +5,7 @@ export type NavGroup = 'rent' | 'announce' | 'management';
 
 export interface NavItem {
   labelKey: string;
+  shortLabelKey?: string;
   path: string;
   icon: IconName;
   roles?: Role[];
@@ -43,6 +44,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { labelKey: 'nav.condominiums', path: '/condominiums', icon: 'building', badge: 'condominiums' },
   {
     labelKey: 'nav.spotSearch',
+    shortLabelKey: 'nav.short.search',
     path: '/search',
     icon: 'search',
     roles: ['RESIDENT'],
@@ -50,6 +52,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   },
   {
     labelKey: 'nav.myRentals',
+    shortLabelKey: 'nav.short.rentals',
     path: '/rentals',
     icon: 'calendar',
     roles: ['RESIDENT'],
@@ -71,6 +74,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   },
   {
     labelKey: 'nav.requests',
+    shortLabelKey: 'nav.short.requests',
     path: '/requests',
     icon: 'inbox',
     roles: ['RESIDENT'],
@@ -92,6 +96,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   },
   {
     labelKey: 'nav.reviews',
+    shortLabelKey: 'nav.short.reviews',
     path: '/admin/reviews',
     icon: 'star',
     roles: ['ADMIN'],
@@ -99,6 +104,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   },
   {
     labelKey: 'nav.audit',
+    shortLabelKey: 'nav.short.audit',
     path: '/admin/audit-logs',
     icon: 'history',
     roles: ['ADMIN'],
@@ -108,4 +114,15 @@ export const NAV_ITEMS: readonly NavItem[] = [
 
 export function navItemsFor(roles: readonly Role[]): NavItem[] {
   return NAV_ITEMS.filter((item) => !item.roles || item.roles.some((role) => roles.includes(role)));
+}
+
+const BOTTOM_PATHS: readonly (readonly [Role, readonly string[]])[] = [
+  ['ADMIN', ['/dashboard', '/admin/users', '/admin/reviews', '/admin/audit-logs']],
+  ['CONDOMINIUM_ADMIN', ['/home', '/condominiums', '/wallet', '/dashboard']],
+  ['RESIDENT', ['/home', '/search', '/rentals', '/requests']],
+];
+
+export function bottomNavFor(roles: readonly Role[]): NavItem[] {
+  const paths = BOTTOM_PATHS.find(([role]) => roles.includes(role))?.[1] ?? [];
+  return paths.flatMap((path) => NAV_ITEMS.filter((item) => item.path === path).slice(0, 1));
 }

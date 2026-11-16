@@ -40,8 +40,8 @@ import {
 } from '../../../../shared/reviews/review-dialog/review-dialog';
 import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
 import { Rating } from '../../../../shared/ui/rating/rating';
-import { OwnedRentalsApi } from '../../data/owned-rentals-api';
-import { OwnedRental, RentalStatus } from '../../owned-rental.model';
+import { OwnedRentalsApi } from '../../../../shared/rentals/owned-rentals-api';
+import { OwnedRental, RentalStatus } from '../../../../shared/rentals/owned-rental.model';
 import { displayPlate } from '../../../../shared/forms/plate';
 import { REQUEST_STATUSES, REQUEST_TONES, isRequestStatus } from '../../request-status';
 

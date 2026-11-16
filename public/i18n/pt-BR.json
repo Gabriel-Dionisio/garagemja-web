@@ -127,6 +127,9 @@
     }
   },
   "nav": {
+    "more": "Mais",
+    "bottom": "Navegação rápida",
+    "short": { "search": "Buscar", "rentals": "Aluguéis", "requests": "Pedidos", "reviews": "Denúncias", "audit": "Auditoria" },
     "groups": { "rent": "Alugar", "announce": "Anunciar" },
     "home": "Início",
     "myRentals": "Meus aluguéis",
@@ -357,6 +360,9 @@
   "home": {
     "greeting": "Olá, {{name}}",
     "title": "Início",
+    "upcomingTitle": "Próximos aluguéis",
+    "pendingTitle": "Pedidos pendentes",
+    "viewAll": "Ver todas",
     "featuredTitle": "Vagas disponíveis",
     "loading": "Carregando condomínios...",
     "loadError": "Não foi possível carregar os condomínios.",
@@ -1318,6 +1324,8 @@
     },
     "map": "Mapa de condomínios com vagas disponíveis",
     "pin": "{{name}}: {{count}} disponível(is)",
+    "showMap": "Ver mapa",
+    "showList": "Ver lista",
     "zoomIn": "Aumentar zoom",
     "zoomOut": "Diminuir zoom",
     "condominiumFilter": "Condomínio selecionado"

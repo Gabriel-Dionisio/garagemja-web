@@ -3,8 +3,8 @@ import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { OwnedRentalsApi } from '../../data/owned-rentals-api';
-import { OwnedRental } from '../../owned-rental.model';
+import { OwnedRentalsApi } from '../../../../shared/rentals/owned-rentals-api';
+import { OwnedRental } from '../../../../shared/rentals/owned-rental.model';
 import { RequestsPage } from './requests-page';
 
 const rental = (overrides: Partial<OwnedRental> = {}): OwnedRental => ({

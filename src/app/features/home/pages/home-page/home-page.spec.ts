@@ -4,17 +4,21 @@ import { of } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { toPage } from '../../../../shared/models/page';
 import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { OwnedRentalsApi } from '../../../../shared/rentals/owned-rentals-api';
+import { RentalsApi } from '../../../../shared/rentals/rentals-api';
 import { HomeApi } from '../../data/home-api';
 import { HomePage } from './home-page';
 
 describe('HomePage', () => {
   async function setup(residencies: number, manager: boolean) {
-    const search = vi.fn().mockReturnValue(of(toPage([], 0, 12, 0)));
+    const search = vi.fn().mockReturnValue(of(toPage([], 0, 6, 0)));
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: HomeApi, useValue: { residencyCount: () => of(residencies) } },
         { provide: ParkingSpotsApi, useValue: { search } },
+        { provide: RentalsApi, useValue: { list: () => of(toPage([], 0, 3, 0)) } },
+        { provide: OwnedRentalsApi, useValue: { list: () => of(toPage([], 0, 3, 0)) } },
         { provide: AuthService, useValue: { hasRole: () => manager } },
       ],
     });
@@ -33,10 +37,10 @@ describe('HomePage', () => {
     expect((await setup(0, true)).navigate).not.toHaveBeenCalled();
   });
 
-  it('lists the first page of available spots for a resident', async () => {
+  it('lists a short preview of available spots for a resident', async () => {
     const { navigate, search } = await setup(2, false);
     expect(navigate).not.toHaveBeenCalled();
-    expect(search).toHaveBeenCalledWith(expect.objectContaining({ sort: 'NUMBER' }), 0, 12);
+    expect(search).toHaveBeenCalledWith(expect.objectContaining({ sort: 'NUMBER' }), 0, 6);
   });
 
   it('sends the typed search and period to the vacancy search', async () => {

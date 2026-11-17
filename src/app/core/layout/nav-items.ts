@@ -23,6 +23,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { labelKey: 'nav.myParkingSpots', path: '/parking-spots', icon: 'parking', roles: ['RESIDENT'] },
   { labelKey: 'nav.myRentals', path: '/rentals', icon: 'calendar', roles: ['RESIDENT'] },
   { labelKey: 'nav.requests', path: '/requests', icon: 'mail', roles: ['RESIDENT'] },
+  { labelKey: 'nav.myVehicles', path: '/vehicles', icon: 'car', roles: ['RESIDENT'] },
   {
     labelKey: 'nav.dashboard',
     path: '/dashboard',

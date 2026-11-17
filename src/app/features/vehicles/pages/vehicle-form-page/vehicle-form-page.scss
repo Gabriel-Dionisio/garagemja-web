@@ -1,0 +1,28 @@
+app-page-header,
+app-alert {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+h2 {
+  margin-bottom: var(--space-4);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  span {
+    flex: 1 1 16rem;
+  }
+
+  a {
+    flex: none;
+    margin-left: auto;
+  }
+}

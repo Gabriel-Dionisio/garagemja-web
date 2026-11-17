@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { WalletSummary } from '../wallet.model';
-import { WalletsApi, toWalletEntry, toWalletSummary } from './wallets-api';
+import { WalletsApi, toWalletEntry, toWalletFlow, toWalletSummary } from './wallets-api';
 
 const summary = { type: 'OWNER', refId: 'u1', name: 'Maria', available: 10.5, pending: 2 };
 const entry = {
@@ -51,6 +51,29 @@ describe('WalletsApi', () => {
     expect(request.request.params.get('page')).toBe('1');
     request.flush([entry], { headers: { 'X-Total-Count': '40' } });
     expect(total).toBe(40);
+    http.verify();
+  });
+
+  it('maps the wallet flow and rejects malformed points', () => {
+    const body = { period: 'MONTH', points: [{ start: '2026-11', credits: 70, debits: 30.5 }] };
+    expect(toWalletFlow(body)).toEqual([{ start: '2026-11', credits: 70, debits: 30.5 }]);
+    expect(() => toWalletFlow({ points: [{ start: 'nov', credits: 1, debits: 0 }] })).toThrow();
+    expect(() =>
+      toWalletFlow({ points: [{ start: '2026-11', credits: 'x', debits: 0 }] }),
+    ).toThrow();
+    expect(() => toWalletFlow({})).toThrow();
+  });
+
+  it('asks the flow of the selected wallet by period', () => {
+    const { api, http } = setup();
+    let points: unknown;
+    api.flow(toWalletSummary(summary), 'BIMESTER').subscribe((value) => (points = value));
+    const request = http.expectOne((r) => r.url === '/api/v1/stats/me/wallet');
+    expect(request.request.params.get('type')).toBe('OWNER');
+    expect(request.request.params.get('refId')).toBe('u1');
+    expect(request.request.params.get('period')).toBe('BIMESTER');
+    request.flush({ period: 'BIMESTER', points: [] });
+    expect(points).toEqual([]);
     http.verify();
   });
 

@@ -33,3 +33,9 @@ export interface WithdrawalRequest {
   amount: number;
   pixKey: string;
 }
+
+export interface WalletFlowPoint {
+  start: string;
+  credits: number;
+  debits: number;
+}

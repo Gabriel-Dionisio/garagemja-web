@@ -25,6 +25,8 @@ import { BaseChartDirective, provideCharts } from 'ng2-charts';
 export type ChartTone = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'muted';
 export type ChartKind = 'share' | 'bar';
 
+export type ValueFormat = (value: number) => string;
+
 export interface ChartSeries {
   label: string;
   data: readonly number[];
@@ -49,7 +51,7 @@ const TONE_TOKENS: Record<ChartTone, string> = {
 
 const DIMMED_ALPHA = 0.45;
 
-function dimUnselected(isDimmed: (index: number) => boolean): Plugin<'bar'> {
+function dimUnselected(isDimmed: (index: number) => boolean): Plugin {
   return {
     id: 'dimUnselected',
     beforeDatasetDraw(chart, args) {
@@ -61,7 +63,11 @@ function dimUnselected(isDimmed: (index: number) => boolean): Plugin<'bar'> {
   };
 }
 
-function valueLabels(color: string, isDimmed: (index: number) => boolean): Plugin<'bar'> {
+function valueLabels(
+  color: string,
+  isDimmed: (index: number) => boolean,
+  format: ValueFormat,
+): Plugin {
   return {
     id: 'valueLabels',
     afterDatasetsDraw(chart) {
@@ -74,7 +80,7 @@ function valueLabels(color: string, isDimmed: (index: number) => boolean): Plugi
       chart.data.datasets.forEach((dataset, index) => {
         ctx.globalAlpha = isDimmed(index) ? DIMMED_ALPHA : 1;
         chart.getDatasetMeta(index).data.forEach((bar, position) => {
-          ctx.fillText(String(dataset.data[position]), bar.x, bar.y - 4);
+          ctx.fillText(format(Number(dataset.data[position])), bar.x, bar.y - 4);
         });
       });
       ctx.restore();
@@ -107,6 +113,8 @@ export class Chart {
   readonly description = input.required<string>();
   readonly xLabel = input<string>();
   readonly yLabel = input<string>();
+  readonly format = input<ValueFormat>((value) => String(value));
+  readonly showValues = input(true);
 
   protected readonly selected = signal<ReadonlySet<number>>(new Set());
 
@@ -133,6 +141,8 @@ export class Chart {
     });
   });
 
+  protected readonly seriesLabels = computed(() => this.series().map((series) => series.label));
+
   protected readonly single = computed(() => this.entries().length === 1);
 
   protected readonly total = computed(() =>
@@ -152,10 +162,12 @@ export class Chart {
     } as ChartData;
   });
 
-  protected readonly plugins = computed(() => [
-    dimUnselected((index) => this.isDimmed(index)),
-    valueLabels(this.token('--color-text'), (index) => this.isDimmed(index)),
-  ]);
+  protected readonly plugins = computed<Plugin[]>(() => {
+    const isDimmed = (index: number) => this.isDimmed(index);
+    const dim = dimUnselected(isDimmed);
+    if (!this.showValues()) return [dim];
+    return [dim, valueLabels(this.token('--color-text'), isDimmed, this.format())];
+  });
 
   protected readonly options = computed<ChartConfiguration['options']>(() => ({
     responsive: true,
@@ -171,6 +183,9 @@ export class Chart {
         cornerRadius: 8,
         boxPadding: 4,
         usePointStyle: true,
+        callbacks: {
+          label: (item) => `${item.dataset.label}: ${this.format()(Number(item.parsed.y))}`,
+        },
       },
     },
     scales: {
@@ -179,7 +194,12 @@ export class Chart {
         border: { display: false },
         grid: { color: this.token('--color-divider') },
         title: this.axisTitle(this.yLabel()),
-        ticks: { precision: 0, color: this.token('--color-text-muted'), maxTicksLimit: 5 },
+        ticks: {
+          precision: 0,
+          color: this.token('--color-text-muted'),
+          maxTicksLimit: 5,
+          callback: (value) => this.format()(Number(value)),
+        },
       },
       x: {
         border: { display: false },
@@ -193,7 +213,7 @@ export class Chart {
   protected readonly rows = computed(() =>
     this.labels().map((label, index) => ({
       label,
-      values: this.series().map((series) => series.data[index] ?? 0),
+      values: this.series().map((series) => this.format()(series.data[index] ?? 0)),
     })),
   );
 

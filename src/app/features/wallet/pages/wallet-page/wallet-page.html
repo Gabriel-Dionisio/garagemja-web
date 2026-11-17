@@ -1,0 +1,82 @@
+<app-page>
+  <app-page-header [title]="'wallet.title' | transloco" [subtitle]="'wallet.subtitle' | transloco">
+    @if (selected(); as wallet) {
+      <button appButton type="button" [disabled]="wallet.available <= 0" (click)="withdraw(wallet)">
+        {{ 'wallet.withdraw.open' | transloco }}
+      </button>
+    }
+  </app-page-header>
+
+  @if (options().length > 1) {
+    <app-chip-group
+      [label]="'wallet.choose' | transloco"
+      [options]="options()"
+      [value]="activeKey()"
+      (valueChange)="select($event)"
+    />
+  }
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  @if (selected(); as wallet) {
+    <section class="balances" [attr.aria-label]="'wallet.balances' | transloco">
+      <app-stat-card
+        [value]="money()(wallet.available)"
+        [label]="'wallet.available' | transloco"
+        [highlight]="wallet.available > 0"
+      />
+      <app-stat-card [value]="money()(wallet.pending)" [label]="'wallet.pending' | transloco" />
+    </section>
+  }
+
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [refreshing]="loading()"
+    [empty]="result()?.items?.length === 0"
+    [loadingLabel]="'wallet.loading' | transloco"
+    emptyIcon="wallet"
+    [emptyTitle]="'wallet.emptyTitle' | transloco"
+    [emptyDescription]="'wallet.emptyDescription' | transloco"
+    [listLabel]="'wallet.statement' | transloco"
+  >
+    @if (result(); as current) {
+      @for (entry of current.items; track entry.id) {
+        <li appListItem>
+          <strong>{{ 'wallet.kind.' + entry.kind | transloco }}</strong>
+          <small>{{ dateTime()(entry.createdAt) }}</small>
+          @if (entry.amount > 0 && !entry.released) {
+            <small>{{
+              'wallet.releasedAt' | transloco: { date: dateTime()(entry.availableAt) }
+            }}</small>
+          }
+          <span status>
+            <span class="amount" [class.negative]="entry.amount < 0">{{
+              money()(entry.amount)
+            }}</span>
+            @if (entry.amount > 0) {
+              <app-badge [tone]="entry.released ? 'success' : 'warning'">{{
+                (entry.released ? 'wallet.released' : 'wallet.pendingBadge') | transloco
+              }}</app-badge>
+            }
+          </span>
+        </li>
+      }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </app-list-state>
+</app-page>

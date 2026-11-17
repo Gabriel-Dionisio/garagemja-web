@@ -48,7 +48,7 @@ describe('ShellLayout', () => {
   it('mostra a navegação por papel e destaca nome e iniciais no desktop', async () => {
     const { element } = await setup(false);
     const links = Array.from(element.querySelectorAll('nav a')).map((a) => a.textContent?.trim());
-    expect(links).toEqual(['Painel', 'Condomínios3', 'Usuários', 'Auditoria']);
+    expect(links).toEqual(['Painel', 'Condomínios3', 'Carteira', 'Usuários', 'Auditoria']);
     const footer = element.querySelector('.footer');
     expect(footer?.querySelector('a')?.getAttribute('href')).toBe('/settings');
     expect(footer?.querySelector('button.logout')).not.toBeNull();

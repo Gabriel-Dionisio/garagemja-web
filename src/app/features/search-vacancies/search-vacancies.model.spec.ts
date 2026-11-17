@@ -47,11 +47,23 @@ describe('search-vacancies.model', () => {
       to: null,
       size: null,
       hourly: null,
+      covered: null,
+      condominium: null,
       min: null,
       max: null,
       sort: null,
       page: null,
     });
+  });
+
+  it('lê vaga coberta e condomínio, ignorando condomínio inválido', () => {
+    const id = '0198a7c2-1b2c-7d3e-8f40-123456789abc';
+    const valid = criteriaFromParams(convertToParamMap({ covered: 'true', condominium: id }));
+    expect(valid.criteria.covered).toBe(true);
+    expect(valid.criteria.condominiumId).toBe(id);
+    expect(
+      criteriaFromParams(convertToParamMap({ condominium: 'x' })).criteria.condominiumId,
+    ).toBeNull();
   });
 
   it('conta filtros ativos', () => {

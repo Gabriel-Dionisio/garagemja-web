@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_CRITERIA } from '../../search-vacancies/search-vacancies.model';
 import { ParkingSpotsApi } from './parking-spots-api';
 
 describe('ParkingSpotsApi', () => {
@@ -39,5 +40,32 @@ describe('ParkingSpotsApi', () => {
     expect(req.request.params.get('condominiumId')).toBe('c1');
     expect(req.request.params.keys().sort()).toEqual(['condominiumId', 'page', 'size']);
     req.flush([]);
+  });
+
+  it('envia coberta e condomínio na busca de vagas', () => {
+    api.search({ ...DEFAULT_CRITERIA, covered: true, condominiumId: 'c1' }, 0, 12).subscribe();
+
+    const req = http.expectOne((r) => r.url === '/api/v1/parking-spots');
+    expect(req.request.params.get('covered')).toBe('true');
+    expect(req.request.params.get('condominiumId')).toBe('c1');
+    req.flush([]);
+  });
+
+  it('lê os pinos do mapa e rejeita resposta inválida', () => {
+    let pins: unknown;
+    let failed = false;
+    api.mapPins().subscribe({ next: (value) => (pins = value), error: () => (failed = true) });
+    http
+      .expectOne('/api/v1/parking-spots/map')
+      .flush([
+        { condominiumId: 'c1', name: 'Solar', latitude: -23.5, longitude: -46.6, available: 3 },
+      ]);
+    expect(pins).toEqual([
+      { condominiumId: 'c1', name: 'Solar', latitude: -23.5, longitude: -46.6, available: 3 },
+    ]);
+
+    api.mapPins().subscribe({ error: () => (failed = true) });
+    http.expectOne('/api/v1/parking-spots/map').flush([{ name: 1 }]);
+    expect(failed).toBe(true);
   });
 });

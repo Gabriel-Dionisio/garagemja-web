@@ -16,6 +16,7 @@ const spot = (overrides: Partial<ParkingSpot> = {}): ParkingSpot => ({
   number: '23',
   location: null,
   size: null,
+  covered: false,
   status: 'PENDING',
   statusReason: null,
   imageUrl: null,

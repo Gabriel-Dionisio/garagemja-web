@@ -1136,7 +1136,8 @@
       "owner": "Proprietário",
       "ownerHint": "Opcional. Busque pelo nome ou e-mail de um morador aprovado.",
       "statusReason": "Motivo",
-      "condominium": "Condomínio"
+      "condominium": "Condomínio",
+      "covered": "Coberta"
     },
     "image": {
       "alt": "Foto da vaga"
@@ -1310,7 +1311,12 @@
       "submit": "Enviar solicitação",
       "invalid": "Confira o período e o veículo escolhidos.",
       "conflict": "Esse período não está mais disponível. Escolha outro."
-    }
+    },
+    "map": "Mapa de condomínios com vagas disponíveis",
+    "pin": "{{name}}: {{count}} disponível(is)",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Diminuir zoom",
+    "condominiumFilter": "Condomínio selecionado"
   },
   "notifications": {
     "title": "Notificações",

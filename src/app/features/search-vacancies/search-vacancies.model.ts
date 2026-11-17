@@ -10,6 +10,8 @@ export interface VacancyCriteria {
   to: string;
   size: ParkingSpotSize | null;
   hourly: boolean;
+  covered: boolean;
+  condominiumId: string | null;
   minPrice: number | null;
   maxPrice: number | null;
   sort: VacancySort;
@@ -21,12 +23,15 @@ export const DEFAULT_CRITERIA: VacancyCriteria = {
   to: '',
   size: null,
   hourly: false,
+  covered: false,
+  condominiumId: null,
   minPrice: null,
   maxPrice: null,
   sort: 'NUMBER',
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function price(value: string | null): number | null {
   const parsed = value === null || value === '' ? NaN : Number(value);
@@ -38,6 +43,7 @@ export function criteriaFromParams(params: ParamMap): { criteria: VacancyCriteri
   const to = params.get('to') ?? '';
   const size = params.get('size');
   const sort = params.get('sort');
+  const condominiumId = params.get('condominium') ?? '';
   const page = Number(params.get('page'));
   return {
     criteria: {
@@ -46,6 +52,8 @@ export function criteriaFromParams(params: ParamMap): { criteria: VacancyCriteri
       to: ISO_DATE.test(from) && ISO_DATE.test(to) && to >= from ? to : '',
       size: PARKING_SPOT_SIZES.find((value) => value === size) ?? null,
       hourly: params.get('hourly') === 'true',
+      covered: params.get('covered') === 'true',
+      condominiumId: UUID.test(condominiumId) ? condominiumId : null,
       minPrice: price(params.get('min')),
       maxPrice: price(params.get('max')),
       sort: VACANCY_SORTS.find((value) => value === sort) ?? DEFAULT_CRITERIA.sort,
@@ -61,6 +69,8 @@ export function criteriaToParams(criteria: VacancyCriteria, page = 0): Params {
     to: criteria.to || null,
     size: criteria.size,
     hourly: criteria.hourly ? 'true' : null,
+    covered: criteria.covered ? 'true' : null,
+    condominium: criteria.condominiumId,
     min: criteria.minPrice,
     max: criteria.maxPrice,
     sort: criteria.sort === DEFAULT_CRITERIA.sort ? null : criteria.sort,
@@ -74,6 +84,8 @@ export function activeCriteriaCount(criteria: VacancyCriteria): number {
     criteria.from,
     criteria.size,
     criteria.hourly,
+    criteria.covered,
+    criteria.condominiumId,
     criteria.minPrice !== null,
     criteria.maxPrice !== null,
     criteria.sort !== DEFAULT_CRITERIA.sort,

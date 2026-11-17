@@ -19,6 +19,7 @@ const spot: ParkingSpot = {
   availability: null,
   location: null,
   size: null,
+  covered: false,
   statusReason: null,
   imageUrl: null,
   thumbnailUrl: null,

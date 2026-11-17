@@ -10,6 +10,9 @@
     @if (spot().size; as size) {
       <small>{{ sizeLabels[size] | transloco }}</small>
     }
+    @if (spot().covered) {
+      <small>{{ 'parkingSpots.fields.covered' | transloco }}</small>
+    }
     @if (spot().availability; as availability) {
       <span class="price">
         @if (availability.dailyPrice !== null) {

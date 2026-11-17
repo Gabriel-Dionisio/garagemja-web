@@ -1,6 +1,7 @@
 :root {
   --fab-bottom: calc(5.5rem + env(safe-area-inset-bottom));
   --color-primary: #2563eb;
+  --color-on-primary: #fff;
   --color-primary-hover: #1d4ed8;
   --color-primary-text: #2563eb;
   --color-secondary: #1e3a5f;
@@ -63,6 +64,7 @@
 
 :root[data-theme='dark'] {
   --color-primary: #2563eb;
+  --color-on-primary: #fff;
   --color-primary-hover: #3b6cf0;
   --color-primary-text: #6aa9ff;
   --color-secondary: #cbd5e1;

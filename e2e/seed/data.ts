@@ -36,6 +36,7 @@ export interface Condo {
   key: string;
   name: string;
   cnpj: string;
+  coordinates?: [latitude: number, longitude: number];
   requester: string;
   target: CondoStatus;
   reason?: string;
@@ -111,6 +112,7 @@ export const CONDOS: Condo[] = [
     key: 'active',
     name: 'Residencial Seed Ativo',
     cnpj: cnpjFor(1),
+    coordinates: [-23.5614, -46.6559],
     requester: emailOf('manager'),
     target: 'ACTIVE',
   },
@@ -118,6 +120,7 @@ export const CONDOS: Condo[] = [
     key: 'garden',
     name: 'Residencial Seed Jardim',
     cnpj: cnpjFor(6),
+    coordinates: [-23.5874, -46.6576],
     requester: emailOf('manager', 2),
     target: 'ACTIVE',
   },
@@ -236,6 +239,7 @@ export interface Spot {
   number: string;
   location: string;
   size: SpotSize;
+  covered?: boolean;
   owner?: string;
   periods?: Period[];
   target?: SpotTarget;
@@ -324,6 +328,7 @@ export const SPOTS: Spot[] = [
     number: 'B-01',
     location: 'Terreo',
     size: 'LARGE',
+    covered: true,
     periods: [{ dailyPrice: 45, startOffset: 1, endOffset: 180 }],
   },
   {

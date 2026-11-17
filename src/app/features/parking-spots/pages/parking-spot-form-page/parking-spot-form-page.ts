@@ -28,6 +28,7 @@ import { Alert } from '../../../../shared/ui/alert/alert';
 import { Button } from '../../../../shared/ui/button/button';
 import { Card } from '../../../../shared/ui/card/card';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { ChipToggle } from '../../../../shared/ui/chip-toggle/chip-toggle';
 import { CondominiumTabs } from '../../../../shared/ui/condominium-tabs/condominium-tabs';
 import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { FormSection } from '../../../../shared/ui/form-section/form-section';
@@ -70,6 +71,7 @@ interface StagedImage {
     Button,
     Card,
     ChipGroup,
+    ChipToggle,
     FormActions,
     FormSection,
     ImageField,
@@ -108,6 +110,7 @@ export class ParkingSpotFormPage {
   protected readonly loading = signal(true);
   protected readonly busy = signal(false);
   protected readonly size = signal<ParkingSpotSize | null>(null);
+  protected readonly covered = signal(false);
   protected readonly owner = signal<LookupOption | null>(null);
   private readonly serverImages = signal<ImageItem[]>([]);
   private readonly removedIds = signal<string[]>([]);
@@ -209,6 +212,11 @@ export class ParkingSpotFormPage {
     this.choice.set(condominiumId);
   }
 
+  protected toggleCovered(): void {
+    this.covered.update((value) => !value);
+    this.markDirty();
+  }
+
   protected selectSize(size: ParkingSpotSize | null): void {
     this.size.set(size);
     this.markDirty();
@@ -252,6 +260,7 @@ export class ParkingSpotFormPage {
       number: number.trim(),
       location: location.trim() || null,
       size: this.size(),
+      covered: this.covered(),
       ownerResidentId: this.canManage() ? (this.owner()?.id ?? null) : null,
     };
     const spotId = this.spotId();
@@ -296,6 +305,7 @@ export class ParkingSpotFormPage {
     this.formDirty.set(false);
     if (!this.canManage() && spot.status !== 'PENDING') this.form.controls.number.disable();
     this.size.set(spot.size);
+    this.covered.set(spot.covered);
     this.owner.set(
       spot.owner
         ? {

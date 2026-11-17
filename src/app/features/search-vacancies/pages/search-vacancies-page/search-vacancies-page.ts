@@ -1,12 +1,14 @@
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, catchError, finalize, map, switchMap } from 'rxjs';
+import { EMPTY, catchError, finalize, map, of, switchMap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Page } from '../../../../shared/models/page';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
+import { AppMap, MapPin } from '../../../../shared/ui/map/map';
+import { ChipToggle } from '../../../../shared/ui/chip-toggle/chip-toggle';
 import { Page as PageLayout } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { PARKING_SPOT_SIZE_LABELS } from '../../../parking-spots/parking-spot-status';
@@ -33,7 +35,9 @@ const PAGE_SIZE = 12;
   selector: 'app-search-vacancies-page',
   imports: [
     TranslocoPipe,
+    AppMap,
     ChipGroup,
+    ChipToggle,
     FilterPanel,
     PageHeader,
     PageLayout,
@@ -41,11 +45,13 @@ const PAGE_SIZE = 12;
     VacancyFilter,
   ],
   templateUrl: './search-vacancies-page.html',
+  styleUrl: './search-vacancies-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchVacanciesPage {
   private readonly api = inject(ParkingSpotsApi);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly sizeTabs: readonly ChipOption<ParkingSpotSize>[] = [
@@ -75,6 +81,21 @@ export class SearchVacanciesPage {
     const { from, to } = this.criteria();
     return { from: from || null, to: to || null };
   });
+  protected readonly pins = toSignal(
+    this.api.mapPins().pipe(
+      map((items) =>
+        items.map((pin): MapPin => ({
+          id: pin.condominiumId,
+          label: pin.name,
+          latitude: pin.latitude,
+          longitude: pin.longitude,
+          count: pin.available,
+        })),
+      ),
+      catchError(() => of<MapPin[]>([])), // the map is optional: hide it instead of failing the page
+    ),
+    { initialValue: [] },
+  );
   protected readonly filtersOpen = signal(false);
   protected readonly result = signal<Page<ParkingSpot> | null>(null);
   protected readonly loading = signal(true);
@@ -107,6 +128,10 @@ export class SearchVacanciesPage {
       queryParams: criteriaToParams({ ...this.criteria(), ...change }),
       replaceUrl: true,
     });
+  }
+
+  protected pickCondominium(id: string): void {
+    this.patch({ condominiumId: this.criteria().condominiumId === id ? null : id });
   }
 
   protected apply(value: VacancyFilterValue): void {

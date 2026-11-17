@@ -85,19 +85,35 @@ describe('ShellLayout', () => {
     expect(element.querySelector('app-badge:not(.count)')?.textContent?.trim()).toBe('Síndico');
   });
 
-  it('no celular abre e fecha o menu em gaveta', async () => {
+  it('no celular o Mais abre a folha só com o que não está na barra inferior', async () => {
     const { fixture, element } = await setup(true);
     expect(element.querySelector('aside')).toBeNull();
-    const open = element.querySelector('button[aria-label="Abrir menu"]') as HTMLButtonElement;
-    expect(open.getAttribute('aria-expanded')).toBe('false');
+    expect(element.querySelector('button[aria-label="Abrir menu"]')).toBeNull();
+    const more = element.querySelector('app-bottom-nav button') as HTMLButtonElement;
+    expect(more.getAttribute('aria-expanded')).toBe('false');
 
-    open.click();
+    more.focus();
+    more.click();
     await fixture.whenStable();
-    expect(element.querySelector('aside')).not.toBeNull();
+    const sheet = element.querySelector('aside');
+    expect(sheet?.getAttribute('data-mode')).toBe('sheet');
+    const links = Array.from(sheet?.querySelectorAll('nav a') ?? []).map((a) =>
+      a.textContent?.trim(),
+    );
+    expect(links).toEqual(['Condomínios3', 'Carteira']);
 
-    element.querySelector('aside')?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    sheet?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     await fixture.whenStable();
     expect(element.querySelector('aside')).toBeNull();
+    expect(document.activeElement).toBe(more);
+  });
+
+  it('no celular sem atalhos na barra inferior mantém o menu em gaveta', async () => {
+    const { fixture, element } = await setup(true, { ...USER, roles: [] });
+    const open = element.querySelector('button[aria-label="Abrir menu"]') as HTMLButtonElement;
+    open.click();
+    await fixture.whenStable();
+    expect(element.querySelector('aside')?.getAttribute('data-mode')).toBe('drawer');
   });
 
   it('no desktop o Escape não tira o foco do menu', async () => {

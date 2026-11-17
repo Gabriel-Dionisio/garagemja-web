@@ -36,6 +36,8 @@ export interface ReviewReportItem {
   reviewRating: number;
   reviewComment: string | null;
   parkingSpotId: string;
+  parkingSpotNumber: string | null;
+  condominiumName: string | null;
 }
 
 export interface PublicSpot {

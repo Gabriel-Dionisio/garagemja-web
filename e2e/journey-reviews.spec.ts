@@ -7,10 +7,7 @@ test('renter reviews a finished rental and the review stays hidden until both si
   loginAs,
   myRentals,
   page,
-  guard,
 }) => {
-  guard.allowApi(409, /\/rentals\/[^/]+\/reviews$/);
-  guard.allowErrorAlerts();
   const number = uniqueSpotNumber('AV');
   const manager = await world.as(world.manager);
   const { id: spotId } = await manager.createSpot(world.condominium.id, number);
@@ -36,11 +33,10 @@ test('renter reviews a finished rental and the review stays hidden until both si
   await dialog.getByRole('button', { name: 'Enviar avaliação' }).click();
   await expect(dialog).toBeHidden();
 
-  await myRentals.rental(number).getByRole('button', { name: 'Avaliar' }).click();
-  await dialog.getByRole('button', { name: '4 ★' }).click();
-  await dialog.getByRole('button', { name: 'Enviar avaliação' }).click();
-  await expect(dialog.getByRole('alert')).toContainText('Você já avaliou este aluguel.');
-  await dialog.getByRole('button', { name: 'Cancelar' }).click();
+  await expect(myRentals.rental(number).getByRole('button', { name: 'Avaliar' })).toHaveCount(0);
+  await myRentals.goto();
+  await expect(myRentals.rental(number)).toBeVisible();
+  await expect(myRentals.rental(number).getByRole('button', { name: 'Avaliar' })).toHaveCount(0);
 
   await page.goto(`/search/${spotId}`);
   await expect(page.getByRole('heading', { name: 'Avaliações', exact: true })).toBeVisible();

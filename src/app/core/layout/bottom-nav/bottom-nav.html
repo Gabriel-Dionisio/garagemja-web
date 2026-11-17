@@ -10,12 +10,7 @@
       <span>{{ item.label | transloco }}</span>
     </a>
   }
-  <button
-    type="button"
-    aria-controls="app-nav"
-    [attr.aria-expanded]="menuExpanded()"
-    (click)="menu.emit()"
-  >
+  <button type="button" [attr.aria-expanded]="menuExpanded()" (click)="menu.emit()">
     <app-icon name="menu" />
     <span>{{ 'nav.more' | transloco }}</span>
   </button>

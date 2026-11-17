@@ -5,6 +5,7 @@ export { RENTAL_STATUSES, type RentalStatus } from '../models/rental-status';
 export interface Rental {
   id: string;
   condominiumName: string;
+  parkingSpotId: string | null;
   parkingSpotNumber: string;
   startDate: string;
   endDate: string;

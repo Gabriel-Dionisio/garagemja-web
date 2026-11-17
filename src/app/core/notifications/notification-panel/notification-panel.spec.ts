@@ -1,6 +1,7 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AppNotification } from '../notification.model';
 import { NotificationsStore } from '../notifications-store';
@@ -26,9 +27,15 @@ describe('NotificationPanel', () => {
     open: vi.fn(),
     close: vi.fn(),
     loadMore: vi.fn(),
+    markRead: vi.fn(),
+    markAllRead: vi.fn(),
+    reload: vi.fn(),
+    unread: signal(1),
   };
   const closed = new Subject<void>();
   const ref = { close: vi.fn(() => closed.next()), closed };
+
+  const router = { navigateByUrl: vi.fn() };
 
   function setup(list: AppNotification[]) {
     items.set(list);
@@ -38,6 +45,7 @@ describe('NotificationPanel', () => {
       providers: [
         { provide: NotificationsStore, useValue: store },
         { provide: DialogRef, useValue: ref },
+        { provide: Router, useValue: router },
       ],
     });
     const fixture = TestBed.createComponent(NotificationPanel);
@@ -56,7 +64,25 @@ describe('NotificationPanel', () => {
     const { fixture, element } = setup([]);
     await fixture.whenStable();
     expect(element.querySelector('app-empty-state')).not.toBeNull();
-    element.querySelector<HTMLButtonElement>('header button')?.click();
+    element.querySelector<HTMLButtonElement>('header button[appIconButton]')?.click();
     expect(store.close).toHaveBeenCalled();
+  });
+
+  it('marks the clicked item read and opens its destination', async () => {
+    const { fixture, element } = setup([item()]);
+    await fixture.whenStable();
+    element.querySelector<HTMLButtonElement>('button.item')?.click();
+    expect(store.markRead).toHaveBeenCalledWith('n1');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/rentals');
+    expect(ref.close).toHaveBeenCalled();
+  });
+
+  it('loads more from the paginator', async () => {
+    store.hasNext.set(true);
+    const { fixture, element } = setup([item()]);
+    await fixture.whenStable();
+    element.querySelector<HTMLButtonElement>('[paginator] button')?.click();
+    expect(store.loadMore).toHaveBeenCalled();
+    store.hasNext.set(false);
   });
 });

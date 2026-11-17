@@ -66,6 +66,12 @@ describe('SpotSearchPage', () => {
     expect(root.querySelector('.list')).toBeNull();
   });
 
+  it('keeps the list reachable on small screens when no pin is left', async () => {
+    const { root } = await setup('/search', undefined, of([]), false);
+    expect(root.querySelector('.list')).not.toBeNull();
+    expect(root.querySelector('.view-toggle')).toBeNull();
+  });
+
   it('filters by the condominium of the clicked pin and clears on second click', async () => {
     const { search, root } = await setup('/search');
     const marker = () => root.querySelector<HTMLElement>('.map-pin');

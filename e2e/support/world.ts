@@ -162,7 +162,7 @@ export async function createWorld(baseURL: string): Promise<World> {
   };
 }
 
-function randomPlate(): string {
+export function randomPlate(): string {
   const letter = () => String.fromCharCode(65 + Math.floor(Math.random() * 26));
   const digit = () => Math.floor(Math.random() * 10);
   return `${letter()}${letter()}${letter()}${digit()}${letter()}${digit()}${digit()}`;

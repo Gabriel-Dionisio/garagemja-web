@@ -4,6 +4,13 @@
   display: block;
 }
 
+.label {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
 app-scroll-area {
   --scroll-snap: x proximity;
   margin: calc(-1 * var(--space-2));
@@ -23,6 +30,9 @@ app-scroll-area {
 }
 
 button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   flex: none;
   min-height: 2.5rem;
   padding: 0 var(--space-4);
@@ -35,6 +45,11 @@ button {
   white-space: nowrap;
   scroll-snap-align: start;
   cursor: pointer;
+
+  app-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
 
   &[aria-pressed='true'] {
     border-color: var(--color-primary);

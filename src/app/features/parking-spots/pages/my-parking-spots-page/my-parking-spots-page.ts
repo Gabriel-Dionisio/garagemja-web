@@ -10,6 +10,7 @@ import { ActionItem } from '../../../../shared/ui/action-list/action-item';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
+import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { Fab } from '../../../../shared/ui/fab/fab';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
@@ -46,6 +47,7 @@ import { ParkingSpotFilterForm } from '../../components/parking-spot-filter/park
     Alert,
     Badge,
     Button,
+    IconButton,
     ChipGroup,
     FilterPanel,
     Icon,

@@ -30,6 +30,7 @@ export function toRental(value: unknown): Rental {
   return {
     id,
     condominiumName,
+    parkingSpotId: typeof row['parkingSpotId'] === 'string' ? row['parkingSpotId'] : null,
     parkingSpotNumber,
     startDate,
     endDate,

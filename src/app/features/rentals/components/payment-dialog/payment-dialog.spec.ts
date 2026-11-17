@@ -9,6 +9,7 @@ import { PaymentDialog } from './payment-dialog';
 const rental = (overrides: Partial<Rental> = {}): Rental => ({
   id: 'r1',
   condominiumName: 'Edifício A',
+  parkingSpotId: 's1',
   parkingSpotNumber: '12',
   startDate: '2026-11-20',
   endDate: '2026-11-21',

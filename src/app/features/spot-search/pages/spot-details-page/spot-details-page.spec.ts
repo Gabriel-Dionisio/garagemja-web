@@ -47,7 +47,12 @@ const availability: SpotAvailability = {
 describe('SpotDetailsPage', () => {
   const open = vi.fn();
 
-  async function setup(residencyId: string, get = vi.fn().mockReturnValue(of(spot))) {
+  async function setup(
+    residencyId: string,
+    get = vi.fn().mockReturnValue(of(spot)),
+    url = '/search/s1',
+    images = () => of([]),
+  ) {
     open.mockReset().mockReturnValue({ closed: of(true) });
     TestBed.configureTestingModule({
       providers: [
@@ -59,7 +64,7 @@ describe('SpotDetailsPage', () => {
           provide: ParkingSpotsApi,
           useValue: {
             get,
-            images: () => of([]),
+            images,
             availabilities: () => of([availability, { ...availability, id: 'a2', active: false }]),
             rules: () =>
               of({ maxPricePerDay: null, maxPricePerHour: null, hourlyRentalsEnabled: false }),
@@ -70,7 +75,7 @@ describe('SpotDetailsPage', () => {
       ],
     });
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/search/s1');
+    await harness.navigateByUrl(url);
     await harness.fixture.whenStable();
     return { root: harness.routeNativeElement as HTMLElement, harness };
   }
@@ -101,5 +106,43 @@ describe('SpotDetailsPage', () => {
       vi.fn().mockReturnValue(throwError(() => new Error('404'))),
     );
     expect(root.querySelector('app-alert')).not.toBeNull();
+  });
+
+  it('goes back to /search when opened without an origin', async () => {
+    const { root } = await setup('someone');
+    expect(root.querySelector('a.back')?.getAttribute('href')).toBe('/search');
+  });
+
+  it('goes back to Home when opened from Home', async () => {
+    const { root } = await setup('someone', undefined, '/search/s1?returnUrl=%2Fhome');
+    expect(root.querySelector('a.back')?.getAttribute('href')).toBe('/home');
+  });
+
+  it('goes back to the search with the same filters', async () => {
+    const returnUrl = encodeURIComponent('/search?q=a&size=SMALL');
+    const { root } = await setup('someone', undefined, `/search/s1?returnUrl=${returnUrl}`);
+    expect(root.querySelector('a.back')?.getAttribute('href')).toBe('/search?q=a&size=SMALL');
+  });
+
+  it('shows size and coverage chips and a carousel that navigates', async () => {
+    const images = () =>
+      of([
+        { id: 'i1', url: '/a.jpg' },
+        { id: 'i2', url: '/b.jpg' },
+      ]) as never;
+    const { root, harness } = await setup(
+      'someone',
+      vi.fn().mockReturnValue(of({ ...spot, size: 'SMALL' })),
+      '/search/s1',
+      images,
+    );
+    expect(root.querySelectorAll('app-spot-features app-badge')).toHaveLength(2);
+    const carousel = root.querySelector('app-carousel')!;
+    expect(carousel.querySelector('[role="group"]')?.getAttribute('aria-label')).toBeTruthy();
+    const main = () => carousel.querySelector<HTMLImageElement>('.main')!.getAttribute('src');
+    expect(main()).toBe('/a.jpg');
+    carousel.querySelector<HTMLButtonElement>('.next')!.click();
+    harness.fixture.detectChanges();
+    expect(main()).toBe('/b.jpg');
   });
 });

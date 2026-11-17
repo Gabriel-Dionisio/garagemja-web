@@ -8,9 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { dateTimeFormatter } from '../../../../shared/forms/format';
 import { Page as ResultPage } from '../../../../shared/models/page';
 import {
   REPORT_STATUSES,
@@ -55,14 +57,18 @@ const TONES: Record<ReportStatus, BadgeTone> = {
     Paginator,
   ],
   templateUrl: './review-reports-page.html',
+  styleUrl: './review-reports-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReviewReportsPage {
   private readonly api = inject(ReviewsApi);
   private readonly dialog = inject(Dialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly locale = inject(LocaleService);
+  private readonly transloco = inject(TranslocoService);
 
   protected readonly tones = TONES;
+  protected readonly dateTime = computed(() => dateTimeFormatter(this.locale.language()));
   protected readonly pageSizes = PAGE_SIZES;
   protected readonly filters: readonly ChipOption<ReportStatus>[] = [
     { value: null, labelKey: 'reviews.admin.all' },
@@ -130,5 +136,29 @@ export class ReviewReportsPage {
 
   protected goTo(page: number): void {
     this.page.set(page);
+  }
+
+  protected context(report: ReviewReportItem): string {
+    const reported = this.transloco.translate('reviews.admin.reportedAt', {
+      date: this.dateTime()(report.createdAt),
+    });
+    if (!report.parkingSpotNumber || !report.condominiumName) return reported;
+    const spot = this.transloco.translate('reviews.admin.spot', {
+      number: report.parkingSpotNumber,
+      condominium: report.condominiumName,
+    });
+    return `${spot} · ${reported}`;
+  }
+
+  protected notes(report: ReviewReportItem): string {
+    const parts: [string, string | null | undefined][] = [
+      ['comment', report.reviewComment],
+      ['details', report.details],
+      ['note', report.resolutionNote],
+    ];
+    return parts
+      .filter(([, text]) => text)
+      .map(([key, text]) => this.transloco.translate(`reviews.admin.${key}`, { text }))
+      .join(' · ');
   }
 }

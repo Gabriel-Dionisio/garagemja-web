@@ -4,6 +4,9 @@ import { PASSWORD, oobCodeFor } from '../support/real-api.ts';
 
 type Method = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
+const MAX_ATTEMPTS = 3;
+const MAX_WAIT_S = 60;
+
 export class Session {
   private cookies = new Map<string, string>();
 
@@ -22,6 +25,17 @@ export class Session {
   }
 
   private async raw(method: Method, path: string, body?: unknown) {
+    for (let attempt = 1; ; attempt++) {
+      const result = await this.send(method, path, body);
+      const wait = Number(result.retryAfter);
+      if (result.status !== 429 || attempt === MAX_ATTEMPTS || !(wait > 0 && wait <= MAX_WAIT_S)) {
+        return result;
+      }
+      await new Promise((resolve) => setTimeout(resolve, wait * 1000));
+    }
+  }
+
+  private async send(method: Method, path: string, body?: unknown) {
     const response = await this.context.fetch(path, {
       method,
       data: body,
@@ -37,7 +51,11 @@ export class Session {
       const [name, ...rest] = header.value.split(';')[0].split('=');
       this.cookies.set(name.trim(), rest.join('='));
     }
-    return { status: response.status(), text: await response.text() };
+    return {
+      status: response.status(),
+      retryAfter: response.headers()['retry-after'],
+      text: await response.text(),
+    };
   }
 
   async call(

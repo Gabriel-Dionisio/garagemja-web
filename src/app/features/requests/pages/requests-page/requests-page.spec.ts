@@ -28,6 +28,8 @@ const rental = (overrides: Partial<OwnedRental> = {}): OwnedRental => ({
   vehiclePlate: 'ABC1D23',
   vehicleBrand: 'Fiat',
   vehicleModel: 'Uno',
+  paid: false,
+  paymentPending: false,
   ...overrides,
 });
 
@@ -60,15 +62,12 @@ describe('RequestsPage', () => {
     const { element } = await setup();
     expect(list).toHaveBeenCalledWith(0, expect.any(Number), 'PENDING', '');
     expect(element.textContent).toContain('Maria Souza');
-    expect(element.textContent).toContain('Fiat Uno');
-    expect(element.textContent).toContain('ABC');
     expect(element.textContent).toContain('Edifício A');
   });
 
   it('approves after confirmation and reloads', async () => {
     const { fixture, element } = await setup();
-    const buttons = element.querySelectorAll<HTMLButtonElement>('li button');
-    buttons[1].click();
+    element.querySelector<HTMLButtonElement>('li .actions button:not([appIconButton])')!.click();
     await fixture.whenStable();
     expect(approve).toHaveBeenCalledWith('r1');
     expect(list).toHaveBeenCalledTimes(2);
@@ -76,7 +75,7 @@ describe('RequestsPage', () => {
 
   it('refuses with the reason and does nothing when dismissed', async () => {
     const { fixture, element } = await setup();
-    const refuseButton = element.querySelectorAll<HTMLButtonElement>('li button')[0];
+    const refuseButton = element.querySelector<HTMLButtonElement>('button[aria-label="Recusar"]')!;
     refuseButton.click();
     await fixture.whenStable();
     expect(refuse).toHaveBeenCalledWith('r1', 'sem data');
@@ -89,14 +88,36 @@ describe('RequestsPage', () => {
   it('shows the error when the decision fails', async () => {
     const { fixture, element } = await setup();
     approve.mockReturnValue(throwError(() => new Error('falha')));
-    element.querySelectorAll<HTMLButtonElement>('li button')[1].click();
+    element.querySelector<HTMLButtonElement>('li .actions button:not([appIconButton])')!.click();
     await fixture.whenStable();
     expect(element.querySelector('app-alert')).not.toBeNull();
   });
 
-  it('offers no decision for requests already decided and shows the reason', async () => {
-    const { element } = await setup([rental({ status: 'REFUSED', cancelReason: 'sem data' })]);
-    expect(element.querySelectorAll('li button')).toHaveLength(0);
-    expect(element.textContent).toContain('sem data');
+  it('gives the icon actions an accessible name', async () => {
+    const { element } = await setup();
+    const icon = element.querySelector('button[appIconButton]');
+    expect(icon?.getAttribute('aria-label')).toBe('Recusar');
+  });
+
+  it('opens the details dialog on click with reason and profile link, not on the icon', async () => {
+    const { fixture, element } = await setup([
+      rental({ status: 'REFUSED', cancelReason: 'sem data' }),
+    ]);
+    expect(element.querySelectorAll('li .actions button')).toHaveLength(0);
+    element.querySelector<HTMLButtonElement>('li button.main')!.click();
+    await fixture.whenStable();
+    const dialog = document.querySelector('app-rental-details-dialog')!;
+    expect(dialog.textContent).toContain('sem data');
+    expect(dialog.textContent).toContain('Maria Souza');
+    expect(dialog.textContent).toContain('Fiat Uno');
+    expect(dialog.querySelector('a')?.getAttribute('href')).toBe('/users/renter-user/profile');
+    expect(document.querySelector('#rental-details-title')).not.toBeNull();
+  });
+
+  it('does not open the dialog when an icon action is used', async () => {
+    const { fixture, element } = await setup();
+    element.querySelector<HTMLButtonElement>('button[aria-label="Recusar"]')!.click();
+    await fixture.whenStable();
+    expect(document.querySelector('app-rental-details-dialog')).toBeNull();
   });
 });

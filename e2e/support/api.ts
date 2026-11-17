@@ -1,4 +1,5 @@
 import type { APIRequestContext } from '@playwright/test';
+import { pngImage } from './images';
 import { PASSWORD } from './real-api';
 
 export const dateIn = (days: number): string => {
@@ -32,6 +33,16 @@ export class Api {
     return text ? JSON.parse(text) : (undefined as T);
   }
 
+  async uploadImage(path: string, shade: number): Promise<number> {
+    const { cookies } = await this.request.storageState();
+    const token = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value ?? '';
+    const response = await this.request.post(path, {
+      multipart: { file: pngImage(`api-${shade}.png`, shade) },
+      headers: { 'x-xsrf-token': decodeURIComponent(token) },
+    });
+    return response.status();
+  }
+
   storageState(path?: string) {
     return this.request.storageState({ path });
   }
@@ -48,12 +59,14 @@ export class Api {
     number: string,
     size = 'MEDIUM',
     ownerResidentId?: string,
+    covered = false,
   ): Promise<{ id: string }> {
     return this.send('POST', '/api/v1/parking-spots', {
       condominiumId,
       number,
       location: 'E2E',
       size,
+      covered,
       ...(ownerResidentId ? { ownerResidentId } : {}),
     });
   }

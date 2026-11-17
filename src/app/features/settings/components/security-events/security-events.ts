@@ -1,5 +1,13 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { dateTimeFormatter } from '../../../../shared/forms/format';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { finalize } from 'rxjs';
@@ -15,11 +23,13 @@ const PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-security-events',
-  imports: [DatePipe, TranslocoPipe, ListItem, ListState, Paginator],
+  imports: [TranslocoPipe, ListItem, ListState, Paginator],
   templateUrl: './security-events.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SecurityEvents {
+  private readonly locale = inject(LocaleService);
+  protected readonly dateTime = computed(() => dateTimeFormatter(this.locale.language()));
   private readonly api = inject(SecurityApi);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly error = inject(ErrorText).state();

@@ -55,6 +55,10 @@ export class NotificationsApi {
     );
   }
 
+  markRead(id: string): Observable<void> {
+    return this.http.post<void>(`${URL}/${id}/read`, null).pipe(map(() => undefined));
+  }
+
   markAllRead(): Observable<void> {
     return this.http.post<void>(`${URL}/read`, null).pipe(map(() => undefined));
   }

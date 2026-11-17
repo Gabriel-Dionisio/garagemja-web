@@ -63,6 +63,8 @@ function toOwnedRental(value: unknown): OwnedRental {
     vehiclePlate,
     vehicleBrand: textOrNull(row['vehicleBrand']),
     vehicleModel: textOrNull(row['vehicleModel']),
+    paid: row['paid'] === true,
+    paymentPending: row['paymentPending'] === true,
   };
 }
 

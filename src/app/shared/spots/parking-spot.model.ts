@@ -105,3 +105,5 @@ export interface SpotMapPin {
   longitude: number;
   available: number;
 }
+
+export const SPOT_PLACEHOLDER = '/images/spot-placeholder.svg';

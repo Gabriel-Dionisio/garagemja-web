@@ -52,29 +52,62 @@ test('owner refuses one request with a reason and approves another', async ({ wo
   await requests.approve(approved);
   await expect(requests.request(approved)).toHaveCount(0);
 
-  await requests.filterStatus('Recusada');
-  await expect(requests.request(refused)).toContainText('E2E: vaga em manutencao');
+  await requests.filterStatus('Recusado');
+  await expect(requests.request(refused)).toContainText('Recusado');
+  await expect(requests.request(refused)).not.toContainText('E2E: vaga em manutencao');
+  await expect(requests.request(refused).getByRole('link')).toHaveCount(0);
+  await expect(requests.request(refused).getByRole('button', { name: 'Recusar' })).toHaveCount(0);
+
+  await requests.openDetails(refused);
+  await expect(requests.details.dialog).toContainText('E2E: vaga em manutencao');
+  await expect(requests.details.profileLink).toBeVisible();
+  await requests.details.close.click();
+  await expect(requests.details.dialog).toBeHidden();
 });
 
 test('renter sees the decisions', async ({ world }) => {
   await user.actAs(world.renter);
   await user.myRentals.goto();
   await expect(user.myRentals.rental(refused)).toContainText('Recusado');
-  await expect(user.myRentals.rental(refused)).toContainText('E2E: vaga em manutencao');
+  await expect(user.myRentals.rental(refused)).not.toContainText('E2E: vaga em manutencao');
   await expect(user.myRentals.rental(approved)).toContainText('Aprovado');
+  await expect(
+    user.myRentals.rental(approved).getByRole('button', { name: 'Pagar' }),
+  ).toBeVisible();
+  await user.myRentals.openDetails(refused);
+  await expect(user.myRentals.details.dialog).toContainText('E2E: vaga em manutencao');
+  await expect(user.myRentals.details.spotLink).toBeVisible();
+  await user.myRentals.details.close.click();
+  await expect(user.myRentals.details.dialog).toBeHidden();
   await expect(
     user.myRentals.rental(refused).getByRole('button', { name: /Cancelar pedido/ }),
   ).toHaveCount(0);
 });
 
-test('owner and renter get in-app notifications that clear when read', async ({ world }) => {
-  const { shell } = user;
+test('notifications: opening the panel keeps the bell, an item reads only itself, read all clears', async ({
+  world,
+}) => {
+  const { shell, page } = user;
   await user.actAs(world.owner);
+  await expect.poll(() => shell.unread()).toBeGreaterThanOrEqual(3);
+  const before = await shell.unread();
+
   await shell.openNotifications();
   await expect(shell.notifications).toContainText('Novo pedido de aluguel');
-  await user.page.keyboard.press('Escape');
+  expect(await shell.unread()).toBe(before);
+
+  await shell.notificationItems().filter({ hasText: 'Novo pedido de aluguel' }).first().click();
   await expect(shell.notifications).toHaveCount(0);
-  await expect(user.page.getByRole('button', { name: /^Notificações$/ })).toBeVisible();
+  await expect(page).toHaveURL(/\/requests/);
+  await expect.poll(() => shell.unread()).toBe(before - 1);
+
+  await shell.openNotifications();
+  await expect(shell.markAllRead).toBeEnabled();
+  await shell.markAllRead.click();
+  await expect(shell.markAllRead).toBeDisabled();
+  await shell.closeNotificationsButton.click();
+  await expect(shell.notifications).toHaveCount(0);
+  await expect(shell.bell).toHaveAccessibleName('Notificações');
 
   await user.actAs(world.renter);
   await shell.openNotifications();

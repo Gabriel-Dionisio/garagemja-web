@@ -30,7 +30,14 @@
 
 @if (open()) {
   <div class="backdrop" aria-hidden="true" (click)="close()"></div>
-  <div class="popup" role="dialog" [attr.aria-label]="label()">
+  <div
+    class="popup"
+    role="dialog"
+    [attr.aria-label]="label()"
+    [class.placed]="position()"
+    [style.top.px]="position()?.top"
+    [style.left.px]="position()?.left"
+  >
     <header>
       <span class="stepper">
         <button

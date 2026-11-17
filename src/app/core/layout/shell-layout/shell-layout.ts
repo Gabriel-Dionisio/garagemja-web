@@ -71,11 +71,19 @@ export class ShellLayout {
   );
   protected readonly items = computed(() => navItemsFor(this.user()?.roles ?? []));
   protected readonly bottomItems = computed(() => bottomNavFor(this.user()?.roles ?? []));
+  protected readonly usesSheet = computed(
+    () => this.viewport.usesDrawer() && this.bottomItems().length > 0,
+  );
+  private readonly sheetPaths = computed(
+    () => new Set(this.usesSheet() ? this.bottomItems().map((item) => item.path) : []),
+  );
   protected readonly sections = computed(() =>
     NAV_GROUP_ORDER.map((group) => ({
       group,
       titleKey: group ? NAV_GROUP_LABEL_KEY[group] : null,
-      items: this.items().filter((item) => item.group === group),
+      items: this.items().filter(
+        (item) => item.group === group && !this.sheetPaths().has(item.path),
+      ),
     })).filter((section) => section.items.length > 0),
   );
   protected readonly navOpen = signal(false);
@@ -103,14 +111,17 @@ export class ShellLayout {
     });
   }
 
+  private opener: HTMLElement | null = null;
+
   protected openNav(): void {
+    this.opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.navOpen.set(true);
   }
 
   protected closeNav(): void {
     if (!this.navOpen()) return;
     this.navOpen.set(false);
-    this.menuButton()?.nativeElement.focus();
+    (this.opener ?? this.menuButton()?.nativeElement)?.focus();
   }
 
   protected logout(): void {

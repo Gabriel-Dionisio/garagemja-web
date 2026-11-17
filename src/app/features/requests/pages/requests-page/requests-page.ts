@@ -32,20 +32,20 @@ import {
 } from '../../../../shared/ui/paginator/paginator';
 import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
 import { Dialog } from '@angular/cdk/dialog';
-import { RouterLink } from '@angular/router';
 import { RatingSummary } from '../../../../shared/reviews/review.model';
 import {
   ReviewDialog,
   ReviewDialogData,
 } from '../../../../shared/reviews/review-dialog/review-dialog';
 import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
+import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
+import { Icon } from '../../../../shared/ui/icon/icon';
+import { RentalDetailsDialog } from '../../../../shared/rentals/rental-details-dialog/rental-details-dialog';
+import { ownerRentalDetails } from '../../../../shared/rentals/rental-details';
 import { Rating } from '../../../../shared/ui/rating/rating';
 import { OwnedRentalsApi } from '../../../../shared/rentals/owned-rentals-api';
 import { OwnedRental, RentalStatus } from '../../../../shared/rentals/owned-rental.model';
-import { displayPlate } from '../../../../shared/forms/plate';
 import { REQUEST_STATUSES, REQUEST_TONES, isRequestStatus } from '../../request-status';
-
-const REASON_CODES = ['unpaid', 'condominium_closed'];
 
 @Component({
   selector: 'app-requests-page',
@@ -57,12 +57,13 @@ const REASON_CODES = ['unpaid', 'condominium_closed'];
     Button,
     ChipGroup,
     FilterPanel,
+    Icon,
+    IconButton,
     ListItem,
     ListState,
     Page,
     PageHeader,
     Paginator,
-    RouterLink,
     Rating,
     SearchFilter,
   ],
@@ -102,6 +103,7 @@ export class RequestsPage {
     () => (this.status() ? 1 : 0) + (this.search() ? 1 : 0),
   );
   protected readonly ratings = signal(new Map<string, RatingSummary>());
+  protected readonly pendingReviews = signal(new Set<string>());
   private readonly reloads = signal(0);
 
   constructor() {
@@ -132,12 +134,30 @@ export class RequestsPage {
       .subscribe((result) => {
         this.result.set(result);
         this.loadRatings(result);
+        this.loadPendingReviews(result);
       });
   }
 
   protected rate(rental: OwnedRental): void {
     const data: ReviewDialogData = { rentalId: rental.id, subjectKey: 'renter' };
-    this.dialog.open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' });
+    this.dialog
+      .open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' })
+      .closed.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((sent) => {
+        if (sent)
+          this.pendingReviews.update((ids) => new Set([...ids].filter((id) => id !== rental.id)));
+      });
+  }
+
+  private loadPendingReviews(result: PageResult<OwnedRental>): void {
+    const ids = result.items.filter((item) => item.status === 'FINISHED').map((item) => item.id);
+    this.reviews
+      .pendingReviews(ids)
+      .pipe(
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((pending) => this.pendingReviews.set(pending));
   }
 
   private loadRatings(result: PageResult<OwnedRental>): void {
@@ -151,19 +171,15 @@ export class RequestsPage {
       .subscribe((ratings) => this.ratings.set(ratings));
   }
 
-  protected reasonKey(rental: OwnedRental): string | null {
-    return rental.cancelReason && REASON_CODES.includes(rental.cancelReason)
-      ? `rentals.reasonCode.${rental.cancelReason}`
-      : null;
+  protected details(rental: OwnedRental): void {
+    this.dialog.open(RentalDetailsDialog, {
+      data: ownerRentalDetails(rental, this.locale.language()),
+      ariaLabelledBy: 'rental-details-title',
+    });
   }
 
   protected period(rental: OwnedRental) {
     return periodText(rental, this.locale.language());
-  }
-
-  protected vehicle(rental: OwnedRental): string {
-    const model = [rental.vehicleBrand, rental.vehicleModel].filter(Boolean).join(' ');
-    return [model, displayPlate(rental.vehiclePlate)].filter(Boolean).join(' · ');
   }
 
   protected selectStatus(status: RentalStatus | null): void {

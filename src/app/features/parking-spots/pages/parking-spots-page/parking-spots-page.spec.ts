@@ -71,6 +71,13 @@ describe('ParkingSpotsPage', () => {
     expect(element.textContent).toContain('Ana');
   });
 
+  it('clicar na vaga abre os detalhes', async () => {
+    const { element } = await setup(true);
+    expect(
+      element.querySelector('li a[href="/condominiums/c1/parking-spots/s1"]:not([appIconButton])'),
+    ).not.toBeNull();
+  });
+
   it('síndico aprova e a lista recarrega', async () => {
     const { fixture, element } = await setup(true);
     button(element, 'Aprovar').click();

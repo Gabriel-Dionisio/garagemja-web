@@ -74,18 +74,19 @@
               }
             </span>
             <strong>{{ condominium.name }}</strong>
+            <small>
+              {{ condominium.city }}{{ condominium.state ? ' / ' + condominium.state : '' }}
+              @if (condominium.residency?.status === 'APPROVED') {
+                <span class="resides"> · {{ 'condominiums.list.resides' | transloco }}</span>
+              }
+            </small>
             @if (condominium.residency; as residency) {
-              @if (residency.status === 'APPROVED') {
-                <small class="resides">{{ 'condominiums.list.resides' | transloco }}</small>
-              } @else {
+              @if (residency.status !== 'APPROVED') {
                 <app-badge [tone]="residencyTones[residency.status]">{{
                   residencyLabels[residency.status] | transloco
                 }}</app-badge>
               }
             }
-            <small
-              >{{ condominium.city }}{{ condominium.state ? ' / ' + condominium.state : '' }}</small
-            >
             <span status>
               <app-condominium-status-badge [status]="condominium.status" />
             </span>

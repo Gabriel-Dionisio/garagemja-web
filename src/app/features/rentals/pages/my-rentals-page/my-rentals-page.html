@@ -38,51 +38,51 @@
   >
     @if (result(); as current) {
       @for (rental of current.items; track rental.id) {
-        <li appListItem>
+        <li appListItem activatable (activated)="details(rental)">
           <span leading
             ><span class="thumb placeholder"><app-icon name="calendar" /></span
           ></span>
           <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
           <small>{{ rental.condominiumName }}</small>
           @let when = period(rental);
-          <small> {{ when.key | transloco: when.params }} · {{ money()(rental.payable) }} </small>
-          @if (rental.cancelReason) {
-            @let code = reason(rental);
-            <small>{{
-              'rentals.reason'
-                | transloco: { reason: code ? (code | transloco) : rental.cancelReason }
-            }}</small>
-          }
-          @if (rental.paymentPending) {
-            <small>{{ 'rentals.paymentPending' | transloco }}</small>
-          }
+          <small>
+            {{ when.key | transloco: when.params }} · {{ money()(rental.payable) }}
+            @if (rental.paymentPending) {
+              · {{ 'rentals.paymentPending' | transloco }}
+            }
+          </small>
           <span status>
             <app-badge [tone]="tones[rental.status]">{{
               'rentals.status.' + rental.status | transloco
             }}</app-badge>
           </span>
-          @if (rental.status === 'FINISHED') {
+          @if (pendingReviews().has(rental.id) || cancelable(rental)) {
             <span actions>
-              <button appButton type="button" variant="secondary" (click)="rate(rental)">
-                {{ 'reviews.rate' | transloco }}
-              </button>
-            </span>
-          }
-          @if (cancelable(rental)) {
-            <span actions>
+              @if (pendingReviews().has(rental.id)) {
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'reviews.rate' | transloco"
+                  (click)="rate(rental)"
+                >
+                  <app-icon name="star" />
+                </button>
+              }
               @if (payable(rental)) {
                 <button appButton type="button" (click)="pay(rental)">
                   {{ 'rentals.pay' | transloco }}
                 </button>
               }
-              <button
-                appIconButton
-                type="button"
-                [label]="'rentals.cancel.aria' | transloco: { number: rental.parkingSpotNumber }"
-                (click)="cancel(rental)"
-              >
-                <app-icon name="close" />
-              </button>
+              @if (cancelable(rental)) {
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'rentals.cancel.aria' | transloco: { number: rental.parkingSpotNumber }"
+                  (click)="cancel(rental)"
+                >
+                  <app-icon name="close" />
+                </button>
+              }
             </span>
           }
         </li>

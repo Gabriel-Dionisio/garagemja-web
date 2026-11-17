@@ -26,6 +26,8 @@ const item = {
   reviewComment: 'meh',
   reviewStatus: 'VISIBLE',
   parkingSpotId: 's1',
+  parkingSpotNumber: 'A-12',
+  condominiumName: 'Solar',
 };
 
 describe('ReviewsApi', () => {
@@ -43,7 +45,12 @@ describe('ReviewsApi', () => {
   });
 
   it('maps report items and rejects unknown reasons', () => {
-    expect(toReportItem(item).reviewRating).toBe(2);
+    expect(toReportItem(item)).toMatchObject({
+      reviewRating: 2,
+      parkingSpotNumber: 'A-12',
+      condominiumName: 'Solar',
+    });
+    expect(toReportItem({ ...item, parkingSpotNumber: undefined }).parkingSpotNumber).toBeNull();
     expect(() => toReportItem({ ...item, report: { ...item.report, reason: 'X' } })).toThrow();
   });
 
@@ -80,6 +87,18 @@ describe('ReviewsApi', () => {
     api.spotRatings([]).subscribe((ratings) => (size = ratings.size));
     http.expectNone((r) => r.url.includes('ratings'));
     expect(size).toBe(0);
+  });
+
+  it('asks which rentals can still be reviewed and skips an empty list', () => {
+    const { api, http } = setup();
+    let pending: Set<string> | undefined;
+    api.pendingReviews(['a', 'b']).subscribe((ids) => (pending = ids));
+    const request = http.expectOne((r) => r.url === '/api/v1/reviews/pending');
+    expect(request.request.params.getAll('rentalIds')).toEqual(['a', 'b']);
+    request.flush(['a']);
+    expect([...pending!]).toEqual(['a']);
+    api.pendingReviews([]).subscribe();
+    http.expectNone((r) => r.url.includes('pending'));
   });
 
   it('pages report queue with status filter and total', () => {

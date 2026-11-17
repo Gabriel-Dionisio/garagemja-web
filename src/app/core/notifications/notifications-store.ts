@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Subscription, defer, retry, throwError, timer } from 'rxjs';
+import { Observable, Subscription, defer, retry, switchMap, tap, throwError, timer } from 'rxjs';
 import { ErrorText } from '../i18n/error-text';
 import { AppNotification } from './notification.model';
 import { NotificationStream, StreamRejected } from './notification-stream';
@@ -37,14 +37,7 @@ export class NotificationsStore {
       this.refreshUnread();
       return this.stream.connect(() => this.opened());
     })
-      .pipe(
-        retry({
-          delay: (error: unknown) =>
-            error instanceof StreamRejected && error.fatal
-              ? throwError(() => error)
-              : timer(Math.min(MAX_BACKOFF_MS, 1000 * 2 ** this.failures++)),
-        }),
-      )
+      .pipe(retry({ delay: (error: unknown) => this.reconnectAfter(error) }))
       .subscribe({
         next: (notification) => this.receive(notification),
         error: () => (this.connection = null),
@@ -82,6 +75,50 @@ export class NotificationsStore {
     this.load(false);
   }
 
+  markRead(id: string): void {
+    const target = this.itemsState().find((item) => item.id === id);
+    if (!target || target.read) return;
+    this.requests.add(
+      this.api.markRead(id).subscribe({
+        next: () => {
+          this.itemsState.update((list) =>
+            list.map((item) => (item.id === id ? { ...item, read: true } : item)),
+          );
+          this.unreadState.update((count) => Math.max(0, count - 1));
+        },
+        error: () => undefined,
+      }),
+    );
+  }
+
+  markAllRead(): void {
+    this.requests.add(
+      this.api.markAllRead().subscribe({
+        next: () => {
+          this.itemsState.update((list) => list.map((item) => ({ ...item, read: true })));
+          this.unreadState.set(0);
+        },
+        error: () => undefined,
+      }),
+    );
+  }
+
+  reload(): void {
+    this.page = 0;
+    this.load(true);
+  }
+
+  private reconnectAfter(error: unknown): Observable<unknown> {
+    if (error instanceof StreamRejected && error.fatal) return throwError(() => error);
+    const backoff = timer(Math.min(MAX_BACKOFF_MS, 1000 * 2 ** this.failures++));
+    if (!(error instanceof StreamRejected && error.status === 401)) return backoff;
+    // The stream uses fetch, so the session refresh happens through this HttpClient call.
+    return backoff.pipe(
+      switchMap(() => this.api.unreadCount()),
+      tap((count) => this.unreadState.set(count)),
+    );
+  }
+
   private opened(): void {
     this.failures = 0;
     if (this.panelOpen()) this.open();
@@ -98,9 +135,9 @@ export class NotificationsStore {
         );
         this.hasNextState.set(result.hasNext);
         this.loadingState.set(false);
-        if (reset) this.markRead();
       },
       error: (error: unknown) => {
+        if (!reset) this.page -= 1;
         this.loadingState.set(false);
         this.error.setFrom(error);
       },
@@ -113,22 +150,9 @@ export class NotificationsStore {
   }
 
   private receive(notification: AppNotification): void {
-    if (!this.panelOpen()) {
-      this.unreadState.update((count) => count + 1);
-      return;
-    }
-    if (this.has(notification)) return;
-    this.itemsState.update((current) => [notification, ...current]);
-    this.markRead();
-  }
-
-  private markRead(): void {
-    this.requests.add(
-      this.api.markAllRead().subscribe({
-        next: () => this.unreadState.set(0),
-        error: () => undefined,
-      }),
-    );
+    if (this.panelOpen() && this.has(notification)) return;
+    this.unreadState.update((count) => count + 1);
+    if (this.panelOpen()) this.itemsState.update((current) => [notification, ...current]);
   }
 
   private refreshUnread(): void {

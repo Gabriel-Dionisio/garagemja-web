@@ -3,7 +3,7 @@
 }}</a>
 
 <header class="topbar">
-  @if (viewport.usesDrawer()) {
+  @if (viewport.usesDrawer() && !usesSheet()) {
     <button
       #menuButton
       appIconButton
@@ -15,6 +15,8 @@
     >
       <app-icon name="menu" />
     </button>
+  }
+  @if (viewport.usesDrawer()) {
     <app-brand-logo [compact]="true" />
   }
   @if (user(); as current) {
@@ -30,7 +32,7 @@
   <aside
     id="app-nav"
     class="sidebar"
-    [attr.data-mode]="viewport.usesDrawer() ? 'drawer' : 'rail'"
+    [attr.data-mode]="usesSheet() ? 'sheet' : viewport.usesDrawer() ? 'drawer' : 'rail'"
     [cdkTrapFocus]="viewport.usesDrawer()"
     [cdkTrapFocusAutoCapture]="viewport.usesDrawer()"
     [attr.role]="viewport.usesDrawer() ? 'dialog' : null"
@@ -105,5 +107,9 @@
 </main>
 
 @if (viewport.usesDrawer() && bottomItems().length > 0) {
-  <app-bottom-nav [items]="bottomItems()" [menuExpanded]="navOpen()" (menu)="openNav()" />
+  <app-bottom-nav
+    [items]="bottomItems()"
+    [menuExpanded]="navOpen()"
+    (menu)="navOpen() ? closeNav() : openNav()"
+  />
 }

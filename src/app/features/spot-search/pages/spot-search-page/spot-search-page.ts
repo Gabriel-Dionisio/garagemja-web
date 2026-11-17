@@ -13,7 +13,6 @@ import { Icon } from '../../../../shared/ui/icon/icon';
 import { AppMap, MapPin } from '../../../../shared/ui/map/map';
 import { ChipToggle } from '../../../../shared/ui/chip-toggle/chip-toggle';
 import { Page as PageLayout } from '../../../../shared/ui/page/page';
-import { ScrollArea } from '../../../../shared/ui/scroll-area/scroll-area';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
 import {
@@ -47,7 +46,6 @@ const PAGE_SIZE = 12;
     Icon,
     PageHeader,
     PageLayout,
-    ScrollArea,
     SpotResults,
     SpotFilter,
   ],
@@ -72,6 +70,10 @@ export class SpotSearchPage {
     { value: 'DAILY', labelKey: 'spotSearch.mode.daily' },
     { value: 'HOURLY', labelKey: 'spotSearch.mode.hourly' },
   ];
+  protected readonly coverageTabs: readonly ChipOption<'COVERED'>[] = [
+    { value: null, labelKey: 'spotSearch.coverage.any' },
+    { value: 'COVERED', labelKey: 'parkingSpots.fields.covered' },
+  ];
   protected readonly sortTabs: readonly ChipOption<SpotSort>[] = SPOT_SORTS.map((sort) => ({
     value: sort,
     labelKey: `spotSearch.sort.${sort}`,
@@ -86,7 +88,10 @@ export class SpotSearchPage {
   protected readonly activeFilters = computed(() => activeCriteriaCount(this.criteria()));
   protected readonly cardParams = computed(() => {
     const { from, to } = this.criteria();
-    return { from: from || null, to: to || null };
+    const returnUrl = this.router
+      .createUrlTree(['/search'], { queryParams: criteriaToParams(this.criteria(), this.page()) })
+      .toString();
+    return { from: from || null, to: to || null, returnUrl };
   });
   private readonly pinCriteria = computed(() => ({ ...this.criteria(), condominiumId: null }));
   protected readonly pins = toSignal(
@@ -115,7 +120,9 @@ export class SpotSearchPage {
   protected readonly mapVisible = computed(
     () => this.pins().length > 0 && (this.desktop() || this.mapView()),
   );
-  protected readonly listVisible = computed(() => this.desktop() || !this.mapView());
+  protected readonly listVisible = computed(
+    () => this.desktop() || !this.mapView() || this.pins().length === 0,
+  );
   protected readonly result = signal<Page<ParkingSpot> | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = inject(ErrorText).state();
@@ -155,6 +162,7 @@ export class SpotSearchPage {
 
   protected apply(value: SpotFilterValue): void {
     this.patch(value);
+    this.filtersOpen.set(false);
   }
 
   protected changeSize(size: number): void {

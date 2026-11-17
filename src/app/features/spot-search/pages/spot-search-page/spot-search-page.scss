@@ -1,6 +1,7 @@
 @use 'styles/mixins' as *;
 
 .split {
+  position: relative;
   display: grid;
   flex: 1 1 auto;
   min-height: 0;
@@ -13,17 +14,26 @@
 }
 
 .map {
-  height: 60dvh;
+  isolation: isolate;
+  height: 100%;
   min-height: 16rem;
-
-  @include from($bp-lg) {
-    height: 100%;
-  }
 }
 
 .view-toggle {
-  position: sticky;
+  position: absolute;
   bottom: var(--space-4);
-  align-self: center;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
   box-shadow: var(--shadow-card);
+}
+
+.list:has(~ .view-toggle) app-spot-results {
+  padding-bottom: calc(var(--control-height) + var(--space-6));
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }

@@ -8,8 +8,7 @@
         <app-card>
           <p>{{ 'condominiums.invites.message' | transloco: { name: invite.condominiumName } }}</p>
           <small>{{
-            'condominiums.managers.expiresAt'
-              | transloco: { date: (invite.expiresAt | date: 'shortDate') }
+            'condominiums.managers.expiresAt' | transloco: { date: shortDate()(invite.expiresAt) }
           }}</small>
           <app-checkbox
             [label]="'condominiums.invites.notResident' | transloco"

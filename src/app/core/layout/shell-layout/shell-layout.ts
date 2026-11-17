@@ -23,6 +23,7 @@ import { CondominiumTabsState } from '../../../shared/ui/condominium-tabs/condom
 import { Icon } from '../../../shared/ui/icon/icon';
 import { IconButton } from '../../../shared/ui/icon-button/icon-button';
 import { AuthService } from '../../auth/auth-service';
+import { NotificationBell } from '../../notifications/notification-bell/notification-bell';
 import { NavBadges } from '../nav-badges';
 import { navItemsFor } from '../nav-items';
 import { UserMenu } from '../user-menu/user-menu';
@@ -41,6 +42,7 @@ import { ViewportService } from '../viewport-service';
     BrandLogo,
     Icon,
     UserMenu,
+    NotificationBell,
     IconButton,
   ],
   templateUrl: './shell-layout.html',

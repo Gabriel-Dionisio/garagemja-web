@@ -66,3 +66,18 @@ test('renter sees the decisions', async ({ world }) => {
     user.myRentals.rental(refused).getByRole('button', { name: /Cancelar pedido/ }),
   ).toHaveCount(0);
 });
+
+test('owner and renter get in-app notifications that clear when read', async ({ world }) => {
+  const { shell } = user;
+  await user.actAs(world.owner);
+  await shell.openNotifications();
+  await expect(shell.notifications).toContainText('Novo pedido de aluguel');
+  await user.page.keyboard.press('Escape');
+  await expect(shell.notifications).toHaveCount(0);
+  await expect(user.page.getByRole('button', { name: /^Notificações$/ })).toBeVisible();
+
+  await user.actAs(world.renter);
+  await shell.openNotifications();
+  await expect(shell.notifications).toContainText('foi recusado');
+  await expect(shell.notifications).toContainText('foi aprovado');
+});

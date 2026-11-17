@@ -6,12 +6,14 @@ const DRAWER_BELOW = 768;
 export class ShellPage {
   readonly menu: Locator;
   readonly content: Locator;
+  readonly notifications: Locator;
   private readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
     this.menu = page.getByRole('navigation', { name: 'Principal' }).getByRole('link');
     this.content = page.locator('main > *:not(router-outlet)').first();
+    this.notifications = page.getByRole('dialog', { name: 'Notificações' });
   }
 
   menuItem(name: string): Locator {
@@ -31,6 +33,11 @@ export class ShellPage {
     if (usesDrawer) await this.page.getByRole('button', { name: 'Abrir menu' }).click();
     await this.menuItem(name).click();
     await this.page.mouse.move((this.page.viewportSize()?.width ?? 1280) - 1, 300);
+  }
+
+  async openNotifications(): Promise<void> {
+    await this.page.getByRole('button', { name: /^Notificações/ }).click();
+    await this.notifications.waitFor();
   }
 
   hasHorizontalOverflow(): Promise<boolean> {

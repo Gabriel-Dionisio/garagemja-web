@@ -9,9 +9,18 @@
   font-weight: 700;
 }
 
-app-icon {
+.symbol {
+  flex: none;
   width: 2rem;
   height: 2rem;
+  background: currentcolor;
+  mask: url('/images/brand/car-2-svgrepo-com.svg') center / contain no-repeat;
+}
+
+.label {
+  white-space: nowrap;
+  opacity: var(--label-opacity, 1);
+  transition: opacity 0.12s ease;
 }
 
 :host([data-stacked]) {
@@ -21,7 +30,7 @@ app-icon {
     gap: var(--space-5);
     font-size: var(--font-size-2xl);
 
-    app-icon {
+    .symbol {
       width: 6rem;
       height: 6rem;
     }
@@ -33,7 +42,7 @@ app-icon {
     flex-direction: column;
     font-size: var(--font-size-xl);
 
-    app-icon {
+    .symbol {
       width: 3rem;
       height: 3rem;
     }

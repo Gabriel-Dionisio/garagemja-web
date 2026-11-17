@@ -1,7 +1,13 @@
 <app-page>
   <app-page-header [title]="'wallet.title' | transloco" [subtitle]="'wallet.subtitle' | transloco">
     @if (selected(); as wallet) {
-      <button appButton type="button" [disabled]="wallet.available <= 0" (click)="withdraw(wallet)">
+      <button
+        appButton
+        type="button"
+        [disabled]="wallet.available <= 0"
+        [attr.aria-describedby]="wallet.available <= 0 ? 'withdraw-blocked' : null"
+        (click)="withdraw(wallet)"
+      >
         {{ 'wallet.withdraw.open' | transloco }}
       </button>
     }
@@ -29,6 +35,27 @@
       />
       <app-stat-card [value]="money()(wallet.pending)" [label]="'wallet.pending' | transloco" />
     </section>
+    @if (wallet.available <= 0) {
+      <app-alert id="withdraw-blocked">{{
+        (wallet.available < 0 ? 'wallet.withdraw.negative' : 'wallet.withdraw.empty') | transloco
+      }}</app-alert>
+    }
+    <app-card>
+      <app-period-chart
+        [heading]="'wallet.flow.title' | transloco"
+        [period]="flowPeriod()"
+        [labels]="flowChart().labels"
+        [series]="flowChart().series"
+        [loading]="flowLoading()"
+        [error]="flowError.text()"
+        [loadingLabel]="'wallet.flow.loading' | transloco"
+        [emptyText]="'wallet.flow.empty' | transloco"
+        [yLabel]="'charts.axis.amount' | transloco"
+        [format]="money()"
+        [showValues]="false"
+        (periodChange)="flowPeriod.set($event)"
+      />
+    </app-card>
   }
 
   <app-list-state

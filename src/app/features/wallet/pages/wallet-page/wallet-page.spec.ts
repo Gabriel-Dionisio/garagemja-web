@@ -1,7 +1,10 @@
 import { Dialog } from '@angular/cdk/dialog';
+import { Component, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
+import { Chart } from '../../../../shared/ui/chart/chart';
+import { PeriodChart } from '../../../../shared/ui/chart/period-chart';
 import { WalletsApi } from '../../data/wallets-api';
 import { WalletEntry, WalletSummary } from '../../wallet.model';
 import { WalletPage } from './wallet-page';
@@ -26,10 +29,36 @@ const entry = (overrides: Partial<WalletEntry> = {}): WalletEntry => ({
   ...overrides,
 });
 
+@Component({ selector: 'app-chart', template: '' })
+class ChartStub {
+  readonly kind = input<string>();
+  readonly labels = input<readonly string[]>();
+  readonly series = input<{ label: string; data: number[] }[]>();
+  readonly description = input<string>();
+  readonly xLabel = input<string>();
+  readonly yLabel = input<string>();
+  readonly format = input<(value: number) => string>();
+  readonly showValues = input<boolean>();
+}
+
 describe('WalletPage', () => {
   const list = vi.fn();
   const entries = vi.fn();
+  const flow = vi.fn();
   const open = vi.fn();
+
+  beforeEach(() => {
+    flow.mockReset().mockReturnValue(of([{ start: '2026-11', credits: 70, debits: 30 }]));
+    TestBed.overrideComponent(PeriodChart, {
+      remove: { imports: [Chart] },
+      add: { imports: [ChartStub] },
+    });
+  });
+
+  const walletChoosers = (element: HTMLElement) =>
+    Array.from(element.querySelectorAll('app-chip-group')).filter(
+      (group) => !group.closest('app-period-chart'),
+    );
 
   async function setup(wallets = [wallet()], items = [entry()], closed = false) {
     list.mockReset().mockReturnValue(of(wallets));
@@ -37,7 +66,7 @@ describe('WalletPage', () => {
     open.mockReset().mockReturnValue({ closed: of(closed) });
     TestBed.configureTestingModule({
       providers: [
-        { provide: WalletsApi, useValue: { list, entries } },
+        { provide: WalletsApi, useValue: { list, entries, flow } },
         { provide: Dialog, useValue: { open } },
       ],
     });
@@ -52,13 +81,40 @@ describe('WalletPage', () => {
     expect(element.textContent).toContain('40,00');
     expect(element.textContent).toContain('7,50');
     expect(element.querySelectorAll('li')).toHaveLength(1);
-    expect(element.querySelector('app-chip-group')).toBeNull();
+    expect(walletChoosers(element)).toHaveLength(0);
+  });
+
+  it('charts money in and out of the selected wallet by month', async () => {
+    const { fixture } = await setup();
+    expect(flow).toHaveBeenCalledWith(wallet(), 'MONTH');
+    const chart = fixture.debugElement.query((node) => node.componentInstance instanceof ChartStub)
+      .componentInstance as ChartStub;
+    expect(chart.series()?.map((series) => series.label)).toEqual(['Entradas', 'Saídas']);
+    expect(chart.series()?.[0].data).toEqual([70]);
+    expect(chart.labels()).toEqual(['nov.']);
+    expect(chart.format()?.(70)).toContain('70,00');
+    expect(chart.showValues()).toBe(false);
+  });
+
+  it('reloads the chart when another period is chosen', async () => {
+    const { fixture, element } = await setup();
+    const periods = element.querySelectorAll<HTMLButtonElement>('app-period-chart button');
+    periods[2].click();
+    await fixture.whenStable();
+    expect(flow).toHaveBeenLastCalledWith(wallet(), 'YEAR');
+  });
+
+  it('shows the chart error without hiding the statement', async () => {
+    flow.mockReturnValue(throwError(() => new Error('falha')));
+    const { element } = await setup();
+    expect(element.querySelector('app-period-chart app-alert')).not.toBeNull();
+    expect(element.querySelectorAll('li')).toHaveLength(1);
   });
 
   it('switches the statement when another wallet is chosen', async () => {
     const other = wallet({ type: 'CONDOMINIUM', refId: 'c1', name: 'Edifício A' });
     const { fixture, element } = await setup([wallet(), other]);
-    const chips = element.querySelectorAll<HTMLButtonElement>('app-chip-group button');
+    const chips = walletChoosers(element)[0].querySelectorAll<HTMLButtonElement>('button');
     chips[1].click();
     await fixture.whenStable();
     expect(entries).toHaveBeenLastCalledWith(other, 0, expect.any(Number));
@@ -75,7 +131,24 @@ describe('WalletPage', () => {
 
   it('disables withdrawal without available balance', async () => {
     const { element } = await setup([wallet({ available: 0 })]);
-    expect(element.querySelector<HTMLButtonElement>('app-page-header button')?.disabled).toBe(true);
+    const button = element.querySelector<HTMLButtonElement>('app-page-header button');
+    expect(button?.disabled).toBe(true);
+    expect(button?.getAttribute('aria-describedby')).toBe('withdraw-blocked');
+    expect(element.querySelector('#withdraw-blocked')?.textContent).toContain(
+      'Sem saldo disponível para saque.',
+    );
+  });
+
+  it('explains that a negative balance blocks withdrawal', async () => {
+    const { element } = await setup([wallet({ available: -10 })]);
+    expect(element.querySelector('#withdraw-blocked')?.textContent).toContain(
+      'saldo ficou negativo',
+    );
+  });
+
+  it('allows withdrawal without the blocked notice when there is balance', async () => {
+    const { element } = await setup();
+    expect(element.querySelector('#withdraw-blocked')).toBeNull();
   });
 
   it('leaves loading when the user has no wallet', async () => {
@@ -88,7 +161,7 @@ describe('WalletPage', () => {
     list.mockReset().mockReturnValue(throwError(() => new Error('falha')));
     TestBed.configureTestingModule({
       providers: [
-        { provide: WalletsApi, useValue: { list, entries } },
+        { provide: WalletsApi, useValue: { list, entries, flow } },
         { provide: Dialog, useValue: { open } },
       ],
     });

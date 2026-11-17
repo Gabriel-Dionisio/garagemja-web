@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { fields } from '../../../shared/models/fields';
+import { ChartPeriod } from '../../../shared/ui/chart/period';
 
 export interface MonthlyPoint {
   month: string;
@@ -17,6 +19,12 @@ export interface ManagerMonthlyStats {
   rentals: MonthlyPoint[];
 }
 
+export interface RentalPeriodPoint {
+  start: string;
+  received: number;
+  made: number;
+}
+
 const STATS_URL = '/api/v1/stats';
 
 function toPoints(value: unknown): MonthlyPoint[] {
@@ -27,6 +35,25 @@ function toPoints(value: unknown): MonthlyPoint[] {
       throw new Error('Invalid monthly stats');
     }
     return { month, count };
+  });
+}
+
+const START = /^\d{4}-\d{2}$/;
+
+export function toRentalPoints(value: unknown): RentalPeriodPoint[] {
+  const points = fields(value, 'rental stats')['points'];
+  if (!Array.isArray(points)) throw new Error('Invalid rental stats');
+  return points.map((item) => {
+    const { start, received, made } = fields(item, 'rental stats point');
+    if (
+      typeof start !== 'string' ||
+      !START.test(start) ||
+      typeof received !== 'number' ||
+      typeof made !== 'number'
+    ) {
+      throw new Error('Invalid rental stats');
+    }
+    return { start, received, made };
   });
 }
 
@@ -50,5 +77,10 @@ export class StatsApi {
         rentals: toPoints(body['rentals']),
       })),
     );
+  }
+
+  myRentals(period: ChartPeriod): Observable<RentalPeriodPoint[]> {
+    const params = new HttpParams().set('period', period);
+    return this.http.get<unknown>(`${STATS_URL}/me/rentals`, { params }).pipe(map(toRentalPoints));
   }
 }

@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+h2 {
+  margin-bottom: var(--space-3);
+  color: var(--color-secondary);
+  font-size: var(--font-size-lg);
+}
+
+app-chip-group {
+  margin-bottom: var(--space-3);
+}
+
+.body {
+  min-height: 14rem;
+}

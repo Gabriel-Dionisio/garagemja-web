@@ -47,3 +47,18 @@
     </div>
   </app-skeleton>
 }
+
+<app-card>
+  <app-period-chart
+    [heading]="'dashboard.owner.chart.title' | transloco"
+    [period]="period()"
+    [labels]="trendChart().labels"
+    [series]="trendChart().series"
+    [loading]="trendLoading()"
+    [error]="trendError.text()"
+    [loadingLabel]="'dashboard.owner.chart.loading' | transloco"
+    [emptyText]="'dashboard.owner.chart.empty' | transloco"
+    [yLabel]="'charts.axis.count' | transloco"
+    (periodChange)="period.set($event)"
+  />
+</app-card>

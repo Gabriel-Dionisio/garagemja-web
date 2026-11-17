@@ -1,0 +1,72 @@
+<header>
+  <h2 id="notifications-title">{{ 'notifications.title' | transloco }}</h2>
+  <div class="header-actions">
+    <button
+      appButton
+      type="button"
+      variant="secondary"
+      [disabled]="store.unread() === 0"
+      (click)="store.markAllRead()"
+    >
+      {{ 'notifications.markAllRead' | transloco }}
+    </button>
+    <button
+      appIconButton
+      type="button"
+      [label]="'notifications.close' | transloco"
+      (click)="close()"
+    >
+      <app-icon name="close" />
+    </button>
+  </div>
+</header>
+
+<app-list-state
+  aria-live="polite"
+  [attr.aria-busy]="store.loading()"
+  [loading]="store.loading() && store.items().length === 0"
+  [error]="store.items().length ? null : store.error.text()"
+  [empty]="!store.loading() && store.items().length === 0"
+  [loadingLabel]="'notifications.loading' | transloco"
+  emptyIcon="bell"
+  [emptyTitle]="'notifications.emptyTitle' | transloco"
+  [emptyDescription]="'notifications.emptyDescription' | transloco"
+  [listLabel]="'notifications.title' | transloco"
+>
+  @for (item of store.items(); track item.id) {
+    <li appListItem [class.unread]="!item.read">
+      <button type="button" class="item" (click)="openItem(item)">
+        <strong>{{
+          'notifications.kind.' + item.kind | transloco: { condominium: item.condominiumName }
+        }}</strong>
+        <small>{{ secondary(item) }}</small>
+      </button>
+    </li>
+  }
+  @if (store.hasNext()) {
+    <div paginator class="more">
+      <button
+        appButton
+        type="button"
+        variant="secondary"
+        [loading]="store.loading()"
+        (click)="store.loadMore()"
+      >
+        {{ 'notifications.loadMore' | transloco }}
+      </button>
+    </div>
+  }
+</app-list-state>
+@if (store.error.text()) {
+  @if (store.items().length) {
+    <app-alert kind="error">{{ store.error.text() }}</app-alert>
+  }
+  <button
+    appButton
+    type="button"
+    variant="secondary"
+    (click)="store.items().length ? store.loadMore() : store.reload()"
+  >
+    {{ 'notifications.retry' | transloco }}
+  </button>
+}

@@ -1,6 +1,6 @@
 @if (kind() === 'share') {
   <p class="total">
-    <strong>{{ total() }}</strong>
+    <strong>{{ format()(total()) }}</strong>
   </p>
   <div class="track" aria-hidden="true">
     @for (entry of entries(); track entry.label; let index = $index) {
@@ -41,7 +41,7 @@
       >
         <span class="dot" [style.background]="entry.color"></span>
         <span class="name">{{ entry.label }}</span>
-        <span class="value">{{ entry.value }}</span>
+        <span class="value">{{ format()(entry.value) }}</span>
         @if (entry.share !== null && !single()) {
           <span class="share">{{ entry.share }}%</span>
         }
@@ -55,6 +55,14 @@
       description()
     }}
   </caption>
+  <thead>
+    <tr>
+      <td></td>
+      @for (label of seriesLabels(); track $index) {
+        <th scope="col">{{ label }}</th>
+      }
+    </tr>
+  </thead>
   <tbody>
     @for (row of rows(); track row.label) {
       <tr>

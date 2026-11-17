@@ -1,0 +1,23 @@
+@use 'styles/mixins' as *;
+
+.balances {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+
+  @include from($bp-md) {
+    gap: var(--space-4);
+  }
+}
+
+small {
+  color: var(--color-text-muted);
+}
+
+.amount {
+  font-weight: 600;
+}
+
+.negative {
+  color: var(--color-danger);
+}

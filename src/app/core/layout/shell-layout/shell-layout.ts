@@ -13,17 +13,9 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  NavigationEnd,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
-import { filter, map, startWith } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { Alert } from '../../../shared/ui/alert/alert';
 import { Badge } from '../../../shared/ui/badge/badge';
 import { BrandLogo } from '../../../shared/ui/brand-logo/brand-logo';
@@ -31,9 +23,10 @@ import { CondominiumTabsState } from '../../../shared/ui/condominium-tabs/condom
 import { Icon } from '../../../shared/ui/icon/icon';
 import { IconButton } from '../../../shared/ui/icon-button/icon-button';
 import { AuthService } from '../../auth/auth-service';
+import { NotificationBell } from '../../notifications/notification-bell/notification-bell';
 import { NavBadges } from '../nav-badges';
-import { TopbarSearch } from '../topbar-search/topbar-search';
-import { navItemsFor } from '../nav-items';
+import { NAV_GROUP_LABEL_KEY, NAV_GROUP_ORDER, bottomNavFor, navItemsFor } from '../nav-items';
+import { BottomNav } from '../bottom-nav/bottom-nav';
 import { UserMenu } from '../user-menu/user-menu';
 import { ViewportService } from '../viewport-service';
 
@@ -47,11 +40,12 @@ import { ViewportService } from '../viewport-service';
     RouterLinkActive,
     Alert,
     Badge,
+    BottomNav,
     BrandLogo,
     Icon,
     UserMenu,
+    NotificationBell,
     IconButton,
-    TopbarSearch,
   ],
   templateUrl: './shell-layout.html',
   styleUrl: './shell-layout.scss',
@@ -61,7 +55,6 @@ export class ShellLayout {
   private readonly auth = inject(AuthService);
   private readonly errorText = inject(ErrorText);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
   private readonly mainElement = viewChild.required<ElementRef<HTMLElement>>('main');
   private readonly menuButton = viewChild<string, ElementRef<HTMLButtonElement>>('menuButton', {
     read: ElementRef,
@@ -77,15 +70,21 @@ export class ShellLayout {
     this.auth.hasRole('ADMIN') ? '/dashboard' : '/home',
   );
   protected readonly items = computed(() => navItemsFor(this.user()?.roles ?? []));
-  protected readonly mainItems = computed(() => this.items().filter((item) => !item.group));
-  protected readonly managementItems = computed(() => this.items().filter((item) => item.group));
-  protected readonly showSearch = toSignal(
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      startWith(null),
-      map(() => this.routeFlag('showSearch')),
-    ),
-    { initialValue: false },
+  protected readonly bottomItems = computed(() => bottomNavFor(this.user()?.roles ?? []));
+  protected readonly usesSheet = computed(
+    () => this.viewport.usesDrawer() && this.bottomItems().length > 0,
+  );
+  private readonly sheetPaths = computed(
+    () => new Set(this.usesSheet() ? this.bottomItems().map((item) => item.path) : []),
+  );
+  protected readonly sections = computed(() =>
+    NAV_GROUP_ORDER.map((group) => ({
+      group,
+      titleKey: group ? NAV_GROUP_LABEL_KEY[group] : null,
+      items: this.items().filter(
+        (item) => item.group === group && !this.sheetPaths().has(item.path),
+      ),
+    })).filter((section) => section.items.length > 0),
   );
   protected readonly navOpen = signal(false);
   protected readonly logoutError = this.errorText.state();
@@ -112,14 +111,17 @@ export class ShellLayout {
     });
   }
 
+  private opener: HTMLElement | null = null;
+
   protected openNav(): void {
+    this.opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     this.navOpen.set(true);
   }
 
   protected closeNav(): void {
     if (!this.navOpen()) return;
     this.navOpen.set(false);
-    this.menuButton()?.nativeElement.focus();
+    (this.opener ?? this.menuButton()?.nativeElement)?.focus();
   }
 
   protected logout(): void {
@@ -132,14 +134,5 @@ export class ShellLayout {
         this.logoutError.setFrom(error);
       },
     });
-  }
-
-  private routeFlag(key: string): boolean {
-    let current: ActivatedRouteSnapshot | null = this.route.snapshot;
-    while (current) {
-      if (current.data[key] === true) return true;
-      current = current.firstChild;
-    }
-    return false;
   }
 }

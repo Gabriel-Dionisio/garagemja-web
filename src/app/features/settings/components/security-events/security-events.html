@@ -14,7 +14,7 @@
     @for (event of current.items; track event.id) {
       <li appListItem>
         <strong>{{ 'settings.events.types.' + event.type | transloco }}</strong>
-        <small>{{ event.createdAt | date: 'short' }}</small>
+        <small>{{ dateTime()(event.createdAt) }}</small>
       </li>
     }
   }

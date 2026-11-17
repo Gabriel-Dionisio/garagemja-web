@@ -95,17 +95,9 @@
   right: var(--space-2);
 }
 
-.move-back,
-.move-forward {
+.make-cover {
   bottom: var(--space-2);
-}
-
-.move-back {
   left: var(--space-2);
-}
-
-.move-forward {
-  right: var(--space-2);
 }
 
 .round:disabled {

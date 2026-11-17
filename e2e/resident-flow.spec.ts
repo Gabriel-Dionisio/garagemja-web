@@ -42,7 +42,6 @@ test('resident shell pages share one content width and never overflow', async ({
   const widths: Record<string, number> = {};
   for (const path of ['/home', '/condominiums', '/dashboard']) {
     await shell.goto(path);
-    await page.waitForLoadState('networkidle');
     const box = await shell.content.boundingBox();
     widths[path] = Math.round(box?.width ?? 0);
     expect.soft(await shell.hasHorizontalOverflow(), `${path} overflows horizontally`).toBe(false);

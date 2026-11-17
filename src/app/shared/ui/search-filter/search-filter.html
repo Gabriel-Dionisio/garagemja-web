@@ -1,0 +1,9 @@
+<form [formGroup]="form" (ngSubmit)="apply()" novalidate>
+  <app-text-field [label]="label()" [maxLength]="maxLength()" [control]="form.controls.search" />
+  <div class="actions">
+    <button appButton variant="secondary" type="button" (click)="clear()">
+      {{ 'common.actions.clear' | transloco }}
+    </button>
+    <button appButton type="submit">{{ 'common.actions.filter' | transloco }}</button>
+  </div>
+</form>

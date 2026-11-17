@@ -5,6 +5,7 @@ import {
   CONDOS,
   RENTALS,
   RENTAL_PATH,
+  REVIEWS,
   RESIDENTS,
   RULES,
   SPOTS,
@@ -112,6 +113,12 @@ async function ensureCondo(condo: Condo): Promise<string> {
     );
     id = created.id;
     status = 'PENDING';
+  }
+  if (condo.coordinates) {
+    const [latitude, longitude] = condo.coordinates;
+    psql(
+      `update condominiums set latitude = ${latitude}, longitude = ${longitude} where id = '${id}'`,
+    );
   }
   const path = STATUS_PATH[condo.target];
   const done = path.indexOf(status as never);
@@ -231,6 +238,7 @@ async function ensureSpot(spot: Spot, condoIds: Map<string, string>): Promise<st
         number: spot.number,
         location: spot.location,
         size: spot.size,
+        covered: spot.covered ?? false,
         ...(spot.owner && !requested ? { ownerResidentId: residentIdOf(spot.owner, condoId) } : {}),
       },
       [201],
@@ -350,6 +358,10 @@ async function ensureRental(
       : next === 'ACTIVE' || next === 'FINISHED'
         ? condo.requester
         : (spot.owner ?? condo.requester);
+  if (rental.startOffset < 0 && remaining.length) {
+    psql(`update rentals set status = '${remaining[remaining.length - 1]}' where id = '${id}'`);
+    return log(`rental   ${label}: -> ${rental.target} (past period, set by SQL)`);
+  }
   for (const next of remaining) {
     await (
       await sessionFor(actorFor(next))
@@ -364,6 +376,54 @@ async function ensureRental(
   const note =
     rental.target === 'EXPIRED' && status === 'PENDING' ? ' (expires on next status job run)' : '';
   log(`rental   ${label}: ${remaining.length ? `-> ${rental.target}` : status}${note}`);
+}
+
+async function ensureReviews(spotIds: Map<string, string>): Promise<void> {
+  for (const review of REVIEWS) {
+    const spot = SPOTS.find((s) => s.key === review.spot)!;
+    const rental = RENTALS.find(
+      (r) => r.spot === review.spot && r.startOffset === review.startOffset,
+    )!;
+    const rentalId = psql(`select id from rentals
+      where parking_spot_id = '${spotIds.get(spot.key)}' and start_date = '${dateIn(review.startOffset)}'`);
+    const submit = async (author: string, rating: number, comment: string): Promise<void> => {
+      const direction = author === rental.renter ? 'RENTER_TO_SPOT' : 'OWNER_TO_RENTER';
+      if (
+        psql(
+          `select id from reviews where rental_id = '${rentalId}' and direction = '${direction}'`,
+        )
+      )
+        return;
+      await (
+        await sessionFor(author)
+      ).call(
+        `review ${review.spot} ${direction}`,
+        'POST',
+        `/api/v1/rentals/${rentalId}/reviews`,
+        { rating, comment },
+        [201],
+      );
+    };
+    await submit(rental.renter, review.renterRating, review.renterComment);
+    const owner = spot.owner ?? CONDOS.find((c) => c.key === spot.condo)!.requester;
+    if (review.ownerRating) await submit(owner, review.ownerRating, review.ownerComment ?? '');
+    if (review.reportedByOwner) {
+      const reviewId = psql(
+        `select id from reviews where rental_id = '${rentalId}' and direction = 'RENTER_TO_SPOT'`,
+      );
+      if (!psql(`select id from review_reports where review_id = '${reviewId}'`))
+        await (
+          await sessionFor(owner)
+        ).call(
+          `report review ${review.spot}`,
+          'POST',
+          `/api/v1/reviews/${reviewId}/reports`,
+          { reason: 'FALSE', details: review.reportedByOwner },
+          [201],
+        );
+    }
+    log(`review   ${spot.number} ${dateIn(review.startOffset)}`);
+  }
 }
 
 function printLogins(): void {
@@ -393,5 +453,7 @@ export async function seed(): Promise<void> {
   for (const vehicle of VEHICLES)
     vehicleIds.set(vehicle.plate, await ensureVehicle(vehicle, condoIds));
   for (const rental of RENTALS) await ensureRental(rental, condoIds, spotIds, vehicleIds);
+  console.log('Reviews');
+  await ensureReviews(spotIds);
   printLogins();
 }

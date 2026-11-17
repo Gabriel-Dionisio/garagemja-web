@@ -53,7 +53,7 @@ export class MyParkingSpotsPage extends SpotList {
   }
 
   open(number: string) {
-    return this.spot(number).getByRole('link').click();
+    return this.spot(number).locator('a.main').click();
   }
 }
 
@@ -105,6 +105,12 @@ export class ParkingSpotFormPage {
     await spots.goto(condominiumName);
     await spots.search(number);
     await this.page.getByRole('link', { name: `Editar: ${number}` }).click();
+  }
+
+  coverage(option: string): Locator {
+    return this.page
+      .getByRole('group', { name: 'Cobertura' })
+      .getByRole('button', { name: option, exact: true });
   }
 
   async fill(number: string, location: string, size: string): Promise<void> {

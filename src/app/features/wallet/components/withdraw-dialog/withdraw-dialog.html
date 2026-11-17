@@ -1,0 +1,37 @@
+<form class="body" [formGroup]="form" (ngSubmit)="submit()">
+  <h2 id="withdraw-title">{{ 'wallet.withdraw.title' | transloco }}</h2>
+  <p class="available">
+    {{
+      'wallet.withdraw.available'
+        | transloco
+          : {
+              name: data.wallet.name ?? ('wallet.type.' + data.wallet.type | transloco),
+              amount: money()(data.wallet.available),
+            }
+    }}
+  </p>
+  <app-text-field
+    [label]="'wallet.withdraw.amount' | transloco"
+    [control]="form.controls.amount"
+    [format]="formatAmount"
+    inputMode="numeric"
+    [maxLength]="amountMax"
+  />
+  <app-text-field
+    [label]="'wallet.withdraw.pixKey' | transloco"
+    [control]="form.controls.pixKey"
+    [maxLength]="pixKeyMax"
+    [hint]="'wallet.withdraw.pixKeyHint' | transloco"
+  />
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  <app-form-actions>
+    <button appButton type="button" variant="secondary" (click)="close()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="submit" [loading]="submitting()">
+      {{ 'wallet.withdraw.submit' | transloco }}
+    </button>
+  </app-form-actions>
+</form>

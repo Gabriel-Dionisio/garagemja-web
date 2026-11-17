@@ -2,20 +2,23 @@ import { ValidatorFn } from '@angular/forms';
 
 const MONEY = /^\d{1,8}(,\d{1,2})?$/;
 
+const groupThousands = (digits: string) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
 export function formatMoneyInput(value: string): string {
-  const cleaned = value.replace('.', ',').replace(/[^\d,]/g, '');
-  const [whole, ...rest] = cleaned.split(',');
-  const integer = whole.slice(0, 8);
+  const normalized = !value.includes(',') && value.endsWith('.') ? `${value.slice(0, -1)},` : value;
+  const [whole, ...rest] = normalized.replace(/[^\d,]/g, '').split(',');
+  const integer = groupThousands(whole.replace(/^0+(?=\d)/, '').slice(0, 8));
   return rest.length === 0 ? integer : `${integer},${rest.join('').slice(0, 2)}`;
 }
 
 export function parseMoney(value: string): number | null {
-  const text = value.trim();
+  const text = value.trim().replaceAll('.', '');
   return MONEY.test(text) ? Number(text.replace(',', '.')) : null;
 }
 
 export function formatMoneyValue(value: number): string {
-  return value.toFixed(2).replace('.', ',');
+  const [integer, cents] = value.toFixed(2).split('.');
+  return `${groupThousands(integer)},${cents}`;
 }
 
 export const positiveMoneyValidator: ValidatorFn = (control) => {

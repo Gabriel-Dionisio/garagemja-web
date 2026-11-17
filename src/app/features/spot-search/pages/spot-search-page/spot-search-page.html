@@ -1,0 +1,89 @@
+<app-page fill>
+  <app-page-header
+    [title]="'spotSearch.title' | transloco"
+    [subtitle]="result() ? ('spotSearch.count' | transloco: { count: result()?.total ?? 0 }) : ''"
+  />
+
+  <app-filter-panel
+    [label]="'spotSearch.filters.label' | transloco"
+    [activeCount]="activeFilters()"
+    [(open)]="filtersOpen"
+    [overlay]="true"
+  >
+    <div class="filter-row">
+      <app-chip-group
+        [showLabel]="true"
+        [label]="'parkingSpots.filter.size' | transloco"
+        [options]="sizeTabs"
+        [value]="criteria().size"
+        (valueChange)="patch({ size: $event })"
+      />
+      <app-chip-group
+        [showLabel]="true"
+        [label]="'spotSearch.coverage.label' | transloco"
+        [options]="coverageTabs"
+        [value]="criteria().covered ? 'COVERED' : null"
+        (valueChange)="patch({ covered: $event === 'COVERED' })"
+      />
+    </div>
+    <app-chip-group
+      [showLabel]="true"
+      [label]="'spotSearch.mode.label' | transloco"
+      [options]="modeTabs"
+      [value]="criteria().hourly ? 'HOURLY' : 'DAILY'"
+      (valueChange)="patch({ hourly: $event === 'HOURLY' })"
+    />
+    <app-chip-group
+      [showLabel]="true"
+      [label]="'spotSearch.sort.label' | transloco"
+      [options]="sortTabs"
+      [value]="criteria().sort"
+      (valueChange)="patch({ sort: $event ?? 'NUMBER' })"
+    />
+    @if (criteria().condominiumId) {
+      <app-chip-toggle
+        [label]="'spotSearch.condominiumFilter' | transloco"
+        [pressed]="true"
+        (toggled)="patch({ condominiumId: null })"
+      />
+    }
+    <app-spot-filter [criteria]="criteria()" (applied)="apply($event)" />
+  </app-filter-panel>
+
+  <div class="split">
+    @if (listVisible()) {
+      <app-spot-results
+        class="list"
+        [result]="result()"
+        [loading]="loading()"
+        [error]="error.text()"
+        [queryParams]="cardParams()"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
+    }
+    @if (mapVisible()) {
+      <app-map
+        class="map"
+        [label]="'spotSearch.map' | transloco"
+        [zoomInLabel]="'spotSearch.zoomIn' | transloco"
+        [zoomOutLabel]="'spotSearch.zoomOut' | transloco"
+        [pins]="pins()"
+        [selectedId]="criteria().condominiumId"
+        (pinClick)="pickCondominium($event)"
+      />
+    }
+    @if (pins().length && !desktop()) {
+      <button
+        appButton
+        variant="secondary"
+        type="button"
+        class="view-toggle"
+        (click)="mapView.set(!mapView())"
+      >
+        <app-icon [name]="mapView() ? 'list' : 'map'" />
+        {{ (mapView() ? 'spotSearch.showList' : 'spotSearch.showMap') | transloco }}
+      </button>
+    }
+  </div>
+</app-page>

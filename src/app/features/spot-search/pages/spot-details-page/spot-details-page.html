@@ -1,0 +1,108 @@
+<app-page size="form">
+  <app-page-header
+    [title]="
+      details()
+        ? ('parkingSpots.spot' | transloco: { number: details()?.spot?.number })
+        : ('spotSearch.details.title' | transloco)
+    "
+    [subtitle]="details()?.spot?.condominiumName ?? ''"
+    [backLink]="backLink"
+  />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  } @else if (loading()) {
+    <app-skeleton [label]="'spotSearch.details.loading' | transloco" [rows]="4" />
+  } @else if (details(); as current) {
+    <app-card class="gallery">
+      <app-carousel
+        [images]="images()"
+        [label]="'spotSearch.details.photo' | transloco"
+        [placeholder]="placeholder"
+      />
+    </app-card>
+
+    <app-card class="info">
+      <dl>
+        <div>
+          <dt>{{ 'spotSearch.details.features' | transloco }}</dt>
+          <dd><app-spot-features [spot]="current.spot" /></dd>
+        </div>
+        @if (current.spot.location) {
+          <div>
+            <dt>{{ 'spotSearch.details.location' | transloco }}</dt>
+            <dd>{{ current.spot.location }}</dd>
+          </div>
+        }
+      </dl>
+      @if (current.spot.owner; as owner) {
+        <p class="owner">
+          <app-avatar [name]="owner.name" [src]="owner.photoUrl" />
+          <span>
+            <small>{{ 'spotSearch.details.owner' | transloco }}</small>
+            @if (owner.userId) {
+              <a [routerLink]="['/users', owner.userId, 'profile']"
+                ><strong>{{ owner.name }}</strong></a
+              >
+            } @else {
+              <strong>{{ owner.name }}</strong>
+            }
+          </span>
+        </p>
+      }
+    </app-card>
+
+    <app-card class="periods">
+      <h2>{{ 'spotSearch.details.availability' | transloco }}</h2>
+      @if (current.availabilities.length === 0) {
+        <p>{{ 'spotSearch.details.noAvailability' | transloco }}</p>
+      } @else {
+        <ul>
+          @for (item of current.availabilities; track item.id) {
+            <li>
+              <strong>{{ date()(item.startDate) }} – {{ date()(item.endDate) }}</strong>
+              <span>
+                @if (item.dailyPrice !== null) {
+                  {{ 'parkingSpots.price.daily' | transloco: { value: money()(item.dailyPrice) } }}
+                }
+                @if (item.hourlyPrice !== null) {
+                  {{
+                    'parkingSpots.price.hourly' | transloco: { value: money()(item.hourlyPrice) }
+                  }}
+                  ({{ item.hourlyFrom }}h–{{ item.hourlyTo }}h)
+                }
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </app-card>
+
+    <div class="actions">
+      @if (current.owned) {
+        <a appButton [routerLink]="['/parking-spots', current.spot.id]">
+          {{ 'spotSearch.details.edit' | transloco }}
+        </a>
+      } @else {
+        <button
+          appButton
+          type="button"
+          [disabled]="current.availabilities.length === 0"
+          (click)="request(current)"
+        >
+          {{ 'spotSearch.details.request' | transloco }}
+        </button>
+      }
+    </div>
+
+    <app-card class="reviews">
+      <h2>{{ 'reviews.list.title' | transloco }}</h2>
+      @if (summary(); as rating) {
+        @if (rating.total > 0) {
+          <app-rating [average]="rating.average" [total]="rating.total" />
+        }
+      }
+      <app-review-list [source]="reviews" [canReport]="current.owned" />
+    </app-card>
+  }
+</app-page>

@@ -1,0 +1,50 @@
+@if (error(); as message) {
+  <app-alert kind="error">{{ message }}</app-alert>
+} @else if (loading() && !result()) {
+  <app-skeleton [label]="'spotSearch.loading' | transloco" [rows]="3" />
+} @else if (result(); as current) {
+  @if (current.items.length === 0) {
+    <app-empty-state
+      icon="parking"
+      [title]="'spotSearch.emptyTitle' | transloco"
+      [description]="'spotSearch.emptyDescription' | transloco"
+    />
+  } @else {
+    @if (compact()) {
+      <ng-container [ngTemplateOutlet]="grid" />
+    } @else {
+      <app-scroll-area class="items">
+        <ng-container [ngTemplateOutlet]="grid" />
+      </app-scroll-area>
+    }
+    <ng-template #grid>
+      <ul
+        class="grid"
+        [attr.aria-busy]="loading()"
+        [attr.aria-label]="'spotSearch.title' | transloco"
+      >
+        @for (spot of current.items; track spot.id) {
+          <li>
+            <app-spot-card
+              [spot]="spot"
+              [rating]="ratings().get(spot.id) ?? null"
+              [queryParams]="queryParams()"
+            />
+          </li>
+        }
+      </ul>
+    </ng-template>
+    @if (!compact()) {
+      <app-paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="sizeChange.emit($event)"
+        (pageChange)="pageChange.emit($event)"
+      />
+    }
+  }
+}

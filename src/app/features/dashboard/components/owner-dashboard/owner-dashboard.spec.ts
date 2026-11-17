@@ -1,48 +1,51 @@
+import { Component, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { toPage } from '../../../../shared/models/page';
-import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { OwnedRentalsApi } from '../../data/owned-rentals-api';
+import { Chart } from '../../../../shared/ui/chart/chart';
+import { PeriodChart } from '../../../../shared/ui/chart/period-chart';
+import { OwnerSummaryApi } from '../../data/owner-summary-api';
+import { StatsApi } from '../../data/stats-api';
 import { OwnerDashboard } from './owner-dashboard';
 
-const rental = (id: string, status: string) => ({
-  id,
-  condominiumId: 'c1',
-  condominiumName: 'Edifício A',
-  parkingSpotId: 's1',
-  parkingSpotNumber: '12',
-  startDate: '2026-11-10',
-  endDate: '2026-11-12',
-  startHour: null,
-  endHour: null,
-  price: 80,
-  total: 240,
-  status,
-});
+@Component({ selector: 'app-chart', template: '' })
+class ChartStub {
+  readonly kind = input<string>();
+  readonly labels = input<readonly string[]>();
+  readonly series = input<{ label: string; data: number[] }[]>();
+  readonly description = input<string>();
+  readonly xLabel = input<string>();
+  readonly yLabel = input<string>();
+  readonly format = input<unknown>();
+  readonly showValues = input<boolean>();
+}
 
 describe('OwnerDashboard', () => {
   const summary = vi.fn();
-  const list = vi.fn();
-  const approve = vi.fn();
-  const refuse = vi.fn();
-  const confirm = vi.fn();
-  const askReason = vi.fn();
+  const myRentals = vi.fn();
 
-  async function setup(spots: number, items = [rental('r1', 'PENDING')]) {
+  beforeEach(() => {
+    myRentals.mockReset().mockReturnValue(
+      of([
+        { start: '2026-09', received: 0, made: 0 },
+        { start: '2026-11', received: 3, made: 1 },
+      ]),
+    );
+    TestBed.overrideComponent(PeriodChart, {
+      remove: { imports: [Chart] },
+      add: { imports: [ChartStub] },
+    });
+  });
+
+  async function setup(spots: number) {
     summary
       .mockReset()
       .mockReturnValue(of({ spots, pending: 2, active: 1, upcoming: 3, monthEarnings: 150 }));
-    list.mockReset().mockReturnValue(of(toPage(items, 0, 25, items.length)));
-    approve.mockReset().mockReturnValue(of(undefined));
-    refuse.mockReset().mockReturnValue(of(undefined));
-    confirm.mockReset().mockReturnValue(of(true));
-    askReason.mockReset().mockReturnValue(of('sem data'));
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: OwnedRentalsApi, useValue: { summary, list, approve, refuse } },
-        { provide: ConfirmService, useValue: { confirm, askReason } },
+        { provide: OwnerSummaryApi, useValue: { summary } },
+        { provide: StatsApi, useValue: { myRentals } },
       ],
     });
     const fixture = TestBed.createComponent(OwnerDashboard);
@@ -50,61 +53,65 @@ describe('OwnerDashboard', () => {
     return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  it('shows four KPIs with earnings and the rentals as a list', async () => {
+  it('shows only the four KPIs, with earnings', async () => {
     const { element } = await setup(2);
     expect(element.querySelectorAll('app-stat-card')).toHaveLength(4);
     expect(element.textContent).toContain('150,00');
-    expect(element.querySelectorAll('li[appListItem]')).toHaveLength(1);
-    expect(element.querySelector('table')).toBeNull();
-    expect(element.textContent).toContain('Edifício A');
-  });
-
-  it('shows the empty state and no list when the user owns no spot', async () => {
-    const { element } = await setup(0);
-    expect(element.querySelector('app-empty-state')).not.toBeNull();
-    expect(element.querySelector('app-stat-card')).toBeNull();
     expect(element.querySelector('app-list-state')).toBeNull();
   });
 
-  it('filters by PENDING when the pending card is clicked', async () => {
-    const { fixture, element } = await setup(2);
-    element.querySelector<HTMLButtonElement>('app-stat-card button')!.click();
-    await fixture.whenStable();
-    expect(list).toHaveBeenLastCalledWith(0, expect.any(Number), 'PENDING');
+  it('links the pending KPI to the pending requests', async () => {
+    const { element } = await setup(2);
+    const link = element.querySelector<HTMLAnchorElement>('app-stat-card a');
+    expect(link?.getAttribute('href')).toBe('/requests?status=PENDING');
   });
 
-  it('approves a pending rental after confirmation and reloads', async () => {
-    const { fixture, element } = await setup(2);
-    element.querySelector<HTMLButtonElement>('li button[data-variant="primary"]')!.click();
-    await fixture.whenStable();
-    expect(approve).toHaveBeenCalledWith('r1');
-    expect(list).toHaveBeenCalledTimes(2);
-    expect(summary).toHaveBeenCalledTimes(2);
+  it('shows the empty state when the user owns no spot', async () => {
+    const { element } = await setup(0);
+    expect(element.querySelector('app-empty-state')).not.toBeNull();
+    expect(element.querySelector('app-stat-card')).toBeNull();
   });
 
-  it('refuses with the reason and does nothing when dismissed', async () => {
-    const { fixture, element } = await setup(2);
-    const buttons = element.querySelectorAll<HTMLButtonElement>('li button');
-    buttons[1].click();
+  it('shows the error when the summary fails', async () => {
+    summary.mockReturnValue(throwError(() => new Error('falha')));
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: OwnerSummaryApi, useValue: { summary } },
+        { provide: StatsApi, useValue: { myRentals } },
+      ],
+    });
+    const fixture = TestBed.createComponent(OwnerDashboard);
     await fixture.whenStable();
-    expect(refuse).toHaveBeenCalledWith('r1', 'sem data');
-    askReason.mockReturnValue(of(null));
-    buttons[1].click();
-    await fixture.whenStable();
-    expect(refuse).toHaveBeenCalledTimes(1);
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-alert')).not.toBeNull();
   });
 
-  it('shows the error when the decision fails', async () => {
-    const { fixture, element } = await setup(2);
-    approve.mockReturnValue(throwError(() => new Error('falha')));
-    element.querySelector<HTMLButtonElement>('li button[data-variant="primary"]')!.click();
-    await fixture.whenStable();
-    expect(element.querySelector('app-alert')).not.toBeNull();
+  it('charts rentals received and made by month', async () => {
+    const { fixture } = await setup(2);
+    expect(myRentals).toHaveBeenCalledWith('MONTH');
+    const chart = fixture.debugElement.query((node) => node.componentInstance instanceof ChartStub)
+      .componentInstance as ChartStub;
+    expect(chart.series()?.map((series) => series.label)).toEqual([
+      'Pedidos recebidos',
+      'Pedidos feitos',
+    ]);
+    expect(chart.series()?.[0].data).toEqual([0, 3]);
+    expect(chart.labels()).toHaveLength(2);
   });
 
-  it('offers decisions only for pending rentals', async () => {
-    const { element } = await setup(2, [rental('r2', 'ACTIVE')]);
-    expect(element.querySelectorAll('li button')).toHaveLength(0);
-    expect(element.querySelector('li a[href="/parking-spots/s1"]')).not.toBeNull();
+  it('keeps the rentals chart for a renter without spots and reloads by period', async () => {
+    const { fixture, element } = await setup(0);
+    const periods = element.querySelectorAll<HTMLButtonElement>('app-period-chart button');
+    periods[1].click();
+    await fixture.whenStable();
+    expect(myRentals).toHaveBeenLastCalledWith('BIMESTER');
+  });
+
+  it('shows the empty chart state when there are no rentals in the period', async () => {
+    myRentals.mockReturnValue(of([{ start: '2026-11', received: 0, made: 0 }]));
+    const { element } = await setup(2);
+    expect(element.querySelector('app-period-chart app-empty-state')?.textContent).toContain(
+      'Nenhum aluguel neste período',
+    );
   });
 });

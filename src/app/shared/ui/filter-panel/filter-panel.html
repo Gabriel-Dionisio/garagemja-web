@@ -16,6 +16,32 @@
   <ng-content select="[filterActions]" />
 </div>
 
-<div class="panel" [id]="panelId" [hidden]="!open()">
+@if (overlay() && open()) {
+  <div class="backdrop" aria-hidden="true" (click)="open.set(false)"></div>
+}
+<div
+  class="panel"
+  [id]="panelId"
+  [hidden]="!open()"
+  [attr.role]="overlay() ? 'dialog' : null"
+  [attr.aria-modal]="overlay() ? 'true' : null"
+  [attr.aria-label]="overlay() ? label() : null"
+  [cdkTrapFocus]="overlay() && open()"
+  [cdkTrapFocusAutoCapture]="overlay()"
+  (keydown.escape)="overlay() && open.set(false)"
+>
+  @if (overlay()) {
+    <header class="panel-header">
+      <h2>{{ label() }}</h2>
+      <button
+        appIconButton
+        type="button"
+        [label]="'common.actions.close' | transloco"
+        (click)="open.set(false)"
+      >
+        <app-icon name="close" />
+      </button>
+    </header>
+  }
   <ng-content />
 </div>

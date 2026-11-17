@@ -1,6 +1,7 @@
 :root {
   --fab-bottom: calc(5.5rem + env(safe-area-inset-bottom));
   --color-primary: #2563eb;
+  --color-on-primary: #fff;
   --color-primary-hover: #1d4ed8;
   --color-primary-text: #2563eb;
   --color-secondary: #1e3a5f;
@@ -42,6 +43,7 @@
   --shadow-overlay: 0 10px 30px rgb(15 23 42 / 25%);
 
   --font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
@@ -63,6 +65,7 @@
 
 :root[data-theme='dark'] {
   --color-primary: #2563eb;
+  --color-on-primary: #fff;
   --color-primary-hover: #3b6cf0;
   --color-primary-text: #6aa9ff;
   --color-secondary: #cbd5e1;

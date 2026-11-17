@@ -53,16 +53,14 @@ export const routes: Routes = [
     children: [
       {
         path: 'home',
-        data: { showSearch: true },
         canActivate: [homeGuard],
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
-        path: 'search-vacancies',
+        path: 'search',
+        canActivate: [roleGuard('RESIDENT')],
         loadChildren: () =>
-          import('./features/search-vacancies/search-vacancies.routes').then(
-            (m) => m.SEARCH_VACANCIES_ROUTES,
-          ),
+          import('./features/spot-search/spot-search.routes').then((m) => m.SPOT_SEARCH_ROUTES),
       },
       {
         path: 'rentals',
@@ -74,6 +72,10 @@ export const routes: Routes = [
         canActivate: [roleGuard('RESIDENT')],
         loadChildren: () =>
           import('./features/requests/requests.routes').then((m) => m.REQUESTS_ROUTES),
+      },
+      {
+        path: 'wallet',
+        loadChildren: () => import('./features/wallet/wallet.routes').then((m) => m.WALLET_ROUTES),
       },
       {
         path: 'vehicles',
@@ -98,6 +100,17 @@ export const routes: Routes = [
           import('./features/audit/pages/audit-logs-page/audit-logs-page').then(
             (m) => m.AuditLogsPage,
           ),
+      },
+      {
+        path: 'admin/reviews',
+        canActivate: [roleGuard('ADMIN')],
+        loadChildren: () =>
+          import('./features/reviews/reviews.routes').then((m) => m.REVIEW_REPORT_ROUTES),
+      },
+      {
+        path: 'users/:id/profile',
+        loadChildren: () =>
+          import('./features/reviews/reviews.routes').then((m) => m.PROFILE_ROUTES),
       },
       {
         path: 'condominiums/:id/parking-spots',

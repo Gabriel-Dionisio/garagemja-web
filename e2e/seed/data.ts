@@ -36,6 +36,7 @@ export interface Condo {
   key: string;
   name: string;
   cnpj: string;
+  coordinates?: [latitude: number, longitude: number];
   requester: string;
   target: CondoStatus;
   reason?: string;
@@ -111,6 +112,7 @@ export const CONDOS: Condo[] = [
     key: 'active',
     name: 'Residencial Seed Ativo',
     cnpj: cnpjFor(1),
+    coordinates: [-23.5614, -46.6559],
     requester: emailOf('manager'),
     target: 'ACTIVE',
   },
@@ -118,6 +120,7 @@ export const CONDOS: Condo[] = [
     key: 'garden',
     name: 'Residencial Seed Jardim',
     cnpj: cnpjFor(6),
+    coordinates: [-23.5874, -46.6576],
     requester: emailOf('manager', 2),
     target: 'ACTIVE',
   },
@@ -214,6 +217,7 @@ export interface Rule {
   maxRentalDays?: number;
   minAdvanceHours?: number;
   cancellationDeadlineHours?: number;
+  condominiumFeePercent?: number;
   maxPricePerDay?: number;
   maxPricePerHour?: number;
   minRentalHours: number;
@@ -235,6 +239,7 @@ export interface Spot {
   number: string;
   location: string;
   size: SpotSize;
+  covered?: boolean;
   owner?: string;
   periods?: Period[];
   target?: SpotTarget;
@@ -270,6 +275,7 @@ export const RULES: Record<string, Rule> = {
   active: {
     maxRentalDays: 15,
     cancellationDeadlineHours: 24,
+    condominiumFeePercent: 10,
     maxPricePerDay: 60,
     maxPricePerHour: 10,
     minRentalHours: 2,
@@ -322,6 +328,7 @@ export const SPOTS: Spot[] = [
     number: 'B-01',
     location: 'Terreo',
     size: 'LARGE',
+    covered: true,
     periods: [{ dailyPrice: 45, startOffset: 1, endOffset: 180 }],
   },
   {
@@ -487,3 +494,31 @@ export const RENTAL_PATH: Record<RentalTarget, RentalTarget[]> = {
   ACTIVE: ['APPROVED', 'ACTIVE'],
   FINISHED: ['APPROVED', 'ACTIVE', 'FINISHED'],
 };
+
+export interface SeedReview {
+  spot: string;
+  startOffset: number;
+  renterRating: number;
+  renterComment: string;
+  ownerRating?: number;
+  ownerComment?: string;
+  reportedByOwner?: string;
+}
+
+export const REVIEWS: SeedReview[] = [
+  {
+    spot: 'a-01',
+    startOffset: -10,
+    renterRating: 4,
+    renterComment: 'Seed: good spot, gate takes a while to open.',
+    ownerRating: 5,
+    ownerComment: 'Seed: respectful renter.',
+    reportedByOwner: 'Seed: the gate does not take long, I dispute this.',
+  },
+  {
+    spot: 'a-02',
+    startOffset: -2,
+    renterRating: 5,
+    renterComment: 'Seed: covered and easy to reach.',
+  },
+];

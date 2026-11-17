@@ -1,0 +1,93 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <h2 id="request-rental-title">{{ 'spotSearch.request.title' | transloco }}</h2>
+
+  @if (vehicles(); as list) {
+    @if (list.length === 0) {
+      <app-alert kind="info">
+        {{ 'spotSearch.request.noVehicle' | transloco }}
+        <a appButton variant="secondary" routerLink="/vehicles/new" (click)="cancel()">
+          {{ 'spotSearch.request.addVehicle' | transloco }}
+        </a>
+      </app-alert>
+    } @else {
+      <app-form-section [heading]="'spotSearch.request.vehicleSection' | transloco">
+        <app-select-field
+          class="wide"
+          [label]="'spotSearch.request.vehicle' | transloco"
+          [options]="vehicleOptions()"
+          [control]="form.controls.vehicleId"
+        />
+      </app-form-section>
+
+      <app-form-section [heading]="'spotSearch.request.periodSection' | transloco">
+        @if (hourlyAllowed) {
+          <app-chip-group
+            class="wide"
+            [label]="'spotSearch.mode.label' | transloco"
+            [options]="modeTabs"
+            [value]="mode()"
+            (valueChange)="mode.set($event ?? 'DAY')"
+          />
+        }
+        <app-date-field
+          [showLabel]="true"
+          [label]="
+            (mode() === 'HOUR' ? 'spotSearch.request.date' : 'spotSearch.filters.from') | transloco
+          "
+          [isoValue]="startDate()"
+          [isoMin]="today"
+          (isoValueChange)="setStart($event)"
+        />
+        @if (mode() === 'DAY') {
+          <app-date-field
+            [showLabel]="true"
+            [label]="'spotSearch.filters.to' | transloco"
+            [isoValue]="endDate()"
+            [isoMin]="startDate() || today"
+            (isoValueChange)="endDate.set($event)"
+          />
+        } @else {
+          <app-select-field
+            [label]="'parkingSpots.availability.windowFrom' | transloco"
+            [options]="fromOptions"
+            [control]="form.controls.startHour"
+          />
+          <app-select-field
+            [label]="'parkingSpots.availability.windowTo' | transloco"
+            [options]="toOptions"
+            [control]="form.controls.endHour"
+          />
+        }
+      </app-form-section>
+
+      @if (quote(); as current) {
+        <p class="quote" role="status">
+          {{
+            (mode() === 'HOUR' ? 'spotSearch.request.quoteHours' : 'spotSearch.request.quoteDays')
+              | transloco
+                : {
+                    units: current.units,
+                    price: money()(current.unitPrice),
+                    total: money()(current.total),
+                  }
+          }}
+        </p>
+      } @else {
+        <app-alert kind="info">{{ 'spotSearch.request.unavailable' | transloco }}</app-alert>
+      }
+    }
+  }
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  <app-form-actions>
+    <button appButton type="button" variant="secondary" (click)="cancel()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="submit" [disabled]="submitting() || !quote() || !vehicles()?.length">
+      {{ 'spotSearch.request.submit' | transloco }}
+    </button>
+  </app-form-actions>
+</form>

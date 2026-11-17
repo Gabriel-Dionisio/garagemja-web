@@ -1,0 +1,21 @@
+<a class="card" [routerLink]="['/search', spot().id]" [queryParams]="queryParams()">
+  <img class="photo" [src]="spot().thumbnailUrl ?? placeholder" alt="" loading="lazy" />
+  <span class="info">
+    <strong>{{ 'parkingSpots.spot' | transloco: { number: spot().number } }}</strong>
+    <small>{{ spot().condominiumName }}</small>
+    <app-rating [average]="rating()?.average ?? null" [total]="rating()?.total ?? 0" />
+    <app-spot-features class="features" [spot]="spot()" />
+    @if (spot().availability; as availability) {
+      <span class="price">
+        @if (availability.dailyPrice !== null) {
+          {{ 'parkingSpots.price.daily' | transloco: { value: money()(availability.dailyPrice) } }}
+        }
+        @if (availability.hourlyPrice !== null) {
+          <small>{{
+            'parkingSpots.price.hourly' | transloco: { value: money()(availability.hourlyPrice) }
+          }}</small>
+        }
+      </span>
+    }
+  </span>
+</a>

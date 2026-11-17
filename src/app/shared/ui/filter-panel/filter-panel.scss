@@ -96,3 +96,54 @@
   border-radius: var(--radius-lg);
   background: var(--color-surface);
 }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: rgb(15 23 42 / 50%);
+}
+
+:host(.overlay) {
+  .chevron {
+    display: none;
+  }
+
+  .panel:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .panel {
+    position: fixed;
+    inset: 0;
+    z-index: 31;
+    width: min(40rem, 100vw - 2rem);
+    height: fit-content;
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: var(--shadow-overlay);
+
+    @include until($bp-md) {
+      width: auto;
+      height: auto;
+      max-height: none;
+      border-radius: 0;
+    }
+  }
+}

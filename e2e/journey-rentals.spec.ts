@@ -40,29 +40,77 @@ test('renter sees the three pending requests and cancels one', async ({ world })
 });
 
 test('owner refuses one request with a reason and approves another', async ({ world }) => {
-  const { page } = user;
+  const { requests } = user;
   await user.actAs(world.owner);
-  await user.shell.open('Painel');
-  await expect(page.getByRole('button', { name: `Aprovar: ${canceled}` })).toHaveCount(0);
+  await requests.goto();
+  await expect(requests.request(canceled)).toHaveCount(0);
+  await expect(requests.request(refused)).toContainText('Pendente');
 
-  await page.getByRole('button', { name: `Recusar: ${refused}` }).click();
-  await expect(user.confirm.root).toBeVisible();
-  await user.confirm.root.getByRole('button', { name: 'Recusar', exact: true }).click();
-  await expect(user.confirm.reason).toBeVisible();
-  await user.confirm.confirm('Recusar', 'E2E: vaga em manutencao');
-  await expect(page.getByRole('button', { name: `Recusar: ${refused}` })).toHaveCount(0);
+  await requests.refuse(refused, 'E2E: vaga em manutencao');
+  await expect(requests.request(refused)).toHaveCount(0);
 
-  await page.getByRole('button', { name: `Aprovar: ${approved}` }).click();
-  await user.confirm.confirm('Aprovar');
-  await expect(page.getByRole('button', { name: `Aprovar: ${approved}` })).toHaveCount(0);
+  await requests.approve(approved);
+  await expect(requests.request(approved)).toHaveCount(0);
+
+  await requests.filterStatus('Recusado');
+  await expect(requests.request(refused)).toContainText('Recusado');
+  await expect(requests.request(refused)).not.toContainText('E2E: vaga em manutencao');
+  await expect(requests.request(refused).getByRole('link')).toHaveCount(0);
+  await expect(requests.request(refused).getByRole('button', { name: 'Recusar' })).toHaveCount(0);
+
+  await requests.openDetails(refused);
+  await expect(requests.details.dialog).toContainText('E2E: vaga em manutencao');
+  await expect(requests.details.profileLink).toBeVisible();
+  await requests.details.close.click();
+  await expect(requests.details.dialog).toBeHidden();
 });
 
 test('renter sees the decisions', async ({ world }) => {
   await user.actAs(world.renter);
   await user.myRentals.goto();
   await expect(user.myRentals.rental(refused)).toContainText('Recusado');
+  await expect(user.myRentals.rental(refused)).not.toContainText('E2E: vaga em manutencao');
   await expect(user.myRentals.rental(approved)).toContainText('Aprovado');
+  await expect(
+    user.myRentals.rental(approved).getByRole('button', { name: 'Pagar' }),
+  ).toBeVisible();
+  await user.myRentals.openDetails(refused);
+  await expect(user.myRentals.details.dialog).toContainText('E2E: vaga em manutencao');
+  await expect(user.myRentals.details.spotLink).toBeVisible();
+  await user.myRentals.details.close.click();
+  await expect(user.myRentals.details.dialog).toBeHidden();
   await expect(
     user.myRentals.rental(refused).getByRole('button', { name: /Cancelar pedido/ }),
   ).toHaveCount(0);
+});
+
+test('notifications: opening the panel keeps the bell, an item reads only itself, read all clears', async ({
+  world,
+}) => {
+  const { shell, page } = user;
+  await user.actAs(world.owner);
+  await expect.poll(() => shell.unread()).toBeGreaterThanOrEqual(3);
+  const before = await shell.unread();
+
+  await shell.openNotifications();
+  await expect(shell.notifications).toContainText('Novo pedido de aluguel');
+  expect(await shell.unread()).toBe(before);
+
+  await shell.notificationItems().filter({ hasText: 'Novo pedido de aluguel' }).first().click();
+  await expect(shell.notifications).toHaveCount(0);
+  await expect(page).toHaveURL(/\/requests/);
+  await expect.poll(() => shell.unread()).toBe(before - 1);
+
+  await shell.openNotifications();
+  await expect(shell.markAllRead).toBeEnabled();
+  await shell.markAllRead.click();
+  await expect(shell.markAllRead).toBeDisabled();
+  await shell.closeNotificationsButton.click();
+  await expect(shell.notifications).toHaveCount(0);
+  await expect(shell.bell).toHaveAccessibleName('Notificações');
+
+  await user.actAs(world.renter);
+  await shell.openNotifications();
+  await expect(shell.notifications).toContainText('foi recusado');
+  await expect(shell.notifications).toContainText('foi aprovado');
 });

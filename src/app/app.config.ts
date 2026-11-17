@@ -11,6 +11,7 @@ import { provideTransloco } from '@jsverse/transloco';
 import { catchError, of } from 'rxjs';
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth-service';
+import { LocaleSync } from './core/auth/locale-sync';
 import { LocaleService } from './core/i18n/locale-service';
 import { availabilityInterceptor } from './core/http/availability-interceptor';
 import { languageInterceptor } from './core/http/language-interceptor';
@@ -40,6 +41,7 @@ export const appConfig: ApplicationConfig = {
     { provide: TitleStrategy, useExisting: TranslatedTitleStrategy },
     provideAppInitializer(() => inject(LocaleService).load()),
     provideAppInitializer(() => inject(ThemeService).initialize()),
+    provideAppInitializer(() => void inject(LocaleSync)),
     provideAppInitializer(() =>
       inject(AuthService)
         .loadSession()

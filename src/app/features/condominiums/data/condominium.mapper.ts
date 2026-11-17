@@ -159,6 +159,7 @@ export function toCondominiumRules(value: unknown): CondominiumRules {
     maxRentalDays: toNumberOrNull(row['maxRentalDays']),
     minAdvanceHours: toNumberOrNull(row['minAdvanceHours']),
     cancellationDeadlineHours: toNumberOrNull(row['cancellationDeadlineHours']),
+    condominiumFeePercent: toNumberOrNull(row['condominiumFeePercent']) ?? 0,
     maxPricePerDay: toNumberOrNull(row['maxPricePerDay']),
     maxPricePerHour: toNumberOrNull(row['maxPricePerHour']),
     minRentalHours: toNumberOrNull(row['minRentalHours']) ?? 1,

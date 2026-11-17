@@ -22,26 +22,16 @@
       >
         <app-icon name="close" />
       </button>
-      @if (reorderable() && images().length > 1) {
+      @if (reorderable() && position() > 0) {
         <button
-          class="round move-back"
+          class="round make-cover"
           type="button"
-          [disabled]="busy() || position() === 0"
-          [attr.aria-label]="'common.image.moveBack' | transloco"
-          [attr.title]="'common.image.moveBack' | transloco"
-          (click)="moved.emit({ id: image.id, step: -1 })"
+          [disabled]="busy()"
+          [attr.aria-label]="'common.image.makeCover' | transloco"
+          [attr.title]="'common.image.makeCover' | transloco"
+          (click)="coverChosen.emit(image.id)"
         >
-          <app-icon name="chevron-left" />
-        </button>
-        <button
-          class="round move-forward"
-          type="button"
-          [disabled]="busy() || position() === images().length - 1"
-          [attr.aria-label]="'common.image.moveForward' | transloco"
-          [attr.title]="'common.image.moveForward' | transloco"
-          (click)="moved.emit({ id: image.id, step: 1 })"
-        >
-          <app-icon name="chevron-right" />
+          <app-icon name="star" />
         </button>
       }
     }

@@ -31,45 +31,54 @@
     <app-card>
       <form appAutofocusFirst [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <h2>{{ 'vehicles.form.data' | transloco }}</h2>
-        <app-form-section>
-          <app-select-field
-            [label]="'vehicles.fields.residency' | transloco"
-            [options]="options()"
-            [control]="form.controls.residentId"
-          />
-          <app-text-field
-            [label]="'vehicles.fields.brand' | transloco"
-            placeholder="Honda"
-            [maxLength]="maxText"
-            [control]="form.controls.brand"
-          />
-          <app-text-field
-            [label]="'vehicles.fields.model' | transloco"
-            placeholder="Civic"
-            [maxLength]="maxText"
-            [control]="form.controls.model"
-          />
-          <app-text-field
-            [label]="'vehicles.fields.plate' | transloco"
-            placeholder="ABC1D23"
-            [hint]="'vehicles.form.plateHint' | transloco"
-            [format]="formatPlate"
-            [control]="form.controls.plate"
-          />
-          <app-text-field
-            [label]="'vehicles.fields.color' | transloco"
-            placeholder="Prata"
-            [maxLength]="maxText"
-            [control]="form.controls.color"
-          />
-        </app-form-section>
+        <div class="fields">
+          <div>
+            <app-form-section>
+              <app-select-field
+                [label]="'vehicles.fields.residency' | transloco"
+                [options]="options()"
+                [control]="form.controls.residentId"
+              />
+              <app-text-field
+                [label]="'vehicles.fields.brand' | transloco"
+                [placeholder]="'vehicles.placeholders.brand' | transloco"
+                [maxLength]="maxText"
+                [control]="form.controls.brand"
+              />
+              <app-text-field
+                [label]="'vehicles.fields.model' | transloco"
+                [placeholder]="'vehicles.placeholders.model' | transloco"
+                [maxLength]="maxText"
+                [control]="form.controls.model"
+              />
+              <app-text-field
+                [label]="'vehicles.fields.plate' | transloco"
+                [placeholder]="'vehicles.placeholders.plate' | transloco"
+                [hint]="'vehicles.form.plateHint' | transloco"
+                [format]="formatPlate"
+                [control]="form.controls.plate"
+              />
+              <app-text-field
+                [label]="'vehicles.fields.color' | transloco"
+                [placeholder]="'vehicles.placeholders.color' | transloco"
+                [maxLength]="maxText"
+                [control]="form.controls.color"
+              />
+            </app-form-section>
+          </div>
+          <app-vehicle-images class="image" [(images)]="images" [busy]="busy()" />
+        </div>
         <app-form-actions>
           <a appButton variant="secondary" [routerLink]="listUrl">
-            {{ 'vehicles.form.cancel' | transloco }}
+            {{
+              (editing() && !dirty() ? 'common.actions.back' : 'vehicles.form.cancel') | transloco
+            }}
           </a>
-          <button appButton type="submit" [loading]="busy()">
-            {{ 'vehicles.form.submit' | transloco }}
-          </button>
+          @if (!editing() || dirty()) {
+            <button appButton type="submit" [loading]="busy()">
+              {{ (editing() ? 'common.actions.save' : 'vehicles.form.submit') | transloco }}
+            </button>
+          }
         </app-form-actions>
       </form>
     </app-card>

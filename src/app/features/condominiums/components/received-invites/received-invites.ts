@@ -1,5 +1,6 @@
-import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { instantDateFormatter } from '../../../../shared/forms/format';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,6 +8,7 @@ import {
   inject,
   output,
   signal,
+  computed,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,12 +25,14 @@ import { CondominiumsApi } from '../../data/condominiums-api';
 
 @Component({
   selector: 'app-received-invites',
-  imports: [DatePipe, TranslocoPipe, Alert, Button, Card, Checkbox],
+  imports: [TranslocoPipe, Alert, Button, Card, Checkbox],
   templateUrl: './received-invites.html',
   styleUrl: './received-invites.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReceivedInvites {
+  private readonly locale = inject(LocaleService);
+  protected readonly shortDate = computed(() => instantDateFormatter(this.locale.language()));
   private readonly api = inject(CondominiumsApi);
   private readonly auth = inject(AuthService);
   private readonly navBadges = inject(NavBadges);

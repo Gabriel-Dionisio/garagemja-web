@@ -1,18 +1,34 @@
 import { Role } from '../auth/auth.model';
 import { IconName } from '../../shared/ui/icon/icon';
 
+export type NavGroup = 'rent' | 'announce' | 'management';
+
 export interface NavItem {
   labelKey: string;
+  shortLabelKey?: string;
   path: string;
   icon: IconName;
   roles?: Role[];
   exact?: boolean;
-  group?: 'management';
+  group?: NavGroup;
   badge?: 'condominiums';
 }
 
+export const NAV_GROUP_ORDER: readonly (NavGroup | undefined)[] = [
+  undefined,
+  'rent',
+  'announce',
+  'management',
+];
+
+export const NAV_GROUP_LABEL_KEY: Record<NavGroup, string> = {
+  rent: 'nav.groups.rent',
+  announce: 'nav.groups.announce',
+  management: 'nav.management',
+};
+
 export const NAV_ITEMS: readonly NavItem[] = [
-  { labelKey: 'nav.dashboard', path: '/dashboard', icon: 'shield', roles: ['ADMIN'] },
+  { labelKey: 'nav.dashboard', path: '/dashboard', icon: 'grid', roles: ['ADMIN'] },
   {
     labelKey: 'nav.home',
     path: '/home',
@@ -20,21 +36,56 @@ export const NAV_ITEMS: readonly NavItem[] = [
     roles: ['RESIDENT', 'CONDOMINIUM_ADMIN'],
   },
   {
-    labelKey: 'nav.searchVacancies',
-    path: '/search-vacancies',
-    icon: 'search',
-    roles: ['RESIDENT'],
-  },
-  { labelKey: 'nav.condominiums', path: '/condominiums', icon: 'building', badge: 'condominiums' },
-  { labelKey: 'nav.myParkingSpots', path: '/parking-spots', icon: 'parking', roles: ['RESIDENT'] },
-  { labelKey: 'nav.myRentals', path: '/rentals', icon: 'calendar', roles: ['RESIDENT'] },
-  { labelKey: 'nav.requests', path: '/requests', icon: 'mail', roles: ['RESIDENT'] },
-  { labelKey: 'nav.myVehicles', path: '/vehicles', icon: 'car', roles: ['RESIDENT'] },
-  {
     labelKey: 'nav.dashboard',
     path: '/dashboard',
-    icon: 'shield',
+    icon: 'grid',
     roles: ['RESIDENT', 'CONDOMINIUM_ADMIN'],
+  },
+  { labelKey: 'nav.condominiums', path: '/condominiums', icon: 'building', badge: 'condominiums' },
+  {
+    labelKey: 'nav.spotSearch',
+    shortLabelKey: 'nav.short.search',
+    path: '/search',
+    icon: 'search',
+    roles: ['RESIDENT'],
+    group: 'rent',
+  },
+  {
+    labelKey: 'nav.myRentals',
+    shortLabelKey: 'nav.short.rentals',
+    path: '/rentals',
+    icon: 'calendar',
+    roles: ['RESIDENT'],
+    group: 'rent',
+  },
+  {
+    labelKey: 'nav.myVehicles',
+    path: '/vehicles',
+    icon: 'car',
+    roles: ['RESIDENT'],
+    group: 'rent',
+  },
+  {
+    labelKey: 'nav.myParkingSpots',
+    path: '/parking-spots',
+    icon: 'parking',
+    roles: ['RESIDENT'],
+    group: 'announce',
+  },
+  {
+    labelKey: 'nav.requests',
+    shortLabelKey: 'nav.short.requests',
+    path: '/requests',
+    icon: 'inbox',
+    roles: ['RESIDENT'],
+    group: 'announce',
+  },
+  {
+    labelKey: 'nav.wallet',
+    path: '/wallet',
+    icon: 'wallet',
+    roles: ['RESIDENT', 'CONDOMINIUM_ADMIN', 'ADMIN'],
+    group: 'announce',
   },
   {
     labelKey: 'nav.users',
@@ -44,9 +95,18 @@ export const NAV_ITEMS: readonly NavItem[] = [
     group: 'management',
   },
   {
+    labelKey: 'nav.reviews',
+    shortLabelKey: 'nav.short.reviews',
+    path: '/admin/reviews',
+    icon: 'star',
+    roles: ['ADMIN'],
+    group: 'management',
+  },
+  {
     labelKey: 'nav.audit',
+    shortLabelKey: 'nav.short.audit',
     path: '/admin/audit-logs',
-    icon: 'eye',
+    icon: 'history',
     roles: ['ADMIN'],
     group: 'management',
   },
@@ -54,4 +114,15 @@ export const NAV_ITEMS: readonly NavItem[] = [
 
 export function navItemsFor(roles: readonly Role[]): NavItem[] {
   return NAV_ITEMS.filter((item) => !item.roles || item.roles.some((role) => roles.includes(role)));
+}
+
+const BOTTOM_PATHS: readonly (readonly [Role, readonly string[]])[] = [
+  ['ADMIN', ['/dashboard', '/admin/users', '/admin/reviews', '/admin/audit-logs']],
+  ['CONDOMINIUM_ADMIN', ['/home', '/condominiums', '/wallet', '/dashboard']],
+  ['RESIDENT', ['/home', '/search', '/rentals', '/requests']],
+];
+
+export function bottomNavFor(roles: readonly Role[]): NavItem[] {
+  const paths = BOTTOM_PATHS.find(([role]) => roles.includes(role))?.[1] ?? [];
+  return paths.flatMap((path) => NAV_ITEMS.filter((item) => item.path === path).slice(0, 1));
 }

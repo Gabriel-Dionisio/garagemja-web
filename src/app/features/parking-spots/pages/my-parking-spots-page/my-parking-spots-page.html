@@ -87,6 +87,17 @@
           <span status
             ><app-badge [tone]="tag.tone">{{ tag.labelKey | transloco }}</app-badge></span
           >
+          @if (spot.status === 'ACTIVE') {
+            <span actions>
+              <a
+                appIconButton
+                [label]="('parkingSpots.mine.details' | transloco) + ': ' + spot.number"
+                [routerLink]="['/search', spot.id]"
+              >
+                <app-icon name="eye" />
+              </a>
+            </span>
+          }
         </li>
       }
     }

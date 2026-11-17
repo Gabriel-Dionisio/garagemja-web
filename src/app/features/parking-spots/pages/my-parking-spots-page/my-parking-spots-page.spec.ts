@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
-import { ParkingSpot } from '../../parking-spot.model';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { ParkingSpot } from '../../../../shared/spots/parking-spot.model';
 import { MyParkingSpotsPage } from './my-parking-spots-page';
 
 const spot = (overrides: Partial<ParkingSpot> = {}): ParkingSpot => ({
@@ -16,6 +16,7 @@ const spot = (overrides: Partial<ParkingSpot> = {}): ParkingSpot => ({
   number: '23',
   location: null,
   size: null,
+  covered: false,
   status: 'PENDING',
   statusReason: null,
   imageUrl: null,
@@ -101,9 +102,19 @@ describe('MyParkingSpotsPage', () => {
       expect.any(Number),
     );
     const text = element.textContent ?? '';
-    expect(text).toContain('2 vaga(s) cadastrada(s)');
+    expect(text).toContain('Vagas cadastradas: 2');
     expect(text).toContain('Edifício A');
     expect(text).toContain('Pendente');
     expect(text).toContain('Disponível');
+  });
+
+  it('abre os detalhes ao clicar na vaga e mostra o olho só na vaga ativa', async () => {
+    const { element } = await setup([spot(), spot({ id: 's2', number: '24', status: 'ACTIVE' })]);
+    const items = element.querySelectorAll('li');
+    expect(items[0].querySelector('a[href="/parking-spots/s1"]')).not.toBeNull();
+    expect(items[0].querySelector('a[aria-label^="Ver detalhes"]')).toBeNull();
+    const eye = items[1].querySelector('a[aria-label="Ver detalhes: 24"]');
+    expect(eye?.getAttribute('href')).toBe('/search/s2');
+    expect(eye?.querySelector('app-icon')).not.toBeNull();
   });
 });

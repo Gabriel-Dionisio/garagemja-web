@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { ParkingSpotsPage } from './parking-spots-page';
 
 const spot = (status: string) => ({
@@ -69,6 +69,13 @@ describe('ParkingSpotsPage', () => {
     );
     expect(element.textContent).toContain('Vaga 12');
     expect(element.textContent).toContain('Ana');
+  });
+
+  it('clicar na vaga abre os detalhes', async () => {
+    const { element } = await setup(true);
+    expect(
+      element.querySelector('li a[href="/condominiums/c1/parking-spots/s1"]:not([appIconButton])'),
+    ).not.toBeNull();
   });
 
   it('síndico aprova e a lista recarrega', async () => {

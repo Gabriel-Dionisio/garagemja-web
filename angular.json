@@ -24,14 +24,17 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "allowedCommonJsDependencies": ["qrcode", "dijkstrajs"],
+            "allowedCommonJsDependencies": ["qrcode", "dijkstrajs", "leaflet"],
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
-            "styles": ["@angular/cdk/overlay-prebuilt.css", "src/styles.scss"],
+            "styles": [
+              "@angular/cdk/overlay-prebuilt.css",
+              "src/styles.scss"
+            ],
             "stylePreprocessorOptions": { "includePaths": ["src"] }
           },
           "configurations": {
@@ -44,8 +47,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "16kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"

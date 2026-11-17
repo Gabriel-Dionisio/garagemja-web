@@ -33,9 +33,15 @@
       "forbidden": "You do not have permission to view or change parking spots in this condominium.",
       "notFound": "Parking spot not found or unavailable.",
       "conflict": "The spot changed or the number is already in use. Reload and try again."
+    },
+    "vehicles": {
+      "inUse": "The vehicle has a pending or ongoing rental and cannot be deleted."
     }
   },
   "common": {
+    "coverage": {
+      "uncovered": "Uncovered"
+    },
     "fields": {
       "email": "Email",
       "password": "Password",
@@ -69,7 +75,8 @@
       "save": "Save",
       "filter": "Filter",
       "clear": "Clear",
-      "retry": "Try again"
+      "retry": "Try again",
+      "close": "Close"
     },
     "pagination": {
       "perPage": "Items per page",
@@ -113,8 +120,9 @@
       "previous": "Previous image",
       "next": "Next image",
       "change": "Change image",
-      "moveBack": "Move earlier",
-      "moveForward": "Move later",
+      "show": "Show image {{number}}",
+      "position": "Image {{current}} of {{total}}",
+      "makeCover": "Set as cover",
       "cover": "Cover",
       "remove": "Remove image",
       "rejected": {
@@ -124,9 +132,19 @@
     }
   },
   "nav": {
+    "more": "More",
+    "bottom": "Quick navigation",
+    "short": {
+      "search": "Search",
+      "rentals": "Rentals",
+      "requests": "Requests",
+      "reviews": "Reports",
+      "audit": "Audit"
+    },
+    "groups": { "rent": "Rent", "announce": "List a spot" },
     "home": "Home",
     "myRentals": "My rentals",
-    "requests": "Requests",
+    "requests": "Received requests",
     "users": "Users",
     "settings": "Settings",
     "skipToContent": "Skip to content",
@@ -136,12 +154,14 @@
     "searchPlaceholder": "Condominium, neighborhood or address",
     "logout": "Sign out",
     "condominiums": "Condominiums",
+    "reviews": "Review reports",
     "audit": "Audit",
     "dashboard": "Dashboard",
     "management": "Management",
     "myParkingSpots": "My parking spots",
     "myVehicles": "My vehicles",
-    "searchVacancies": "Find Spots"
+    "spotSearch": "Find spots",
+    "wallet": "Wallet"
   },
   "routes": {
     "login": "Sign in",
@@ -150,7 +170,7 @@
     "verifyEmail": "Verify email",
     "home": "Home",
     "myRentals": "My rentals",
-    "requests": "Requests",
+    "requests": "Received requests",
     "adminUsers": "Users",
     "adminUserNew": "New administrator",
     "adminUserDetail": "User details",
@@ -178,37 +198,38 @@
     "myVehicles": "My vehicles",
     "vehicleNew": "Add vehicle",
     "vehicleEdit": "Edit vehicle",
-    "searchVacancies": "Find Spots"
+    "spotSearch": "Find Spots",
+    "adminReviews": "Review reports",
+    "profile": "Profile",
+    "spotDetails": "Spot details",
+    "wallet": "Wallet"
   },
   "requests": {
     "title": "Requests",
-    "subtitle": "Rental requests received for your parking spots.",
+    "count": "Requests: {{count}}",
+    "filters": "Filters",
+    "search": "Search by renter, plate, spot or condominium",
     "loading": "Loading requests…",
-    "retry": "Try again",
     "spot": "Spot {{number}}",
     "approve": "Approve",
     "refuse": "Refuse",
+    "reason": "Reason: {{reason}}",
+    "conflict": "Could not approve: the request expired, already started or the condominium is not active.",
     "tabs": {
       "label": "Request status",
-      "pending": "Pending",
-      "approved": "Approved",
-      "refused": "Refused"
+      "all": "All"
     },
     "status": {
       "PENDING": "Pending",
       "APPROVED": "Approved",
-      "REFUSED": "Refused"
+      "ACTIVE": "Ongoing",
+      "REFUSED": "Refused",
+      "CANCELED": "Canceled",
+      "FINISHED": "Finished",
+      "EXPIRED": "Expired"
     },
-    "empty": {
-      "PENDING": "No pending requests",
-      "APPROVED": "No approved requests",
-      "REFUSED": "No refused requests"
-    },
-    "emptyDescription": {
-      "PENDING": "Rental requests for your spots that await a decision will appear here.",
-      "APPROVED": "Requests you approve will appear here.",
-      "REFUSED": "Requests you refuse will appear here."
-    },
+    "emptyTitle": "No requests found",
+    "emptyDescription": "Rental requests for your spots will appear here.",
     "dialog": {
       "approve": {
         "title": "Approve request",
@@ -218,9 +239,32 @@
       "refuse": {
         "title": "Refuse request",
         "message": "Refuse the rental request for spot {{spot}}?",
-        "confirm": "Refuse"
+        "confirm": "Refuse",
+        "reason": "Reason for refusal"
       }
     }
+  },
+  "rentalDetails": {
+    "title": "Rental details",
+    "status": "Status",
+    "spot": "Spot",
+    "condominium": "Condominium",
+    "period": "Period",
+    "price": "Daily price",
+    "total": "Total",
+    "payable": "You pay",
+    "ownerAmount": "You receive",
+    "paymentLabel": "Payment",
+    "payment": {
+      "paid": "Paid",
+      "pending": "In progress",
+      "unpaid": "Unpaid"
+    },
+    "reason": "Reason",
+    "renter": "Renter",
+    "vehicle": "Vehicle",
+    "viewSpot": "View spot",
+    "viewProfile": "View profile"
   },
   "rentals": {
     "title": "My rentals",
@@ -243,13 +287,45 @@
     },
     "period": {
       "hours": "{{date}} · {{start}}h–{{end}}h",
-      "days": "{{start}} – {{end}} · {{count}} day(s)"
+      "days": "{{start}} – {{end}} · days: {{count}}"
     },
     "cancel": {
       "action": "Cancel request",
+      "aria": "Cancel request for spot {{number}}",
       "title": "Cancel request",
       "message": "Cancel the request for spot {{number}}? This cannot be undone.",
-      "confirm": "Cancel request"
+      "confirm": "Cancel request",
+      "messageRefund": "Cancel the rental of spot {{number}}? You will be refunded {{refund}}.",
+      "messageLate": "Cancel the rental of spot {{number}}? The cancellation deadline has passed: {{refund}} will be refunded and the penalty is {{penalty}}."
+    },
+    "search": "Search by spot or condominium",
+    "reason": "Reason: {{reason}}",
+    "pay": "Pay",
+    "paymentPending": "Payment in progress",
+    "reasonCode": {
+      "unpaid": "not paid",
+      "condominium_closed": "condominium closed"
+    },
+    "payment": {
+      "title": "Payment",
+      "amount": "Spot {{number}} · total {{amount}}",
+      "breakdown": "Price {{total}} + service fee {{fee}}",
+      "method": "Payment method",
+      "pix": "PIX",
+      "card": "Card",
+      "cardLast4": "Card last digits",
+      "cardHint": "Enter the last 4 digits (0000 simulates a decline).",
+      "pixHelp": "Copy the PIX code and pay in your bank app.",
+      "pixCode": "PIX copy and paste code",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "waiting": "Waiting for the payment confirmation…",
+      "submit": "Pay",
+      "cancelPix": "Cancel PIX",
+      "close": "Close",
+      "declined": "Payment declined. Try another card or use PIX.",
+      "invalid": "Invalid payment data.",
+      "conflict": "This rental cannot be paid right now."
     }
   },
   "auth": {
@@ -316,26 +392,19 @@
   },
   "home": {
     "greeting": "Hello, {{name}}",
-    "welcome": "Welcome to GaragemJá.",
-    "emptyTitle": "Your spots and rentals will appear here",
-    "emptyDescription": "Searching and renting spots arrive in the next releases.",
     "title": "Home",
-    "featuredTitle": "Spots in my condominium",
-    "availableVagas": "available spots",
-    "priceFrom": "From R$",
-    "perDay": "per day",
-    "viewCondominium": "View condominium",
+    "upcomingTitle": "Upcoming rentals",
+    "pendingTitle": "Pending requests",
+    "viewAll": "View all",
+    "featuredTitle": "Available spots",
     "loading": "Loading condominiums...",
     "loadError": "The condominiums could not be loaded.",
-    "emptyCondominiumsTitle": "No spots available",
-    "emptyCondominiumsDescription": "There are no registered spots in the condominiums where you live.",
     "search": {
-      "condominium": "Condominium",
-      "condominiumPlaceholder": "Ex.: Residential Alpha",
-      "period": "Period",
       "start": "Start",
       "end": "End",
-      "submit": "Search"
+      "submit": "Search",
+      "text": "Spot, location or condominium",
+      "placeholder": "Ex.: Residential Alpha"
     },
     "joinTitle": "Join your condominium",
     "joinDescription": "Use your manager's code or register the condominium.",
@@ -584,7 +653,7 @@
       "resides": "I live here",
       "join": "Join with a code",
       "createMenu": "Create",
-      "pending": "{{count}} resident(s) awaiting approval"
+      "pending": "Residents awaiting approval: {{count}}"
     },
     "form": {
       "newTitle": "Register condominium",
@@ -836,7 +905,7 @@
         "parkingSpots": "Parking spots",
         "activeRentals": "Active rentals"
       },
-      "reviewResidents": "Review {{count}} request(s)",
+      "reviewResidents": "Review requests ({{count}})",
       "emptyTitle": "You don't manage any condominium yet",
       "emptyDescription": "Once a condominium is approved, it shows up here.",
       "becomeResident": "I live here now",
@@ -870,7 +939,9 @@
       "maxRentalDays": "Maximum days per rental",
       "minAdvanceHours": "Minimum notice (hours)",
       "cancellationDeadlineHours": "Cancellation deadline (hours before)",
-      "minRentalHours": "Minimum hours per rental"
+      "minRentalHours": "Minimum hours per rental",
+      "condominiumFeePercent": "Condominium fee (%)",
+      "condominiumFeeHint": "Percent of the price kept by the condominium (0–20)."
     },
     "tabs": {
       "label": "Condominium sections",
@@ -896,7 +967,8 @@
         "cancellationDeadlineHours": "Cancellation deadline (hours)",
         "maxPricePerDay": "Maximum price per day",
         "maxPricePerHour": "Maximum price per hour",
-        "minRentalHours": "Minimum rental hours"
+        "minRentalHours": "Minimum rental hours",
+        "condominiumFeePercent": "Condominium fee (%)"
       }
     },
     "membership": {
@@ -990,7 +1062,7 @@
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Your summary.",
-    "ownerSubtitle": "{{count}} spot(s)",
+    "ownerSubtitle": "Spots: {{count}}",
     "myRentals": "My rentals",
     "viewLabel": "Dashboard view",
     "sections": {
@@ -1008,40 +1080,13 @@
         "active": "In progress",
         "upcoming": "Approved, not started",
         "monthEarnings": "Earnings this month"
-      }
-    },
-    "rentals": {
-      "loading": "Loading rentals...",
-      "status": {
-        "PENDING": "Awaiting decision",
-        "APPROVED": "Approved",
-        "ACTIVE": "In progress",
-        "REFUSED": "Refused",
-        "CANCELED": "Canceled",
-        "FINISHED": "Finished",
-        "EXPIRED": "Expired"
       },
-      "filter": "Filter by status",
-      "all": "All",
-      "emptyTitle": "No rentals found",
-      "emptyDescription": "Rental requests for your spots show up here.",
-      "actions": {
-        "approve": "Approve",
-        "refuse": "Refuse",
-        "viewSpot": "View spot"
-      },
-      "confirm": {
-        "reason": "Reason",
-        "approve": {
-          "title": "Approve rental",
-          "message": "Approve the request for spot {{number}}? Overlapping pending requests are refused.",
-          "confirm": "Approve"
-        },
-        "refuse": {
-          "title": "Refuse rental",
-          "message": "Say why you are refusing the request for spot {{number}}. The renter will see this text.",
-          "confirm": "Refuse"
-        }
+      "chart": {
+        "title": "Rentals by period",
+        "received": "Requests received",
+        "made": "Requests made",
+        "loading": "Loading rentals chart...",
+        "empty": "No rentals in this period"
       }
     }
   },
@@ -1060,7 +1105,15 @@
     "axis": {
       "month": "Month",
       "count": "Count",
-      "condominium": "Condominium"
+      "condominium": "Condominium",
+      "period": "Period",
+      "amount": "Amount"
+    },
+    "period": {
+      "label": "Group by",
+      "MONTH": "Month",
+      "BIMESTER": "Two months",
+      "YEAR": "Year"
     }
   },
   "parkingSpots": {
@@ -1141,7 +1194,11 @@
       "owner": "Owner",
       "ownerHint": "Optional. Search by the name or email of an approved resident.",
       "statusReason": "Reason",
-      "condominium": "Condominium"
+      "condominium": "Condominium",
+      "covered": "Covered"
+    },
+    "coverage": {
+      "uncovered": "Uncovered"
     },
     "image": {
       "alt": "Parking spot photo"
@@ -1160,10 +1217,11 @@
     "mine": {
       "title": "My parking spots",
       "new": "Add parking spot",
-      "count": "{{count}} parking spot(s) registered",
+      "count": "Registered spots: {{count}}",
       "emptyTitle": "You haven't registered any parking spots",
       "emptyDescription": "Register your spot for the manager to approve, then offer it for rent.",
-      "spotBlock": "Spot {{number}} - Block {{block}}"
+      "spotBlock": "Spot {{number}} - Block {{block}}",
+      "details": "View details"
     },
     "badge": {
       "available": "Available",
@@ -1214,14 +1272,19 @@
   "vehicles": {
     "list": {
       "title": "My vehicles",
-      "subtitle": "Vehicles registered in the condominiums where you live.",
       "new": "Add vehicle",
       "edit": "Edit",
-      "retry": "Try again",
       "loading": "Loading vehicles…",
       "caption": "Vehicle list",
       "emptyTitle": "No vehicles registered",
-      "emptyDescription": "Register a vehicle to use it in your rentals."
+      "emptyDescription": "Register a vehicle to use it in your rentals.",
+      "filter": "Filters",
+      "count": "Vehicles: {{count}}",
+      "search": "Search by plate, make or model",
+      "delete": "Delete"
+    },
+    "image": {
+      "alt": "Vehicle photo"
     },
     "form": {
       "newTitle": "Add vehicle",
@@ -1245,60 +1308,246 @@
     "errors": {
       "forbidden": "You do not have permission for this action on this vehicle.",
       "notFound": "Vehicle not found or unavailable."
+    },
+    "delete": {
+      "title": "Delete vehicle",
+      "message": "Delete vehicle {{plate}}? You can register the same plate again.",
+      "confirm": "Delete"
+    },
+    "placeholders": {
+      "brand": "Honda",
+      "model": "Civic",
+      "plate": "ABC1D23",
+      "color": "Silver"
     }
   },
-  "searchVacancies": {
+  "spotSearch": {
     "title": "Find parking spots",
-    "empty": "No spots found",
-    "spot": "Spot {{number}}",
-    "spotBlock": "Spot {{number}} - {{block}}",
-    "available": "Available",
-    "unavailable": "Unavailable",
-    "priceFrom": "R$ {{price}}",
-    "unit": {
-      "HOUR": "/hour",
-      "DAY": "/day",
-      "MONTH": "/month"
+    "count": "Spots found: {{count}}",
+    "loading": "Loading spots…",
+    "emptyTitle": "No spots found",
+    "emptyDescription": "No available spot matches your search. Adjust the filters or the period.",
+    "coverage": {
+      "label": "Coverage",
+      "any": "Any"
     },
-    "size": {
-      "SMALL": "Small",
-      "MEDIUM": "Medium",
-      "LARGE": "Large"
+    "mode": {
+      "label": "Pricing",
+      "daily": "Per day",
+      "hourly": "Per hour"
     },
-    "map": {
-      "label": "Illustrative map",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out",
-      "fit": "Fit to view"
-    },
-    "loading": "Loading spots...",
-    "loadError": "Could not load the spots.",
-    "retry": "Try again",
-    "noVacanciesDescription": "There are no spots available to you yet.",
-    "noResultsDescription": "No spot matches your search or filters.",
-    "clearFilters": "Clear filters",
-    "countOne": "{{count}} spot found",
-    "countOther": "{{count}} spots found",
     "sort": {
       "label": "Sort by",
+      "NUMBER": "Number",
       "PRICE_ASC": "Lowest price",
       "PRICE_DESC": "Highest price"
     },
     "filters": {
       "label": "Filters",
-      "availability": {
-        "label": "Availability",
-        "ALL": "All",
-        "AVAILABLE": "Available",
-        "UNAVAILABLE": "Unavailable"
-      },
-      "size": {
-        "label": "Size",
-        "ALL": "All sizes",
-        "SMALL": "Small",
-        "MEDIUM": "Medium",
-        "LARGE": "Large"
-      }
+      "search": "Search by spot, location or condominium",
+      "from": "From",
+      "to": "Until",
+      "minPrice": "Minimum price",
+      "maxPrice": "Maximum price"
+    },
+    "details": {
+      "title": "Spot details",
+      "loading": "Loading spot…",
+      "photo": "Spot photo",
+      "features": "Features",
+      "showPhoto": "Show photo {{number}}",
+      "size": "Size",
+      "location": "Location",
+      "owner": "Owner",
+      "availability": "Availability",
+      "noAvailability": "This spot has no available periods.",
+      "request": "Request rental",
+      "edit": "Edit"
+    },
+    "request": {
+      "title": "Request rental",
+      "vehicleSection": "Vehicle",
+      "vehicle": "Vehicle",
+      "periodSection": "Period",
+      "modeDay": "Per day",
+      "modeHour": "Per hour",
+      "date": "Day",
+      "quoteDays": "Days: {{units}} × {{price}} = {{total}}",
+      "quoteHours": "Hours: {{units}} × {{price}} = {{total}}",
+      "unavailable": "Pick a period within the spot's availability.",
+      "noVehicle": "You have no vehicle registered in this condominium.",
+      "addVehicle": "Register vehicle",
+      "submit": "Send request",
+      "invalid": "Check the chosen period and vehicle.",
+      "conflict": "This period is no longer available. Pick another."
+    },
+    "map": "Map of condominiums with available spots",
+    "pin": "{{name}} · available spots: {{count}}",
+    "showMap": "Show map",
+    "showList": "Show list",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "condominiumFilter": "Selected condominium"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "open": "Notifications",
+    "openUnread": "Notifications, {{count}} unread",
+    "close": "Close notifications",
+    "loading": "Loading notifications",
+    "emptyTitle": "No notifications",
+    "emptyDescription": "Updates about requests, spots and condominiums show up here.",
+    "loadMore": "Load more",
+    "markAllRead": "Mark all as read",
+    "retry": "Try again",
+    "reason": "Reason: {{reason}}",
+    "kind": {
+      "CONDOMINIUM_APPROVED": "Condominium {{condominium}} was approved.",
+      "CONDOMINIUM_REJECTED": "The registration of {{condominium}} was rejected.",
+      "CONDOMINIUM_BLOCKED": "Condominium {{condominium}} was blocked.",
+      "CONDOMINIUM_CLOSED": "Condominium {{condominium}} was closed and open rentals were cancelled.",
+      "RESIDENT_APPROVED": "Your request to join {{condominium}} was approved.",
+      "RESIDENT_REJECTED": "Your request to join {{condominium}} was rejected.",
+      "RESIDENCY_ENDED": "Your residency in {{condominium}} ended because the condominium was closed.",
+      "MANAGER_INVITED": "You were invited to manage {{condominium}}.",
+      "MANAGER_REMOVED": "You are no longer a manager of {{condominium}}.",
+      "RENTAL_REQUESTED": "New rental request in {{condominium}}.",
+      "RENTAL_APPROVED": "Your rental request in {{condominium}} was approved.",
+      "RENTAL_REFUSED": "Your rental request in {{condominium}} was declined.",
+      "RENTAL_CANCELED": "A rental in {{condominium}} was canceled.",
+      "RENTAL_EXPIRED": "Your rental request in {{condominium}} expired.",
+      "RENTAL_AUTO_REFUSED": "Your request in {{condominium}} was refused because the owner changed the spot availability.",
+      "RENTAL_SPOT_UNAVAILABLE": "Your request in {{condominium}} was refused because the spot became unavailable.",
+      "PARKING_SPOT_APPROVED": "Your spot in {{condominium}} was approved.",
+      "PARKING_SPOT_REJECTED": "Your spot in {{condominium}} was rejected.",
+      "PARKING_SPOT_BLOCKED": "Your spot in {{condominium}} was blocked.",
+      "PARKING_SPOT_UNBLOCKED": "Your spot in {{condominium}} was unblocked.",
+      "RENTAL_UNPAID_CANCELED": "The rental in {{condominium}} was canceled for lack of payment.",
+      "PAYMENT_CONFIRMED": "Payment for your rental in {{condominium}} was confirmed.",
+      "PAYMENT_RECEIVED": "A payment was received for a rental in {{condominium}}.",
+      "REVIEW_INVITE": "Your rental in {{condominium}} has ended. Leave a review.",
+      "REVIEW_REPORT_KEPT": "Your report about a review in {{condominium}} was reviewed and the review was kept.",
+      "REVIEW_REPORT_HIDDEN": "Your report about a review in {{condominium}} was accepted and the review was hidden."
+    }
+  },
+  "reviews": {
+    "ratingLabel": "Rated {{average}} out of 5, {{total}} reviews",
+    "none": "No reviews yet",
+    "rate": "Rate",
+    "rateAria": "Rate rental of spot {{number}}",
+    "reported": "Report review",
+    "renterRating": "Renter rating",
+    "errors": {
+      "notFound": "This rental can no longer be reviewed.",
+      "conflict": "This review was already sent or the 14-day window has closed.",
+      "resolved": "This report was already resolved.",
+      "reported": "You already reported this review."
+    },
+    "dialog": {
+      "title": { "spot": "Rate the spot", "renter": "Rate the renter" },
+      "hint": "Your review stays hidden until both sides review or 14 days pass.",
+      "rating": "Rating",
+      "comment": "Comment (optional)",
+      "submit": "Send review"
+    },
+    "report": {
+      "title": "Report review",
+      "hint": "Only moderators see your report. The review stays visible until they decide.",
+      "reason": "Reason",
+      "details": "Details (optional)",
+      "submit": "Send report",
+      "action": "Report"
+    },
+    "reason": {
+      "OFFENSIVE": "Offensive",
+      "FALSE": "False",
+      "SPAM": "Spam",
+      "OTHER": "Other"
+    },
+    "list": {
+      "title": "Reviews",
+      "loading": "Loading reviews",
+      "emptyTitle": "No reviews yet",
+      "emptyDescription": "Reviews appear after finished rentals."
+    },
+    "admin": {
+      "title": "Review reports",
+      "subtitle": "Keep or hide reported reviews",
+      "loading": "Loading reports",
+      "emptyTitle": "No reports",
+      "emptyDescription": "Reported reviews show up here.",
+      "filter": "Report status",
+      "all": "All",
+      "status": { "OPEN": "Open", "KEPT": "Kept", "HIDDEN": "Hidden" },
+      "keep": "Keep review",
+      "hide": "Hide review",
+      "noteTitle": "Decision note",
+      "noteLabel": "Reason for the decision",
+      "confirm": "Confirm",
+      "item": "Reason: {{reason}} · rated {{rating}} of 5",
+      "spot": "Spot {{number}} · {{condominium}}",
+      "reportedAt": "Reported on {{date}}",
+      "comment": "Review: “{{text}}”",
+      "details": "Report: {{text}}",
+      "note": "Decision: {{text}}"
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Public profile",
+      "memberSince": "Member since {{date}}",
+      "asHost": "As host",
+      "asRenter": "As renter",
+      "spots": "Spots",
+      "noSpots": "No active spots",
+      "reviews": "Reviews received",
+      "notFound": "Profile not available.",
+      "spot": "Spot {{number}}"
+    }
+  },
+  "wallet": {
+    "title": "Wallet",
+    "subtitle": "Balance and statement of your earnings",
+    "choose": "Wallet",
+    "balances": "Balances",
+    "available": "Available",
+    "pending": "Pending",
+    "loading": "Loading statement",
+    "statement": "Statement",
+    "flow": {
+      "title": "Money in and out",
+      "credits": "Money in",
+      "debits": "Money out",
+      "loading": "Loading wallet chart...",
+      "empty": "No activity in this period"
+    },
+    "emptyTitle": "No movements yet",
+    "emptyDescription": "Earnings from paid rentals show up here.",
+    "released": "Available",
+    "pendingBadge": "Pending",
+    "releasedAt": "Available from {{date}}",
+    "kind": {
+      "RENTAL_CREDIT": "Rental earnings",
+      "RENTAL_REVERSAL": "Rental refund",
+      "PENALTY_CREDIT": "Cancellation penalty",
+      "WITHDRAWAL": "Withdrawal"
+    },
+    "withdraw": {
+      "open": "Withdraw",
+      "title": "Withdraw via PIX",
+      "available": "{{name}}: {{amount}} available",
+      "amount": "Amount",
+      "pixKey": "PIX key",
+      "pixKeyHint": "CPF, CNPJ, email, phone or random key",
+      "submit": "Withdraw",
+      "invalid": "Check the amount and the PIX key.",
+      "insufficient": "Insufficient available balance.",
+      "negative": "Withdrawal blocked: the balance went negative after a reversal. Upcoming credits will cover it.",
+      "empty": "No available balance to withdraw."
+    },
+    "type": {
+      "OWNER": "My wallet",
+      "CONDOMINIUM": "Condominium",
+      "PLATFORM": "Platform"
     }
   }
 }

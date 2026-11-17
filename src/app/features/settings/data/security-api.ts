@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import { SecurityEvent, TotpSetup, TotpStatus, isSecurityEventType } from '../security.model';
 
 const SECURITY_URL = '/api/v1/me/security';
@@ -39,13 +39,7 @@ export class SecurityApi {
     return this.http.get<unknown>(`${SECURITY_URL}/events`, { params, observe: 'response' }).pipe(
       map((response) => {
         if (!Array.isArray(response.body)) throw new Error('Invalid security events');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          response.body.map(toEvent),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
+        return toResponsePage(response, response.body.map(toEvent), page, size);
       }),
     );
   }

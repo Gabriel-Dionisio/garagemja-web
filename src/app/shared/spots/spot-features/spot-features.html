@@ -1,0 +1,12 @@
+@if (spot().size; as size) {
+  <app-badge class="size"> <app-icon name="ruler" />{{ sizeLabels[size] | transloco }} </app-badge>
+}
+@if (spot().covered) {
+  <app-badge class="coverage">
+    <app-icon name="roof" />{{ 'parkingSpots.fields.covered' | transloco }}
+  </app-badge>
+} @else {
+  <app-badge class="coverage">
+    <app-icon name="sun" />{{ 'parkingSpots.coverage.uncovered' | transloco }}
+  </app-badge>
+}

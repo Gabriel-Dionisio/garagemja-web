@@ -7,6 +7,7 @@ import {
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -28,10 +29,12 @@ import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { SelectField, SelectOption } from '../../../../shared/ui/select-field/select-field';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
+import { ImageItem } from '../../../../shared/ui/image-field/image-field';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
-import { VehiclesApi } from '../../data/vehicles-api';
-import { Residency } from '../../vehicle.model';
-import { formatPlate, plateValidator } from '../../vehicle-plate';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { Residency } from '../../../../shared/vehicles/vehicle.model';
+import { formatPlate, plateValidator } from '../../../../shared/forms/plate';
+import { VehicleImages } from '../../components/vehicle-images/vehicle-images';
 
 const LIST_URL = '/vehicles';
 const MAX_TEXT = 50;
@@ -60,6 +63,7 @@ function residencyLabel(residency: Residency): string {
     Skeleton,
     SkeletonBlock,
     TextField,
+    VehicleImages,
   ],
   templateUrl: './vehicle-form-page.html',
   styleUrl: './vehicle-form-page.scss',
@@ -73,6 +77,7 @@ export class VehicleFormPage {
   private readonly fb = inject(NonNullableFormBuilder);
 
   readonly id = input<string>();
+  private readonly photos = viewChild(VehicleImages);
 
   protected readonly listUrl = LIST_URL;
   protected readonly maxText = MAX_TEXT;
@@ -90,6 +95,7 @@ export class VehicleFormPage {
     const items = this.residencies().map((residency) => ({
       value: residency.id,
       label: residencyLabel(residency),
+      literal: true,
     }));
     return items.length === 1 ? items : [{ value: '', label: 'vehicles.form.pick' }, ...items];
   });
@@ -97,6 +103,9 @@ export class VehicleFormPage {
     () => !this.loading() && !this.editing() && this.residencies().length === 0,
   );
   protected readonly failedToLoad = signal(false);
+  protected readonly images = signal<readonly ImageItem[]>([]);
+  private readonly formDirty = signal(false);
+  protected readonly dirty = computed(() => this.formDirty() || (this.photos()?.dirty() ?? false));
 
   protected readonly form = this.fb.group({
     residentId: ['', [Validators.required]],
@@ -107,6 +116,9 @@ export class VehicleFormPage {
   });
 
   constructor() {
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.formDirty.set(this.form.dirty));
     toObservable(this.id)
       .pipe(
         switchMap((id) => {
@@ -116,6 +128,7 @@ export class VehicleFormPage {
           return forkJoin({
             residencies: this.api.residencies(),
             vehicle: id ? this.api.get(id) : of(null),
+            images: id ? this.api.images(id) : of([]),
           }).pipe(
             catchError((error: unknown) => {
               this.error.setFrom(error);
@@ -127,7 +140,8 @@ export class VehicleFormPage {
         }),
         takeUntilDestroyed(),
       )
-      .subscribe(({ residencies, vehicle }) => {
+      .subscribe(({ residencies, vehicle, images }) => {
+        this.images.set(images);
         if (vehicle) {
           this.residencies.set(residencies.filter(({ id }) => id === vehicle.residentId));
           this.form.reset({
@@ -138,6 +152,7 @@ export class VehicleFormPage {
             color: vehicle.color ?? '',
           });
           this.form.controls.residentId.disable();
+          this.formDirty.set(false);
         } else {
           const approved = residencies.filter(({ approved }) => approved);
           this.residencies.set(approved);
@@ -161,6 +176,7 @@ export class VehicleFormPage {
     this.error.clear();
     request
       .pipe(
+        switchMap((vehicle) => this.photos()?.commit(vehicle.id, !id) ?? of(null)),
         finalize(() => this.busy.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )

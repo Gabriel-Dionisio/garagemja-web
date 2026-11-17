@@ -1,0 +1,39 @@
+@use 'styles/mixins' as *;
+
+.split {
+  position: relative;
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+
+  @include from($bp-lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
+  }
+}
+
+.map {
+  isolation: isolate;
+  height: 100%;
+  min-height: 16rem;
+}
+
+.view-toggle {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  box-shadow: var(--shadow-card);
+}
+
+.list:has(~ .view-toggle) app-spot-results {
+  padding-bottom: calc(var(--control-height) + var(--space-6));
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}

@@ -1,15 +1,26 @@
-import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { EMPTY, catchError, finalize, switchMap, tap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { EMPTY, Observable, catchError, finalize, switchMap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
-import { Page as ResultPage } from '../../../../shared/models/page';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { moneyFormatter, periodText } from '../../../../shared/forms/format';
+import { Page as PageResult } from '../../../../shared/models/page';
 import { Alert } from '../../../../shared/ui/alert/alert';
-import { Badge, BadgeTone } from '../../../../shared/ui/badge/badge';
+import { Avatar } from '../../../../shared/ui/avatar/avatar';
+import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
+import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { Icon } from '../../../../shared/ui/icon/icon';
+import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
 import { ListItem } from '../../../../shared/ui/list-item/list-item';
 import { ListState } from '../../../../shared/ui/list-state/list-state';
 import { Page } from '../../../../shared/ui/page/page';
@@ -19,128 +30,199 @@ import {
   PAGE_SIZES,
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
-import { TabLink, TabNav } from '../../../../shared/ui/tab-nav/tab-nav';
-import { OwnedRental } from '../../../dashboard/owned-rental.model';
-import { RequestsApi } from '../../data/requests-api';
-import { REQUEST_TABS, RequestDecision, RequestStatus } from '../../request.model';
-
-const STATUS_TONES: Record<RequestStatus, BadgeTone> = {
-  PENDING: 'warning',
-  APPROVED: 'success',
-  REFUSED: 'danger',
-};
+import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
+import { Dialog } from '@angular/cdk/dialog';
+import { RatingSummary } from '../../../../shared/reviews/review.model';
+import {
+  ReviewDialog,
+  ReviewDialogData,
+} from '../../../../shared/reviews/review-dialog/review-dialog';
+import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
+import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
+import { Icon } from '../../../../shared/ui/icon/icon';
+import { RentalDetailsDialog } from '../../../../shared/rentals/rental-details-dialog/rental-details-dialog';
+import { ownerRentalDetails } from '../../../../shared/rentals/rental-details';
+import { Rating } from '../../../../shared/ui/rating/rating';
+import { OwnedRentalsApi } from '../../../../shared/rentals/owned-rentals-api';
+import { OwnedRental, RentalStatus } from '../../../../shared/rentals/owned-rental.model';
+import { REQUEST_STATUSES, REQUEST_TONES, isRequestStatus } from '../../request-status';
 
 @Component({
   selector: 'app-requests-page',
   imports: [
-    DecimalPipe,
     TranslocoPipe,
     Alert,
+    Avatar,
     Badge,
     Button,
+    ChipGroup,
+    FilterPanel,
     Icon,
+    IconButton,
     ListItem,
     ListState,
     Page,
     PageHeader,
     Paginator,
-    TabNav,
+    Rating,
+    SearchFilter,
   ],
   templateUrl: './requests-page.html',
   styleUrl: './requests-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestsPage {
-  private readonly api = inject(RequestsApi);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly api = inject(OwnedRentalsApi);
+  private readonly reviews = inject(ReviewsApi);
+  private readonly dialog = inject(Dialog);
   private readonly confirm = inject(ConfirmService);
-  protected readonly transloco = inject(TranslocoService);
+  private readonly router = inject(Router);
+  private readonly locale = inject(LocaleService);
+  private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
-  readonly status = input.required<RequestStatus>();
-
-  protected readonly tones = STATUS_TONES;
+  protected readonly tones = REQUEST_TONES;
   protected readonly pageSizes = PAGE_SIZES;
-  protected readonly error = inject(ErrorText).state();
+  protected readonly money = computed(() => moneyFormatter(this.locale.language()));
+  protected readonly statusTabs: readonly ChipOption<RentalStatus>[] = [
+    { value: null, labelKey: 'requests.tabs.all' },
+    ...REQUEST_STATUSES.map((value) => ({ value, labelKey: `requests.status.${value}` })),
+  ];
+  protected readonly error = inject(ErrorText).state({ 409: 'requests.conflict' });
+  protected readonly status = signal<RentalStatus | null>(
+    isRequestStatus(this.initialStatus) ? this.initialStatus : 'PENDING',
+  );
+  protected readonly search = signal('');
   protected readonly page = signal(0);
   protected readonly size = signal(DEFAULT_PAGE_SIZE);
   protected readonly loading = signal(true);
-  protected readonly result = signal<ResultPage<OwnedRental> | null>(null);
-  protected readonly failed = signal(false);
+  protected readonly result = signal<PageResult<OwnedRental> | null>(null);
   protected readonly deciding = signal<string | null>(null);
-  protected readonly empty = computed(() => this.result()?.items.length === 0);
-  protected readonly tabs = computed<TabLink[]>(() =>
-    REQUEST_TABS.map((tab) => ({
-      link: ['/requests', tab.path],
-      label: this.transloco.translate(tab.labelKey),
-    })),
+  protected readonly filtersOpen = signal(false);
+  protected readonly activeFilters = computed(
+    () => (this.status() ? 1 : 0) + (this.search() ? 1 : 0),
   );
+  protected readonly ratings = signal(new Map<string, RatingSummary>());
+  protected readonly pendingReviews = signal(new Set<string>());
   private readonly reloads = signal(0);
-  private readonly request = computed(() => ({
-    status: this.status(),
-    page: this.page(),
-    size: this.size(),
-    reload: this.reloads(),
-  }));
 
   constructor() {
-    toObservable(this.status)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => {
-        this.page.set(0);
-        this.result.set(null);
-      });
-
-    toObservable(this.request)
+    toObservable(
+      computed(() => ({
+        status: this.status(),
+        search: this.search(),
+        page: this.page(),
+        size: this.size(),
+        reload: this.reloads(),
+      })),
+    )
       .pipe(
-        tap(() => {
+        switchMap(({ status, search, page, size }) => {
           this.loading.set(true);
-          this.failed.set(false);
-        }),
-        switchMap(({ status, page, size }) =>
-          this.api.list(page, size, status).pipe(
+          this.error.clear();
+          return this.api.list(page, size, status, search).pipe(
             catchError((error: unknown) => {
               this.error.setFrom(error);
-              this.failed.set(true);
               this.result.set(null);
-              this.loading.set(false);
               return EMPTY;
             }),
-          ),
-        ),
+            finalize(() => this.loading.set(false)),
+          );
+        }),
         takeUntilDestroyed(),
       )
       .subscribe((result) => {
-        this.error.clear();
         this.result.set(result);
-        this.loading.set(false);
+        this.loadRatings(result);
+        this.loadPendingReviews(result);
       });
   }
 
-  protected reload(): void {
-    this.error.clear();
-    this.reloads.update((count) => count + 1);
+  protected rate(rental: OwnedRental): void {
+    const data: ReviewDialogData = { rentalId: rental.id, subjectKey: 'renter' };
+    this.dialog
+      .open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' })
+      .closed.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((sent) => {
+        if (sent)
+          this.pendingReviews.update((ids) => new Set([...ids].filter((id) => id !== rental.id)));
+      });
   }
 
-  protected decide(rental: OwnedRental, decision: RequestDecision): void {
-    if (this.deciding()) return;
-    const key = decision === 'APPROVED' ? 'approve' : 'refuse';
-    this.deciding.set(rental.id);
-    this.error.clear();
-    this.confirm
-      .confirm({
-        title: `requests.dialog.${key}.title`,
-        message: `requests.dialog.${key}.message`,
-        params: { spot: rental.parkingSpotNumber },
-        confirmLabel: `requests.dialog.${key}.confirm`,
-        danger: decision === 'REFUSED',
-      })
+  private loadPendingReviews(result: PageResult<OwnedRental>): void {
+    const ids = result.items.filter((item) => item.status === 'FINISHED').map((item) => item.id);
+    this.reviews
+      .pendingReviews(ids)
       .pipe(
-        switchMap((ok) => (ok ? this.api.decide(rental.id, decision) : EMPTY)),
-        finalize(() => this.deciding.set(null)),
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe({
-        next: () => this.reload(),
-        error: (error: unknown) => this.error.setFrom(error),
-      });
+      .subscribe((pending) => this.pendingReviews.set(pending));
+  }
+
+  private loadRatings(result: PageResult<OwnedRental>): void {
+    const ids = [...new Set(result.items.flatMap((item) => item.renterUserId ?? []))];
+    this.reviews
+      .renterRatings(ids)
+      .pipe(
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((ratings) => this.ratings.set(ratings));
+  }
+
+  protected details(rental: OwnedRental): void {
+    this.dialog.open(RentalDetailsDialog, {
+      data: ownerRentalDetails(rental, this.locale.language()),
+      ariaLabelledBy: 'rental-details-title',
+    });
+  }
+
+  protected period(rental: OwnedRental) {
+    return periodText(rental, this.locale.language());
+  }
+
+  protected selectStatus(status: RentalStatus | null): void {
+    this.status.set(status);
+    this.page.set(0);
+    void this.router.navigate([], {
+      queryParams: { status },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  protected applySearch(search: string): void {
+    this.search.set(search);
+    this.page.set(0);
+  }
+
+  protected approve(rental: OwnedRental): void {
+    this.run(
+      rental,
+      this.confirm.confirm({
+        title: 'requests.dialog.approve.title',
+        message: 'requests.dialog.approve.message',
+        params: { spot: rental.parkingSpotNumber },
+        confirmLabel: 'requests.dialog.approve.confirm',
+      }),
+      () => this.api.approve(rental.id),
+    );
+  }
+
+  protected refuse(rental: OwnedRental): void {
+    this.run(
+      rental,
+      this.confirm.askReason({
+        title: 'requests.dialog.refuse.title',
+        message: 'requests.dialog.refuse.message',
+        params: { spot: rental.parkingSpotNumber },
+        confirmLabel: 'requests.dialog.refuse.confirm',
+        danger: true,
+        reason: { label: 'requests.dialog.refuse.reason', maxLength: 255 },
+      }),
+      (reason) => this.api.refuse(rental.id, String(reason)),
+    );
   }
 
   protected changeSize(size: number): void {
@@ -150,5 +232,25 @@ export class RequestsPage {
 
   protected goTo(page: number): void {
     this.page.set(page);
+  }
+
+  private run(
+    rental: OwnedRental,
+    answer: Observable<boolean | string | null>,
+    action: (answer: boolean | string) => Observable<void>,
+  ): void {
+    if (this.deciding()) return;
+    this.deciding.set(rental.id);
+    this.error.clear();
+    answer
+      .pipe(
+        switchMap((value) => (value ? action(value) : EMPTY)),
+        finalize(() => this.deciding.set(null)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => this.reloads.update((count) => count + 1),
+        error: (error: unknown) => this.error.setFrom(error),
+      });
   }
 }

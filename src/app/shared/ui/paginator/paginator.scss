@@ -53,6 +53,12 @@ nav {
   }
 }
 
+.size-label {
+  @include until($bp-md) {
+    @include visually-hidden;
+  }
+}
+
 .controls {
   display: flex;
   flex: none;

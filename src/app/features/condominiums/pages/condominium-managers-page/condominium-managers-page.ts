@@ -1,5 +1,6 @@
-import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { instantDateFormatter } from '../../../../shared/forms/format';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -46,7 +47,6 @@ const SKELETON_ROWS = [0, 1, 2];
 @Component({
   selector: 'app-condominium-managers-page',
   imports: [
-    DatePipe,
     TranslocoPipe,
     Alert,
     Badge,
@@ -68,6 +68,8 @@ const SKELETON_ROWS = [0, 1, 2];
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CondominiumManagersPage {
+  private readonly locale = inject(LocaleService);
+  protected readonly shortDate = computed(() => instantDateFormatter(this.locale.language()));
   private readonly api = inject(CondominiumsApi);
   private readonly auth = inject(AuthService);
   private readonly confirm = inject(ConfirmService);

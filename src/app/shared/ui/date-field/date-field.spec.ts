@@ -48,6 +48,24 @@ describe('DateField', () => {
     expect(root.querySelector('.popup')).toBeNull();
   });
 
+  it('posiciona o calendário abaixo do campo e fecha ao rolar fora dele', async () => {
+    const { fixture, root, open } = await setup();
+    vi.spyOn(root.querySelector('.field') as HTMLElement, 'getBoundingClientRect').mockReturnValue({
+      top: 100,
+      bottom: 140,
+      left: 50,
+    } as DOMRect);
+    await open();
+    const popup = root.querySelector<HTMLElement>('.popup');
+    expect(popup?.classList).toContain('placed');
+    expect(popup?.style.top).toBe('144px');
+    expect(popup?.style.left).toBe('50px');
+
+    document.body.dispatchEvent(new Event('scroll'));
+    await fixture.whenStable();
+    expect(root.querySelector('.popup')).toBeNull();
+  });
+
   it('desabilita dias acima do máximo', async () => {
     const { fixture, root, open } = await setup();
     fixture.componentInstance.max.set('2028-02-15');

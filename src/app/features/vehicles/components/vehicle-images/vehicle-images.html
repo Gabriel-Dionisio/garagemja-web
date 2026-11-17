@@ -1,0 +1,11 @@
+<app-image-field
+  [images]="shown()"
+  [multiple]="true"
+  [max]="maxImages"
+  [alt]="'vehicles.image.alt' | transloco"
+  [busy]="busy()"
+  [disabled]="disabled()"
+  (selected)="add($event)"
+  (removed)="remove($event)"
+  (coverChosen)="makeCover($event)"
+/>

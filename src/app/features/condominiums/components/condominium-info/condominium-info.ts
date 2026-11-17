@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, input, output, inject } from '@angular/core';
+import { LocaleService } from '../../../../core/i18n/locale-service';
+import { moneyFormatter } from '../../../../shared/forms/format';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { formatCep } from '../../../../shared/forms/masks';
 import { Alert } from '../../../../shared/ui/alert/alert';
@@ -14,12 +15,14 @@ import { RESIDENT_STATUS_LABELS, RESIDENT_STATUS_TONES } from '../../resident-st
 
 @Component({
   selector: 'app-condominium-info',
-  imports: [TranslocoPipe, CurrencyPipe, Alert, Badge, Button, Card, FormActions, Icon, ScrollArea],
+  imports: [TranslocoPipe, Alert, Badge, Button, Card, FormActions, Icon, ScrollArea],
   templateUrl: './condominium-info.html',
   styleUrl: './condominium-info.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CondominiumInfo {
+  private readonly locale = inject(LocaleService);
+  protected readonly money = computed(() => moneyFormatter(this.locale.language()));
   readonly condominium = input.required<Condominium>();
   readonly images = input<readonly CondominiumImage[]>([]);
   readonly rules = input<CondominiumRules | null>(null);
@@ -45,6 +48,7 @@ export class CondominiumInfo {
       { key: 'maxRentalDays', value: rules.maxRentalDays },
       { key: 'minAdvanceHours', value: rules.minAdvanceHours },
       { key: 'cancellationDeadlineHours', value: rules.cancellationDeadlineHours },
+      { key: 'condominiumFeePercent', value: rules.condominiumFeePercent || null },
     ].filter((item) => item.value !== null);
   });
 

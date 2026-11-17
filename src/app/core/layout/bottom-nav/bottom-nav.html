@@ -1,0 +1,17 @@
+<nav [attr.aria-label]="'nav.bottom' | transloco">
+  @for (item of entries(); track item.path) {
+    <a
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="{ exact: !!item.exact }"
+    >
+      <app-icon [name]="item.icon" />
+      <span>{{ item.label | transloco }}</span>
+    </a>
+  }
+  <button type="button" [attr.aria-expanded]="menuExpanded()" (click)="menu.emit()">
+    <app-icon name="menu" />
+    <span>{{ 'nav.more' | transloco }}</span>
+  </button>
+</nav>

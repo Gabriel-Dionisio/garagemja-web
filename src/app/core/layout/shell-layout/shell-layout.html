@@ -3,7 +3,7 @@
 }}</a>
 
 <header class="topbar">
-  @if (viewport.usesDrawer()) {
+  @if (viewport.usesDrawer() && !usesSheet()) {
     <button
       #menuButton
       appIconButton
@@ -15,12 +15,12 @@
     >
       <app-icon name="menu" />
     </button>
+  }
+  @if (viewport.usesDrawer()) {
     <app-brand-logo [compact]="true" />
   }
-  @if (showSearch()) {
-    <app-topbar-search />
-  }
   @if (user(); as current) {
+    <app-notification-bell />
     <app-user-menu [user]="current" [loggingOut]="loggingOut()" (logout)="logout()" />
   }
 </header>
@@ -32,7 +32,7 @@
   <aside
     id="app-nav"
     class="sidebar"
-    [attr.data-mode]="viewport.usesDrawer() ? 'drawer' : 'rail'"
+    [attr.data-mode]="usesSheet() ? 'sheet' : viewport.usesDrawer() ? 'drawer' : 'rail'"
     [cdkTrapFocus]="viewport.usesDrawer()"
     [cdkTrapFocusAutoCapture]="viewport.usesDrawer()"
     [attr.role]="viewport.usesDrawer() ? 'dialog' : null"
@@ -45,32 +45,14 @@
         <app-brand-logo />
       </a>
       <nav [attr.aria-label]="'nav.main' | transloco">
-        <ul>
-          @for (item of mainItems(); track item.path) {
-            <li>
-              <a
-                [routerLink]="item.path"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: !!item.exact }"
-                ariaCurrentWhenActive="page"
-                [attr.title]="viewport.usesDrawer() ? null : (item.labelKey | transloco)"
-                (click)="closeNav()"
-              >
-                <app-icon [name]="item.icon" />
-                <span class="label">{{ item.labelKey | transloco }}</span>
-                @if (item.badge && badgeCount() > 0) {
-                  <app-badge class="count" tone="warning">{{ badgeCount() }}</app-badge>
-                }
-              </a>
-            </li>
+        @for (section of sections(); track section.group ?? 'main') {
+          @if (section.titleKey) {
+            <p class="group-title" [id]="'nav-' + section.group">
+              <span class="label">{{ section.titleKey | transloco }}</span>
+            </p>
           }
-        </ul>
-        @if (managementItems().length > 0) {
-          <p class="group-title" id="nav-management">
-            <span class="label">{{ 'nav.management' | transloco }}</span>
-          </p>
-          <ul aria-labelledby="nav-management">
-            @for (item of managementItems(); track item.path) {
+          <ul [attr.aria-labelledby]="section.titleKey ? 'nav-' + section.group : null">
+            @for (item of section.items; track item.path) {
               <li>
                 <a
                   [routerLink]="item.path"
@@ -82,6 +64,9 @@
                 >
                   <app-icon [name]="item.icon" />
                   <span class="label">{{ item.labelKey | transloco }}</span>
+                  @if (item.badge && badgeCount() > 0) {
+                    <app-badge class="count" tone="warning">{{ badgeCount() }}</app-badge>
+                  }
                 </a>
               </li>
             }
@@ -120,3 +105,11 @@
   }
   <router-outlet />
 </main>
+
+@if (viewport.usesDrawer() && bottomItems().length > 0) {
+  <app-bottom-nav
+    [items]="bottomItems()"
+    [menuExpanded]="navOpen()"
+    (menu)="navOpen() ? closeNav() : openNav()"
+  />
+}

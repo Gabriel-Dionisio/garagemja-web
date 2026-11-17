@@ -10,6 +10,7 @@ import { ActionItem } from '../../../../shared/ui/action-list/action-item';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
+import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { Fab } from '../../../../shared/ui/fab/fab';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
@@ -23,16 +24,16 @@ import {
   PAGE_SIZES,
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { dateFormatter, moneyFormatter } from '../../../../shared/forms/format';
-import { PARKING_SPOT_SIZE_LABELS, spotBadge } from '../../parking-spot-status';
+import { PARKING_SPOT_SIZE_LABELS, spotBadge } from '../../../../shared/spots/parking-spot-status';
 import {
   PARKING_SPOT_SIZES,
   PARKING_SPOT_STATUSES,
   ParkingSpot,
   ParkingSpotSize,
   ParkingSpotStatus,
-} from '../../parking-spot.model';
+} from '../../../../shared/spots/parking-spot.model';
 import { ParkingSpotFilterForm } from '../../components/parking-spot-filter/parking-spot-filter';
 
 @Component({
@@ -46,6 +47,7 @@ import { ParkingSpotFilterForm } from '../../components/parking-spot-filter/park
     Alert,
     Badge,
     Button,
+    IconButton,
     ChipGroup,
     FilterPanel,
     Icon,

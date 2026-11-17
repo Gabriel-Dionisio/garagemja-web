@@ -1,0 +1,27 @@
+<h2>{{ heading() }}</h2>
+<app-chip-group
+  [label]="'charts.period.label' | transloco"
+  [options]="options"
+  [value]="period()"
+  (valueChange)="choose($event)"
+/>
+<div class="body" aria-live="polite" [attr.aria-busy]="loading()">
+  @if (error(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  } @else if (loading()) {
+    <app-loading-block [label]="loadingLabel()" />
+  } @else if (empty()) {
+    <app-empty-state icon="info" [title]="emptyText()" />
+  } @else {
+    <app-chart
+      kind="bar"
+      [xLabel]="'charts.axis.period' | transloco"
+      [yLabel]="yLabel()"
+      [labels]="labels()"
+      [series]="series()"
+      [format]="format()"
+      [showValues]="showValues()"
+      [description]="heading()"
+    />
+  }
+</div>

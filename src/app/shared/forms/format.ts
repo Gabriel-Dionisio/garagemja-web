@@ -8,6 +8,16 @@ export function dateFormatter(language: string): (iso: string) => string {
   return (iso) => format.format(new Date(`${iso}T00:00:00Z`));
 }
 
+export function instantDateFormatter(language: string): (iso: string) => string {
+  const format = new Intl.DateTimeFormat(language, { dateStyle: 'short' });
+  return (iso) => format.format(new Date(iso));
+}
+
+export function dateTimeFormatter(language: string): (iso: string) => string {
+  const format = new Intl.DateTimeFormat(language, { dateStyle: 'short', timeStyle: 'short' });
+  return (iso) => format.format(new Date(iso));
+}
+
 export interface PeriodInput {
   startDate: string;
   endDate: string;

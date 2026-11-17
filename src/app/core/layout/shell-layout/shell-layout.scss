@@ -13,14 +13,19 @@
 }
 
 :host {
+  @include until($bp-md) {
+    --bottom-nav-height: calc(3.5rem + env(safe-area-inset-bottom));
+  }
+
   display: grid;
   min-height: 100vh;
   min-height: 100dvh;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+  grid-template-rows: var(--topbar-height) minmax(0, 1fr) auto;
   grid-template-areas:
     'topbar'
-    'main';
+    'main'
+    'bottom';
 
   @media (min-height: 40rem) {
     height: 100dvh;
@@ -29,6 +34,7 @@
 
   @include from($bp-md) {
     grid-template-columns: var(--rail-width) minmax(0, 1fr);
+    grid-template-rows: var(--topbar-height) minmax(0, 1fr);
     grid-template-areas:
       'sidebar topbar'
       'sidebar main';
@@ -58,10 +64,6 @@
   border-bottom: 1px solid var(--color-divider);
   background: var(--color-surface);
   color: var(--color-secondary);
-}
-
-app-user-menu {
-  margin-left: auto;
 }
 
 .sidebar {
@@ -204,6 +206,30 @@ app-user-menu {
       min-height: 100%;
     }
   }
+
+  &[data-mode='sheet'] {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 20;
+    max-height: 85dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+
+    .panel {
+      gap: var(--space-3);
+      padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    }
+
+    .brand {
+      display: none;
+    }
+
+    .group-title:first-child {
+      margin-top: 0;
+      border-top: 0;
+    }
+  }
 }
 
 .backdrop {
@@ -220,7 +246,7 @@ main {
   gap: var(--space-4);
   min-width: 0;
   --main-inset: var(--space-4);
-  --page-height: calc(100dvh - var(--topbar-height));
+  --page-height: calc(100dvh - var(--topbar-height) - var(--bottom-nav-height, 0px));
   padding: var(--main-inset);
   outline: none;
 
@@ -233,6 +259,12 @@ main {
   @include from($bp-md) {
     --main-inset: var(--space-5);
   }
+}
+
+app-bottom-nav {
+  grid-area: bottom;
+  position: relative;
+  z-index: 5;
 }
 
 main > router-outlet {

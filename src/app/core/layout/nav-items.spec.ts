@@ -3,37 +3,41 @@ import { navItemsFor } from './nav-items';
 describe('navItemsFor', () => {
   const paths = (items: { path: string }[]) => items.map((item) => item.path);
 
-  it('morador: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
+  it('morador: início, painel e condomínios, depois Alugar e Anunciar', () => {
     expect(paths(navItemsFor(['RESIDENT']))).toEqual([
       '/home',
-      '/search-vacancies',
-      '/condominiums',
-      '/parking-spots',
-      '/rentals',
-      '/requests',
-      '/vehicles',
       '/dashboard',
+      '/condominiums',
+      '/search',
+      '/rentals',
+      '/vehicles',
+      '/parking-spots',
+      '/requests',
+      '/wallet',
     ]);
   });
 
-  it('síndico: início, buscar vagas, condomínios, minhas vagas, meus aluguéis, solicitações, meus veículos e painel', () => {
+  it('síndico: mesmo menu do morador', () => {
     expect(paths(navItemsFor(['CONDOMINIUM_ADMIN', 'RESIDENT']))).toEqual([
       '/home',
-      '/search-vacancies',
-      '/condominiums',
-      '/parking-spots',
-      '/rentals',
-      '/requests',
-      '/vehicles',
       '/dashboard',
+      '/condominiums',
+      '/search',
+      '/rentals',
+      '/vehicles',
+      '/parking-spots',
+      '/requests',
+      '/wallet',
     ]);
   });
 
-  it('ADMIN: painel, condomínios, usuários e auditoria, sem início', () => {
+  it('ADMIN: painel, condomínios, carteira, usuários e auditoria, sem início', () => {
     expect(paths(navItemsFor(['ADMIN']))).toEqual([
       '/dashboard',
       '/condominiums',
+      '/wallet',
       '/admin/users',
+      '/admin/reviews',
       '/admin/audit-logs',
     ]);
   });

@@ -1,0 +1,56 @@
+<div
+  class="carousel"
+  role="group"
+  aria-roledescription="carousel"
+  [attr.aria-label]="label()"
+  [attr.tabindex]="multiple() ? 0 : null"
+  (keydown)="onKey($event)"
+>
+  <div
+    class="stage"
+    (pointerdown)="onPointerDown($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerCancel()"
+  >
+    <img class="main" [src]="current()" [alt]="label()" draggable="false" />
+    @if (multiple()) {
+      <button
+        appIconButton
+        type="button"
+        class="nav prev"
+        [label]="'common.image.previous' | transloco"
+        (click)="step(-1)"
+      >
+        <app-icon name="chevron-left" />
+      </button>
+      <button
+        appIconButton
+        type="button"
+        class="nav next"
+        [label]="'common.image.next' | transloco"
+        (click)="step(1)"
+      >
+        <app-icon name="chevron-right" />
+      </button>
+      <span class="status" role="status">{{
+        'common.image.position' | transloco: { current: index() + 1, total: images().length }
+      }}</span>
+    }
+  </div>
+  @if (multiple()) {
+    <ul class="thumbs">
+      @for (image of images(); track image.id; let i = $index) {
+        <li>
+          <button
+            type="button"
+            [attr.aria-pressed]="i === index()"
+            [attr.aria-label]="'common.image.show' | transloco: { number: i + 1 }"
+            (click)="index.set(i)"
+          >
+            <img [src]="image.url" alt="" loading="lazy" />
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -1,88 +1,116 @@
 <app-page>
   <app-page-header
     [title]="'requests.title' | transloco"
-    [subtitle]="'requests.subtitle' | transloco"
+    [subtitle]="result() ? ('requests.count' | transloco: { count: result()?.total ?? 0 }) : ''"
   />
 
-  <app-tab-nav [tabs]="tabs()" [label]="'requests.tabs.label' | transloco" />
+  <app-filter-panel
+    [label]="'requests.filters' | transloco"
+    [activeCount]="activeFilters()"
+    [(open)]="filtersOpen"
+  >
+    <app-chip-group
+      [label]="'requests.tabs.label' | transloco"
+      [options]="statusTabs"
+      [value]="status()"
+      (valueChange)="selectStatus($event)"
+    />
+    <app-search-filter
+      [label]="'requests.search' | transloco"
+      (searchChange)="applySearch($event)"
+    />
+  </app-filter-panel>
 
   @if (error.text(); as message) {
-    <app-alert kind="error">
-      {{ message }}
-      @if (failed()) {
-        <button appButton type="button" variant="secondary" (click)="reload()">
-          {{ 'requests.retry' | transloco }}
-        </button>
-      }
-    </app-alert>
+    <app-alert kind="error">{{ message }}</app-alert>
   }
 
-  @if (!failed()) {
-    <app-list-state
-      [attr.aria-busy]="loading()"
-      [loading]="loading() && !result()"
-      [refreshing]="loading()"
-      [empty]="empty()"
-      [loadingLabel]="'requests.loading' | transloco"
-      emptyIcon="mail"
-      [emptyTitle]="'requests.empty.' + status() | transloco"
-      [emptyDescription]="'requests.emptyDescription.' + status() | transloco"
-      [listLabel]="'requests.title' | transloco"
-    >
-      @if (result(); as current) {
-        @for (rental of current.items; track rental.id) {
-          <li appListItem>
-            <span leading class="thumb"><app-icon name="mail" /></span>
-            <strong>{{ 'requests.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
-            <span class="meta">{{ rental.condominiumName }}</span>
-            <span class="meta">
-              {{ rental.startDate }} → {{ rental.endDate }} ·
-              <span class="price">R$ {{ rental.price | number: '1.2-2' }}</span>
-            </span>
-            <span status>
-              <app-badge [tone]="tones[status()]">{{
-                'requests.status.' + status() | transloco
-              }}</app-badge>
-            </span>
-            @if (status() === 'PENDING') {
-              <span actions class="decisions">
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [refreshing]="loading()"
+    [empty]="result()?.items?.length === 0"
+    [loadingLabel]="'requests.loading' | transloco"
+    emptyIcon="mail"
+    [emptyTitle]="'requests.emptyTitle' | transloco"
+    [emptyDescription]="'requests.emptyDescription' | transloco"
+    [listLabel]="'requests.title' | transloco"
+  >
+    @if (result(); as current) {
+      @for (rental of current.items; track rental.id) {
+        <li appListItem activatable (activated)="details(rental)">
+          <span leading>
+            <app-avatar [name]="rental.renterName" [src]="rental.renterPhotoUrl" />
+          </span>
+          <strong class="renter">
+            {{ rental.renterName }}
+            @if (rental.renterUserId; as renterId) {
+              @let rating = ratings().get(renterId);
+              <app-rating [average]="rating?.average ?? null" [total]="rating?.total ?? 0" />
+            }
+          </strong>
+          <small>
+            {{ 'requests.spot' | transloco: { number: rental.parkingSpotNumber } }} ·
+            {{ rental.condominiumName }}
+          </small>
+          @let when = period(rental);
+          <small>
+            {{ when.key | transloco: when.params }} · {{ money()(rental.ownerAmount) }}
+          </small>
+          <span status>
+            <app-badge [tone]="tones[rental.status]">{{
+              'requests.status.' + rental.status | transloco
+            }}</app-badge>
+          </span>
+          @if (pendingReviews().has(rental.id) || rental.status === 'PENDING') {
+            <span actions>
+              @if (pendingReviews().has(rental.id)) {
                 <button
-                  appButton
+                  appIconButton
                   type="button"
-                  variant="secondary"
-                  [disabled]="deciding() !== null"
-                  [loading]="deciding() === rental.id"
-                  (click)="decide(rental, 'REFUSED')"
+                  [label]="'reviews.rate' | transloco"
+                  (click)="rate(rental)"
                 >
-                  {{ 'requests.refuse' | transloco }}
+                  <app-icon name="star" />
+                </button>
+              }
+              @if (rental.status === 'PENDING') {
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'requests.refuse' | transloco"
+                  [disabled]="deciding() !== null"
+                  (click)="refuse(rental)"
+                >
+                  <app-icon name="close" />
                 </button>
                 <button
                   appButton
                   type="button"
                   [disabled]="deciding() !== null"
                   [loading]="deciding() === rental.id"
-                  (click)="decide(rental, 'APPROVED')"
+                  (click)="approve(rental)"
                 >
                   {{ 'requests.approve' | transloco }}
                 </button>
-              </span>
-            }
-          </li>
-        }
+              }
+            </span>
+          }
+        </li>
       }
-      @if (result(); as current) {
-        <app-paginator
-          paginator
-          [page]="current.page"
-          [size]="current.size"
-          [total]="current.total"
-          [itemCount]="current.items.length"
-          [hasNext]="current.hasNext"
-          [sizeOptions]="pageSizes"
-          (sizeChange)="changeSize($event)"
-          (pageChange)="goTo($event)"
-        />
-      }
-    </app-list-state>
-  }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </app-list-state>
 </app-page>

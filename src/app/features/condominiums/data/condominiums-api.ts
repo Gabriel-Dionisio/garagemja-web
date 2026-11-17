@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, forkJoin, map, of, shareReplay, tap, throwError } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth-service';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import {
   Condominium,
   CondominiumChanges,
@@ -53,13 +53,7 @@ export class CondominiumsApi {
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid condominium list');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          body.map(toCondominium),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
+        return toResponsePage(response, body.map(toCondominium), page, size);
       }),
     );
   }
@@ -244,13 +238,7 @@ export class CondominiumsApi {
       .get<unknown>(`${CONDOMINIUMS_URL}/${id}/residents`, { params, observe: 'response' })
       .pipe(
         map((response) => {
-          const total = Number(response.headers.get('X-Total-Count'));
-          return toPage(
-            toList(response.body, toResidentMember),
-            page,
-            size,
-            Number.isInteger(total) ? total : undefined,
-          );
+          return toResponsePage(response, toList(response.body, toResidentMember), page, size);
         }),
       );
   }
@@ -261,13 +249,7 @@ export class CondominiumsApi {
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid managed condominium list');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          body.map(toManagedCondominium),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
+        return toResponsePage(response, body.map(toManagedCondominium), page, size);
       }),
     );
   }

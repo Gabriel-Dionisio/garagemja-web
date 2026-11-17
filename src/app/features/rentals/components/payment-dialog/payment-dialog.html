@@ -1,0 +1,87 @@
+<div class="body">
+  <h2 id="payment-title">{{ 'rentals.payment.title' | transloco }}</h2>
+  <p class="amount">
+    {{
+      'rentals.payment.amount'
+        | transloco
+          : {
+              number: data.rental.parkingSpotNumber,
+              amount: money()(data.rental.payable),
+            }
+    }}
+  </p>
+  <p class="breakdown">
+    {{
+      'rentals.payment.breakdown'
+        | transloco
+          : {
+              total: money()(data.rental.total),
+              fee: money()(data.rental.payable - data.rental.total),
+            }
+    }}
+  </p>
+
+  @if (payment(); as pending) {
+    <p>{{ 'rentals.payment.pixHelp' | transloco }}</p>
+    <label class="code-label" for="pix-code">{{ 'rentals.payment.pixCode' | transloco }}</label>
+    <textarea
+      id="pix-code"
+      class="code"
+      readonly
+      rows="3"
+      [value]="pending.pixCode ?? ''"
+    ></textarea>
+    <button appButton type="button" variant="secondary" (click)="copy(pending.pixCode ?? '')">
+      {{ (copied() ? 'rentals.payment.copied' : 'rentals.payment.copy') | transloco }}
+    </button>
+    <p role="status">{{ 'rentals.payment.waiting' | transloco }}</p>
+  } @else {
+    <app-chip-group
+      [label]="'rentals.payment.method' | transloco"
+      [options]="methods"
+      [value]="method()"
+      (valueChange)="method.set($event ?? 'PIX')"
+    />
+    @if (method() === 'CARD') {
+      <app-text-field
+        [label]="'rentals.payment.cardLast4' | transloco"
+        [control]="cardLast4"
+        [format]="format"
+        [maxLength]="4"
+        inputMode="numeric"
+        [hint]="'rentals.payment.cardHint' | transloco"
+      />
+    }
+  }
+
+  @if (declined()) {
+    <app-alert kind="error">{{ 'rentals.payment.declined' | transloco }}</app-alert>
+  }
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  <app-form-actions>
+    @if (payment()) {
+      <button
+        appButton
+        type="button"
+        variant="secondary"
+        [loading]="canceling()"
+        (click)="cancelPix()"
+      >
+        {{ 'rentals.payment.cancelPix' | transloco }}
+      </button>
+      <button appButton type="button" (click)="close()">
+        {{ 'rentals.payment.close' | transloco }}
+      </button>
+    } @else {
+      <button appButton type="button" variant="secondary" (click)="close()">
+        {{ 'common.actions.cancel' | transloco }}
+      </button>
+      <button appButton type="button" [loading]="submitting()" (click)="submit()">
+        {{ 'rentals.payment.submit' | transloco }}
+      </button>
+    }
+  </app-form-actions>
+</div>

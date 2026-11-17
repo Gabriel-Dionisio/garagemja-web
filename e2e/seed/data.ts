@@ -214,6 +214,7 @@ export interface Rule {
   maxRentalDays?: number;
   minAdvanceHours?: number;
   cancellationDeadlineHours?: number;
+  condominiumFeePercent?: number;
   maxPricePerDay?: number;
   maxPricePerHour?: number;
   minRentalHours: number;
@@ -270,6 +271,7 @@ export const RULES: Record<string, Rule> = {
   active: {
     maxRentalDays: 15,
     cancellationDeadlineHours: 24,
+    condominiumFeePercent: 10,
     maxPricePerDay: 60,
     maxPricePerHour: 10,
     minRentalHours: 2,

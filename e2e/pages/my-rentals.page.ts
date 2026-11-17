@@ -1,14 +1,16 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { ConfirmDialog } from './confirm-dialog';
 import { FilteredList } from './list';
 import { ShellPage } from './shell.page';
 
 export class MyRentalsPage extends FilteredList {
   readonly confirmDialog: ConfirmDialog;
+  readonly paymentDialog: Locator;
 
   constructor(page: Page) {
     super(page, 'Meus aluguéis');
     this.confirmDialog = new ConfirmDialog(page);
+    this.paymentDialog = page.getByRole('dialog', { name: 'Pagamento' });
   }
 
   async goto(): Promise<void> {
@@ -28,5 +30,12 @@ export class MyRentalsPage extends FilteredList {
       .getByRole('button', { name: `Cancelar pedido da vaga ${number}` })
       .click();
     await this.confirmDialog.confirm('Cancelar pedido');
+  }
+
+  async payWithPix(number: string): Promise<void> {
+    await this.rental(number).getByRole('button', { name: 'Pagar' }).click();
+    const dialog = this.paymentDialog;
+    await dialog.getByRole('button', { name: 'Pagar' }).click();
+    await dialog.getByLabel('Código PIX copia e cola').waitFor();
   }
 }

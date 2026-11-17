@@ -13,6 +13,7 @@ const row = {
   endHour: null,
   price: 8,
   total: 24,
+  payable: 26.4,
   status: 'PENDING',
 };
 
@@ -49,6 +50,20 @@ describe('RentalsApi', () => {
     const request = http.expectOne((req) => req.url === '/api/v1/me/rentals');
     expect(request.request.params.has('status')).toBe(false);
     request.flush([]);
+  });
+
+  it('reads the cancellation preview', () => {
+    let preview: unknown;
+    api.cancellationPreview('r1').subscribe((value) => (preview = value));
+    http
+      .expectOne('/api/v1/rentals/r1/cancellation-preview')
+      .flush({ refundAmount: 30, penalty: 30, late: true });
+    expect(preview).toEqual({ refundAmount: 30, penalty: 30, late: true });
+  });
+
+  it('exposes payment flags with safe defaults', () => {
+    expect(toRental(row)).toMatchObject({ payable: 26.4, paid: false, paymentPending: false });
+    expect(toRental({ ...row, paid: true }).paid).toBe(true);
   });
 
   it('rejects malformed rentals', () => {

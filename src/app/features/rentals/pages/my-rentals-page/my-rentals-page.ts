@@ -6,16 +6,18 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { EMPTY, catchError, switchMap, tap } from 'rxjs';
+import { EMPTY, catchError, of, switchMap, tap } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { LocaleService } from '../../../../core/i18n/locale-service';
 import { moneyFormatter, periodText } from '../../../../shared/forms/format';
 import { Page as ResultPage } from '../../../../shared/models/page';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Badge, BadgeTone } from '../../../../shared/ui/badge/badge';
+import { Button } from '../../../../shared/ui/button/button';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
@@ -31,8 +33,17 @@ import {
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
 import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
+import { PaymentDialog, PaymentDialogData } from '../../components/payment-dialog/payment-dialog';
 import { RentalsApi } from '../../data/rentals-api';
-import { RENTAL_STATUSES, Rental, RentalStatus, isRentalStatus } from '../../rental.model';
+import {
+  CancellationPreview,
+  RENTAL_STATUSES,
+  Rental,
+  RentalStatus,
+  isRentalStatus,
+} from '../../rental.model';
+
+const REASON_CODES = ['unpaid', 'condominium_closed'];
 
 const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
   PENDING: 'warning',
@@ -50,6 +61,7 @@ const STATUS_TONES: Record<RentalStatus, BadgeTone> = {
     TranslocoPipe,
     Alert,
     Badge,
+    Button,
     ChipGroup,
     FilterPanel,
     Icon,
@@ -69,6 +81,7 @@ export class MyRentalsPage {
   private readonly api = inject(RentalsApi);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly dialog = inject(Dialog);
   private readonly locale = inject(LocaleService);
   private readonly initialStatus = inject(ActivatedRoute).snapshot.queryParamMap.get('status');
 
@@ -76,6 +89,7 @@ export class MyRentalsPage {
   protected readonly money = computed(() => moneyFormatter(this.locale.language()));
   protected readonly cancelable = (rental: Rental) =>
     rental.status === 'PENDING' || rental.status === 'APPROVED';
+  protected readonly payable = (rental: Rental) => rental.status === 'APPROVED' && !rental.paid;
   protected readonly pageSizes = PAGE_SIZES;
   protected readonly filters: readonly ChipOption<RentalStatus>[] = [
     { value: null, labelKey: 'rentals.all' },
@@ -134,23 +148,52 @@ export class MyRentalsPage {
     return periodText(rental, this.locale.language());
   }
 
+  protected reason(rental: Rental): string {
+    return rental.cancelReason && REASON_CODES.includes(rental.cancelReason)
+      ? `rentals.reasonCode.${rental.cancelReason}`
+      : '';
+  }
+
+  protected pay(rental: Rental): void {
+    const data: PaymentDialogData = { rental };
+    this.dialog
+      .open<boolean>(PaymentDialog, { data, ariaLabelledBy: 'payment-title' })
+      .closed.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.reload.update((value) => value + 1));
+  }
+
   protected cancel(rental: Rental): void {
-    this.confirm
-      .confirm({
-        title: 'rentals.cancel.title',
-        message: 'rentals.cancel.message',
-        confirmLabel: 'rentals.cancel.confirm',
-        params: { number: rental.parkingSpotNumber },
-        danger: true,
-      })
+    const preview$ = rental.paid
+      ? this.api.cancellationPreview(rental.id).pipe(catchError(() => of(null)))
+      : of<CancellationPreview | null>(null);
+    preview$
       .pipe(
-        switchMap((confirmed) => (confirmed ? this.api.cancel(rental.id) : EMPTY)),
+        switchMap((preview) =>
+          this.confirm
+            .confirm({
+              title: 'rentals.cancel.title',
+              message: this.cancelMessage(preview),
+              confirmLabel: 'rentals.cancel.confirm',
+              params: {
+                number: rental.parkingSpotNumber,
+                refund: this.money()(preview?.refundAmount ?? 0),
+                penalty: this.money()(preview?.penalty ?? 0),
+              },
+              danger: true,
+            })
+            .pipe(switchMap((confirmed) => (confirmed ? this.api.cancel(rental.id) : EMPTY))),
+        ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => this.reload.update((value) => value + 1),
         error: (error: unknown) => this.error.setFrom(error),
       });
+  }
+
+  private cancelMessage(preview: CancellationPreview | null): string {
+    if (!preview) return 'rentals.cancel.message';
+    return preview.late ? 'rentals.cancel.messageLate' : 'rentals.cancel.messageRefund';
   }
 
   protected filter(status: RentalStatus | null): void {

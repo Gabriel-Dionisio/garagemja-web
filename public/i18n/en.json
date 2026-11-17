@@ -252,10 +252,39 @@
       "aria": "Cancel request for spot {{number}}",
       "title": "Cancel request",
       "message": "Cancel the request for spot {{number}}? This cannot be undone.",
-      "confirm": "Cancel request"
+      "confirm": "Cancel request",
+      "messageRefund": "Cancel the rental of spot {{number}}? You will be refunded {{refund}}.",
+      "messageLate": "Cancel the rental of spot {{number}}? The cancellation deadline has passed: {{refund}} will be refunded and the penalty is {{penalty}}."
     },
     "search": "Search by spot or condominium",
-    "reason": "Reason: {{reason}}"
+    "reason": "Reason: {{reason}}",
+    "pay": "Pay",
+    "paymentPending": "Payment in progress",
+    "reasonCode": {
+      "unpaid": "not paid",
+      "condominium_closed": "condominium closed"
+    },
+    "payment": {
+      "title": "Payment",
+      "amount": "Spot {{number}} · total {{amount}}",
+      "breakdown": "Price {{total}} + service fee {{fee}}",
+      "method": "Payment method",
+      "pix": "PIX",
+      "card": "Card",
+      "cardLast4": "Card last digits",
+      "cardHint": "Enter the last 4 digits (0000 simulates a decline).",
+      "pixHelp": "Copy the PIX code and pay in your bank app.",
+      "pixCode": "PIX copy and paste code",
+      "copy": "Copy code",
+      "copied": "Copied",
+      "waiting": "Waiting for the payment confirmation…",
+      "submit": "Pay",
+      "cancelPix": "Cancel PIX",
+      "close": "Close",
+      "declined": "Payment declined. Try another card or use PIX.",
+      "invalid": "Invalid payment data.",
+      "conflict": "This rental cannot be paid right now."
+    }
   },
   "auth": {
     "login": {
@@ -865,7 +894,9 @@
       "maxRentalDays": "Maximum days per rental",
       "minAdvanceHours": "Minimum notice (hours)",
       "cancellationDeadlineHours": "Cancellation deadline (hours before)",
-      "minRentalHours": "Minimum hours per rental"
+      "minRentalHours": "Minimum hours per rental",
+      "condominiumFeePercent": "Condominium fee (%)",
+      "condominiumFeeHint": "Percent of the price kept by the condominium (0–20)."
     },
     "tabs": {
       "label": "Condominium sections",
@@ -891,7 +922,8 @@
         "cancellationDeadlineHours": "Cancellation deadline (hours)",
         "maxPricePerDay": "Maximum price per day",
         "maxPricePerHour": "Maximum price per hour",
-        "minRentalHours": "Minimum rental hours"
+        "minRentalHours": "Minimum rental hours",
+        "condominiumFeePercent": "Condominium fee (%)"
       }
     },
     "membership": {
@@ -1308,7 +1340,10 @@
       "PARKING_SPOT_APPROVED": "Your spot in {{condominium}} was approved.",
       "PARKING_SPOT_REJECTED": "Your spot in {{condominium}} was rejected.",
       "PARKING_SPOT_BLOCKED": "Your spot in {{condominium}} was blocked.",
-      "PARKING_SPOT_UNBLOCKED": "Your spot in {{condominium}} was unblocked."
+      "PARKING_SPOT_UNBLOCKED": "Your spot in {{condominium}} was unblocked.",
+      "RENTAL_UNPAID_CANCELED": "The rental in {{condominium}} was canceled for lack of payment.",
+      "PAYMENT_CONFIRMED": "Payment for your rental in {{condominium}} was confirmed.",
+      "PAYMENT_RECEIVED": "A payment was received for a rental in {{condominium}}."
     }
   }
 }

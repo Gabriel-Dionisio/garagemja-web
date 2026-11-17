@@ -45,9 +45,16 @@
           <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
           <small>{{ rental.condominiumName }}</small>
           @let when = period(rental);
-          <small> {{ when.key | transloco: when.params }} · {{ money()(rental.total) }} </small>
+          <small> {{ when.key | transloco: when.params }} · {{ money()(rental.payable) }} </small>
           @if (rental.cancelReason) {
-            <small>{{ 'rentals.reason' | transloco: { reason: rental.cancelReason } }}</small>
+            @let code = reason(rental);
+            <small>{{
+              'rentals.reason'
+                | transloco: { reason: code ? (code | transloco) : rental.cancelReason }
+            }}</small>
+          }
+          @if (rental.paymentPending) {
+            <small>{{ 'rentals.paymentPending' | transloco }}</small>
           }
           <span status>
             <app-badge [tone]="tones[rental.status]">{{
@@ -56,6 +63,11 @@
           </span>
           @if (cancelable(rental)) {
             <span actions>
+              @if (payable(rental)) {
+                <button appButton type="button" (click)="pay(rental)">
+                  {{ 'rentals.pay' | transloco }}
+                </button>
+              }
               <button
                 appIconButton
                 type="button"

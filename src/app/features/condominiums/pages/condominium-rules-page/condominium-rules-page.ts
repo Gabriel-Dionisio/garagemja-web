@@ -29,6 +29,11 @@ import { CondominiumsApi } from '../../data/condominiums-api';
 const digits = (value: string): string => value.replace(/\D/g, '').slice(0, 4);
 const toText = (value: number | null): string => (value === null ? '' : String(value));
 const toMoney = (value: number | null): string => (value === null ? '' : formatMoneyValue(value));
+const MAX_FEE_PERCENT = 20;
+const percent = (value: string): string => {
+  const typed = value.replace(/\D/g, '').slice(0, 2);
+  return Number(typed) > MAX_FEE_PERCENT ? String(MAX_FEE_PERCENT) : typed;
+};
 const toInt = (value: string): number | null => (value ? Number(value) : null);
 const toAmount = (value: string): number | null => (value.trim() ? parseMoney(value) : null);
 
@@ -61,6 +66,7 @@ export class CondominiumRulesPage {
   readonly id = input.required<string>();
 
   protected readonly digits = digits;
+  protected readonly percent = percent;
   protected readonly money = formatMoneyInput;
   protected readonly condominium = signal<Condominium | null>(null);
   protected readonly loading = signal(true);
@@ -80,6 +86,7 @@ export class CondominiumRulesPage {
     maxRentalDays: [''],
     minAdvanceHours: [''],
     cancellationDeadlineHours: [''],
+    condominiumFeePercent: ['0'],
     maxPricePerDay: ['', [positiveMoneyValidator]],
     minRentalHours: ['1'],
     maxPricePerHour: ['', [positiveMoneyValidator]],
@@ -123,6 +130,7 @@ export class CondominiumRulesPage {
       maxRentalDays: toInt(value.maxRentalDays),
       minAdvanceHours: toInt(value.minAdvanceHours),
       cancellationDeadlineHours: toInt(value.cancellationDeadlineHours),
+      condominiumFeePercent: toInt(value.condominiumFeePercent) ?? 0,
       maxPricePerDay: toAmount(value.maxPricePerDay),
       maxPricePerHour: this.hourly() ? toAmount(value.maxPricePerHour) : null,
       minRentalHours: this.hourly() ? (toInt(value.minRentalHours) ?? 1) : 1,
@@ -162,6 +170,7 @@ export class CondominiumRulesPage {
       maxRentalDays: toText(rules.maxRentalDays),
       minAdvanceHours: toText(rules.minAdvanceHours),
       cancellationDeadlineHours: toText(rules.cancellationDeadlineHours),
+      condominiumFeePercent: String(rules.condominiumFeePercent),
       maxPricePerDay: toMoney(rules.maxPricePerDay),
       minRentalHours: String(rules.minRentalHours),
       maxPricePerHour: toMoney(rules.maxPricePerHour),

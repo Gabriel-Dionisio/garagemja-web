@@ -1,0 +1,7 @@
+@if (total() > 0 && average() !== null) {
+  <app-icon name="star" />
+  <strong>{{ average()?.toFixed(1) }}</strong>
+  <span>({{ total() }})</span>
+} @else {
+  <span>{{ 'reviews.none' | transloco }}</span>
+}

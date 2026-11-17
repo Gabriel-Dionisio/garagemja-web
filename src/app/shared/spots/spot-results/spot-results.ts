@@ -1,5 +1,9 @@
 import { TranslocoPipe } from '@jsverse/transloco';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { EMPTY, catchError, switchMap } from 'rxjs';
+import { RatingSummary } from '../../reviews/review.model';
+import { ReviewsApi } from '../../reviews/reviews-api';
 import { Page } from '../../models/page';
 import { Alert } from '../../ui/alert/alert';
 import { EmptyState } from '../../ui/empty-state/empty-state';
@@ -24,4 +28,19 @@ export class SpotResults {
   readonly sizeChange = output<number>();
 
   protected readonly pageSizes = PAGE_SIZES;
+  protected readonly ratings = signal(new Map<string, RatingSummary>());
+
+  constructor() {
+    const reviews = inject(ReviewsApi);
+    toObservable(this.result)
+      .pipe(
+        switchMap((page) =>
+          reviews
+            .spotRatings(page?.items.map((spot) => spot.id) ?? [])
+            .pipe(catchError(() => EMPTY)),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((ratings) => this.ratings.set(ratings));
+  }
 }

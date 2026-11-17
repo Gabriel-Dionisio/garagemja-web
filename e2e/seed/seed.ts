@@ -5,6 +5,7 @@ import {
   CONDOS,
   RENTALS,
   RENTAL_PATH,
+  REVIEWS,
   RESIDENTS,
   RULES,
   SPOTS,
@@ -377,6 +378,54 @@ async function ensureRental(
   log(`rental   ${label}: ${remaining.length ? `-> ${rental.target}` : status}${note}`);
 }
 
+async function ensureReviews(spotIds: Map<string, string>): Promise<void> {
+  for (const review of REVIEWS) {
+    const spot = SPOTS.find((s) => s.key === review.spot)!;
+    const rental = RENTALS.find(
+      (r) => r.spot === review.spot && r.startOffset === review.startOffset,
+    )!;
+    const rentalId = psql(`select id from rentals
+      where parking_spot_id = '${spotIds.get(spot.key)}' and start_date = '${dateIn(review.startOffset)}'`);
+    const submit = async (author: string, rating: number, comment: string): Promise<void> => {
+      const direction = author === rental.renter ? 'RENTER_TO_SPOT' : 'OWNER_TO_RENTER';
+      if (
+        psql(
+          `select id from reviews where rental_id = '${rentalId}' and direction = '${direction}'`,
+        )
+      )
+        return;
+      await (
+        await sessionFor(author)
+      ).call(
+        `review ${review.spot} ${direction}`,
+        'POST',
+        `/api/v1/rentals/${rentalId}/reviews`,
+        { rating, comment },
+        [201],
+      );
+    };
+    await submit(rental.renter, review.renterRating, review.renterComment);
+    const owner = spot.owner ?? CONDOS.find((c) => c.key === spot.condo)!.requester;
+    if (review.ownerRating) await submit(owner, review.ownerRating, review.ownerComment ?? '');
+    if (review.reportedByOwner) {
+      const reviewId = psql(
+        `select id from reviews where rental_id = '${rentalId}' and direction = 'RENTER_TO_SPOT'`,
+      );
+      if (!psql(`select id from review_reports where review_id = '${reviewId}'`))
+        await (
+          await sessionFor(owner)
+        ).call(
+          `report review ${review.spot}`,
+          'POST',
+          `/api/v1/reviews/${reviewId}/reports`,
+          { reason: 'FALSE', details: review.reportedByOwner },
+          [201],
+        );
+    }
+    log(`review   ${spot.number} ${dateIn(review.startOffset)}`);
+  }
+}
+
 function printLogins(): void {
   const rows = ACCOUNTS.map((a) => `| ${a.email.padEnd(34)} | ${PASSWORD} | ${a.note}`);
   console.log(`\n| ${'e-mail'.padEnd(34)} | password  | state\n${rows.join('\n')}`);
@@ -404,5 +453,7 @@ export async function seed(): Promise<void> {
   for (const vehicle of VEHICLES)
     vehicleIds.set(vehicle.plate, await ensureVehicle(vehicle, condoIds));
   for (const rental of RENTALS) await ensureRental(rental, condoIds, spotIds, vehicleIds);
+  console.log('Reviews');
+  await ensureReviews(spotIds);
   printLogins();
 }

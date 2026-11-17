@@ -17,6 +17,7 @@ export interface OwnedRental {
   ownerAmount: number;
   status: RentalStatus;
   cancelReason: string | null;
+  renterUserId: string | null;
   renterName: string;
   renterPhotoUrl: string | null;
   vehiclePlate: string;

@@ -31,6 +31,15 @@ import {
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
 import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
+import { Dialog } from '@angular/cdk/dialog';
+import { RouterLink } from '@angular/router';
+import { RatingSummary } from '../../../../shared/reviews/review.model';
+import {
+  ReviewDialog,
+  ReviewDialogData,
+} from '../../../../shared/reviews/review-dialog/review-dialog';
+import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
+import { Rating } from '../../../../shared/ui/rating/rating';
 import { OwnedRentalsApi } from '../../data/owned-rentals-api';
 import { OwnedRental, RentalStatus } from '../../owned-rental.model';
 import { displayPlate } from '../../../../shared/forms/plate';
@@ -53,6 +62,8 @@ const REASON_CODES = ['unpaid', 'condominium_closed'];
     Page,
     PageHeader,
     Paginator,
+    RouterLink,
+    Rating,
     SearchFilter,
   ],
   templateUrl: './requests-page.html',
@@ -62,6 +73,8 @@ const REASON_CODES = ['unpaid', 'condominium_closed'];
 export class RequestsPage {
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(OwnedRentalsApi);
+  private readonly reviews = inject(ReviewsApi);
+  private readonly dialog = inject(Dialog);
   private readonly confirm = inject(ConfirmService);
   private readonly router = inject(Router);
   private readonly locale = inject(LocaleService);
@@ -88,6 +101,7 @@ export class RequestsPage {
   protected readonly activeFilters = computed(
     () => (this.status() ? 1 : 0) + (this.search() ? 1 : 0),
   );
+  protected readonly ratings = signal(new Map<string, RatingSummary>());
   private readonly reloads = signal(0);
 
   constructor() {
@@ -115,7 +129,26 @@ export class RequestsPage {
         }),
         takeUntilDestroyed(),
       )
-      .subscribe((result) => this.result.set(result));
+      .subscribe((result) => {
+        this.result.set(result);
+        this.loadRatings(result);
+      });
+  }
+
+  protected rate(rental: OwnedRental): void {
+    const data: ReviewDialogData = { rentalId: rental.id, subjectKey: 'renter' };
+    this.dialog.open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' });
+  }
+
+  private loadRatings(result: PageResult<OwnedRental>): void {
+    const ids = [...new Set(result.items.flatMap((item) => item.renterUserId ?? []))];
+    this.reviews
+      .renterRatings(ids)
+      .pipe(
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((ratings) => this.ratings.set(ratings));
   }
 
   protected reasonKey(rental: OwnedRental): string | null {

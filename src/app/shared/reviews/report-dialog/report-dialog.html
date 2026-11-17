@@ -1,0 +1,26 @@
+<form class="body" (ngSubmit)="submit()">
+  <h2 id="report-title">{{ 'reviews.report.title' | transloco }}</h2>
+  <p>{{ 'reviews.report.hint' | transloco }}</p>
+  <app-chip-group
+    [label]="'reviews.report.reason' | transloco"
+    [options]="options"
+    [value]="reason()"
+    (valueChange)="reason.set($event)"
+  />
+  <app-text-field
+    [label]="'reviews.report.details' | transloco"
+    [control]="details"
+    [maxLength]="detailsMax"
+  />
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+  <app-form-actions>
+    <button appButton type="button" variant="secondary" (click)="close()">
+      {{ 'common.actions.cancel' | transloco }}
+    </button>
+    <button appButton type="submit" [loading]="submitting()" [disabled]="!reason()">
+      {{ 'reviews.report.submit' | transloco }}
+    </button>
+  </app-form-actions>
+</form>

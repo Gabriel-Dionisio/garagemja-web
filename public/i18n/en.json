@@ -140,6 +140,7 @@
     "searchPlaceholder": "Condominium, neighborhood or address",
     "logout": "Sign out",
     "condominiums": "Condominiums",
+    "reviews": "Review reports",
     "audit": "Audit",
     "dashboard": "Dashboard",
     "management": "Management",
@@ -184,6 +185,8 @@
     "vehicleNew": "Add vehicle",
     "vehicleEdit": "Edit vehicle",
     "spotSearch": "Find Spots",
+    "adminReviews": "Review reports",
+    "profile": "Profile",
     "spotDetails": "Spot details",
     "wallet": "Wallet"
   },
@@ -1352,7 +1355,78 @@
       "PARKING_SPOT_UNBLOCKED": "Your spot in {{condominium}} was unblocked.",
       "RENTAL_UNPAID_CANCELED": "The rental in {{condominium}} was canceled for lack of payment.",
       "PAYMENT_CONFIRMED": "Payment for your rental in {{condominium}} was confirmed.",
-      "PAYMENT_RECEIVED": "A payment was received for a rental in {{condominium}}."
+      "PAYMENT_RECEIVED": "A payment was received for a rental in {{condominium}}.",
+      "REVIEW_INVITE": "Your rental in {{condominium}} has ended. Leave a review.",
+      "REVIEW_REPORT_KEPT": "Your report about a review in {{condominium}} was reviewed and the review was kept.",
+      "REVIEW_REPORT_HIDDEN": "Your report about a review in {{condominium}} was accepted and the review was hidden."
+    }
+  },
+  "reviews": {
+    "none": "No reviews yet",
+    "rate": "Rate",
+    "rateAria": "Rate rental of spot {{number}}",
+    "reported": "Report review",
+    "renterRating": "Renter rating",
+    "errors": {
+      "notFound": "This rental can no longer be reviewed.",
+      "conflict": "This review was already sent or the 14-day window has closed.",
+      "resolved": "This report was already resolved.",
+      "reported": "You already reported this review."
+    },
+    "dialog": {
+      "title": { "spot": "Rate the spot", "renter": "Rate the renter" },
+      "hint": "Your review stays hidden until both sides review or 14 days pass.",
+      "rating": "Rating",
+      "comment": "Comment (optional)",
+      "submit": "Send review"
+    },
+    "report": {
+      "title": "Report review",
+      "hint": "Only moderators see your report. The review stays visible until they decide.",
+      "reason": "Reason",
+      "details": "Details (optional)",
+      "submit": "Send report",
+      "action": "Report"
+    },
+    "reason": {
+      "OFFENSIVE": "Offensive",
+      "FALSE": "False",
+      "SPAM": "Spam",
+      "OTHER": "Other"
+    },
+    "list": {
+      "title": "Reviews",
+      "loading": "Loading reviews",
+      "emptyTitle": "No reviews yet",
+      "emptyDescription": "Reviews appear after finished rentals."
+    },
+    "admin": {
+      "title": "Review reports",
+      "subtitle": "Keep or hide reported reviews",
+      "loading": "Loading reports",
+      "emptyTitle": "No reports",
+      "emptyDescription": "Reported reviews show up here.",
+      "filter": "Report status",
+      "all": "All",
+      "status": { "OPEN": "Open", "KEPT": "Kept", "HIDDEN": "Hidden" },
+      "keep": "Keep review",
+      "hide": "Hide review",
+      "noteTitle": "Decision note",
+      "noteLabel": "Reason for the decision",
+      "confirm": "Confirm",
+      "item": "{{rating}} ★ · {{reason}}"
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Public profile",
+      "memberSince": "Member since {{date}}",
+      "asHost": "As host",
+      "asRenter": "As renter",
+      "spots": "Spots",
+      "noSpots": "No active spots",
+      "reviews": "Reviews received",
+      "notFound": "Profile not available.",
+      "spot": "Spot {{number}}"
     }
   },
   "wallet": {

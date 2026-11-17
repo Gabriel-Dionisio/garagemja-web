@@ -1,0 +1,80 @@
+<app-page>
+  <app-page-header
+    [title]="'reviews.admin.title' | transloco"
+    [subtitle]="'reviews.admin.subtitle' | transloco"
+  />
+  <app-chip-group
+    [label]="'reviews.admin.filter' | transloco"
+    [options]="filters"
+    [value]="status()"
+    (valueChange)="filter($event)"
+  />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  }
+
+  <app-list-state
+    [attr.aria-busy]="loading()"
+    [loading]="loading() && !result()"
+    [refreshing]="loading()"
+    [empty]="empty()"
+    [loadingLabel]="'reviews.admin.loading' | transloco"
+    emptyIcon="star"
+    [emptyTitle]="'reviews.admin.emptyTitle' | transloco"
+    [emptyDescription]="'reviews.admin.emptyDescription' | transloco"
+    [listLabel]="'reviews.admin.title' | transloco"
+  >
+    @if (result(); as current) {
+      @for (report of current.items; track report.id) {
+        <li appListItem>
+          <strong>{{
+            'reviews.admin.item'
+              | transloco
+                : {
+                    rating: report.reviewRating,
+                    reason: 'reviews.reason.' + report.reason | transloco,
+                  }
+          }}</strong>
+          @if (report.reviewComment) {
+            <small>{{ report.reviewComment }}</small>
+          }
+          @if (report.details) {
+            <small>{{ report.details }}</small>
+          }
+          @if (report.resolutionNote) {
+            <small>{{ report.resolutionNote }}</small>
+          }
+          <span status>
+            <app-badge [tone]="tones[report.status]">{{
+              'reviews.admin.status.' + report.status | transloco
+            }}</app-badge>
+          </span>
+          @if (report.status === 'OPEN') {
+            <span actions>
+              <button appButton type="button" variant="secondary" (click)="resolve(report, 'KEEP')">
+                {{ 'reviews.admin.keep' | transloco }}
+              </button>
+              <button appButton type="button" (click)="resolve(report, 'HIDE')">
+                {{ 'reviews.admin.hide' | transloco }}
+              </button>
+            </span>
+          }
+        </li>
+      }
+    }
+    @if (result(); as current) {
+      <app-paginator
+        paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="changeSize($event)"
+        (pageChange)="goTo($event)"
+      />
+    }
+  </app-list-state>
+</app-page>

@@ -91,6 +91,13 @@ export const NAV_ITEMS: readonly NavItem[] = [
     group: 'management',
   },
   {
+    labelKey: 'nav.reviews',
+    path: '/admin/reviews',
+    icon: 'star',
+    roles: ['ADMIN'],
+    group: 'management',
+  },
+  {
     labelKey: 'nav.audit',
     path: '/admin/audit-logs',
     icon: 'history',

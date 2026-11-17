@@ -494,3 +494,31 @@ export const RENTAL_PATH: Record<RentalTarget, RentalTarget[]> = {
   ACTIVE: ['APPROVED', 'ACTIVE'],
   FINISHED: ['APPROVED', 'ACTIVE', 'FINISHED'],
 };
+
+export interface SeedReview {
+  spot: string;
+  startOffset: number;
+  renterRating: number;
+  renterComment: string;
+  ownerRating?: number;
+  ownerComment?: string;
+  reportedByOwner?: string;
+}
+
+export const REVIEWS: SeedReview[] = [
+  {
+    spot: 'a-01',
+    startOffset: -10,
+    renterRating: 4,
+    renterComment: 'Seed: good spot, gate takes a while to open.',
+    ownerRating: 5,
+    ownerComment: 'Seed: respectful renter.',
+    reportedByOwner: 'Seed: the gate does not take long, I dispute this.',
+  },
+  {
+    spot: 'a-02',
+    startOffset: -2,
+    renterRating: 5,
+    renterComment: 'Seed: covered and easy to reach.',
+  },
+];

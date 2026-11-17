@@ -42,7 +42,17 @@
           <span leading>
             <app-avatar [name]="rental.renterName" [src]="rental.renterPhotoUrl" />
           </span>
-          <strong>{{ rental.renterName }}</strong>
+          <strong>
+            @if (rental.renterUserId) {
+              <a [routerLink]="['/users', rental.renterUserId, 'profile']">{{
+                rental.renterName
+              }}</a>
+              @let rating = ratings().get(rental.renterUserId);
+              <app-rating [average]="rating?.average ?? null" [total]="rating?.total ?? 0" />
+            } @else {
+              {{ rental.renterName }}
+            }
+          </strong>
           <small>{{ vehicle(rental) }}</small>
           <small>
             {{ 'requests.spot' | transloco: { number: rental.parkingSpotNumber } }} ·
@@ -62,6 +72,13 @@
               'requests.status.' + rental.status | transloco
             }}</app-badge>
           </span>
+          @if (rental.status === 'FINISHED') {
+            <span actions>
+              <button appButton type="button" variant="secondary" (click)="rate(rental)">
+                {{ 'reviews.rate' | transloco }}
+              </button>
+            </span>
+          }
           @if (rental.status === 'PENDING') {
             <span actions class="decisions">
               <button

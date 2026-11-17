@@ -102,6 +102,17 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'admin/reviews',
+        canActivate: [roleGuard('ADMIN')],
+        loadChildren: () =>
+          import('./features/reviews/reviews.routes').then((m) => m.REVIEW_REPORT_ROUTES),
+      },
+      {
+        path: 'users/:id/profile',
+        loadChildren: () =>
+          import('./features/reviews/reviews.routes').then((m) => m.PROFILE_ROUTES),
+      },
+      {
         path: 'condominiums/:id/parking-spots',
         canActivate: [roleGuard('CONDOMINIUM_ADMIN')],
         loadChildren: () =>

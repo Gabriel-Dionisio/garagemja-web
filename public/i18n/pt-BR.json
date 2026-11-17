@@ -140,6 +140,7 @@
     "searchPlaceholder": "Condomínio, bairro ou endereço",
     "logout": "Sair",
     "condominiums": "Condomínios",
+    "reviews": "Denúncias de avaliações",
     "audit": "Auditoria",
     "dashboard": "Painel",
     "management": "Gestão",
@@ -184,6 +185,8 @@
     "vehicleNew": "Cadastrar veículo",
     "vehicleEdit": "Editar veículo",
     "spotSearch": "Buscar Vagas",
+    "adminReviews": "Denúncias de avaliações",
+    "profile": "Perfil",
     "spotDetails": "Detalhes da vaga",
     "wallet": "Carteira"
   },
@@ -1352,7 +1355,78 @@
       "PARKING_SPOT_UNBLOCKED": "Sua vaga em {{condominium}} foi desbloqueada.",
       "RENTAL_UNPAID_CANCELED": "O aluguel em {{condominium}} foi cancelado por falta de pagamento.",
       "PAYMENT_CONFIRMED": "Pagamento do aluguel em {{condominium}} confirmado.",
-      "PAYMENT_RECEIVED": "Pagamento recebido por um aluguel em {{condominium}}."
+      "PAYMENT_RECEIVED": "Pagamento recebido por um aluguel em {{condominium}}.",
+      "REVIEW_INVITE": "Seu aluguel em {{condominium}} terminou. Deixe uma avaliação.",
+      "REVIEW_REPORT_KEPT": "Sua denúncia sobre uma avaliação em {{condominium}} foi analisada e a avaliação foi mantida.",
+      "REVIEW_REPORT_HIDDEN": "Sua denúncia sobre uma avaliação em {{condominium}} foi aceita e a avaliação foi ocultada."
+    }
+  },
+  "reviews": {
+    "none": "Sem avaliações",
+    "rate": "Avaliar",
+    "rateAria": "Avaliar aluguel da vaga {{number}}",
+    "reported": "Denunciar avaliação",
+    "renterRating": "Nota do locatário",
+    "errors": {
+      "notFound": "Este aluguel não pode mais ser avaliado.",
+      "conflict": "Esta avaliação já foi enviada ou o prazo de 14 dias acabou.",
+      "resolved": "Esta denúncia já foi resolvida.",
+      "reported": "Você já denunciou esta avaliação."
+    },
+    "dialog": {
+      "title": { "spot": "Avaliar a vaga", "renter": "Avaliar o locatário" },
+      "hint": "Sua avaliação fica oculta até os dois lados avaliarem ou passarem 14 dias.",
+      "rating": "Nota",
+      "comment": "Comentário (opcional)",
+      "submit": "Enviar avaliação"
+    },
+    "report": {
+      "title": "Denunciar avaliação",
+      "hint": "Só os moderadores veem sua denúncia. A avaliação continua visível até a decisão.",
+      "reason": "Motivo",
+      "details": "Detalhes (opcional)",
+      "submit": "Enviar denúncia",
+      "action": "Denunciar"
+    },
+    "reason": {
+      "OFFENSIVE": "Ofensiva",
+      "FALSE": "Falsa",
+      "SPAM": "Spam",
+      "OTHER": "Outro"
+    },
+    "list": {
+      "title": "Avaliações",
+      "loading": "Carregando avaliações",
+      "emptyTitle": "Sem avaliações ainda",
+      "emptyDescription": "As avaliações aparecem depois de aluguéis concluídos."
+    },
+    "admin": {
+      "title": "Denúncias de avaliações",
+      "subtitle": "Mantenha ou oculte avaliações denunciadas",
+      "loading": "Carregando denúncias",
+      "emptyTitle": "Nenhuma denúncia",
+      "emptyDescription": "As avaliações denunciadas aparecem aqui.",
+      "filter": "Status da denúncia",
+      "all": "Todas",
+      "status": { "OPEN": "Aberta", "KEPT": "Mantida", "HIDDEN": "Oculta" },
+      "keep": "Manter avaliação",
+      "hide": "Ocultar avaliação",
+      "noteTitle": "Nota da decisão",
+      "noteLabel": "Motivo da decisão",
+      "confirm": "Confirmar",
+      "item": "{{rating}} ★ · {{reason}}"
+    },
+    "profile": {
+      "title": "Perfil",
+      "subtitle": "Perfil público",
+      "memberSince": "Membro desde {{date}}",
+      "asHost": "Como anfitrião",
+      "asRenter": "Como locatário",
+      "spots": "Vagas",
+      "noSpots": "Nenhuma vaga ativa",
+      "reviews": "Avaliações recebidas",
+      "notFound": "Perfil indisponível.",
+      "spot": "Vaga {{number}}"
     }
   },
   "wallet": {

@@ -35,6 +35,10 @@ import {
 } from '../../../../shared/ui/paginator/paginator';
 import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
 import { PaymentDialog, PaymentDialogData } from '../../components/payment-dialog/payment-dialog';
+import {
+  ReviewDialog,
+  ReviewDialogData,
+} from '../../../../shared/reviews/review-dialog/review-dialog';
 import { RentalsApi } from '../../../../shared/rentals/rentals-api';
 import {
   CancellationPreview,
@@ -151,6 +155,11 @@ export class MyRentalsPage {
       .open<boolean>(PaymentDialog, { data, ariaLabelledBy: 'payment-title' })
       .closed.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.reload.update((value) => value + 1));
+  }
+
+  protected rate(rental: Rental): void {
+    const data: ReviewDialogData = { rentalId: rental.id, subjectKey: 'spot' };
+    this.dialog.open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' });
   }
 
   protected cancel(rental: Rental): void {

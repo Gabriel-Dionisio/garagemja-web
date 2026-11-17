@@ -7,6 +7,7 @@
   <span class="info">
     <strong>{{ 'parkingSpots.spot' | transloco: { number: spot().number } }}</strong>
     <small>{{ spot().condominiumName }}</small>
+    <app-rating [average]="rating()?.average ?? null" [total]="rating()?.total ?? 0" />
     @if (spot().size; as size) {
       <small>{{ sizeLabels[size] | transloco }}</small>
     }

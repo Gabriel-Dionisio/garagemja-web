@@ -37,6 +37,7 @@ describe('navItemsFor', () => {
       '/condominiums',
       '/wallet',
       '/admin/users',
+      '/admin/reviews',
       '/admin/audit-logs',
     ]);
   });

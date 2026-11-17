@@ -6,6 +6,10 @@
   <a class="main link" [routerLink]="target" [queryParams]="queryParams()">
     <ng-container [ngTemplateOutlet]="body" />
   </a>
+} @else if (activatable()) {
+  <button type="button" class="main link" (click)="activated.emit()">
+    <ng-container [ngTemplateOutlet]="body" />
+  </button>
 } @else {
   <div class="main"><ng-container [ngTemplateOutlet]="body" /></div>
 }

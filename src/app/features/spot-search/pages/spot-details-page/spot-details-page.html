@@ -6,7 +6,7 @@
         : ('spotSearch.details.title' | transloco)
     "
     [subtitle]="details()?.spot?.condominiumName ?? ''"
-    backLink="/search"
+    [backLink]="backLink"
   />
 
   @if (error.text(); as message) {
@@ -15,39 +15,19 @@
     <app-skeleton [label]="'spotSearch.details.loading' | transloco" [rows]="4" />
   } @else if (details(); as current) {
     <app-card class="gallery">
-      @if (images()[selectedImage()]; as image) {
-        <img class="main" [src]="image.url" [alt]="'spotSearch.details.photo' | transloco" />
-      } @else {
-        <span class="main placeholder" aria-hidden="true"></span>
-      }
-      @if (images().length > 1) {
-        <ul class="thumbs">
-          @for (image of images(); track image.id; let index = $index) {
-            <li>
-              <button
-                type="button"
-                [attr.aria-pressed]="index === selectedImage()"
-                [attr.aria-label]="
-                  'spotSearch.details.showPhoto' | transloco: { number: index + 1 }
-                "
-                (click)="selectedImage.set(index)"
-              >
-                <img [src]="image.url" alt="" loading="lazy" />
-              </button>
-            </li>
-          }
-        </ul>
-      }
+      <app-carousel
+        [images]="images()"
+        [label]="'spotSearch.details.photo' | transloco"
+        [placeholder]="placeholder"
+      />
     </app-card>
 
     <app-card class="info">
       <dl>
-        @if (current.spot.size; as size) {
-          <div>
-            <dt>{{ 'spotSearch.details.size' | transloco }}</dt>
-            <dd>{{ sizeLabels[size] | transloco }}</dd>
-          </div>
-        }
+        <div>
+          <dt>{{ 'spotSearch.details.features' | transloco }}</dt>
+          <dd><app-spot-features [spot]="current.spot" /></dd>
+        </div>
         @if (current.spot.location) {
           <div>
             <dt>{{ 'spotSearch.details.location' | transloco }}</dt>
@@ -70,12 +50,6 @@
           </span>
         </p>
       }
-    </app-card>
-
-    <app-card class="reviews">
-      <h2>{{ 'reviews.list.title' | transloco }}</h2>
-      <app-rating [average]="summary()?.average ?? null" [total]="summary()?.total ?? 0" />
-      <app-review-list [source]="reviews" [canReport]="current.owned" />
     </app-card>
 
     <app-card class="periods">
@@ -120,5 +94,15 @@
         </button>
       }
     </div>
+
+    <app-card class="reviews">
+      <h2>{{ 'reviews.list.title' | transloco }}</h2>
+      @if (summary(); as rating) {
+        @if (rating.total > 0) {
+          <app-rating [average]="rating.average" [total]="rating.total" />
+        }
+      }
+      <app-review-list [source]="reviews" [canReport]="current.owned" />
+    </app-card>
   }
 </app-page>

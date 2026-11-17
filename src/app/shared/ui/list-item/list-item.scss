@@ -3,7 +3,7 @@
 :host {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
     'main main'
     'status actions';
@@ -33,6 +33,15 @@
 }
 
 .link {
+  &:is(button) {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
   &::after {
     position: absolute;
     inset: 0;
@@ -60,8 +69,17 @@
   z-index: 1;
   display: flex;
   grid-area: actions;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  gap: var(--space-1);
+  gap: var(--space-2);
+}
+
+.actions ::ng-deep > [actions] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
 }
 
 .status:empty,

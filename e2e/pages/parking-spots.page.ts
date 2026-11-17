@@ -107,6 +107,12 @@ export class ParkingSpotFormPage {
     await this.page.getByRole('link', { name: `Editar: ${number}` }).click();
   }
 
+  coverage(option: string): Locator {
+    return this.page
+      .getByRole('group', { name: 'Cobertura' })
+      .getByRole('button', { name: option, exact: true });
+  }
+
   async fill(number: string, location: string, size: string): Promise<void> {
     await this.number.fill(number);
     await this.location.fill(location);

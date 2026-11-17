@@ -1,5 +1,6 @@
 :host {
   display: block;
+  height: 100%;
   min-width: 0;
 }
 
@@ -28,26 +29,34 @@
   object-fit: cover;
 }
 
-.placeholder {
-  display: grid;
-  place-items: center;
-  color: var(--color-text-muted);
-}
-
 .info {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  flex: 1;
   padding: var(--space-3);
   min-width: 0;
 
+  strong,
   small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    min-height: 1lh;
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
   }
 }
 
+.features {
+  min-height: 1.5rem;
+}
+
 .price {
+  margin-top: auto;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;

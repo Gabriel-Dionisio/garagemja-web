@@ -10,21 +10,30 @@
       [description]="'spotSearch.emptyDescription' | transloco"
     />
   } @else {
-    <ul
-      class="grid"
-      [attr.aria-busy]="loading()"
-      [attr.aria-label]="'spotSearch.title' | transloco"
-    >
-      @for (spot of current.items; track spot.id) {
-        <li>
-          <app-spot-card
-            [spot]="spot"
-            [rating]="ratings().get(spot.id) ?? null"
-            [queryParams]="queryParams()"
-          />
-        </li>
-      }
-    </ul>
+    @if (compact()) {
+      <ng-container [ngTemplateOutlet]="grid" />
+    } @else {
+      <app-scroll-area class="items">
+        <ng-container [ngTemplateOutlet]="grid" />
+      </app-scroll-area>
+    }
+    <ng-template #grid>
+      <ul
+        class="grid"
+        [attr.aria-busy]="loading()"
+        [attr.aria-label]="'spotSearch.title' | transloco"
+      >
+        @for (spot of current.items; track spot.id) {
+          <li>
+            <app-spot-card
+              [spot]="spot"
+              [rating]="ratings().get(spot.id) ?? null"
+              [queryParams]="queryParams()"
+            />
+          </li>
+        }
+      </ul>
+    </ng-template>
     @if (!compact()) {
       <app-paginator
         [page]="current.page"

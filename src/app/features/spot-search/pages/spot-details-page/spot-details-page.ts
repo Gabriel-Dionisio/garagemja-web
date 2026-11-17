@@ -9,8 +9,9 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, UrlTree } from '@angular/router';
 import { catchError, filter, forkJoin, map, of, switchMap } from 'rxjs';
+import { safeReturnUrl } from '../../../../core/auth/return-url';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { LocaleService } from '../../../../core/i18n/locale-service';
 import { todayIso } from '../../../../shared/forms/date-format';
@@ -19,6 +20,7 @@ import { Alert } from '../../../../shared/ui/alert/alert';
 import { Avatar } from '../../../../shared/ui/avatar/avatar';
 import { Button } from '../../../../shared/ui/button/button';
 import { Card } from '../../../../shared/ui/card/card';
+import { Carousel } from '../../../../shared/ui/carousel/carousel';
 import { Page } from '../../../../shared/ui/page/page';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { ReviewList, ReviewSource } from '../../../../shared/reviews/review-list/review-list';
@@ -26,11 +28,12 @@ import { RatingSummary } from '../../../../shared/reviews/review.model';
 import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
 import { Rating } from '../../../../shared/ui/rating/rating';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
+import { SpotFeatures } from '../../../../shared/spots/spot-features/spot-features';
 import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
-import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
 import {
   ParkingSpot,
   ParkingSpotImage,
+  SPOT_PLACEHOLDER,
   SpotAvailability,
   SpotRules,
 } from '../../../../shared/spots/parking-spot.model';
@@ -57,11 +60,13 @@ interface SpotDetails {
     Avatar,
     Button,
     Card,
+    Carousel,
     Page,
     PageHeader,
     Rating,
     ReviewList,
     Skeleton,
+    SpotFeatures,
   ],
   templateUrl: './spot-details-page.html',
   styleUrl: './spot-details-page.scss',
@@ -78,10 +83,10 @@ export class SpotDetailsPage {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly error = inject(ErrorText).state({ 404: 'errors.parkingSpots.notFound' });
-  protected readonly sizeLabels = PARKING_SPOT_SIZE_LABELS;
+  protected readonly backLink = this.backTarget();
   protected readonly money = computed(() => moneyFormatter(this.locale.language()));
   protected readonly date = computed(() => dateFormatter(this.locale.language()));
-  protected readonly selectedImage = signal(0);
+  protected readonly placeholder = SPOT_PLACEHOLDER;
   protected readonly details = signal<SpotDetails | null>(null);
   protected readonly loading = signal(true);
   protected readonly summary = signal<RatingSummary | null>(null);
@@ -130,6 +135,11 @@ export class SpotDetailsPage {
           this.loading.set(false);
         },
       });
+  }
+
+  private backTarget(): UrlTree | string {
+    const origin = this.route.snapshot.queryParamMap.get('returnUrl');
+    return origin ? this.router.parseUrl(safeReturnUrl(origin)) : '/search';
   }
 
   protected request(details: SpotDetails): void {

@@ -1,7 +1,12 @@
 @if (total() > 0 && average() !== null) {
-  <app-icon name="star" />
-  <strong>{{ average()?.toFixed(1) }}</strong>
-  <span>({{ total() }})</span>
+  <span
+    class="value"
+    [attr.aria-label]="'reviews.ratingLabel' | transloco: { average: formatted(), total: total() }"
+  >
+    <app-icon name="star" />
+    <strong>{{ formatted() }}</strong>
+    <span>({{ total() }})</span>
+  </span>
 } @else {
   <span>{{ 'reviews.none' | transloco }}</span>
 }

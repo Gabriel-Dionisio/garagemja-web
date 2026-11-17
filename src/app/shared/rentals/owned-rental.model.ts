@@ -23,4 +23,6 @@ export interface OwnedRental {
   vehiclePlate: string;
   vehicleBrand: string | null;
   vehicleModel: string | null;
+  paid: boolean;
+  paymentPending: boolean;
 }

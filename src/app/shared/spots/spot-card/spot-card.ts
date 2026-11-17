@@ -5,13 +5,12 @@ import { LocaleService } from '../../../core/i18n/locale-service';
 import { moneyFormatter } from '../../forms/format';
 import { RatingSummary } from '../../reviews/review.model';
 import { Rating } from '../../ui/rating/rating';
-import { Icon } from '../../ui/icon/icon';
-import { PARKING_SPOT_SIZE_LABELS } from '../parking-spot-status';
-import { ParkingSpot } from '../parking-spot.model';
+import { ParkingSpot, SPOT_PLACEHOLDER } from '../parking-spot.model';
+import { SpotFeatures } from '../spot-features/spot-features';
 
 @Component({
   selector: 'app-spot-card',
-  imports: [TranslocoPipe, RouterLink, Icon, Rating],
+  imports: [TranslocoPipe, RouterLink, Rating, SpotFeatures],
   templateUrl: './spot-card.html',
   styleUrl: './spot-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +22,6 @@ export class SpotCard {
   readonly rating = input<RatingSummary | null>(null);
   readonly queryParams = input<Record<string, string | null>>({});
 
-  protected readonly sizeLabels = PARKING_SPOT_SIZE_LABELS;
+  protected readonly placeholder = SPOT_PLACEHOLDER;
   protected readonly money = computed(() => moneyFormatter(this.locale.language()));
 }

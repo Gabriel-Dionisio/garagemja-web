@@ -68,7 +68,7 @@
     >
       @if (result(); as current) {
         @for (resident of current.items; track resident.id) {
-          <li appListItem>
+          <li appListItem [link]="['/users', resident.userId, 'profile']">
             <app-user-summary
               [name]="resident.name"
               [email]="resident.email"

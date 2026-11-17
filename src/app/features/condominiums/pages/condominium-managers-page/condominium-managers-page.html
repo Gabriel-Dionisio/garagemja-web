@@ -42,7 +42,7 @@
                 <strong>{{ request.invitedEmail }}</strong>
                 <small>{{
                   'condominiums.managers.expiresAt'
-                    | transloco: { date: (request.expiresAt | date: 'shortDate') }
+                    | transloco: { date: shortDate()(request.expiresAt) }
                 }}</small>
               </span>
               <span actions>
@@ -88,7 +88,7 @@
       } @else {
         <ul class="list">
           @for (manager of managers(); track manager.userId) {
-            <li appListItem>
+            <li appListItem [link]="['/users', manager.userId, 'profile']">
               <app-user-summary [name]="manager.name" [email]="manager.email" />
               <span actions>
                 @if (isAdmin() && canTransfer()) {
@@ -130,7 +130,7 @@
                 <strong>{{ invite.invitedEmail }}</strong>
                 <small>{{
                   'condominiums.managers.expiresAt'
-                    | transloco: { date: (invite.expiresAt | date: 'shortDate') }
+                    | transloco: { date: shortDate()(invite.expiresAt) }
                 }}</small>
               </span>
               <app-badge status tone="warning">{{

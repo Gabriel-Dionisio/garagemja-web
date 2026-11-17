@@ -60,7 +60,7 @@
     >
       @if (result(); as current) {
         @for (spot of current.items; track spot.id) {
-          <li appListItem>
+          <li appListItem [link]="['/condominiums', id(), 'parking-spots', spot.id]">
             <span leading>
               @if (spot.thumbnailUrl; as url) {
                 <img class="thumb" [src]="url" alt="" />

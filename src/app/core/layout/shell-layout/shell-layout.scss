@@ -206,6 +206,30 @@
       min-height: 100%;
     }
   }
+
+  &[data-mode='sheet'] {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 20;
+    max-height: 85dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+
+    .panel {
+      gap: var(--space-3);
+      padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    }
+
+    .brand {
+      display: none;
+    }
+
+    .group-title:first-child {
+      margin-top: 0;
+      border-top: 0;
+    }
+  }
 }
 
 .backdrop {

@@ -124,7 +124,7 @@
                 <strong>{{ 'audit.entity.' + log.entityType | transloco }}</strong>
               </span>
               <small
-                >{{ log.createdAt | date: 'short' }}
+                >{{ dateTime()(log.createdAt) }}
                 <span class="zone">{{ offset(log.createdAt) }}</span></small
               >
               <app-icon class="chevron" name="chevron-right" />

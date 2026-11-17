@@ -36,14 +36,9 @@
                     reason: 'reviews.reason.' + report.reason | transloco,
                   }
           }}</strong>
-          @if (report.reviewComment) {
-            <small>{{ report.reviewComment }}</small>
-          }
-          @if (report.details) {
-            <small>{{ report.details }}</small>
-          }
-          @if (report.resolutionNote) {
-            <small>{{ report.resolutionNote }}</small>
+          <small>{{ context(report) }}</small>
+          @if (notes(report); as text) {
+            <small class="notes" [title]="text">{{ text }}</small>
           }
           <span status>
             <app-badge [tone]="tones[report.status]">{{

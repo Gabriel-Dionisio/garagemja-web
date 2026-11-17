@@ -6,8 +6,7 @@
 }
 
 nav {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: flex;
 }
 
 a,
@@ -15,15 +14,17 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1 1 auto;
   justify-content: center;
   gap: var(--space-1);
+  min-width: 0;
   height: 3.5rem;
   padding: var(--space-1);
   border: 0;
   background: transparent;
   color: var(--color-text-muted);
   font: inherit;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;

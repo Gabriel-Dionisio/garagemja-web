@@ -1,19 +1,10 @@
 <a class="card" [routerLink]="['/search', spot().id]" [queryParams]="queryParams()">
-  @if (spot().thumbnailUrl; as url) {
-    <img class="photo" [src]="url" alt="" loading="lazy" />
-  } @else {
-    <span class="photo placeholder"><app-icon name="parking" /></span>
-  }
+  <img class="photo" [src]="spot().thumbnailUrl ?? placeholder" alt="" loading="lazy" />
   <span class="info">
     <strong>{{ 'parkingSpots.spot' | transloco: { number: spot().number } }}</strong>
     <small>{{ spot().condominiumName }}</small>
     <app-rating [average]="rating()?.average ?? null" [total]="rating()?.total ?? 0" />
-    @if (spot().size; as size) {
-      <small>{{ sizeLabels[size] | transloco }}</small>
-    }
-    @if (spot().covered) {
-      <small>{{ 'parkingSpots.fields.covered' | transloco }}</small>
-    }
+    <app-spot-features class="features" [spot]="spot()" />
     @if (spot().availability; as availability) {
       <span class="price">
         @if (availability.dailyPrice !== null) {

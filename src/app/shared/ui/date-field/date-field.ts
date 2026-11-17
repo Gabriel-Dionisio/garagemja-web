@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   Injector,
   afterNextRender,
@@ -26,6 +27,8 @@ import { Icon } from '../icon/icon';
 import { DateInput } from '../date-input/date-input';
 
 let nextId = 0;
+const GAP = 4;
+const SHEET_QUERY = '(max-width: 620px)';
 
 interface Day {
   iso: string;
@@ -42,6 +45,7 @@ interface Day {
   host: {
     '(document:click)': 'onDocumentClick($event)',
     '(keydown.escape)': 'close()',
+    '(window:resize)': 'open.set(false)',
   },
 })
 export class DateField {
@@ -66,6 +70,7 @@ export class DateField {
   protected readonly inputId = `date-input-${nextId}`;
   protected readonly errorId = `date-error-${nextId++}`;
   protected readonly open = signal(false);
+  protected readonly position = signal<{ top: number; left: number } | null>(null);
   protected readonly view = signal<Pick<DateParts, 'year' | 'month'>>({ year: 2000, month: 1 });
   protected readonly today = todayIso();
 
@@ -103,6 +108,12 @@ export class DateField {
   protected readonly canGoPreviousYear = computed(() => this.view().year > MIN_YEAR);
   protected readonly canGoNextYear = computed(() => this.view().year < MAX_YEAR);
 
+  constructor() {
+    const listener = (event: Event) => this.onScroll(event);
+    document.addEventListener('scroll', listener, true);
+    inject(DestroyRef).onDestroy(() => document.removeEventListener('scroll', listener, true));
+  }
+
   protected toggle(): void {
     if (this.open()) {
       this.close();
@@ -110,11 +121,34 @@ export class DateField {
     }
     const base = parseIso(this.isoValue()) ?? parseIso(todayIso());
     if (base) this.view.set({ year: base.year, month: base.month });
+    this.position.set(null);
     this.open.set(true);
     afterNextRender(
-      () => this.host.querySelector<HTMLElement>('[data-focus="true"]:not(:disabled)')?.focus(),
+      () => {
+        this.place();
+        this.host.querySelector<HTMLElement>('[data-focus="true"]:not(:disabled)')?.focus();
+      },
       { injector: this.injector },
     );
+  }
+
+  // Fixed position keeps the popup visible inside dialogs and scroll areas that clip overflow.
+  private place(): void {
+    const popup = this.host.querySelector<HTMLElement>('.popup');
+    const field = this.host.querySelector<HTMLElement>('.field');
+    if (!popup || !field || window.matchMedia?.(SHEET_QUERY).matches) return;
+    const rect = field.getBoundingClientRect();
+    const { offsetWidth: width, offsetHeight: height } = popup;
+    const fitsBelow = rect.bottom + GAP + height <= window.innerHeight - GAP;
+    const top = fitsBelow ? rect.bottom + GAP : Math.max(GAP, rect.top - GAP - height);
+    const left = Math.max(GAP, Math.min(rect.left, window.innerWidth - width - GAP));
+    this.position.set({ top, left });
+  }
+
+  private onScroll(event: Event): void {
+    const target = event.target;
+    if (this.open() && !(target instanceof Node && this.host.contains(target)))
+      this.open.set(false);
   }
 
   protected close(): void {

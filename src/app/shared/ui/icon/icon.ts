@@ -53,9 +53,14 @@ const PATHS = {
   edit: 'M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z',
   trash:
     'M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6',
+  ruler: 'M3 8h18v8H3zM7 8v3M11 8v4M15 8v3M19 8v4',
+  roof: 'M2 12l10-8 10 8M5 10v10h14V10M9 20v-5h6v5',
+  sun: 'M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
 } as const;
 
 export type IconName = keyof typeof PATHS;
+
+export const iconPath = (name: IconName): string => PATHS[name];
 
 @Component({
   selector: 'app-icon',

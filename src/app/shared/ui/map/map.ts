@@ -14,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import * as L from 'leaflet';
+import { iconPath } from '../icon/icon';
 
 export interface MapPin {
   id: string;
@@ -25,7 +26,7 @@ export interface MapPin {
 
 const DEFAULT_CENTER: L.LatLngExpression = [-14.235, -51.925];
 const DEFAULT_ZOOM = 4;
-const MAX_ZOOM = 17;
+const MAX_ZOOM = 15;
 
 @Component({
   selector: 'app-map',
@@ -46,6 +47,7 @@ export class AppMap {
   private readonly map = signal<L.Map | null>(null);
   private readonly layer = L.layerGroup();
   private destroyed = false;
+  private resizes: ResizeObserver | null = null;
 
   constructor() {
     afterNextRender(() => {
@@ -61,13 +63,17 @@ export class AppMap {
       L.control.attribution({ prefix: false }).addTo(map);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
+        referrerPolicy: 'strict-origin-when-cross-origin',
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
       this.layer.addTo(map);
       this.map.set(map);
+      this.resizes = new ResizeObserver(() => map.invalidateSize());
+      this.resizes.observe(this.container().nativeElement);
     });
     inject(DestroyRef).onDestroy(() => {
       this.destroyed = true;
+      this.resizes?.disconnect();
       this.map()?.remove();
     });
 
@@ -88,11 +94,13 @@ export class AppMap {
     this.layer.clearLayers();
     for (const pin of pins) {
       const selected = pin.id === selectedId;
-      const icon = document.createElement('span');
-      icon.className = selected ? 'map-pin map-pin--selected' : 'map-pin';
-      icon.textContent = String(pin.count);
       const marker = L.marker([pin.latitude, pin.longitude], {
-        icon: L.divIcon({ html: icon, className: 'map-pin-wrapper', iconSize: [36, 36] }),
+        icon: L.divIcon({
+          html: pinElement(pin.count, selected),
+          className: 'map-pin-wrapper',
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
+        }),
       });
       marker.addTo(this.layer);
       const element = marker.getElement();
@@ -107,4 +115,22 @@ export class AppMap {
       marker.on('click', () => this.pinClick.emit(pin.id));
     }
   }
+}
+
+const SVG = 'http://www.w3.org/2000/svg';
+
+function pinElement(count: number, selected: boolean): HTMLElement {
+  const pin = document.createElement('span');
+  pin.className = selected ? 'map-pin map-pin--selected' : 'map-pin';
+  const svg = document.createElementNS(SVG, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(SVG, 'path');
+  path.setAttribute('d', iconPath('building'));
+  svg.append(path);
+  const badge = document.createElement('span');
+  badge.className = 'map-pin__count';
+  badge.textContent = String(count);
+  pin.append(svg, badge);
+  return pin;
 }

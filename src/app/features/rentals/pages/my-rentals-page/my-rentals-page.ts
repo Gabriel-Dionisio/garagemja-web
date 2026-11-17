@@ -39,6 +39,9 @@ import {
   ReviewDialog,
   ReviewDialogData,
 } from '../../../../shared/reviews/review-dialog/review-dialog';
+import { ReviewsApi } from '../../../../shared/reviews/reviews-api';
+import { RentalDetailsDialog } from '../../../../shared/rentals/rental-details-dialog/rental-details-dialog';
+import { renterRentalDetails } from '../../../../shared/rentals/rental-details';
 import { RentalsApi } from '../../../../shared/rentals/rentals-api';
 import {
   CancellationPreview,
@@ -47,8 +50,6 @@ import {
   RentalStatus,
   isRentalStatus,
 } from '../../../../shared/rentals/rental.model';
-
-const REASON_CODES = ['unpaid', 'condominium_closed'];
 
 @Component({
   selector: 'app-my-rentals-page',
@@ -104,6 +105,8 @@ export class MyRentalsPage {
   protected readonly loading = signal(true);
   protected readonly result = signal<ResultPage<Rental> | null>(null);
   protected readonly empty = computed(() => this.result()?.items.length === 0);
+  protected readonly pendingReviews = signal(new Set<string>());
+  private readonly reviews = inject(ReviewsApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly reload = signal(0);
   private readonly request = computed(() => ({
@@ -136,17 +139,30 @@ export class MyRentalsPage {
       .subscribe((result) => {
         this.result.set(result);
         this.loading.set(false);
+        this.loadPendingReviews(result);
       });
+  }
+
+  private loadPendingReviews(result: ResultPage<Rental>): void {
+    const ids = result.items.filter((item) => item.status === 'FINISHED').map((item) => item.id);
+    this.reviews
+      .pendingReviews(ids)
+      .pipe(
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((pending) => this.pendingReviews.set(pending));
   }
 
   protected period(rental: Rental) {
     return periodText(rental, this.locale.language());
   }
 
-  protected reason(rental: Rental): string {
-    return rental.cancelReason && REASON_CODES.includes(rental.cancelReason)
-      ? `rentals.reasonCode.${rental.cancelReason}`
-      : '';
+  protected details(rental: Rental): void {
+    this.dialog.open(RentalDetailsDialog, {
+      data: renterRentalDetails(rental, this.locale.language()),
+      ariaLabelledBy: 'rental-details-title',
+    });
   }
 
   protected pay(rental: Rental): void {
@@ -159,12 +175,18 @@ export class MyRentalsPage {
 
   protected rate(rental: Rental): void {
     const data: ReviewDialogData = { rentalId: rental.id, subjectKey: 'spot' };
-    this.dialog.open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' });
+    this.dialog
+      .open<boolean>(ReviewDialog, { data, ariaLabelledBy: 'review-title' })
+      .closed.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((sent) => {
+        if (sent)
+          this.pendingReviews.update((ids) => new Set([...ids].filter((id) => id !== rental.id)));
+      });
   }
 
   protected cancel(rental: Rental): void {
     const preview$ = rental.paid
-      ? this.api.cancellationPreview(rental.id).pipe(catchError(() => of(null)))
+      ? this.api.cancellationPreview(rental.id)
       : of<CancellationPreview | null>(null);
     preview$
       .pipe(

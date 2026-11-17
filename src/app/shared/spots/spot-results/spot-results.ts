@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -8,13 +9,24 @@ import { Page } from '../../models/page';
 import { Alert } from '../../ui/alert/alert';
 import { EmptyState } from '../../ui/empty-state/empty-state';
 import { PAGE_SIZES, Paginator } from '../../ui/paginator/paginator';
+import { ScrollArea } from '../../ui/scroll-area/scroll-area';
 import { Skeleton } from '../../ui/skeleton/skeleton';
 import { ParkingSpot } from '../parking-spot.model';
 import { SpotCard } from '../spot-card/spot-card';
 
 @Component({
   selector: 'app-spot-results',
-  imports: [TranslocoPipe, Alert, EmptyState, Paginator, Skeleton, SpotCard],
+  imports: [
+    NgTemplateOutlet,
+    TranslocoPipe,
+    Alert,
+    EmptyState,
+    Paginator,
+    ScrollArea,
+    Skeleton,
+    SpotCard,
+  ],
+  host: { '[class.compact]': 'compact()' },
   templateUrl: './spot-results.html',
   styleUrl: './spot-results.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -38,67 +38,62 @@
   >
     @if (result(); as current) {
       @for (rental of current.items; track rental.id) {
-        <li appListItem>
+        <li appListItem activatable (activated)="details(rental)">
           <span leading>
             <app-avatar [name]="rental.renterName" [src]="rental.renterPhotoUrl" />
           </span>
-          <strong>
-            @if (rental.renterUserId) {
-              <a [routerLink]="['/users', rental.renterUserId, 'profile']">{{
-                rental.renterName
-              }}</a>
-              @let rating = ratings().get(rental.renterUserId);
+          <strong class="renter">
+            {{ rental.renterName }}
+            @if (rental.renterUserId; as renterId) {
+              @let rating = ratings().get(renterId);
               <app-rating [average]="rating?.average ?? null" [total]="rating?.total ?? 0" />
-            } @else {
-              {{ rental.renterName }}
             }
           </strong>
-          <small>{{ vehicle(rental) }}</small>
           <small>
             {{ 'requests.spot' | transloco: { number: rental.parkingSpotNumber } }} ·
             {{ rental.condominiumName }}
           </small>
           @let when = period(rental);
-          <small>{{ when.key | transloco: when.params }} · {{ money()(rental.ownerAmount) }}</small>
-          @if (rental.cancelReason) {
-            @let key = reasonKey(rental);
-            <small>{{
-              'requests.reason'
-                | transloco: { reason: key ? (key | transloco) : rental.cancelReason }
-            }}</small>
-          }
+          <small>
+            {{ when.key | transloco: when.params }} · {{ money()(rental.ownerAmount) }}
+          </small>
           <span status>
             <app-badge [tone]="tones[rental.status]">{{
               'requests.status.' + rental.status | transloco
             }}</app-badge>
           </span>
-          @if (rental.status === 'FINISHED') {
+          @if (pendingReviews().has(rental.id) || rental.status === 'PENDING') {
             <span actions>
-              <button appButton type="button" variant="secondary" (click)="rate(rental)">
-                {{ 'reviews.rate' | transloco }}
-              </button>
-            </span>
-          }
-          @if (rental.status === 'PENDING') {
-            <span actions class="decisions">
-              <button
-                appButton
-                type="button"
-                variant="secondary"
-                [disabled]="deciding() !== null"
-                (click)="refuse(rental)"
-              >
-                {{ 'requests.refuse' | transloco }}
-              </button>
-              <button
-                appButton
-                type="button"
-                [disabled]="deciding() !== null"
-                [loading]="deciding() === rental.id"
-                (click)="approve(rental)"
-              >
-                {{ 'requests.approve' | transloco }}
-              </button>
+              @if (pendingReviews().has(rental.id)) {
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'reviews.rate' | transloco"
+                  (click)="rate(rental)"
+                >
+                  <app-icon name="star" />
+                </button>
+              }
+              @if (rental.status === 'PENDING') {
+                <button
+                  appIconButton
+                  type="button"
+                  [label]="'requests.refuse' | transloco"
+                  [disabled]="deciding() !== null"
+                  (click)="refuse(rental)"
+                >
+                  <app-icon name="close" />
+                </button>
+                <button
+                  appButton
+                  type="button"
+                  [disabled]="deciding() !== null"
+                  [loading]="deciding() === rental.id"
+                  (click)="approve(rental)"
+                >
+                  {{ 'requests.approve' | transloco }}
+                </button>
+              }
             </span>
           }
         </li>

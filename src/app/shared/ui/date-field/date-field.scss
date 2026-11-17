@@ -48,9 +48,9 @@ input {
 }
 
 .popup {
-  position: absolute;
-  z-index: 20;
-  top: calc(100% + var(--space-1));
+  position: fixed;
+  z-index: 1100;
+  top: 0;
   left: 0;
   width: 21rem;
   max-width: calc(100vw - var(--space-4));
@@ -66,8 +66,13 @@ input {
     width: min(22rem, calc(100vw - var(--space-3)));
   }
 
+  @media (min-width: 621px) {
+    &:not(.placed) {
+      visibility: hidden;
+    }
+  }
+
   @media (max-width: 620px) {
-    position: fixed;
     top: auto;
     right: 0;
     bottom: 0;
@@ -89,7 +94,7 @@ input {
   @media (max-width: 620px) {
     position: fixed;
     inset: 0;
-    z-index: 19;
+    z-index: 1099;
     display: block;
     background: rgb(15 23 42 / 50%);
   }

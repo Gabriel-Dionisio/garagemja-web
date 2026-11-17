@@ -1,4 +1,5 @@
 import { CondominiumTabsState } from '../../../../shared/ui/condominium-tabs/condominium-tabs-state';
+import { dateTimeFormatter } from '../../../../shared/forms/format';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
 import { DEFAULT_PAGE_SIZE, PAGE_SIZES } from '../../../../shared/ui/paginator/paginator';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -12,7 +13,6 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { EMPTY, Observable, catchError, finalize, map, switchMap } from 'rxjs';
 import { Language } from '../../../../core/i18n/locale-service';
@@ -59,7 +59,6 @@ const ACTION_TONES: Record<AuditAction, BadgeTone> = {
     DateField,
     ChipGroup,
     TranslocoPipe,
-    DatePipe,
     Badge,
     Button,
     Icon,
@@ -76,6 +75,7 @@ const ACTION_TONES: Record<AuditAction, BadgeTone> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuditLogsPage {
+  protected readonly dateTime = computed(() => dateTimeFormatter(this.language()));
   private readonly api = inject(AuditLogsApi);
   private readonly auth = inject(AuthService);
   private readonly tabsState = inject(CondominiumTabsState);

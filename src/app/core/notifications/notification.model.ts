@@ -37,3 +37,20 @@ export interface AppNotification {
   createdAt: string;
   read: boolean;
 }
+
+const DESTINATIONS: Record<string, string> = {
+  RENTAL_REQUESTED: '/requests',
+  PAYMENT_RECEIVED: '/requests',
+  RENTAL: '/rentals',
+  PAYMENT: '/rentals',
+  REVIEW_INVITE: '/rentals',
+  CONDOMINIUM: '/condominiums',
+  RESIDENT: '/condominiums',
+  RESIDENCY: '/condominiums',
+  MANAGER: '/condominiums',
+  PARKING: '/parking-spots',
+};
+
+export function notificationDestination(kind: NotificationKind): string | null {
+  return DESTINATIONS[kind] ?? DESTINATIONS[kind.split('_')[0]] ?? null;
+}

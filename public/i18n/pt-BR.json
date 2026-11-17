@@ -39,6 +39,9 @@
     }
   },
   "common": {
+    "coverage": {
+      "uncovered": "Descoberta"
+    },
     "fields": {
       "email": "E-mail",
       "password": "Senha",
@@ -72,7 +75,8 @@
       "save": "Salvar",
       "filter": "Filtrar",
       "clear": "Limpar",
-      "retry": "Tentar de novo"
+      "retry": "Tentar de novo",
+      "close": "Fechar"
     },
     "pagination": {
       "perPage": "Itens por página",
@@ -116,8 +120,9 @@
       "previous": "Imagem anterior",
       "next": "Próxima imagem",
       "change": "Trocar imagem",
-      "moveBack": "Mover para trás",
-      "moveForward": "Mover para frente",
+      "show": "Mostrar imagem {{number}}",
+      "position": "Imagem {{current}} de {{total}}",
+      "makeCover": "Definir como capa",
       "cover": "Capa",
       "remove": "Remover imagem",
       "rejected": {
@@ -129,7 +134,13 @@
   "nav": {
     "more": "Mais",
     "bottom": "Navegação rápida",
-    "short": { "search": "Buscar", "rentals": "Aluguéis", "requests": "Pedidos", "reviews": "Denúncias", "audit": "Auditoria" },
+    "short": {
+      "search": "Buscar",
+      "rentals": "Aluguéis",
+      "requests": "Pedidos",
+      "reviews": "Denúncias",
+      "audit": "Auditoria"
+    },
     "groups": { "rent": "Alugar", "announce": "Anunciar" },
     "home": "Início",
     "myRentals": "Meus aluguéis",
@@ -195,48 +206,70 @@
   },
   "requests": {
     "title": "Pedidos recebidos",
-    "count": "{{count}} solicitações",
-    "filters": "Filtrar solicitações",
+    "count": "Pedidos: {{count}}",
+    "filters": "Filtros",
     "search": "Buscar por locatário, placa, vaga ou condomínio",
-    "loading": "Carregando solicitações…",
+    "loading": "Carregando pedidos…",
     "spot": "Vaga {{number}}",
     "approve": "Aprovar",
     "refuse": "Recusar",
     "reason": "Motivo: {{reason}}",
     "conflict": "Não foi possível aprovar: o pedido expirou, já começou ou o condomínio não está ativo.",
     "tabs": {
-      "label": "Situação das solicitações",
-      "all": "Todas"
+      "label": "Situação dos pedidos",
+      "all": "Todos"
     },
     "status": {
       "PENDING": "Pendente",
-      "APPROVED": "Aprovada",
+      "APPROVED": "Aprovado",
       "ACTIVE": "Em andamento",
-      "REFUSED": "Recusada",
-      "CANCELED": "Cancelada",
-      "FINISHED": "Concluída",
-      "EXPIRED": "Expirada"
+      "REFUSED": "Recusado",
+      "CANCELED": "Cancelado",
+      "FINISHED": "Concluído",
+      "EXPIRED": "Expirado"
     },
-    "emptyTitle": "Nenhuma solicitação encontrada",
+    "emptyTitle": "Nenhum pedido encontrado",
     "emptyDescription": "Os pedidos de aluguel das suas vagas aparecerão aqui.",
     "dialog": {
       "approve": {
-        "title": "Aprovar solicitação",
+        "title": "Aprovar pedido",
         "message": "Aprovar o pedido de aluguel da vaga {{spot}}? Outros pedidos pendentes que coincidam com o período serão recusados.",
         "confirm": "Aprovar"
       },
       "refuse": {
-        "title": "Recusar solicitação",
+        "title": "Recusar pedido",
         "message": "Recusar o pedido de aluguel da vaga {{spot}}?",
         "confirm": "Recusar",
         "reason": "Motivo da recusa"
       }
     }
   },
+  "rentalDetails": {
+    "title": "Detalhes do aluguel",
+    "status": "Situação",
+    "spot": "Vaga",
+    "condominium": "Condomínio",
+    "period": "Período",
+    "price": "Valor da diária",
+    "total": "Valor total",
+    "payable": "Você paga",
+    "ownerAmount": "Você recebe",
+    "paymentLabel": "Pagamento",
+    "payment": {
+      "paid": "Pago",
+      "pending": "Em andamento",
+      "unpaid": "Não pago"
+    },
+    "reason": "Motivo",
+    "renter": "Locatário",
+    "vehicle": "Veículo",
+    "viewSpot": "Ver vaga",
+    "viewProfile": "Ver perfil"
+  },
   "rentals": {
     "title": "Meus aluguéis",
     "loading": "Carregando aluguéis…",
-    "subtitle": "Acompanhe suas solicitações de vaga.",
+    "subtitle": "Acompanhe seus pedidos de vaga.",
     "filters": "Filtros",
     "filter": "Filtrar aluguéis por status",
     "all": "Todos",
@@ -254,7 +287,7 @@
     },
     "period": {
       "hours": "{{date}} · {{start}}h–{{end}}h",
-      "days": "{{start}} – {{end}} · {{count}} diária(s)"
+      "days": "{{start}} – {{end}} · diárias: {{count}}"
     },
     "cancel": {
       "action": "Cancelar pedido",
@@ -362,7 +395,7 @@
     "title": "Início",
     "upcomingTitle": "Próximos aluguéis",
     "pendingTitle": "Pedidos pendentes",
-    "viewAll": "Ver todas",
+    "viewAll": "Ver tudo",
     "featuredTitle": "Vagas disponíveis",
     "loading": "Carregando condomínios...",
     "loadError": "Não foi possível carregar os condomínios.",
@@ -620,7 +653,7 @@
       "resides": "Moro aqui",
       "join": "Entrar com código",
       "createMenu": "Criar",
-      "pending": "{{count}} morador(es) aguardando aprovação"
+      "pending": "Moradores aguardando aprovação: {{count}}"
     },
     "form": {
       "newTitle": "Cadastrar condomínio",
@@ -872,7 +905,7 @@
         "parkingSpots": "Vagas",
         "activeRentals": "Aluguéis ativos"
       },
-      "reviewResidents": "Analisar {{count}} pedido(s)",
+      "reviewResidents": "Analisar pedidos ({{count}})",
       "emptyTitle": "Você ainda não administra nenhum condomínio",
       "emptyDescription": "Quando um condomínio for aprovado, ele aparece aqui.",
       "becomeResident": "Passei a morar aqui",
@@ -1029,7 +1062,7 @@
   "dashboard": {
     "title": "Painel",
     "subtitle": "Seu resumo.",
-    "ownerSubtitle": "{{count}} vaga(s)",
+    "ownerSubtitle": "Vagas: {{count}}",
     "myRentals": "Meus aluguéis",
     "viewLabel": "Visão do painel",
     "sections": {
@@ -1047,6 +1080,13 @@
         "active": "Em andamento",
         "upcoming": "Aprovados a iniciar",
         "monthEarnings": "Ganhos do mês"
+      },
+      "chart": {
+        "title": "Aluguéis por período",
+        "received": "Pedidos recebidos",
+        "made": "Pedidos feitos",
+        "loading": "Carregando gráfico de aluguéis...",
+        "empty": "Nenhum aluguel neste período"
       }
     }
   },
@@ -1065,7 +1105,15 @@
     "axis": {
       "month": "Mês",
       "count": "Quantidade",
-      "condominium": "Condomínio"
+      "condominium": "Condomínio",
+      "period": "Período",
+      "amount": "Valor"
+    },
+    "period": {
+      "label": "Agrupar por",
+      "MONTH": "Mês",
+      "BIMESTER": "Bimestre",
+      "YEAR": "Ano"
     }
   },
   "parkingSpots": {
@@ -1149,6 +1197,9 @@
       "condominium": "Condomínio",
       "covered": "Coberta"
     },
+    "coverage": {
+      "uncovered": "Descoberta"
+    },
     "image": {
       "alt": "Foto da vaga"
     },
@@ -1166,7 +1217,7 @@
     "mine": {
       "title": "Minhas vagas",
       "new": "Cadastrar vaga",
-      "count": "{{count}} vaga(s) cadastrada(s)",
+      "count": "Vagas cadastradas: {{count}}",
       "emptyTitle": "Você ainda não cadastrou vagas",
       "emptyDescription": "Cadastre sua vaga para o síndico aprovar e depois ofereça-a para aluguel.",
       "spotBlock": "Vaga {{number}} - Bloco {{block}}",
@@ -1227,10 +1278,13 @@
       "caption": "Lista de veículos",
       "emptyTitle": "Nenhum veículo cadastrado",
       "emptyDescription": "Cadastre um veículo para usá-lo nos seus aluguéis.",
-      "filter": "Filtrar veículos",
-      "count": "{{count}} veículos",
+      "filter": "Filtros",
+      "count": "Veículos: {{count}}",
       "search": "Buscar por placa, marca ou modelo",
       "delete": "Excluir"
+    },
+    "image": {
+      "alt": "Foto do veículo"
     },
     "form": {
       "newTitle": "Cadastrar veículo",
@@ -1269,10 +1323,14 @@
   },
   "spotSearch": {
     "title": "Buscar vagas",
-    "count": "{{count}} vagas encontradas",
+    "count": "Vagas encontradas: {{count}}",
     "loading": "Carregando vagas…",
     "emptyTitle": "Nenhuma vaga encontrada",
     "emptyDescription": "Nenhuma vaga disponível corresponde à busca. Ajuste os filtros ou o período.",
+    "coverage": {
+      "label": "Cobertura",
+      "any": "Qualquer"
+    },
     "mode": {
       "label": "Cobrança",
       "daily": "Por dia",
@@ -1296,6 +1354,7 @@
       "title": "Detalhes da vaga",
       "loading": "Carregando vaga…",
       "photo": "Foto da vaga",
+      "features": "Características",
       "showPhoto": "Mostrar foto {{number}}",
       "size": "Tamanho",
       "location": "Local",
@@ -1313,8 +1372,8 @@
       "modeDay": "Por dia",
       "modeHour": "Por hora",
       "date": "Dia",
-      "quoteDays": "{{units}} diária(s) de {{price}} = {{total}}",
-      "quoteHours": "{{units}} hora(s) de {{price}} = {{total}}",
+      "quoteDays": "Diárias: {{units}} × {{price}} = {{total}}",
+      "quoteHours": "Horas: {{units}} × {{price}} = {{total}}",
       "unavailable": "Escolha um período dentro da disponibilidade da vaga.",
       "noVehicle": "Você não tem veículo cadastrado neste condomínio.",
       "addVehicle": "Cadastrar veículo",
@@ -1323,7 +1382,7 @@
       "conflict": "Esse período não está mais disponível. Escolha outro."
     },
     "map": "Mapa de condomínios com vagas disponíveis",
-    "pin": "{{name}}: {{count}} disponível(is)",
+    "pin": "{{name}} · vagas disponíveis: {{count}}",
     "showMap": "Ver mapa",
     "showList": "Ver lista",
     "zoomIn": "Aumentar zoom",
@@ -1339,6 +1398,8 @@
     "emptyTitle": "Nenhuma notificação",
     "emptyDescription": "Avisos sobre pedidos, vagas e condomínios aparecem aqui.",
     "loadMore": "Carregar mais",
+    "markAllRead": "Marcar todas como lidas",
+    "retry": "Tentar novamente",
     "reason": "Motivo: {{reason}}",
     "kind": {
       "CONDOMINIUM_APPROVED": "O condomínio {{condominium}} foi aprovado.",
@@ -1370,6 +1431,7 @@
     }
   },
   "reviews": {
+    "ratingLabel": "Nota {{average}} de 5, {{total}} avaliações",
     "none": "Sem avaliações",
     "rate": "Avaliar",
     "rateAria": "Avaliar aluguel da vaga {{number}}",
@@ -1422,7 +1484,12 @@
       "noteTitle": "Nota da decisão",
       "noteLabel": "Motivo da decisão",
       "confirm": "Confirmar",
-      "item": "{{rating}} ★ · {{reason}}"
+      "item": "Motivo: {{reason}} · nota {{rating}} de 5",
+      "spot": "Vaga {{number}} · {{condominium}}",
+      "reportedAt": "Denunciada em {{date}}",
+      "comment": "Avaliação: “{{text}}”",
+      "details": "Denúncia: {{text}}",
+      "note": "Decisão: {{text}}"
     },
     "profile": {
       "title": "Perfil",
@@ -1446,6 +1513,13 @@
     "pending": "A receber",
     "loading": "Carregando extrato",
     "statement": "Extrato",
+    "flow": {
+      "title": "Entradas e saídas",
+      "credits": "Entradas",
+      "debits": "Saídas",
+      "loading": "Carregando gráfico da carteira...",
+      "empty": "Nenhuma movimentação neste período"
+    },
     "emptyTitle": "Nenhuma movimentação ainda",
     "emptyDescription": "Os ganhos de aluguéis pagos aparecem aqui.",
     "released": "Disponível",
@@ -1466,7 +1540,9 @@
       "pixKeyHint": "CPF, CNPJ, e-mail, telefone ou chave aleatória",
       "submit": "Sacar",
       "invalid": "Confira o valor e a chave PIX.",
-      "insufficient": "Saldo disponível insuficiente."
+      "insufficient": "Saldo disponível insuficiente.",
+      "negative": "Saque bloqueado: o saldo ficou negativo por um estorno. Os próximos créditos compensam o valor.",
+      "empty": "Sem saldo disponível para saque."
     },
     "type": {
       "OWNER": "Minha carteira",

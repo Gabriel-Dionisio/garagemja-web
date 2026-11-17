@@ -1,0 +1,31 @@
+<div class="body">
+  <h2 id="rental-details-title">{{ 'rentalDetails.title' | transloco }}</h2>
+  <app-form-section>
+    <dl class="wide">
+      <div class="row">
+        <dt>{{ 'rentalDetails.status' | transloco }}</dt>
+        <dd>
+          <app-badge [tone]="tones[data.status]">{{
+            'rentals.status.' + data.status | transloco
+          }}</app-badge>
+        </dd>
+      </div>
+      @for (row of data.rows; track row.labelKey) {
+        <div class="row">
+          <dt>{{ row.labelKey | transloco }}</dt>
+          <dd>{{ row.valueKey ? (row.valueKey | transloco: row.params ?? {}) : row.text }}</dd>
+        </div>
+      }
+    </dl>
+  </app-form-section>
+  <app-form-actions>
+    @if (data.link; as link) {
+      <a appButton variant="secondary" [routerLink]="link.route" (click)="close()">
+        {{ link.labelKey | transloco }}
+      </a>
+    }
+    <button appButton type="button" (click)="close()">
+      {{ 'common.actions.close' | transloco }}
+    </button>
+  </app-form-actions>
+</div>

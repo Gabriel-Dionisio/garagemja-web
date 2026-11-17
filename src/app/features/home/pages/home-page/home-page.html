@@ -115,8 +115,12 @@
         [result]="result()"
         [loading]="spotsLoading()"
         [error]="spotsError.text()"
+        [queryParams]="cardParams"
         [compact]="true"
       />
+      @if (result()?.hasNext && !spotsLoading() && !spotsError.text()) {
+        <div appInfiniteScroll aria-hidden="true" (reached)="loadMore()"></div>
+      }
     }
   </section>
 </section>

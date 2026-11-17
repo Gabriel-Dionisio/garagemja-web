@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, UrlTree } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Icon } from '../icon/icon';
 import { IconButton } from '../icon-button/icon-button';
@@ -14,5 +14,5 @@ import { IconButton } from '../icon-button/icon-button';
 export class PageHeader {
   readonly title = input.required<string>();
   readonly subtitle = input('');
-  readonly backLink = input<string | null>(null);
+  readonly backLink = input<string | UrlTree | null>(null);
 }

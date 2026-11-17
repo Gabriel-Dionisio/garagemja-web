@@ -90,6 +90,8 @@ export function toReportItem(value: unknown): ReviewReportItem {
     reviewRating,
     reviewComment: textOrNull(row['reviewComment']),
     parkingSpotId: row['parkingSpotId'],
+    parkingSpotNumber: textOrNull(row['parkingSpotNumber']),
+    condominiumName: textOrNull(row['condominiumName']),
   };
 }
 
@@ -153,6 +155,18 @@ export class ReviewsApi {
 
   renterRatings(ids: string[]): Observable<Map<string, RatingSummary>> {
     return this.ratings(`${API}/users/renter-ratings`, ids);
+  }
+
+  pendingReviews(rentalIds: string[]): Observable<Set<string>> {
+    if (!rentalIds.length) return of(new Set<string>());
+    const params = new HttpParams({ fromObject: { rentalIds } });
+    return this.http.get<unknown>(`${API}/reviews/pending`, { params }).pipe(
+      map((body) => {
+        const ids = asList(body, 'pending reviews');
+        if (!ids.every((id) => typeof id === 'string')) throw new Error('Invalid pending reviews');
+        return new Set(ids as string[]);
+      }),
+    );
   }
 
   profile(userId: string): Observable<PublicProfile> {

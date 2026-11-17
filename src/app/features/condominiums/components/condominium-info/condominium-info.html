@@ -56,14 +56,14 @@
         @if (rules()?.maxPricePerDay; as price) {
           <div>
             <dt>{{ 'condominiums.info.ruleLabels.maxPricePerDay' | transloco }}</dt>
-            <dd>{{ price | currency: 'BRL' }}</dd>
+            <dd>{{ money()(price) }}</dd>
           </div>
         }
         @if (rules()?.hourlyRentalsEnabled) {
           @if (rules()?.maxPricePerHour; as hourPrice) {
             <div>
               <dt>{{ 'condominiums.info.ruleLabels.maxPricePerHour' | transloco }}</dt>
-              <dd>{{ hourPrice | currency: 'BRL' }}</dd>
+              <dd>{{ money()(hourPrice) }}</dd>
             </div>
           }
           <div>

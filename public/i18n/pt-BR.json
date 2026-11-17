@@ -127,9 +127,10 @@
     }
   },
   "nav": {
+    "groups": { "rent": "Alugar", "announce": "Anunciar" },
     "home": "Início",
     "myRentals": "Meus aluguéis",
-    "requests": "Solicitações",
+    "requests": "Pedidos recebidos",
     "users": "Usuários",
     "settings": "Configurações",
     "skipToContent": "Pular para o conteúdo",
@@ -144,7 +145,7 @@
     "management": "Gestão",
     "myParkingSpots": "Minhas vagas",
     "myVehicles": "Meus veículos",
-    "searchVacancies": "Buscar Vagas",
+    "spotSearch": "Buscar vagas",
     "wallet": "Carteira"
   },
   "routes": {
@@ -154,7 +155,7 @@
     "verifyEmail": "Verificar e-mail",
     "home": "Início",
     "myRentals": "Meus aluguéis",
-    "requests": "Solicitações",
+    "requests": "Pedidos recebidos",
     "adminUsers": "Usuários",
     "adminUserNew": "Novo administrador",
     "adminUserDetail": "Detalhes do usuário",
@@ -182,12 +183,12 @@
     "myVehicles": "Meus veículos",
     "vehicleNew": "Cadastrar veículo",
     "vehicleEdit": "Editar veículo",
-    "searchVacancies": "Buscar Vagas",
-    "vacancyDetails": "Detalhes da vaga",
+    "spotSearch": "Buscar Vagas",
+    "spotDetails": "Detalhes da vaga",
     "wallet": "Carteira"
   },
   "requests": {
-    "title": "Solicitações",
+    "title": "Pedidos recebidos",
     "count": "{{count}} solicitações",
     "filters": "Filtrar solicitações",
     "search": "Buscar por locatário, placa, vaga ou condomínio",
@@ -1257,7 +1258,7 @@
       "color": "Prata"
     }
   },
-  "searchVacancies": {
+  "spotSearch": {
     "title": "Buscar vagas",
     "count": "{{count}} vagas encontradas",
     "loading": "Carregando vagas…",
@@ -1387,6 +1388,7 @@
     },
     "type": {
       "OWNER": "Minha carteira",
+      "CONDOMINIUM": "Condomínio",
       "PLATFORM": "Plataforma"
     }
   }

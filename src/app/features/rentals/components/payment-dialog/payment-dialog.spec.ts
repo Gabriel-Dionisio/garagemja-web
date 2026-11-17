@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { PaymentsApi } from '../../data/payments-api';
 import { Payment } from '../../payment.model';
-import { Rental } from '../../rental.model';
+import { Rental } from '../../../../shared/rentals/rental.model';
 import { PaymentDialog } from './payment-dialog';
 
 const rental = (overrides: Partial<Rental> = {}): Rental => ({

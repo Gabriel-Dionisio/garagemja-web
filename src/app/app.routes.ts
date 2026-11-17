@@ -57,12 +57,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then((m) => m.HOME_ROUTES),
       },
       {
-        path: 'search-vacancies',
+        path: 'search',
         canActivate: [roleGuard('RESIDENT')],
         loadChildren: () =>
-          import('./features/search-vacancies/search-vacancies.routes').then(
-            (m) => m.SEARCH_VACANCIES_ROUTES,
-          ),
+          import('./features/spot-search/spot-search.routes').then((m) => m.SPOT_SEARCH_ROUTES),
       },
       {
         path: 'rentals',

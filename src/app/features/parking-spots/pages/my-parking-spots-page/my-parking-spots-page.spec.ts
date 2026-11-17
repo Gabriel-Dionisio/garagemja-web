@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
-import { ParkingSpot } from '../../parking-spot.model';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { ParkingSpot } from '../../../../shared/spots/parking-spot.model';
 import { MyParkingSpotsPage } from './my-parking-spots-page';
 
 const spot = (overrides: Partial<ParkingSpot> = {}): ParkingSpot => ({

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { ParkingSpotFormPage } from './parking-spot-form-page';
 
 describe('ParkingSpotFormPage', () => {

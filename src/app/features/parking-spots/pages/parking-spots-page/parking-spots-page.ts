@@ -38,13 +38,13 @@ import {
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { ParkingSpotFilterForm } from '../../components/parking-spot-filter/parking-spot-filter';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import {
   isParkingSpotStatus,
   PARKING_SPOT_SIZE_LABELS,
   PARKING_SPOT_STATUS_LABELS,
   PARKING_SPOT_STATUS_TONES,
-} from '../../parking-spot-status';
+} from '../../../../shared/spots/parking-spot-status';
 import {
   PARKING_SPOT_SIZES,
   PARKING_SPOT_STATUSES,
@@ -52,7 +52,7 @@ import {
   ParkingSpotCondominium,
   ParkingSpotSize,
   ParkingSpotStatus,
-} from '../../parking-spot.model';
+} from '../../../../shared/spots/parking-spot.model';
 
 const SKELETON_ROWS = [0, 1, 2, 3];
 

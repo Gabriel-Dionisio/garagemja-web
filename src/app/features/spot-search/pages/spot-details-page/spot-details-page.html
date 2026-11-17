@@ -1,0 +1,112 @@
+<app-page size="form">
+  <app-page-header
+    [title]="
+      details()
+        ? ('parkingSpots.spot' | transloco: { number: details()?.spot?.number })
+        : ('spotSearch.details.title' | transloco)
+    "
+    [subtitle]="details()?.spot?.condominiumName ?? ''"
+    backLink="/search"
+  />
+
+  @if (error.text(); as message) {
+    <app-alert kind="error">{{ message }}</app-alert>
+  } @else if (loading()) {
+    <app-skeleton [label]="'spotSearch.details.loading' | transloco" [rows]="4" />
+  } @else if (details(); as current) {
+    <app-card class="gallery">
+      @if (images()[selectedImage()]; as image) {
+        <img class="main" [src]="image.url" [alt]="'spotSearch.details.photo' | transloco" />
+      } @else {
+        <span class="main placeholder" aria-hidden="true"></span>
+      }
+      @if (images().length > 1) {
+        <ul class="thumbs">
+          @for (image of images(); track image.id; let index = $index) {
+            <li>
+              <button
+                type="button"
+                [attr.aria-pressed]="index === selectedImage()"
+                [attr.aria-label]="
+                  'spotSearch.details.showPhoto' | transloco: { number: index + 1 }
+                "
+                (click)="selectedImage.set(index)"
+              >
+                <img [src]="image.url" alt="" loading="lazy" />
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </app-card>
+
+    <app-card class="info">
+      <dl>
+        @if (current.spot.size; as size) {
+          <div>
+            <dt>{{ 'spotSearch.details.size' | transloco }}</dt>
+            <dd>{{ sizeLabels[size] | transloco }}</dd>
+          </div>
+        }
+        @if (current.spot.location) {
+          <div>
+            <dt>{{ 'spotSearch.details.location' | transloco }}</dt>
+            <dd>{{ current.spot.location }}</dd>
+          </div>
+        }
+      </dl>
+      @if (current.spot.owner; as owner) {
+        <p class="owner">
+          <app-avatar [name]="owner.name" [src]="owner.photoUrl" />
+          <span>
+            <small>{{ 'spotSearch.details.owner' | transloco }}</small>
+            <strong>{{ owner.name }}</strong>
+          </span>
+        </p>
+      }
+    </app-card>
+
+    <app-card class="periods">
+      <h2>{{ 'spotSearch.details.availability' | transloco }}</h2>
+      @if (current.availabilities.length === 0) {
+        <p>{{ 'spotSearch.details.noAvailability' | transloco }}</p>
+      } @else {
+        <ul>
+          @for (item of current.availabilities; track item.id) {
+            <li>
+              <strong>{{ date()(item.startDate) }} – {{ date()(item.endDate) }}</strong>
+              <span>
+                @if (item.dailyPrice !== null) {
+                  {{ 'parkingSpots.price.daily' | transloco: { value: money()(item.dailyPrice) } }}
+                }
+                @if (item.hourlyPrice !== null) {
+                  {{
+                    'parkingSpots.price.hourly' | transloco: { value: money()(item.hourlyPrice) }
+                  }}
+                  ({{ item.hourlyFrom }}h–{{ item.hourlyTo }}h)
+                }
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </app-card>
+
+    <div class="actions">
+      @if (current.owned) {
+        <a appButton [routerLink]="['/parking-spots', current.spot.id]">
+          {{ 'spotSearch.details.edit' | transloco }}
+        </a>
+      } @else {
+        <button
+          appButton
+          type="button"
+          [disabled]="current.availabilities.length === 0"
+          (click)="request(current)"
+        >
+          {{ 'spotSearch.details.request' | transloco }}
+        </button>
+      }
+    </div>
+  }
+</app-page>

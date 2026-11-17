@@ -29,8 +29,8 @@ import { SelectField, SelectOption } from '../../../../shared/ui/select-field/se
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
-import { VehiclesApi } from '../../data/vehicles-api';
-import { Residency } from '../../vehicle.model';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { Residency } from '../../../../shared/vehicles/vehicle.model';
 import { formatPlate, plateValidator } from '../../../../shared/forms/plate';
 
 const LIST_URL = '/vehicles';

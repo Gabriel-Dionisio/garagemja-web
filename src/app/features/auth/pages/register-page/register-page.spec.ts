@@ -79,6 +79,7 @@ describe('RegisterPage', () => {
       phone: '11987654321',
       cpf: '52998224725',
       accountTypes: ['RESIDENT'],
+      locale: 'pt-BR',
     });
     expect(navigate).toHaveBeenCalledWith('/verify-email');
     expect(TestBed.inject(PendingVerificationStore).take()).toEqual({

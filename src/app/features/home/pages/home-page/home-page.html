@@ -66,7 +66,7 @@
         <a appButton routerLink="/condominiums">{{ 'home.joinAction' | transloco }}</a>
       </app-empty-state>
     } @else {
-      <app-vacancy-results
+      <app-spot-results
         [result]="result()"
         [loading]="spotsLoading()"
         [error]="spotsError.text()"

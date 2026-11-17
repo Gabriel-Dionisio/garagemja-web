@@ -12,7 +12,7 @@ A API precisa de configuração Firebase no servidor; não copie a conta de serv
 
 ## Produção e segurança
 
-Sirva os arquivos de dist/garagemja-web/browser por HTTPS e encaminhe /api à API sob a mesma origem; rotas Angular precisam de fallback para index.html. Preserve os cookies e nunca registre seu conteúdo. Configure no servidor web os cabeçalhos Content-Security-Policy, frame-ancestors 'none', X-Content-Type-Options: nosniff, Referrer-Policy: no-referrer e HSTS. O index.html já limita scripts/conexões à própria origem via CSP; estilos inline são permitidos para os componentes Angular, sem permitir scripts inline ou eval.
+Sirva os arquivos de dist/garagemja-web/browser por HTTPS e encaminhe /api à API sob a mesma origem; rotas Angular precisam de fallback para index.html. Preserve os cookies e nunca registre seu conteúdo. Configure no servidor web os cabeçalhos Content-Security-Policy, frame-ancestors 'none', X-Content-Type-Options: nosniff, Referrer-Policy: no-referrer e HSTS. O index.html já limita scripts/conexões à própria origem via CSP e libera só as imagens de tiles do OpenStreetMap; estilos inline são permitidos para os componentes Angular, sem permitir scripts inline ou eval.
 
 O Angular envia X-XSRF-TOKEN automaticamente em escritas relativas; o serviço obtém o cookie antes de cada ação e renova após login/logout. Conteúdo remoto usa interpolação segura, sem HTML confiado manualmente.
 

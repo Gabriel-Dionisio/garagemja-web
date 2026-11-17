@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { toPage } from '../../../../shared/models/page';
 import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-service';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { ParkingSpotsPage } from './parking-spots-page';
 
 const spot = (status: string) => ({

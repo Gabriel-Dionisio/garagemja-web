@@ -41,15 +41,15 @@ import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { SkeletonBlock } from '../../../../shared/ui/skeleton/skeleton-block';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { SpotAvailabilities } from '../../components/spot-availabilities/spot-availabilities';
-import { ParkingSpotsApi } from '../../data/parking-spots-api';
-import { PARKING_SPOT_SIZE_LABELS } from '../../parking-spot-status';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
 import {
   PARKING_SPOT_SIZES,
   ParkingSpot,
   ParkingSpotCondominium,
   ParkingSpotResidency,
   ParkingSpotSize,
-} from '../../parking-spot.model';
+} from '../../../../shared/spots/parking-spot.model';
 
 const STAGED_PREFIX = 'staged-';
 const MAX_IMAGES = 5;

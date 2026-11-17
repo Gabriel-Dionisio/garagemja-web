@@ -21,13 +21,10 @@ import { DateField } from '../../../../shared/ui/date-field/date-field';
 import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
-import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
-import { ParkingSpot } from '../../../parking-spots/parking-spot.model';
-import { VacancyResults } from '../../../search-vacancies/components/vacancy-results/vacancy-results';
-import {
-  DEFAULT_CRITERIA,
-  criteriaToParams,
-} from '../../../search-vacancies/search-vacancies.model';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
+import { ParkingSpot } from '../../../../shared/spots/parking-spot.model';
+import { SpotResults } from '../../../../shared/spots/spot-results/spot-results';
+import { DEFAULT_CRITERIA, criteriaToParams } from '../../../../shared/spots/spot-search.model';
 import { HomeApi } from '../../data/home-api';
 
 @Component({
@@ -42,7 +39,7 @@ import { HomeApi } from '../../data/home-api';
     EmptyState,
     Skeleton,
     TextField,
-    VacancyResults,
+    SpotResults,
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
@@ -110,7 +107,7 @@ export class HomePage {
 
   protected search(): void {
     const from = this.from();
-    void this.router.navigate(['/search-vacancies'], {
+    void this.router.navigate(['/search'], {
       queryParams: criteriaToParams({
         ...DEFAULT_CRITERIA,
         search: this.form.controls.search.value.trim(),

@@ -1,0 +1,65 @@
+<app-page>
+  <app-page-header
+    [title]="'spotSearch.title' | transloco"
+    [subtitle]="result() ? ('spotSearch.count' | transloco: { count: result()?.total ?? 0 }) : ''"
+  />
+
+  <app-filter-panel
+    [label]="'spotSearch.filters.label' | transloco"
+    [activeCount]="activeFilters()"
+    [(open)]="filtersOpen"
+  >
+    <app-chip-group
+      [label]="'parkingSpots.filter.size' | transloco"
+      [options]="sizeTabs"
+      [value]="criteria().size"
+      (valueChange)="patch({ size: $event })"
+    />
+    <app-chip-group
+      [label]="'spotSearch.mode.label' | transloco"
+      [options]="modeTabs"
+      [value]="criteria().hourly ? 'HOURLY' : 'DAILY'"
+      (valueChange)="patch({ hourly: $event === 'HOURLY' })"
+    />
+    <app-chip-group
+      [label]="'spotSearch.sort.label' | transloco"
+      [options]="sortTabs"
+      [value]="criteria().sort"
+      (valueChange)="patch({ sort: $event ?? 'NUMBER' })"
+    />
+    <app-chip-toggle
+      [label]="'parkingSpots.fields.covered' | transloco"
+      [pressed]="criteria().covered"
+      (toggled)="patch({ covered: !criteria().covered })"
+    />
+    @if (criteria().condominiumId) {
+      <app-chip-toggle
+        [label]="'spotSearch.condominiumFilter' | transloco"
+        [pressed]="true"
+        (toggled)="patch({ condominiumId: null })"
+      />
+    }
+    <app-spot-filter [criteria]="criteria()" (applied)="apply($event)" />
+  </app-filter-panel>
+
+  @if (pins().length) {
+    <app-map
+      class="map"
+      [label]="'spotSearch.map' | transloco"
+      [zoomInLabel]="'spotSearch.zoomIn' | transloco"
+      [zoomOutLabel]="'spotSearch.zoomOut' | transloco"
+      [pins]="pins()"
+      [selectedId]="criteria().condominiumId"
+      (pinClick)="pickCondominium($event)"
+    />
+  }
+
+  <app-spot-results
+    [result]="result()"
+    [loading]="loading()"
+    [error]="error.text()"
+    [queryParams]="cardParams()"
+    (sizeChange)="changeSize($event)"
+    (pageChange)="goTo($event)"
+  />
+</app-page>

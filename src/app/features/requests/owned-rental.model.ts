@@ -1,5 +1,6 @@
-export type RentalStatus =
-  'PENDING' | 'APPROVED' | 'ACTIVE' | 'REFUSED' | 'CANCELED' | 'FINISHED' | 'EXPIRED';
+import { RentalStatus } from '../../shared/models/rental-status';
+
+export type { RentalStatus } from '../../shared/models/rental-status';
 
 export interface OwnedRental {
   id: string;

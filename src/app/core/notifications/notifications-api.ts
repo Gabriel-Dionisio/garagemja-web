@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { fields, textOrNull } from '../../shared/models/fields';
-import { Page, toPage } from '../../shared/models/page';
+import { Page, toResponsePage } from '../../shared/models/page';
 import { AppNotification, NOTIFICATION_KINDS, NotificationKind } from './notification.model';
 
 const URL = '/api/v1/me/notifications';
@@ -40,13 +40,7 @@ export class NotificationsApi {
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid notification list');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(
-          body.map(toNotification),
-          page,
-          size,
-          Number.isInteger(total) ? total : undefined,
-        );
+        return toResponsePage(response, body.map(toNotification), page, size);
       }),
     );
   }

@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { VehiclesApi } from '../../data/vehicles-api';
-import { Residency, Vehicle } from '../../vehicle.model';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { Residency, Vehicle } from '../../../../shared/vehicles/vehicle.model';
 import { VehicleFormPage } from './vehicle-form-page';
 
 const aurora: Residency = {

@@ -127,9 +127,10 @@
     }
   },
   "nav": {
+    "groups": { "rent": "Rent", "announce": "List a spot" },
     "home": "Home",
     "myRentals": "My rentals",
-    "requests": "Requests",
+    "requests": "Received requests",
     "users": "Users",
     "settings": "Settings",
     "skipToContent": "Skip to content",
@@ -144,7 +145,7 @@
     "management": "Management",
     "myParkingSpots": "My parking spots",
     "myVehicles": "My vehicles",
-    "searchVacancies": "Find Spots",
+    "spotSearch": "Find spots",
     "wallet": "Wallet"
   },
   "routes": {
@@ -154,7 +155,7 @@
     "verifyEmail": "Verify email",
     "home": "Home",
     "myRentals": "My rentals",
-    "requests": "Requests",
+    "requests": "Received requests",
     "adminUsers": "Users",
     "adminUserNew": "New administrator",
     "adminUserDetail": "User details",
@@ -182,8 +183,8 @@
     "myVehicles": "My vehicles",
     "vehicleNew": "Add vehicle",
     "vehicleEdit": "Edit vehicle",
-    "searchVacancies": "Find Spots",
-    "vacancyDetails": "Spot details",
+    "spotSearch": "Find Spots",
+    "spotDetails": "Spot details",
     "wallet": "Wallet"
   },
   "requests": {
@@ -1257,7 +1258,7 @@
       "color": "Silver"
     }
   },
-  "searchVacancies": {
+  "spotSearch": {
     "title": "Find parking spots",
     "count": "{{count}} spots found",
     "loading": "Loading spots…",
@@ -1387,6 +1388,7 @@
     },
     "type": {
       "OWNER": "My wallet",
+      "CONDOMINIUM": "Condominium",
       "PLATFORM": "Platform"
     }
   }

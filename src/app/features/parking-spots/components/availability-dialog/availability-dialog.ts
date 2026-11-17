@@ -18,7 +18,11 @@ import { FormSection } from '../../../../shared/ui/form-section/form-section';
 import { SelectField, SelectOption } from '../../../../shared/ui/select-field/select-field';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
 import { moneyFormatter } from '../../../../shared/forms/format';
-import { SpotAvailability, SpotAvailabilityInput, SpotRules } from '../../parking-spot.model';
+import {
+  SpotAvailability,
+  SpotAvailabilityInput,
+  SpotRules,
+} from '../../../../shared/spots/parking-spot.model';
 
 export interface AvailabilityDialogData {
   rules: SpotRules;

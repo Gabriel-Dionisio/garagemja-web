@@ -7,12 +7,12 @@ export class RequestsPage extends FilteredList {
   readonly confirmDialog: ConfirmDialog;
 
   constructor(page: Page) {
-    super(page, 'Solicitações', 'Filtrar solicitações');
+    super(page, 'Pedidos recebidos', 'Filtrar solicitações');
     this.confirmDialog = new ConfirmDialog(page);
   }
 
   async goto(): Promise<void> {
-    await new ShellPage(this.page).open('Solicitações');
+    await new ShellPage(this.page).open('Pedidos recebidos');
   }
 
   filterStatus(option: string) {

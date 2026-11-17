@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { Page, toPage } from '../../../shared/models/page';
+import { Page, toResponsePage } from '../../../shared/models/page';
 import { User, UserChanges, AdminDraft, UserFilter } from '../user.model';
 import { toUser } from './user.mapper';
 
@@ -20,8 +20,7 @@ export class UsersApi {
       map((response) => {
         const body = response.body;
         if (!Array.isArray(body)) throw new Error('Invalid user list');
-        const total = Number(response.headers.get('X-Total-Count'));
-        return toPage(body.map(toUser), page, size, Number.isInteger(total) ? total : undefined);
+        return toResponsePage(response, body.map(toUser), page, size);
       }),
     );
   }

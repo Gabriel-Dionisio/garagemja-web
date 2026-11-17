@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { Page } from '../../../../shared/models/page';
-import { RentalsApi } from '../../data/rentals-api';
-import { Rental } from '../../rental.model';
+import { RentalsApi } from '../../../../shared/rentals/rentals-api';
+import { Rental } from '../../../../shared/rentals/rental.model';
 import { MyRentalsPage } from './my-rentals-page';
 
 const empty: Page<Rental> = { items: [], page: 0, size: 25, total: 0, hasNext: false };

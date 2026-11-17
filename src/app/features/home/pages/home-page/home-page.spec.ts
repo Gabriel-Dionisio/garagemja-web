@@ -3,7 +3,7 @@ import { Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { toPage } from '../../../../shared/models/page';
-import { ParkingSpotsApi } from '../../../parking-spots/data/parking-spots-api';
+import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { HomeApi } from '../../data/home-api';
 import { HomePage } from './home-page';
 
@@ -46,7 +46,7 @@ describe('HomePage', () => {
     input!.value = ' sol ';
     input!.dispatchEvent(new Event('input'));
     element.querySelector<HTMLFormElement>('form.search-panel')!.dispatchEvent(new Event('submit'));
-    expect(navigate).toHaveBeenCalledWith(['/search-vacancies'], {
+    expect(navigate).toHaveBeenCalledWith(['/search'], {
       queryParams: expect.objectContaining({ q: 'sol', from: null }),
     });
   });

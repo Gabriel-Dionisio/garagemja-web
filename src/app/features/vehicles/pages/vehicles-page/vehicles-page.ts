@@ -29,8 +29,8 @@ import {
   Paginator,
 } from '../../../../shared/ui/paginator/paginator';
 import { SearchFilter } from '../../../../shared/ui/search-filter/search-filter';
-import { VehiclesApi } from '../../data/vehicles-api';
-import { VehicleListItem } from '../../vehicle.model';
+import { VehiclesApi } from '../../../../shared/vehicles/vehicles-api';
+import { VehicleListItem } from '../../../../shared/vehicles/vehicle.model';
 import { displayPlate } from '../../../../shared/forms/plate';
 
 @Component({

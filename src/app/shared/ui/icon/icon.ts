@@ -34,6 +34,7 @@ const PATHS = {
   'chevron-left': 'M15 18l-6-6 6-6',
   'chevron-right': 'M9 18l6-6-6-6',
   calendar: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
+  'chevron-down': 'M6 9l6 6 6-6',
   filter: 'M3 5h18l-7 8v6l-4 2v-8L3 5z',
   dot: 'M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',
   globe:

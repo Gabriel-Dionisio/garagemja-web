@@ -127,6 +127,9 @@
     }
   },
   "nav": {
+    "more": "More",
+    "bottom": "Quick navigation",
+    "short": { "search": "Search", "rentals": "Rentals", "requests": "Requests", "reviews": "Reports", "audit": "Audit" },
     "groups": { "rent": "Rent", "announce": "List a spot" },
     "home": "Home",
     "myRentals": "My rentals",
@@ -357,6 +360,9 @@
   "home": {
     "greeting": "Hello, {{name}}",
     "title": "Home",
+    "upcomingTitle": "Upcoming rentals",
+    "pendingTitle": "Pending requests",
+    "viewAll": "View all",
     "featuredTitle": "Available spots",
     "loading": "Loading condominiums...",
     "loadError": "The condominiums could not be loaded.",
@@ -1318,6 +1324,8 @@
     },
     "map": "Map of condominiums with available spots",
     "pin": "{{name}}: {{count}} available",
+    "showMap": "Show map",
+    "showList": "Show list",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "condominiumFilter": "Selected condominium"

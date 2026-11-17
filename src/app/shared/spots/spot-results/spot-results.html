@@ -25,15 +25,17 @@
         </li>
       }
     </ul>
-    <app-paginator
-      [page]="current.page"
-      [size]="current.size"
-      [total]="current.total"
-      [itemCount]="current.items.length"
-      [hasNext]="current.hasNext"
-      [sizeOptions]="pageSizes"
-      (sizeChange)="sizeChange.emit($event)"
-      (pageChange)="pageChange.emit($event)"
-    />
+    @if (!compact()) {
+      <app-paginator
+        [page]="current.page"
+        [size]="current.size"
+        [total]="current.total"
+        [itemCount]="current.items.length"
+        [hasNext]="current.hasNext"
+        [sizeOptions]="pageSizes"
+        (sizeChange)="sizeChange.emit($event)"
+        (pageChange)="pageChange.emit($event)"
+      />
+    }
   }
 }

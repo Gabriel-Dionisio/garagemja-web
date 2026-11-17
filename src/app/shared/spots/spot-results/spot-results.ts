@@ -22,6 +22,7 @@ import { SpotCard } from '../spot-card/spot-card';
 export class SpotResults {
   readonly result = input.required<Page<ParkingSpot> | null>();
   readonly loading = input(false);
+  readonly compact = input(false);
   readonly error = input<string | null>(null);
   readonly queryParams = input<Record<string, string | null>>({});
   readonly pageChange = output<number>();

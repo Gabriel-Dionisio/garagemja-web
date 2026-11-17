@@ -1,4 +1,4 @@
-<app-page>
+<app-page fill>
   <app-page-header
     [title]="'spotSearch.title' | transloco"
     [subtitle]="result() ? ('spotSearch.count' | transloco: { count: result()?.total ?? 0 }) : ''"
@@ -42,24 +42,42 @@
     <app-spot-filter [criteria]="criteria()" (applied)="apply($event)" />
   </app-filter-panel>
 
-  @if (pins().length) {
-    <app-map
-      class="map"
-      [label]="'spotSearch.map' | transloco"
-      [zoomInLabel]="'spotSearch.zoomIn' | transloco"
-      [zoomOutLabel]="'spotSearch.zoomOut' | transloco"
-      [pins]="pins()"
-      [selectedId]="criteria().condominiumId"
-      (pinClick)="pickCondominium($event)"
-    />
-  }
+  <div class="split">
+    @if (listVisible()) {
+      <app-scroll-area class="list">
+        <app-spot-results
+          [result]="result()"
+          [loading]="loading()"
+          [error]="error.text()"
+          [queryParams]="cardParams()"
+          (sizeChange)="changeSize($event)"
+          (pageChange)="goTo($event)"
+        />
+      </app-scroll-area>
+    }
+    @if (mapVisible()) {
+      <app-map
+        class="map"
+        [label]="'spotSearch.map' | transloco"
+        [zoomInLabel]="'spotSearch.zoomIn' | transloco"
+        [zoomOutLabel]="'spotSearch.zoomOut' | transloco"
+        [pins]="pins()"
+        [selectedId]="criteria().condominiumId"
+        (pinClick)="pickCondominium($event)"
+      />
+    }
+  </div>
 
-  <app-spot-results
-    [result]="result()"
-    [loading]="loading()"
-    [error]="error.text()"
-    [queryParams]="cardParams()"
-    (sizeChange)="changeSize($event)"
-    (pageChange)="goTo($event)"
-  />
+  @if (pins().length && !desktop()) {
+    <button
+      appButton
+      variant="secondary"
+      type="button"
+      class="view-toggle"
+      (click)="mapView.set(!mapView())"
+    >
+      <app-icon [name]="mapView() ? 'list' : 'map'" />
+      {{ (mapView() ? 'spotSearch.showList' : 'spotSearch.showMap') | transloco }}
+    </button>
+  }
 </app-page>

@@ -3,13 +3,17 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, catchError, distinctUntilChanged, finalize, map, of, switchMap } from 'rxjs';
+import { ViewportService } from '../../../../core/layout/viewport-service';
 import { ErrorText } from '../../../../core/i18n/error-text';
 import { Page } from '../../../../shared/models/page';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
+import { Button } from '../../../../shared/ui/button/button';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
+import { Icon } from '../../../../shared/ui/icon/icon';
 import { AppMap, MapPin } from '../../../../shared/ui/map/map';
 import { ChipToggle } from '../../../../shared/ui/chip-toggle/chip-toggle';
 import { Page as PageLayout } from '../../../../shared/ui/page/page';
+import { ScrollArea } from '../../../../shared/ui/scroll-area/scroll-area';
 import { PageHeader } from '../../../../shared/ui/page-header/page-header';
 import { PARKING_SPOT_SIZE_LABELS } from '../../../../shared/spots/parking-spot-status';
 import {
@@ -36,11 +40,14 @@ const PAGE_SIZE = 12;
   imports: [
     TranslocoPipe,
     AppMap,
+    Button,
     ChipGroup,
     ChipToggle,
     FilterPanel,
+    Icon,
     PageHeader,
     PageLayout,
+    ScrollArea,
     SpotResults,
     SpotFilter,
   ],
@@ -103,6 +110,12 @@ export class SpotSearchPage {
     { initialValue: [] },
   );
   protected readonly filtersOpen = signal(false);
+  protected readonly mapView = signal(false);
+  protected readonly desktop = inject(ViewportService).isDesktop;
+  protected readonly mapVisible = computed(
+    () => this.pins().length > 0 && (this.desktop() || this.mapView()),
+  );
+  protected readonly listVisible = computed(() => this.desktop() || !this.mapView());
   protected readonly result = signal<Page<ParkingSpot> | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = inject(ErrorText).state();

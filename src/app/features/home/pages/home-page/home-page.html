@@ -51,8 +51,53 @@
     </form>
   }
 
+  @if (upcoming().length) {
+    <section class="featured" aria-labelledby="upcoming-heading">
+      <div class="heading">
+        <h2 id="upcoming-heading">{{ 'home.upcomingTitle' | transloco }}</h2>
+        <a routerLink="/rentals">{{ 'home.viewAll' | transloco }}</a>
+      </div>
+      <ul class="rows">
+        @for (rental of upcoming(); track rental.id) {
+          <li appListItem link="/rentals">
+            <span leading class="thumb"><app-icon name="calendar" /></span>
+            <strong>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</strong>
+            <small>{{ rental.condominiumName }}</small>
+            @let when = period(rental);
+            <small>{{ when.key | transloco: when.params }} · {{ money()(rental.payable) }}</small>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (pending().length) {
+    <section class="featured" aria-labelledby="pending-heading">
+      <div class="heading">
+        <h2 id="pending-heading">{{ 'home.pendingTitle' | transloco }}</h2>
+        <a routerLink="/requests">{{ 'home.viewAll' | transloco }}</a>
+      </div>
+      <ul class="rows">
+        @for (rental of pending(); track rental.id) {
+          <li appListItem link="/requests">
+            <span leading class="thumb"><app-icon name="inbox" /></span>
+            <strong>{{ rental.renterName }}</strong>
+            <small>{{ 'rentals.spot' | transloco: { number: rental.parkingSpotNumber } }}</small>
+            @let when = ownedPeriod(rental);
+            <small>{{ when.key | transloco: when.params }}</small>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
   <section class="featured" aria-labelledby="featured-heading">
-    <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
+    <div class="heading">
+      <h2 id="featured-heading">{{ 'home.featuredTitle' | transloco }}</h2>
+      @if (hasResidency()) {
+        <a routerLink="/search">{{ 'home.viewAll' | transloco }}</a>
+      }
+    </div>
     @if (loading()) {
       <app-skeleton [label]="'home.loading' | transloco" [rows]="3" />
     } @else if (loadFailed()) {
@@ -70,8 +115,7 @@
         [result]="result()"
         [loading]="spotsLoading()"
         [error]="spotsError.text()"
-        (sizeChange)="changeSize($event)"
-        (pageChange)="goTo($event)"
+        [compact]="true"
       />
     }
   </section>

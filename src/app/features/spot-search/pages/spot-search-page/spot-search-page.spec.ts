@@ -1,8 +1,9 @@
-import { ApplicationRef } from '@angular/core';
+import { ApplicationRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Observable, of, throwError } from 'rxjs';
+import { ViewportService } from '../../../../core/layout/viewport-service';
 import { toPage } from '../../../../shared/models/page';
 import { ParkingSpotsApi } from '../../../../shared/spots/parking-spots-api';
 import { SpotSearchPage } from './spot-search-page';
@@ -20,10 +21,12 @@ describe('SpotSearchPage', () => {
     url: string,
     search = vi.fn().mockReturnValue(of(toPage([], 0, 12, 0))),
     pins: Observable<(typeof pin)[]> = of([pin]),
+    desktop = true,
   ) {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([{ path: 'search', component: SpotSearchPage }]),
+        { provide: ViewportService, useValue: { isDesktop: signal(desktop) } },
         { provide: ParkingSpotsApi, useValue: { search, mapPins: () => pins } },
       ],
     });
@@ -50,6 +53,17 @@ describe('SpotSearchPage', () => {
       12,
     );
     expect(root.querySelector('app-filter-panel')).not.toBeNull();
+  });
+
+  it('swaps list and map with the toggle below the desktop width', async () => {
+    const { root } = await setup('/search', undefined, undefined, false);
+    expect(root.querySelector('.map')).toBeNull();
+    const toggle = root.querySelector<HTMLButtonElement>('.view-toggle');
+    expect(toggle).not.toBeNull();
+    toggle?.click();
+    await TestBed.inject(ApplicationRef).whenStable();
+    expect(root.querySelector('.map')).not.toBeNull();
+    expect(root.querySelector('.list')).toBeNull();
   });
 
   it('filters by the condominium of the clicked pin and clears on second click', async () => {

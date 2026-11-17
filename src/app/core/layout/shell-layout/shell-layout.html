@@ -103,3 +103,7 @@
   }
   <router-outlet />
 </main>
+
+@if (viewport.usesDrawer() && bottomItems().length > 0) {
+  <app-bottom-nav [items]="bottomItems()" [menuExpanded]="navOpen()" (menu)="openNav()" />
+}

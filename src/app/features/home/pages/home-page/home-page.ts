@@ -7,17 +7,25 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
+import { EMPTY, catchError, finalize, map, of } from 'rxjs';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { ErrorText } from '../../../../core/i18n/error-text';
+import { LocaleService } from '../../../../core/i18n/locale-service';
 import { todayIso } from '../../../../shared/forms/date-format';
+import { moneyFormatter, periodText } from '../../../../shared/forms/format';
+import { OwnedRental } from '../../../../shared/rentals/owned-rental.model';
+import { OwnedRentalsApi } from '../../../../shared/rentals/owned-rentals-api';
+import { Rental } from '../../../../shared/rentals/rental.model';
+import { RentalsApi } from '../../../../shared/rentals/rentals-api';
 import { Page } from '../../../../shared/models/page';
 import { Alert } from '../../../../shared/ui/alert/alert';
 import { Button } from '../../../../shared/ui/button/button';
 import { DateField } from '../../../../shared/ui/date-field/date-field';
+import { Icon } from '../../../../shared/ui/icon/icon';
+import { ListItem } from '../../../../shared/ui/list-item/list-item';
 import { EmptyState } from '../../../../shared/ui/empty-state/empty-state';
 import { Skeleton } from '../../../../shared/ui/skeleton/skeleton';
 import { TextField } from '../../../../shared/ui/text-field/text-field';
@@ -26,6 +34,9 @@ import { ParkingSpot } from '../../../../shared/spots/parking-spot.model';
 import { SpotResults } from '../../../../shared/spots/spot-results/spot-results';
 import { DEFAULT_CRITERIA, criteriaToParams } from '../../../../shared/spots/spot-search.model';
 import { HomeApi } from '../../data/home-api';
+
+const FEATURED_SIZE = 6;
+const PREVIEW_SIZE = 3;
 
 @Component({
   selector: 'app-home-page',
@@ -37,6 +48,8 @@ import { HomeApi } from '../../data/home-api';
     Button,
     DateField,
     EmptyState,
+    Icon,
+    ListItem,
     Skeleton,
     TextField,
     SpotResults,
@@ -50,6 +63,9 @@ export class HomePage {
   private readonly spots = inject(ParkingSpotsApi);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly locale = inject(LocaleService);
+  private readonly rentals = inject(RentalsApi);
+  private readonly ownedRentals = inject(OwnedRentalsApi);
 
   protected readonly today = todayIso();
   protected readonly form = inject(NonNullableFormBuilder).group({ search: [''] });
@@ -58,10 +74,23 @@ export class HomePage {
   protected readonly hasResidency = signal(true);
   protected readonly loading = signal(true);
   protected readonly loadFailed = signal(false);
-  protected readonly page = signal(0);
-  protected readonly pageSize = signal(12);
+  protected readonly money = computed(() => moneyFormatter(this.locale.language()));
+  protected readonly upcoming = toSignal(
+    this.rentals.list(0, PREVIEW_SIZE, 'APPROVED').pipe(
+      map((page) => page.items),
+      catchError(() => of<Rental[]>([])),
+    ),
+    { initialValue: [] },
+  );
+  protected readonly pending = toSignal(
+    this.ownedRentals.list(0, PREVIEW_SIZE, 'PENDING').pipe(
+      map((page) => page.items),
+      catchError(() => of<OwnedRental[]>([])),
+    ),
+    { initialValue: [] },
+  );
   protected readonly result = signal<Page<ParkingSpot> | null>(null);
-  protected readonly spotsLoading = signal(false);
+  protected readonly spotsLoading = signal(true);
   protected readonly spotsError = inject(ErrorText).state();
 
   constructor() {
@@ -82,19 +111,14 @@ export class HomePage {
         },
       });
 
-    toObservable(computed(() => ({ page: this.page(), size: this.pageSize() })))
+    this.spots
+      .search(DEFAULT_CRITERIA, 0, FEATURED_SIZE)
       .pipe(
-        switchMap(({ page, size }) => {
-          this.spotsLoading.set(true);
-          this.spotsError.clear();
-          return this.spots.search(DEFAULT_CRITERIA, page, size).pipe(
-            catchError((error: unknown) => {
-              this.spotsError.setFrom(error);
-              return EMPTY;
-            }),
-            finalize(() => this.spotsLoading.set(false)),
-          );
+        catchError((error: unknown) => {
+          this.spotsError.setFrom(error);
+          return EMPTY;
         }),
+        finalize(() => this.spotsLoading.set(false)),
         takeUntilDestroyed(),
       )
       .subscribe((result) => this.result.set(result));
@@ -117,12 +141,11 @@ export class HomePage {
     });
   }
 
-  protected changeSize(size: number): void {
-    this.pageSize.set(size);
-    this.page.set(0);
+  protected period(rental: Rental) {
+    return periodText(rental, this.locale.language());
   }
 
-  protected goTo(page: number): void {
-    this.page.set(page);
+  protected ownedPeriod(rental: OwnedRental) {
+    return periodText(rental, this.locale.language());
   }
 }

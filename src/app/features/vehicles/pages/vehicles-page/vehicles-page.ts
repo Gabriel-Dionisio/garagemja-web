@@ -19,6 +19,7 @@ import { ConfirmService } from '../../../../shared/ui/confirm-dialog/confirm-ser
 import { Fab } from '../../../../shared/ui/fab/fab';
 import { FilterPanel } from '../../../../shared/ui/filter-panel/filter-panel';
 import { Icon } from '../../../../shared/ui/icon/icon';
+import { IconButton } from '../../../../shared/ui/icon-button/icon-button';
 import { ListItem } from '../../../../shared/ui/list-item/list-item';
 import { ListState } from '../../../../shared/ui/list-state/list-state';
 import { Page } from '../../../../shared/ui/page/page';
@@ -44,6 +45,7 @@ import { displayPlate } from '../../../../shared/forms/plate';
     Fab,
     FilterPanel,
     Icon,
+    IconButton,
     ListItem,
     ListState,
     Page,

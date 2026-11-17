@@ -18,8 +18,10 @@ import {
   concat,
   finalize,
   forkJoin,
+  defer,
   of,
   switchMap,
+  tap,
   toArray,
 } from 'rxjs';
 import { ErrorText } from '../../../../core/i18n/error-text';
@@ -28,7 +30,6 @@ import { Alert } from '../../../../shared/ui/alert/alert';
 import { Button } from '../../../../shared/ui/button/button';
 import { Card } from '../../../../shared/ui/card/card';
 import { ChipGroup, ChipOption } from '../../../../shared/ui/chip-group/chip-group';
-import { ChipToggle } from '../../../../shared/ui/chip-toggle/chip-toggle';
 import { CondominiumTabs } from '../../../../shared/ui/condominium-tabs/condominium-tabs';
 import { FormActions } from '../../../../shared/ui/form-actions/form-actions';
 import { FormSection } from '../../../../shared/ui/form-section/form-section';
@@ -71,7 +72,6 @@ interface StagedImage {
     Button,
     Card,
     ChipGroup,
-    ChipToggle,
     FormActions,
     FormSection,
     ImageField,
@@ -104,6 +104,10 @@ export class ParkingSpotFormPage {
       labelKey: PARKING_SPOT_SIZE_LABELS[size],
     })),
   ];
+  protected readonly coverageOptions: readonly ChipOption<'COVERED' | 'UNCOVERED'>[] = [
+    { value: 'UNCOVERED', labelKey: 'parkingSpots.coverage.uncovered', icon: 'sun' },
+    { value: 'COVERED', labelKey: 'parkingSpots.fields.covered', icon: 'roof' },
+  ];
   protected readonly formatText = formatSafeText;
   protected readonly condominium = signal<ParkingSpotCondominium | null>(null);
   protected readonly spot = signal<ParkingSpot | null>(null);
@@ -118,12 +122,31 @@ export class ParkingSpotFormPage {
   private nextStaged = 0;
   protected readonly maxImages = MAX_IMAGES;
   protected readonly staged = signal<StagedImage[]>([]);
-  protected readonly images = computed<ImageItem[]>(() => [
-    ...this.serverImages().filter((image) => !this.removedIds().includes(image.id)),
-    ...this.staged().map(({ id, url }) => ({ id, url })),
-  ]);
+  private readonly order = signal<readonly string[]>([]);
+  protected readonly images = computed<ImageItem[]>(() => {
+    const images = [
+      ...this.serverImages().filter((image) => !this.removedIds().includes(image.id)),
+      ...this.staged().map(({ id, url }) => ({ id, url })),
+    ];
+    const rank = (id: string) => {
+      const index = this.order().indexOf(id);
+      return index < 0 ? Number.MAX_SAFE_INTEGER : index;
+    };
+    return this.order().length ? [...images].sort((a, b) => rank(a.id) - rank(b.id)) : images;
+  });
+  private readonly reordered = computed(() => {
+    const ids = this.images().map((image) => image.id);
+    const kept = this.serverImages()
+      .map((image) => image.id)
+      .filter((id) => ids.includes(id));
+    return kept.some((id, index) => ids[index] !== id);
+  });
   protected readonly dirty = computed(
-    () => this.formDirty() || this.staged().length > 0 || this.removedIds().length > 0,
+    () =>
+      this.formDirty() ||
+      this.staged().length > 0 ||
+      this.removedIds().length > 0 ||
+      this.reordered(),
   );
   protected readonly residencies = signal<ParkingSpotResidency[]>([]);
   protected readonly choice = signal<string | null>(null);
@@ -203,6 +226,7 @@ export class ParkingSpotFormPage {
         this.spot.set(spot);
         this.serverImages.set(images);
         this.removedIds.set([]);
+        this.order.set([]);
         if (spot) this.fill(spot);
         this.loading.set(false);
       });
@@ -212,8 +236,9 @@ export class ParkingSpotFormPage {
     this.choice.set(condominiumId);
   }
 
-  protected toggleCovered(): void {
-    this.covered.update((value) => !value);
+  protected selectCovered(covered: boolean): void {
+    if (covered === this.covered()) return;
+    this.covered.set(covered);
     this.markDirty();
   }
 
@@ -245,6 +270,12 @@ export class ParkingSpotFormPage {
     const removed = this.staged().find((item) => item.id === imageId);
     if (removed) URL.revokeObjectURL(removed.url);
     this.staged.update((items) => items.filter((item) => item.id !== imageId));
+  }
+
+  protected makeCover(id: string): void {
+    const ids = this.images().map((image) => image.id);
+    if (!ids.includes(id)) return;
+    this.order.set([id, ...ids.filter((other) => other !== id)]);
   }
 
   protected submit(): void {
@@ -318,11 +349,34 @@ export class ParkingSpotFormPage {
   }
 
   private syncImages(spotId: string): Observable<unknown> {
-    const removals = this.removedIds().map((id) => this.api.removeImage(spotId, id));
-    const additions = this.staged().map(({ file }) =>
-      this.api.addImage(spotId, file).pipe(catchError(() => of([]))),
+    const desired = this.images().map((image) => image.id);
+    let current = this.serverImages().map((image) => image.id);
+    const uploaded = new Map<string, string>();
+    const track = (images: readonly ImageItem[]) => (current = images.map((image) => image.id));
+    const removals = this.removedIds().map((id) =>
+      this.api.removeImage(spotId, id).pipe(tap(track)),
     );
-    return concat(...removals, ...additions).pipe(toArray());
+    const additions = desired
+      .map((id) => this.staged().find((image) => image.id === id))
+      .filter((image) => image !== undefined)
+      .map((image) =>
+        defer(() => {
+          const before = new Set(current);
+          return this.api.addImage(spotId, image.file).pipe(
+            tap((images) => {
+              uploaded.set(image.id, images.find((item) => !before.has(item.id))?.id ?? image.id);
+              track(images);
+            }),
+            catchError(() => of([])),
+          );
+        }),
+      );
+    const reorder = defer(() => {
+      const ids = desired.map((id) => uploaded.get(id) ?? id).filter((id) => current.includes(id));
+      const same = ids.length === current.length && ids.every((id, i) => id === current[i]);
+      return same || ids.length !== current.length ? EMPTY : this.api.reorderImages(spotId, ids);
+    });
+    return concat(...removals, ...additions, reorder).pipe(toArray());
   }
 
   private run<T>(call: Observable<T>, onDone: (value: T) => void): void {

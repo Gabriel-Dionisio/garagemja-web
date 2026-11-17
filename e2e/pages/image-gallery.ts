@@ -30,7 +30,7 @@ export class ImageGallery {
     await this.page.getByRole('button', { name: 'Remover imagem' }).click();
   }
 
-  async moveBack(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Mover para trás' }).click();
+  async makeCover(): Promise<void> {
+    await this.page.getByRole('button', { name: 'Definir como capa' }).click();
   }
 }

@@ -198,7 +198,7 @@ test('manager manages the condominium photos: upload, reorder, save, remove', as
   await expect(gallery.counter).toHaveText('1 / 4');
   await expect(gallery.cover).toBeVisible();
   await gallery.next();
-  await gallery.moveBack();
+  await gallery.makeCover();
   await expect(gallery.counter).toHaveText('2 / 4');
   await save.click();
   await expect(page.getByText('Alterações salvas.')).toBeVisible();
@@ -224,6 +224,10 @@ test('resident asks for a spot: the form validates and a repeated number is refu
   await expect(page.getByText('Campo obrigatório.').first()).toBeVisible();
 
   await user.spotForm.fill(spotNumber, 'Subsolo 1', 'Média');
+  await expect(user.spotForm.coverage('Descoberta')).toHaveAttribute('aria-pressed', 'true');
+  await user.spotForm.coverage('Coberta').click();
+  await expect(user.spotForm.coverage('Coberta')).toHaveAttribute('aria-pressed', 'true');
+  await expect(user.spotForm.coverage('Descoberta')).toHaveAttribute('aria-pressed', 'false');
   await user.spotForm.sendRequest.click();
   await expect(page).toHaveURL(/\/parking-spots$/);
   await user.mySpots.search(spotNumber);
@@ -340,4 +344,10 @@ test('owner manages the spot photos: upload, carousel, add one more, remove', as
   await user.mySpots.search(spotNumber);
   await user.mySpots.open(spotNumber);
   await expect(gallery.counter).toHaveText('1 / 3');
+  await expect(page.getByRole('button', { name: 'Definir como capa' })).toHaveCount(0);
+  await expect(save).toBeHidden();
+  await gallery.next();
+  await gallery.makeCover();
+  await expect(save).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Cancelar', exact: true })).toBeVisible();
 });

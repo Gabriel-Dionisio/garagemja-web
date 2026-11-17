@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { VehiclesApi, toVehicle } from './vehicles-api';
+import { VehiclesApi, toVehicle, toVehicleImages } from './vehicles-api';
 
 const vehicle = {
   id: 'v1',
@@ -10,6 +10,7 @@ const vehicle = {
   brand: 'Honda',
   model: 'Civic',
   color: null,
+  thumbnailUrl: null,
 };
 
 const residency = {
@@ -30,6 +31,15 @@ describe('toVehicle', () => {
   it('rejects an invalid payload', () => {
     expect(() => toVehicle({ ...vehicle, plate: 1 })).toThrow('Invalid vehicle');
     expect(() => toVehicle(null)).toThrow();
+    expect(() => toVehicle({ ...vehicle, thumbnailUrl: 1 })).toThrow('Invalid vehicle');
+  });
+});
+
+describe('toVehicleImages', () => {
+  it('maps the image list and rejects an invalid one', () => {
+    expect(toVehicleImages([{ id: 'i1', url: '/a.png' }])).toEqual([{ id: 'i1', url: '/a.png' }]);
+    expect(() => toVehicleImages({})).toThrow('Invalid images');
+    expect(() => toVehicleImages([{ id: 'i1' }])).toThrow('Invalid image');
   });
 });
 
@@ -121,5 +131,31 @@ describe('VehiclesApi', () => {
     api.get('v1').subscribe((found) => (plate = found.plate));
     http.expectOne('/api/v1/vehicles/v1').flush(vehicle);
     expect(plate).toBe('ABC1234');
+  });
+
+  it('lists, adds and removes vehicle images', () => {
+    const images = [{ id: 'i1', url: '/a.png' }];
+    const file = new File(['x'], 'car.png', { type: 'image/png' });
+    let listed: unknown;
+    api.images('v1').subscribe((value) => (listed = value));
+    http.expectOne('/api/v1/vehicles/v1/images').flush(images);
+    expect(listed).toEqual(images);
+
+    api.addImage('v1', file).subscribe();
+    const upload = http.expectOne('/api/v1/vehicles/v1/images');
+    expect(upload.request.method).toBe('POST');
+    expect((upload.request.body as FormData).get('file')).toBe(file);
+    upload.flush(images);
+
+    api.removeImage('v1', 'i1').subscribe();
+    const removal = http.expectOne('/api/v1/vehicles/v1/images/i1');
+    expect(removal.request.method).toBe('DELETE');
+    removal.flush([]);
+
+    api.reorderImages('v1', ['i2', 'i1']).subscribe();
+    const reorder = http.expectOne('/api/v1/vehicles/v1/images/order');
+    expect(reorder.request.method).toBe('PUT');
+    expect(reorder.request.body).toEqual({ imageIds: ['i2', 'i1'] });
+    reorder.flush([{ id: 'i2', url: '/b.png', thumbnailUrl: '/b.t.png', position: 0 }]);
   });
 });

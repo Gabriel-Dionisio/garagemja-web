@@ -28,6 +28,7 @@ const vehicle = (id: string, condominiumId: string): VehicleListItem => ({
   brand: 'Honda',
   model: 'Civic',
   color: null,
+  thumbnailUrl: null,
   residency: {
     id: `res-${id}`,
     condominiumId,

@@ -27,7 +27,7 @@ export class ImageField {
 
   readonly selected = output<File>();
   readonly removed = output<string>();
-  readonly moved = output<{ id: string; step: -1 | 1 }>();
+  readonly coverChosen = output<string>();
 
   protected readonly infinity = Number.POSITIVE_INFINITY;
   protected readonly rejected = signal<'type' | 'size' | null>(null);

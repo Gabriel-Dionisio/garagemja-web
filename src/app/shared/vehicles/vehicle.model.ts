@@ -5,6 +5,12 @@ export interface Vehicle {
   brand: string | null;
   model: string | null;
   color: string | null;
+  thumbnailUrl: string | null;
+}
+
+export interface VehicleImage {
+  id: string;
+  url: string;
 }
 
 export interface Residency {

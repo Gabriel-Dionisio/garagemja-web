@@ -72,4 +72,17 @@ describe('ParkingSpotsApi', () => {
     http.expectOne((req) => req.url === '/api/v1/parking-spots/map').flush([{ name: 1 }]);
     expect(failed).toBe(true);
   });
+
+  it('reordena as imagens da vaga', () => {
+    let ids: string[] = [];
+    api.reorderImages('s1', ['b', 'a']).subscribe((images) => (ids = images.map(({ id }) => id)));
+    const request = http.expectOne('/api/v1/parking-spots/s1/images/order');
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.body).toEqual({ imageIds: ['b', 'a'] });
+    request.flush([
+      { id: 'b', url: '/b.png', thumbnailUrl: null, position: 0 },
+      { id: 'a', url: '/a.png', thumbnailUrl: null, position: 1 },
+    ]);
+    expect(ids).toEqual(['b', 'a']);
+  });
 });

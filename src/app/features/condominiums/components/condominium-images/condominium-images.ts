@@ -77,13 +77,10 @@ export class CondominiumImages {
     this.staged.update((list) => list.filter((image) => image.id !== imageId));
   }
 
-  protected move({ id, step }: { id: string; step: -1 | 1 }): void {
+  protected makeCover(id: string): void {
     const ids = this.shown().map((image) => image.id);
-    const index = ids.indexOf(id);
-    const target = index + step;
-    if (index < 0 || target < 0 || target >= ids.length) return;
-    [ids[index], ids[target]] = [ids[target], ids[index]];
-    this.order.set(ids);
+    if (!ids.includes(id)) return;
+    this.order.set([id, ...ids.filter((other) => other !== id)]);
   }
 
   private uploadStaged(condominiumId: string): Observable<unknown> {

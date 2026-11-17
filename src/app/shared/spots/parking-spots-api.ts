@@ -200,6 +200,12 @@ export class ParkingSpotsApi {
       .pipe(map(toParkingSpotImages));
   }
 
+  reorderImages(id: string, imageIds: readonly string[]): Observable<ParkingSpotImage[]> {
+    return this.http
+      .put<unknown>(`${SPOTS_URL}/${id}/images/order`, { imageIds })
+      .pipe(map(toParkingSpotImages));
+  }
+
   removeImage(id: string, imageId: string): Observable<ParkingSpotImage[]> {
     return this.http
       .delete<unknown>(`${SPOTS_URL}/${id}/images/${imageId}`)

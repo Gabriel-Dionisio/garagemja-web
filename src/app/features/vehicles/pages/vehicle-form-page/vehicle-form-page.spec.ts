@@ -22,6 +22,7 @@ const vehicle: Vehicle = {
   brand: 'Honda',
   model: 'Civic',
   color: 'Prata',
+  thumbnailUrl: null,
 };
 
 describe('VehicleFormPage', () => {
@@ -31,6 +32,9 @@ describe('VehicleFormPage', () => {
       get: vi.fn().mockReturnValue(of(vehicle)),
       create: vi.fn().mockReturnValue(of(vehicle)),
       update: vi.fn().mockReturnValue(of(vehicle)),
+      images: vi.fn().mockReturnValue(of([{ id: 'i1', url: '/i1.png' }])),
+      addImage: vi.fn().mockReturnValue(of([])),
+      removeImage: vi.fn().mockReturnValue(of([])),
     };
     TestBed.configureTestingModule({
       providers: [
@@ -106,7 +110,9 @@ describe('VehicleFormPage', () => {
   it('fills the form when editing and updates the vehicle', async () => {
     const { api, root, type, submit } = await setup('/vehicles/v1', [aurora, pending]);
     expect(api.get).toHaveBeenCalledWith('v1');
-    const inputs = Array.from(root.querySelectorAll('input')).map((input) => input.value);
+    const inputs = Array.from(root.querySelectorAll<HTMLInputElement>('app-text-field input')).map(
+      (input) => input.value,
+    );
     expect(inputs).toEqual(['Honda', 'Civic', 'ABC1234', 'Prata']);
     expect(root.querySelector('select')?.disabled).toBe(true);
 
@@ -119,5 +125,46 @@ describe('VehicleFormPage', () => {
       color: 'Preto',
     });
     expect(TestBed.inject(Router).url).toBe('/vehicles');
+  });
+
+  it('shows only Voltar while unchanged and Cancelar/Salvar once edited', async () => {
+    const { root, harness, type } = await setup('/vehicles/v1');
+    const actions = () =>
+      Array.from(root.querySelectorAll('app-form-actions [appButton]')).map((el) =>
+        el.textContent?.trim(),
+      );
+    expect(actions()).toEqual(['Voltar']);
+    type('Cor', 'Preto');
+    await harness.fixture.whenStable();
+    expect(actions()).toEqual(['Cancelar', 'Salvar']);
+  });
+
+  it('stages photos and uploads them only after saving', async () => {
+    const { api, root, harness, submit } = await setup('/vehicles/v1');
+    expect(api.images).toHaveBeenCalledWith('v1');
+    URL.createObjectURL = vi.fn(() => 'blob:x');
+    const input = root.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['x'], 'car.png', { type: 'image/png' });
+    Object.defineProperty(input, 'files', { value: [file], configurable: true });
+    input.dispatchEvent(new Event('change'));
+    await harness.fixture.whenStable();
+    expect(api.addImage).not.toHaveBeenCalled();
+    await submit();
+    expect(api.update).toHaveBeenCalled();
+    expect(api.addImage).toHaveBeenCalledWith('v1', file);
+    expect(TestBed.inject(Router).url).toBe('/vehicles');
+  });
+
+  it('uploads staged photos to the vehicle just created', async () => {
+    const { api, root, harness, type, submit } = await setup('/vehicles/new');
+    URL.createObjectURL = vi.fn(() => 'blob:x');
+    const input = root.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['x'], 'car.png', { type: 'image/png' });
+    Object.defineProperty(input, 'files', { value: [file], configurable: true });
+    input.dispatchEvent(new Event('change'));
+    await harness.fixture.whenStable();
+    type('Placa', 'ABC1234');
+    await submit();
+    expect(api.addImage).toHaveBeenCalledWith('v1', file);
   });
 });

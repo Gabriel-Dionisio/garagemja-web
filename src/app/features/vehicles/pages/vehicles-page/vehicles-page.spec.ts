@@ -15,6 +15,7 @@ const item: VehicleListItem = {
   brand: 'Honda',
   model: 'Civic',
   color: 'Prata',
+  thumbnailUrl: null,
   residency: {
     id: 'r1',
     condominiumId: 'c1',
@@ -48,13 +49,29 @@ describe('VehiclesPage', () => {
     return { list, root: harness.routeNativeElement as HTMLElement, harness };
   }
 
-  it('renders each vehicle with plate, condominium and an edit link', async () => {
+  it('renders each vehicle with at most two secondary lines', async () => {
     const { root } = await setup(of(pageOf([item])));
     const text = root.textContent ?? '';
     expect(text).toContain('Honda Civic');
-    expect(text).toContain('ABC-1234');
+    expect(text).toContain('ABC-1234 · Prata');
     expect(text).toContain('Residencial Aurora · A / 101');
-    expect(root.querySelector<HTMLAnchorElement>('a[href="/vehicles/v1"]')).not.toBeNull();
+    expect(root.querySelectorAll('li small')).toHaveLength(2);
+  });
+
+  it('opens the details when clicking the item and exposes named icon actions', async () => {
+    const { root } = await setup(of(pageOf([item])));
+    const links = root.querySelectorAll<HTMLAnchorElement>('li a[href="/vehicles/v1"]');
+    expect(links.length).toBeGreaterThanOrEqual(2);
+    expect(root.querySelector('li a[aria-label="Editar: Honda Civic"]')).not.toBeNull();
+    expect(root.querySelector('li button[aria-label="Excluir: Honda Civic"]')).not.toBeNull();
+  });
+
+  it('shows the photo as leading or the car placeholder', async () => {
+    const withPhoto = { ...item, id: 'v2', thumbnailUrl: '/thumb.png' };
+    const { root } = await setup(of(pageOf([item, withPhoto])));
+    const items = root.querySelectorAll('li');
+    expect(items[0].querySelector('.thumb.placeholder app-icon')).not.toBeNull();
+    expect(items[1].querySelector('img.thumb')?.getAttribute('src')).toBe('/thumb.png');
   });
 
   it('links the header action to the registration form', async () => {
@@ -70,7 +87,7 @@ describe('VehiclesPage', () => {
 
   it('removes the vehicle after confirmation and reloads', async () => {
     const { list, root, harness } = await setup(of(pageOf([item])));
-    root.querySelector<HTMLButtonElement>('li button[data-variant="danger"]')?.click();
+    root.querySelector<HTMLButtonElement>('li button[aria-label^="Excluir"]')?.click();
     await harness.fixture.whenStable();
     expect(remove).toHaveBeenCalledWith('v1');
     expect(list).toHaveBeenCalledTimes(2);
@@ -79,7 +96,7 @@ describe('VehiclesPage', () => {
   it('does not remove when the confirmation is dismissed', async () => {
     const { root, harness } = await setup(of(pageOf([item])));
     confirm.mockReturnValue(of(false));
-    root.querySelector<HTMLButtonElement>('li button[data-variant="danger"]')?.click();
+    root.querySelector<HTMLButtonElement>('li button[aria-label^="Excluir"]')?.click();
     await harness.fixture.whenStable();
     expect(remove).not.toHaveBeenCalled();
   });

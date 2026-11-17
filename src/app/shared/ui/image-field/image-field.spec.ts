@@ -34,19 +34,21 @@ describe('ImageField', () => {
     expect(selected).not.toHaveBeenCalled();
   });
 
-  it('marks the cover and emits moves for the shown image', async () => {
+  it('marks the cover and lets another image become the cover', async () => {
     const fixture = TestBed.createComponent(ImageField);
     fixture.componentRef.setInput('images', [
       { id: 'a', url: 'a.webp' },
       { id: 'b', url: 'b.webp' },
     ]);
-    const moved = vi.fn();
-    fixture.componentInstance.moved.subscribe(moved);
+    const chosen = vi.fn();
+    fixture.componentInstance.coverChosen.subscribe(chosen);
     await fixture.whenStable();
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.badge-cover')).not.toBeNull();
-    expect((element.querySelector('.move-back') as HTMLButtonElement).disabled).toBe(true);
-    (element.querySelector('.move-forward') as HTMLButtonElement).click();
-    expect(moved).toHaveBeenCalledWith({ id: 'a', step: 1 });
+    expect(element.querySelector('.make-cover')).toBeNull();
+    (element.querySelector('.next') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    (element.querySelector('.make-cover') as HTMLButtonElement).click();
+    expect(chosen).toHaveBeenCalledWith('b');
   });
 });

@@ -41,24 +41,37 @@
   >
     @if (result(); as current) {
       @for (vehicle of current.items; track vehicle.id) {
-        <li appListItem>
-          <span leading class="thumb"><app-icon name="car" /></span>
+        <li appListItem [link]="['/vehicles', vehicle.id]">
+          <span leading>
+            @if (vehicle.thumbnailUrl; as url) {
+              <img class="thumb" [src]="url" alt="" />
+            } @else {
+              <span class="thumb placeholder"><app-icon name="car" /></span>
+            }
+          </span>
           <strong>{{ title(vehicle) }}</strong>
-          <small class="plate">{{ displayPlate(vehicle.plate) }}</small>
-          @if (vehicle.color) {
-            <small>{{ vehicle.color }}</small>
-          }
+          <small
+            ><span class="plate">{{ displayPlate(vehicle.plate) }}</span
+            >{{ vehicle.color ? ' · ' + vehicle.color : '' }}</small
+          >
           @if (place(vehicle)) {
             <small>{{ place(vehicle) }}</small>
           }
-          <span actions class="actions">
-            <a appButton variant="secondary" [routerLink]="['/vehicles', vehicle.id]">
-              {{ 'vehicles.list.edit' | transloco }}
-              <span class="sr-only">{{ title(vehicle) }}</span>
+          <span actions>
+            <a
+              appIconButton
+              [label]="('vehicles.list.edit' | transloco) + ': ' + title(vehicle)"
+              [routerLink]="['/vehicles', vehicle.id]"
+            >
+              <app-icon name="edit" />
             </a>
-            <button appButton type="button" variant="danger" (click)="remove(vehicle)">
-              {{ 'vehicles.list.delete' | transloco }}
-              <span class="sr-only">{{ title(vehicle) }}</span>
+            <button
+              appIconButton
+              type="button"
+              [label]="('vehicles.list.delete' | transloco) + ': ' + title(vehicle)"
+              (click)="remove(vehicle)"
+            >
+              <app-icon name="trash" />
             </button>
           </span>
         </li>

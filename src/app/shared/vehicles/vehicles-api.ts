@@ -3,21 +3,22 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map } from 'rxjs';
 import { fields, isNullableString } from '../models/fields';
 import { Page, toResponsePage } from '../models/page';
-import { Residency, Vehicle, VehicleFields, VehicleListItem } from './vehicle.model';
+import { Residency, Vehicle, VehicleFields, VehicleImage, VehicleListItem } from './vehicle.model';
 
 const VEHICLES_URL = '/api/v1/vehicles';
 const RESIDENCIES_URL = '/api/v1/me/residencies';
 const RESIDENCIES_LIMIT = 100;
 
 export function toVehicle(value: unknown): Vehicle {
-  const { id, residentId, plate, brand, model, color } = fields(value, 'vehicle');
+  const { id, residentId, plate, brand, model, color, thumbnailUrl } = fields(value, 'vehicle');
   if (
     typeof id !== 'string' ||
     typeof residentId !== 'string' ||
     typeof plate !== 'string' ||
     !isNullableString(brand) ||
     !isNullableString(model) ||
-    !isNullableString(color)
+    !isNullableString(color) ||
+    !isNullableString(thumbnailUrl)
   ) {
     throw new Error('Invalid vehicle');
   }
@@ -28,7 +29,17 @@ export function toVehicle(value: unknown): Vehicle {
     brand: brand ?? null,
     model: model ?? null,
     color: color ?? null,
+    thumbnailUrl: thumbnailUrl ?? null,
   };
+}
+
+export function toVehicleImages(value: unknown): VehicleImage[] {
+  if (!Array.isArray(value)) throw new Error('Invalid images');
+  return value.map((item) => {
+    const { id, url } = fields(item, 'image');
+    if (typeof id !== 'string' || typeof url !== 'string') throw new Error('Invalid image');
+    return { id, url };
+  });
 }
 
 export function toResidency(value: unknown): Residency {
@@ -108,6 +119,28 @@ export class VehiclesApi {
         color: values.color.trim(),
       })
       .pipe(map(toVehicle));
+  }
+
+  images(id: string): Observable<VehicleImage[]> {
+    return this.http.get<unknown>(`${VEHICLES_URL}/${id}/images`).pipe(map(toVehicleImages));
+  }
+
+  addImage(id: string, file: File): Observable<VehicleImage[]> {
+    const body = new FormData();
+    body.append('file', file);
+    return this.http.post<unknown>(`${VEHICLES_URL}/${id}/images`, body).pipe(map(toVehicleImages));
+  }
+
+  reorderImages(id: string, imageIds: readonly string[]): Observable<VehicleImage[]> {
+    return this.http
+      .put<unknown>(`${VEHICLES_URL}/${id}/images/order`, { imageIds })
+      .pipe(map(toVehicleImages));
+  }
+
+  removeImage(id: string, imageId: string): Observable<VehicleImage[]> {
+    return this.http
+      .delete<unknown>(`${VEHICLES_URL}/${id}/images/${imageId}`)
+      .pipe(map(toVehicleImages));
   }
 }
 

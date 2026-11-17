@@ -69,17 +69,22 @@
                 />
               </app-form-section>
 
-              <app-chip-group
-                [label]="'parkingSpots.fields.size' | transloco"
-                [options]="sizeOptions"
-                [value]="size()"
-                (valueChange)="selectSize($event)"
-              />
-              <app-chip-toggle
-                [label]="'parkingSpots.fields.covered' | transloco"
-                [pressed]="covered()"
-                (toggled)="toggleCovered()"
-              />
+              <div class="features">
+                <app-chip-group
+                  [showLabel]="true"
+                  [label]="'parkingSpots.fields.size' | transloco"
+                  [options]="sizeOptions"
+                  [value]="size()"
+                  (valueChange)="selectSize($event)"
+                />
+                <app-chip-group
+                  [showLabel]="true"
+                  [label]="'spotSearch.coverage.label' | transloco"
+                  [options]="coverageOptions"
+                  [value]="covered() ? 'COVERED' : 'UNCOVERED'"
+                  (valueChange)="selectCovered($event === 'COVERED')"
+                />
+              </div>
               @if (canManage()) {
                 <app-lookup-field
                   [label]="'parkingSpots.fields.owner' | transloco"
@@ -96,12 +101,12 @@
               class="image"
               [images]="images()"
               [max]="maxImages"
-              [reorderable]="false"
               [alt]="'parkingSpots.image.alt' | transloco"
               [busy]="busy()"
               [disabled]="locked()"
               (selected)="addImage($event)"
               (removed)="removeImage($event)"
+              (coverChosen)="makeCover($event)"
             />
           </div>
 
